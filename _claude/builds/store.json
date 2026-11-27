@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10452,
- "updatedAt": "2026-11-27T05:09:41.560Z",
+ "rev": 10453,
+ "updatedAt": "2026-11-27T05:10:38.606Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130956,11 +130956,11 @@
     "all"
    ],
    "order": {
-    "all": 632
+    "all": 633
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138130,11 +138130,11 @@
     "all"
    ],
    "order": {
-    "all": 668
+    "all": 669
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138294,11 +138294,11 @@
     "all"
    ],
    "order": {
-    "all": 670
+    "all": 671
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138458,11 +138458,11 @@
     "all"
    ],
    "order": {
-    "all": 669
+    "all": 672
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -147223,11 +147223,11 @@
     "all"
    ],
    "order": {
-    "all": 705
+    "all": 706
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -152168,11 +152168,11 @@
     "all"
    ],
    "order": {
-    "all": 722
+    "all": 723
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -385477,7 +385477,7 @@
    "branch": "claude/emergency-remove-every-leftover-js--s2",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-27T05:08:56.370Z",
+   "updatedAt": "2026-11-27T05:10:18.995Z",
    "builtAt": "",
    "notes": [
     {
@@ -385739,6 +385739,14 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $0.74",
      "at": "2026-11-27T05:08:44.835Z"
+    },
+    {
+     "text": "Watchdog: step s3 failed at building, attempt 1: tmux session axf-emergency-remove-every-leftover-js--s3--earl is gone while the step was building.",
+     "at": "2026-11-27T05:09:29.725Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s6--gina, shared account login)",
+     "at": "2026-11-27T05:10:18.995Z"
     }
    ],
    "approvals": [
@@ -386133,15 +386141,16 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-27T05:05:44.528Z",
+     "done": false,
+     "doneAt": "",
      "note": "Part 3: 23 plan steps in one session (they touch the same files).",
-     "rev": 8,
+     "rev": 9,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-27T05:05:45.101Z",
-     "statusAt": "2026-11-27T04:27:18.962Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-27T05:09:39.493Z",
+     "statusAt": "2026-11-27T05:09:29.725Z",
+     "statusBy": "watchdog",
      "attempt": 1,
+     "failedFrom": "building",
      "statusLog": [
       {
        "status": "pending",
@@ -386176,13 +386185,23 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "axf-emergency-remove-every-leftover-js--s3--earl on hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-27T05:09:29.725Z",
+       "by": "watchdog",
+       "attempt": 1,
+       "why": "tmux session axf-emergency-remove-every-leftover-js--s3--earl is gone while the step was building"
       }
      ],
-     "status": "building",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-remove-every-leftover-js--s3",
      "branch": "claude/emergency-remove-every-leftover-js--s3",
-     "tmux": "axf-emergency-remove-every-leftover-js--s3--earl"
+     "tmux": "axf-emergency-remove-every-leftover-js--s3--earl",
+     "tried": [
+      "hulu0241"
+     ]
     },
     {
      "id": "s4",
@@ -386463,10 +386482,10 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 10,
+     "rev": 12,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-27T05:08:23.603Z",
-     "statusAt": "2026-11-27T05:08:23.335Z",
+     "updatedAt": "2026-11-27T05:09:47.977Z",
+     "statusAt": "2026-11-27T05:09:47.782Z",
      "statusBy": "orchestrator",
      "attempt": 2,
      "statusLog": [
@@ -386524,13 +386543,20 @@
        "by": "orchestrator",
        "attempt": 2,
        "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-27T05:09:47.782Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-emergency-remove-every-leftover-js--s6--gina on hulu0241"
       }
      ],
-     "status": "sending",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-remove-every-leftover-js--s6",
      "branch": "claude/emergency-remove-every-leftover-js--s6",
-     "tmux": "axf-emergency-remove-every-leftover-js--s6--lenny"
+     "tmux": "axf-emergency-remove-every-leftover-js--s6--gina"
     },
     {
      "id": "s7",
@@ -386634,7 +386660,7 @@
    },
    "kind": "build",
    "planRef": "emergency-remove-every-leftover--7jpc",
-   "rev": 174,
+   "rev": 178,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -386719,7 +386745,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s4",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T05:09:31.188Z",
+   "updatedAt": "2026-11-27T05:10:01.791Z",
    "builtAt": "",
    "notes": [
     {
@@ -387017,6 +387043,21 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $2.84",
      "at": "2026-11-27T05:07:53.739Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:09:29.725Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:09:29.725Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 failed at building, attempt 2: tmux session axf-emergency-check-can-these-plugins---s5--gina is gone while the step was building.",
+     "at": "2026-11-27T05:09:29.725Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -387707,15 +387748,16 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-27T05:06:47.830Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 11,
+     "rev": 12,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-27T05:06:48.497Z",
-     "statusAt": "2026-11-27T05:02:15.491Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-27T05:09:39.493Z",
+     "statusAt": "2026-11-27T05:09:29.725Z",
+     "statusBy": "watchdog",
      "attempt": 2,
+     "failedFrom": "building",
      "statusLog": [
       {
        "status": "pending",
@@ -387771,13 +387813,23 @@
        "by": "orchestrator",
        "attempt": 2,
        "why": "axf-emergency-check-can-these-plugins---s5--gina on hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-27T05:09:29.725Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "tmux session axf-emergency-check-can-these-plugins---s5--gina is gone while the step was building"
       }
      ],
-     "status": "building",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s5",
      "branch": "claude/emergency-check-can-these-plugins---s5",
-     "tmux": "axf-emergency-check-can-these-plugins---s5--gina"
+     "tmux": "axf-emergency-check-can-these-plugins---s5--gina",
+     "tried": [
+      "hulu0241"
+     ]
     },
     {
      "id": "s6",
@@ -387799,10 +387851,10 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 8,
+     "rev": 9,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-27T05:08:55.324Z",
-     "statusAt": "2026-11-27T05:08:55.229Z",
+     "updatedAt": "2026-11-27T05:10:02.007Z",
+     "statusAt": "2026-11-27T05:10:01.791Z",
      "statusBy": "orchestrator",
      "attempt": 2,
      "statusLog": [
@@ -387846,12 +387898,20 @@
        "by": "orchestrator",
        "attempt": 2,
        "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-27T05:10:01.791Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-emergency-check-can-these-plugins---s6--earl on hulu0241"
       }
      ],
-     "status": "sending",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s6",
-     "branch": "claude/emergency-check-can-these-plugins---s6"
+     "branch": "claude/emergency-check-can-these-plugins---s6",
+     "tmux": "axf-emergency-check-can-these-plugins---s6--earl"
     },
     {
      "id": "s7",
@@ -388123,7 +388183,7 @@
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 190,
+   "rev": 192,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -388208,7 +388268,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T05:08:55.303Z",
+   "updatedAt": "2026-11-27T05:09:57.712Z",
    "builtAt": "",
    "notes": [
     {
@@ -388550,6 +388610,11 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $0.13",
      "at": "2026-11-27T05:05:33.010Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:09:29.725Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -389208,9 +389273,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 25,
+     "rev": 26,
      "createdAt": "2026-11-25T22:55:50.329Z",
-     "updatedAt": "2026-11-27T05:08:55.423Z",
+     "updatedAt": "2026-11-27T05:09:57.923Z",
      "statusAt": "2026-11-27T05:08:55.303Z",
      "statusBy": "orchestrator",
      "attempt": 5,
@@ -389345,7 +389410,7 @@
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-rip-out-the-7-mb-status---s5",
      "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
-     "tmux": "axf-emergency-rip-out-the-7-mb-status---s5--rhonda"
+     "tmux": "axf-emergency-rip-out-the-7-mb-status---s5--lenny"
     },
     {
      "id": "s6",
@@ -389468,7 +389533,7 @@
    },
    "kind": "build",
    "planRef": "emergency-rip-out-the-7-mb-statu-qsmm",
-   "rev": 188,
+   "rev": 190,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

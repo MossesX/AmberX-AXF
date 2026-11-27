@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T05:09:41.560Z",
+ "updatedAt": "2026-11-27T05:10:38.606Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14263,7 +14263,7 @@
    "branch": "claude/emergency-remove-every-leftover-js--s2",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-27T05:08:56.370Z",
+   "updatedAt": "2026-11-27T05:10:18.995Z",
    "builtAt": "",
    "notes": [
     {
@@ -14525,6 +14525,14 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $0.74",
      "at": "2026-11-27T05:08:44.835Z"
+    },
+    {
+     "text": "Watchdog: step s3 failed at building, attempt 1: tmux session axf-emergency-remove-every-leftover-js--s3--earl is gone while the step was building.",
+     "at": "2026-11-27T05:09:29.725Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s6--gina, shared account login)",
+     "at": "2026-11-27T05:10:18.995Z"
     }
    ],
    "approvals": [
@@ -14647,8 +14655,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-27T05:05:44.528Z",
+     "done": false,
+     "doneAt": "",
      "note": "Part 3: 23 plan steps in one session (they touch the same files).",
      "uid": "st-mww2s3a81n7thj",
      "createdAt": "2026-11-25T12:03:52.352Z"
@@ -15642,7 +15650,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s4",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T05:09:31.188Z",
+   "updatedAt": "2026-11-27T05:10:01.791Z",
    "builtAt": "",
    "notes": [
     {
@@ -15940,6 +15948,21 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $2.84",
      "at": "2026-11-27T05:07:53.739Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:09:29.725Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:09:29.725Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 failed at building, attempt 2: tmux session axf-emergency-check-can-these-plugins---s5--gina is gone while the step was building.",
+     "at": "2026-11-27T05:09:29.725Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -16056,8 +16079,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-27T05:06:47.830Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
      "uid": "st-mww38q3o1po13q",
      "createdAt": "2026-11-25T12:16:48.420Z"
@@ -20336,7 +20359,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T05:08:55.303Z",
+   "updatedAt": "2026-11-27T05:09:57.712Z",
    "builtAt": "",
    "notes": [
     {
@@ -20678,6 +20701,11 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $0.13",
      "at": "2026-11-27T05:05:33.010Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:09:29.725Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -97932,124 +97960,6 @@
    ]
   },
   {
-   "id": "orchestrator-self-check-when-stuck-verify-each-a",
-   "title": "Orchestrator self-check when stuck: verify each account one by one, clear stale jobs",
-   "category": "",
-   "detail": "On every load and whenever the queue is stuck (e.g. 'no Claude account is signed in on the VPS' while accounts are actually signed in), the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, slots), rebuilds its account list, and reaps stale jobs/running counts with no live process. Log what it found and fixed; notify AmberX. Fold in pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper where they overlap.",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/orchestrator-self-check-when-stuck-verify-each-a",
-   "pr": "#407",
-   "priority": "P0",
-   "createdAt": "2026-11-09T16:25:52.442Z",
-   "updatedAt": "2026-11-15T00:41:27.044Z",
-   "builtAt": "2026-11-09T16:45:22.046Z",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-09T16:25:53.571Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-09T16:26:19.535Z"
-    },
-    {
-     "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-orchestrator-self-check-when-stuck-verify-each-a--joey, own login copy)",
-     "at": "2026-11-09T16:40:19.177Z"
-    },
-    {
-     "text": "Started run 1 on account-3 (Opus, Phase 1): axf-orchestrator-self-check-when-stuck-verify-each-a--joey.",
-     "at": "2026-11-09T16:40:15.588Z"
-    },
-    {
-     "text": "Headless run axf-orchestrator-self-check-when-stuck-verify-each-a--joey: brief only · start 10.9K tokens ($0.03) · cost $1.17 · 38 turns · 6 tools, MCP none",
-     "at": "2026-11-09T16:45:22.046Z"
-    },
-    {
-     "text": "PR #407 supersedes #406 (carries its commit). Added: self-check runs on every orchestrator load, the dispatcher's first tick after downtime, stuck ticks and a 30 min sweep. UI Review shots of the Self-check card still owed: no branch preview here.",
-     "at": "2026-11-09T16:45:06.486Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.",
-    "at": "2026-11-09T16:25:52.442Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "orchestrator-self-check-when-stuck-verify-each-a",
-    "brief": "# Build: orchestrator-self-check-when-stuck-verify-each-a\n\n## Brett said (verbatim)\nAt: 2026-11-09T16:25:52.442Z\n> The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.\n\n## What to build\nContinue build \"Orchestrator self-check when stuck: verify each account one by one, clear stale jobs\" (orchestrator-self-check-when-stuck-verify-each-a) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-09 16:25):\n\"The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) On every load and whenever the queue is stuck (e.g. 'no Claude account is signed in on the VPS' while accounts are actually signed in), the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, slots), rebuilds its account list, and reaps stale jobs/running counts with no live process. Log what it found and fixed; notify AmberX. Fold in pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper where they overlap.\n[ ] s2 (~30 min) The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-self-check-when-stuck-verify-each-a <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-self-check-when-stuck-verify-each-a --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step orchestrator-self-check-when-stuck-verify-each-a <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-self-check-when-stuck-verify-each-a \"…\"); the build goes back to Pending for Brett.\n",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "On every load and whenever the queue is stuck (e.g. 'no Claude account is signed in on the VPS' while accounts are actually signed in), the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, slots), rebuilds its account list, and reaps stale jobs/running counts with no live process. Log what it found and fixed; notify AmberX. Fold in pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper where they overlap.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-09T16:44:08.704Z",
-     "note": "",
-     "uid": "st-mw9h3z7z01y8m1",
-     "createdAt": "2026-11-09T16:26:19.535Z"
-    },
-    {
-     "id": "s2",
-     "text": "The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-09T16:44:09.880Z",
-     "note": "",
-     "uid": "st-mw9h3z7z02m9s8",
-     "createdAt": "2026-11-09T16:26:19.535Z"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-09T16:45:08.306Z",
-     "note": "",
-     "uid": "st-mw9h3z7z03iiym",
-     "createdAt": "2026-11-09T16:26:19.535Z"
-    }
-   ]
-  },
-  {
    "id": "split-builds-pages-build-manager-pending-complet",
    "title": "Split builds pages: Build Manager = Pending + Complete; Orchestrator = Queued + Active",
    "category": "",
@@ -98425,6 +98335,124 @@
      "note": "",
      "uid": "st-mw9xdy4003t2j0",
      "createdAt": "2026-11-10T00:01:58.512Z"
+    }
+   ]
+  },
+  {
+   "id": "orchestrator-self-check-when-stuck-verify-each-a",
+   "title": "Orchestrator self-check when stuck: verify each account one by one, clear stale jobs",
+   "category": "",
+   "detail": "On every load and whenever the queue is stuck (e.g. 'no Claude account is signed in on the VPS' while accounts are actually signed in), the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, slots), rebuilds its account list, and reaps stale jobs/running counts with no live process. Log what it found and fixed; notify AmberX. Fold in pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper where they overlap.",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/orchestrator-self-check-when-stuck-verify-each-a",
+   "pr": "#407",
+   "priority": "P0",
+   "createdAt": "2026-11-09T16:25:52.442Z",
+   "updatedAt": "2026-11-15T00:41:27.044Z",
+   "builtAt": "2026-11-09T16:45:22.046Z",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T16:25:53.571Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T16:26:19.535Z"
+    },
+    {
+     "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-orchestrator-self-check-when-stuck-verify-each-a--joey, own login copy)",
+     "at": "2026-11-09T16:40:19.177Z"
+    },
+    {
+     "text": "Started run 1 on account-3 (Opus, Phase 1): axf-orchestrator-self-check-when-stuck-verify-each-a--joey.",
+     "at": "2026-11-09T16:40:15.588Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-self-check-when-stuck-verify-each-a--joey: brief only · start 10.9K tokens ($0.03) · cost $1.17 · 38 turns · 6 tools, MCP none",
+     "at": "2026-11-09T16:45:22.046Z"
+    },
+    {
+     "text": "PR #407 supersedes #406 (carries its commit). Added: self-check runs on every orchestrator load, the dispatcher's first tick after downtime, stuck ticks and a 30 min sweep. UI Review shots of the Self-check card still owed: no branch preview here.",
+     "at": "2026-11-09T16:45:06.486Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.",
+    "at": "2026-11-09T16:25:52.442Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "orchestrator-self-check-when-stuck-verify-each-a",
+    "brief": "# Build: orchestrator-self-check-when-stuck-verify-each-a\n\n## Brett said (verbatim)\nAt: 2026-11-09T16:25:52.442Z\n> The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.\n\n## What to build\nContinue build \"Orchestrator self-check when stuck: verify each account one by one, clear stale jobs\" (orchestrator-self-check-when-stuck-verify-each-a) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-09 16:25):\n\"The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) On every load and whenever the queue is stuck (e.g. 'no Claude account is signed in on the VPS' while accounts are actually signed in), the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, slots), rebuilds its account list, and reaps stale jobs/running counts with no live process. Log what it found and fixed; notify AmberX. Fold in pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper where they overlap.\n[ ] s2 (~30 min) The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-self-check-when-stuck-verify-each-a <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-self-check-when-stuck-verify-each-a --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step orchestrator-self-check-when-stuck-verify-each-a <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-self-check-when-stuck-verify-each-a \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "On every load and whenever the queue is stuck (e.g. 'no Claude account is signed in on the VPS' while accounts are actually signed in), the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, slots), rebuilds its account list, and reaps stale jobs/running counts with no live process. Log what it found and fixed; notify AmberX. Fold in pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper where they overlap.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-09T16:44:08.704Z",
+     "note": "",
+     "uid": "st-mw9h3z7z01y8m1",
+     "createdAt": "2026-11-09T16:26:19.535Z"
+    },
+    {
+     "id": "s2",
+     "text": "The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-09T16:44:09.880Z",
+     "note": "",
+     "uid": "st-mw9h3z7z02m9s8",
+     "createdAt": "2026-11-09T16:26:19.535Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-09T16:45:08.306Z",
+     "note": "",
+     "uid": "st-mw9h3z7z03iiym",
+     "createdAt": "2026-11-09T16:26:19.535Z"
     }
    ]
   },
@@ -106689,128 +106717,6 @@
    ]
   },
   {
-   "id": "console-speed-profile-and-cut-axf-console-cpu-pl",
-   "title": "Console speed: profile and cut axf-console CPU, plus plan a separate build VPS",
-   "category": "",
-   "detail": "Measured Nov 10 02:46: load average 30, swap 3.4/4 GB used, RAM 7.2/16 GB, axf-console container at 74% CPU and 800 MB, 5 headless builds running. 1) PROFILE axf-console: find what burns CPU (polling loops, file watchers on /root/axf-builds and _claude, builds-live sync, log tailing, git fetches, plugin server ticks, SSE fan-out). Fix the worst offenders: back off polling, debounce watchers, cache reads, kill duplicate timers. Before and after numbers in the report. 2) SWAP: keep builds from pushing the console into swap (memory caps per build session via systemd-run/cgroups or tmux wrapper, a lower Node heap for test runs, Playwright only one at a time). The console stays responsive under load (nice/ionice the builds). 3) PLAN, don't buy anything: a design note for moving headless builds to a second VPS (cost, size, how the orchestrator dispatches there, git/worktree sync, accounts), for Brett to decide. 4) Show console CPU/RAM in the new VPS plugin. Plain code. Tests, report, PR.",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/console-speed-profile-and-cut-axf-console-cpu-pl",
-   "pr": "#437",
-   "priority": "P0",
-   "createdAt": "2026-11-10T02:49:14.121Z",
-   "updatedAt": "2026-11-15T00:40:17.891Z",
-   "builtAt": "2026-11-10T03:53:49.891Z",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-10T02:49:23.901Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T02:52:12.001Z"
-    },
-    {
-     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina.",
-     "at": "2026-11-10T03:33:17.489Z"
-    },
-    {
-     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina, own login copy)",
-     "at": "2026-11-10T03:33:22.499Z"
-    },
-    {
-     "text": "PR #437. Cause: maintenance snapshot cron stacked 12 copies (84 min each, du over 96 GB of worktrees); stopped and locked on the VPS now. Builds now run in capped systemd scopes. Waiting: UI Review shots (Playwright not installed, disk 100% full so not installed); Brett to approve disk clean-up and pick a build-VPS option (_claude/plans/build-vps.md).",
-     "at": "2026-11-10T03:53:51.850Z"
-    },
-    {
-     "text": "Headless run axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina: brief only · start 11.3K tokens ($0.03) · cost $4.62 · 136 turns · 6 tools, MCP none",
-     "at": "2026-11-10T03:54:44.564Z"
-    },
-    {
-     "text": "Session axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina on mossesx-max- ended (exit 0); the build was already built.",
-     "at": "2026-11-10T03:55:08.921Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "The console is mad slow. Ridiculous slow. How do I make this faster? ... I guess.",
-    "at": "2026-11-10T02:49:14.121Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "console-speed-profile-and-cut-axf-console-cpu-pl",
-    "brief": "# Build: console-speed-profile-and-cut-axf-console-cpu-pl\n\n## Brett said (verbatim)\nAt: 2026-11-10T02:49:14.121Z\n> The console is mad slow. Ridiculous slow. How do I make this faster? ... I guess.\n\n## What to build\nContinue build \"Console speed: profile and cut axf-console CPU, plus plan a separate build VPS\" (console-speed-profile-and-cut-axf-console-cpu-pl) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 02:49):\n\"The console is mad slow. Ridiculous slow. How do I make this faster? ... I guess.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Measured Nov 10 02:46: load average 30, swap 3.4/4 GB used, RAM 7.2/16 GB, axf-console container at 74% CPU and 800 MB, 5 headless builds running. 1) PROFILE axf-console: find what burns CPU (polling loops, file watchers on /root/axf-builds and _claude, builds-live sync, log tailing, git fetches, plugin server ticks, SSE fan-out). Fix the worst offenders: back off polling, debounce watchers, cache reads, kill duplicate timers. Before and after numbers in the report. 2) SWAP: keep builds from pushing the console into swap (memory caps per build session via systemd-run/cgroups or tmux wrapper, a lower Node heap for test runs, Playwright only one at a time). The console stays responsive under load (nice/ionice the builds). 3) PLAN, don't buy anything: a design note for moving headless builds to a second VPS (cost, size, how the orchestrator dispatches there, git/worktree sync, accounts), for Brett to decide. 4) Show console CPU/RAM in the new VPS plugin. Plain code. Tests, report, PR.\n[ ] s2 (~30 min) The console is mad slow. Ridiculous slow. How do I make this faster? ... I guess.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/console-speed-profile-and-cut-axf-console-cpu-pl.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/console-speed-profile-and-cut-axf-console-cpu-pl.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step console-speed-profile-and-cut-axf-console-cpu-pl <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link console-speed-profile-and-cut-axf-console-cpu-pl --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step console-speed-profile-and-cut-axf-console-cpu-pl <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note console-speed-profile-and-cut-axf-console-cpu-pl \"…\"); the build goes back to Pending for Brett.\n",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Measured Nov 10 02:46: load average 30, swap 3.4/4 GB used, RAM 7.2/16 GB, axf-console container at 74% CPU and 800 MB, 5 headless builds running. 1) PROFILE axf-console: find what burns CPU (polling loops, file watchers on /root/axf-builds and _claude, builds-live sync, log tailing, git fetches, plugin server ticks, SSE fan-out). Fix the worst offenders: back off polling, debounce watchers, cache reads, kill duplicate timers. Before and after numbers in the report. 2) SWAP: keep builds from pushing the console into swap (memory caps per build session via systemd-run/cgroups or tmux wrapper, a lower Node heap for test runs, Playwright only one at a time). The console stays responsive under load (nice/ionice the builds). 3) PLAN, don't buy anything: a design note for moving headless builds to a second VPS (cost, size, how the orchestrator dispatches there, git/worktree sync, accounts), for Brett to decide. 4) Show console CPU/RAM in the new VPS plugin. Plain code. Tests, report, PR.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-10T03:49:32.308Z",
-     "note": "",
-     "uid": "st-mwa3guw1012cmy",
-     "createdAt": "2026-11-10T02:52:12.001Z"
-    },
-    {
-     "id": "s2",
-     "text": "The console is mad slow. Ridiculous slow. How do I make this faster? ... I guess.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-10T03:53:48.440Z",
-     "note": "",
-     "uid": "st-mwa3guw1027xm4",
-     "createdAt": "2026-11-10T02:52:12.001Z"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/console-speed-profile-and-cut-axf-console-cpu-pl.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/console-speed-profile-and-cut-axf-console-cpu-pl.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-10T03:53:49.891Z",
-     "note": "",
-     "uid": "st-mwa3guw103t99t",
-     "createdAt": "2026-11-10T02:52:12.001Z"
-    }
-   ]
-  },
-  {
    "id": "inline-edit-plugin-install-in-console-molly-and",
    "title": "Inline edit plugin: install in console, Molly and AmberX web (not Android); Molly never renders a plugin twice",
    "category": "",
@@ -107526,6 +107432,128 @@
      "note": "",
      "uid": "st-mwazz6tb68zjz9",
      "createdAt": "2026-11-10T18:02:14.975Z"
+    }
+   ]
+  },
+  {
+   "id": "console-speed-profile-and-cut-axf-console-cpu-pl",
+   "title": "Console speed: profile and cut axf-console CPU, plus plan a separate build VPS",
+   "category": "",
+   "detail": "Measured Nov 10 02:46: load average 30, swap 3.4/4 GB used, RAM 7.2/16 GB, axf-console container at 74% CPU and 800 MB, 5 headless builds running. 1) PROFILE axf-console: find what burns CPU (polling loops, file watchers on /root/axf-builds and _claude, builds-live sync, log tailing, git fetches, plugin server ticks, SSE fan-out). Fix the worst offenders: back off polling, debounce watchers, cache reads, kill duplicate timers. Before and after numbers in the report. 2) SWAP: keep builds from pushing the console into swap (memory caps per build session via systemd-run/cgroups or tmux wrapper, a lower Node heap for test runs, Playwright only one at a time). The console stays responsive under load (nice/ionice the builds). 3) PLAN, don't buy anything: a design note for moving headless builds to a second VPS (cost, size, how the orchestrator dispatches there, git/worktree sync, accounts), for Brett to decide. 4) Show console CPU/RAM in the new VPS plugin. Plain code. Tests, report, PR.",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/console-speed-profile-and-cut-axf-console-cpu-pl",
+   "pr": "#437",
+   "priority": "P0",
+   "createdAt": "2026-11-10T02:49:14.121Z",
+   "updatedAt": "2026-11-15T00:40:17.891Z",
+   "builtAt": "2026-11-10T03:53:49.891Z",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T02:49:23.901Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T02:52:12.001Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina.",
+     "at": "2026-11-10T03:33:17.489Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina, own login copy)",
+     "at": "2026-11-10T03:33:22.499Z"
+    },
+    {
+     "text": "PR #437. Cause: maintenance snapshot cron stacked 12 copies (84 min each, du over 96 GB of worktrees); stopped and locked on the VPS now. Builds now run in capped systemd scopes. Waiting: UI Review shots (Playwright not installed, disk 100% full so not installed); Brett to approve disk clean-up and pick a build-VPS option (_claude/plans/build-vps.md).",
+     "at": "2026-11-10T03:53:51.850Z"
+    },
+    {
+     "text": "Headless run axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina: brief only · start 11.3K tokens ($0.03) · cost $4.62 · 136 turns · 6 tools, MCP none",
+     "at": "2026-11-10T03:54:44.564Z"
+    },
+    {
+     "text": "Session axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-10T03:55:08.921Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The console is mad slow. Ridiculous slow. How do I make this faster? ... I guess.",
+    "at": "2026-11-10T02:49:14.121Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "console-speed-profile-and-cut-axf-console-cpu-pl",
+    "brief": "# Build: console-speed-profile-and-cut-axf-console-cpu-pl\n\n## Brett said (verbatim)\nAt: 2026-11-10T02:49:14.121Z\n> The console is mad slow. Ridiculous slow. How do I make this faster? ... I guess.\n\n## What to build\nContinue build \"Console speed: profile and cut axf-console CPU, plus plan a separate build VPS\" (console-speed-profile-and-cut-axf-console-cpu-pl) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 02:49):\n\"The console is mad slow. Ridiculous slow. How do I make this faster? ... I guess.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Measured Nov 10 02:46: load average 30, swap 3.4/4 GB used, RAM 7.2/16 GB, axf-console container at 74% CPU and 800 MB, 5 headless builds running. 1) PROFILE axf-console: find what burns CPU (polling loops, file watchers on /root/axf-builds and _claude, builds-live sync, log tailing, git fetches, plugin server ticks, SSE fan-out). Fix the worst offenders: back off polling, debounce watchers, cache reads, kill duplicate timers. Before and after numbers in the report. 2) SWAP: keep builds from pushing the console into swap (memory caps per build session via systemd-run/cgroups or tmux wrapper, a lower Node heap for test runs, Playwright only one at a time). The console stays responsive under load (nice/ionice the builds). 3) PLAN, don't buy anything: a design note for moving headless builds to a second VPS (cost, size, how the orchestrator dispatches there, git/worktree sync, accounts), for Brett to decide. 4) Show console CPU/RAM in the new VPS plugin. Plain code. Tests, report, PR.\n[ ] s2 (~30 min) The console is mad slow. Ridiculous slow. How do I make this faster? ... I guess.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/console-speed-profile-and-cut-axf-console-cpu-pl.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/console-speed-profile-and-cut-axf-console-cpu-pl.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step console-speed-profile-and-cut-axf-console-cpu-pl <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link console-speed-profile-and-cut-axf-console-cpu-pl --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step console-speed-profile-and-cut-axf-console-cpu-pl <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note console-speed-profile-and-cut-axf-console-cpu-pl \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Measured Nov 10 02:46: load average 30, swap 3.4/4 GB used, RAM 7.2/16 GB, axf-console container at 74% CPU and 800 MB, 5 headless builds running. 1) PROFILE axf-console: find what burns CPU (polling loops, file watchers on /root/axf-builds and _claude, builds-live sync, log tailing, git fetches, plugin server ticks, SSE fan-out). Fix the worst offenders: back off polling, debounce watchers, cache reads, kill duplicate timers. Before and after numbers in the report. 2) SWAP: keep builds from pushing the console into swap (memory caps per build session via systemd-run/cgroups or tmux wrapper, a lower Node heap for test runs, Playwright only one at a time). The console stays responsive under load (nice/ionice the builds). 3) PLAN, don't buy anything: a design note for moving headless builds to a second VPS (cost, size, how the orchestrator dispatches there, git/worktree sync, accounts), for Brett to decide. 4) Show console CPU/RAM in the new VPS plugin. Plain code. Tests, report, PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T03:49:32.308Z",
+     "note": "",
+     "uid": "st-mwa3guw1012cmy",
+     "createdAt": "2026-11-10T02:52:12.001Z"
+    },
+    {
+     "id": "s2",
+     "text": "The console is mad slow. Ridiculous slow. How do I make this faster? ... I guess.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T03:53:48.440Z",
+     "note": "",
+     "uid": "st-mwa3guw1027xm4",
+     "createdAt": "2026-11-10T02:52:12.001Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/console-speed-profile-and-cut-axf-console-cpu-pl.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/console-speed-profile-and-cut-axf-console-cpu-pl.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T03:53:49.891Z",
+     "note": "",
+     "uid": "st-mwa3guw103t99t",
+     "createdAt": "2026-11-10T02:52:12.001Z"
     }
    ]
   },
@@ -112270,124 +112298,6 @@
    ]
   },
   {
-   "id": "conversation-rag-index-every-voice-chat-session",
-   "title": "Conversation RAG: index every voice/chat session with Brett (decisions, rules, requests) into a searchable store every agent reads",
-   "category": "",
-   "detail": "Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/conversation-rag-index-every-voice-chat-session",
-   "pr": "#461",
-   "priority": "P0",
-   "createdAt": "2026-11-10T16:50:14.626Z",
-   "updatedAt": "2026-11-15T00:39:54.878Z",
-   "builtAt": "2026-11-10T17:46:32.477Z",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-10T16:50:16.796Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T16:51:21.057Z"
-    },
-    {
-     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-conversation-rag-index-every-voice-chat-session--joey.",
-     "at": "2026-11-10T17:33:01.120Z"
-    },
-    {
-     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-conversation-rag-index-every-voice-chat-session--joey, own login copy)",
-     "at": "2026-11-10T17:33:05.345Z"
-    },
-    {
-     "text": "Headless run axf-conversation-rag-index-every-voice-chat-session--joey: brief only · start 10.9K tokens ($0.03) · cost $3.53 · 78 turns · 6 tools, MCP none",
-     "at": "2026-11-10T17:46:32.476Z"
-    },
-    {
-     "text": "Built (PR #461). Still open: UI Review desktop/phone shots of the Conversations page; Playwright isn't installed in the build worktree, so none were taken.",
-     "at": "2026-11-10T17:46:05.057Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "You better make some type of RAG database for this conversation.",
-    "at": "2026-11-10T16:50:14.626Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "conversation-rag-index-every-voice-chat-session",
-    "brief": "# Build: conversation-rag-index-every-voice-chat-session\n\n## Brett said (verbatim)\nAt: 2026-11-10T16:50:14.626Z\n> You better make some type of RAG database for this conversation.\n\n## What to build\nContinue build \"Conversation RAG: index every voice/chat session with Brett (decisions, rules, requests) into a searchable store every agent reads\" (conversation-rag-index-every-voice-chat-session) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 16:50):\n\"You better make some type of RAG database for this conversation.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.\n[ ] s2 (~30 min) You better make some type of RAG database for this conversation.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/conversation-rag-index-every-voice-chat-session.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/conversation-rag-index-every-voice-chat-session.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step conversation-rag-index-every-voice-chat-session <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link conversation-rag-index-every-voice-chat-session --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step conversation-rag-index-every-voice-chat-session <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note conversation-rag-index-every-voice-chat-session \"…\"); the build goes back to Pending for Brett.\n",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-10T17:41:30.419Z",
-     "note": "",
-     "uid": "st-mwaxg0gx01vf4n",
-     "createdAt": "2026-11-10T16:51:21.057Z"
-    },
-    {
-     "id": "s2",
-     "text": "You better make some type of RAG database for this conversation.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-10T17:44:44.372Z",
-     "note": "",
-     "uid": "st-mwaxg0gx02wpg6",
-     "createdAt": "2026-11-10T16:51:21.057Z"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/conversation-rag-index-every-voice-chat-session.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/conversation-rag-index-every-voice-chat-session.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-10T17:46:09.305Z",
-     "note": "",
-     "uid": "st-mwaxg0gx03a4xl",
-     "createdAt": "2026-11-10T16:51:21.057Z"
-    }
-   ]
-  },
-  {
    "id": "queue-drag-and-drop-reorder-dispatcher-follows-t",
    "title": "Queue drag-and-drop reorder (dispatcher follows the order)",
    "category": "",
@@ -112530,6 +112440,124 @@
      "note": "",
      "uid": "st-mwb6cuv503e1k4",
      "createdAt": "2026-11-10T21:00:50.366Z"
+    }
+   ]
+  },
+  {
+   "id": "conversation-rag-index-every-voice-chat-session",
+   "title": "Conversation RAG: index every voice/chat session with Brett (decisions, rules, requests) into a searchable store every agent reads",
+   "category": "",
+   "detail": "Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/conversation-rag-index-every-voice-chat-session",
+   "pr": "#461",
+   "priority": "P0",
+   "createdAt": "2026-11-10T16:50:14.626Z",
+   "updatedAt": "2026-11-15T00:39:54.878Z",
+   "builtAt": "2026-11-10T17:46:32.477Z",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T16:50:16.796Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T16:51:21.057Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-conversation-rag-index-every-voice-chat-session--joey.",
+     "at": "2026-11-10T17:33:01.120Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-conversation-rag-index-every-voice-chat-session--joey, own login copy)",
+     "at": "2026-11-10T17:33:05.345Z"
+    },
+    {
+     "text": "Headless run axf-conversation-rag-index-every-voice-chat-session--joey: brief only · start 10.9K tokens ($0.03) · cost $3.53 · 78 turns · 6 tools, MCP none",
+     "at": "2026-11-10T17:46:32.476Z"
+    },
+    {
+     "text": "Built (PR #461). Still open: UI Review desktop/phone shots of the Conversations page; Playwright isn't installed in the build worktree, so none were taken.",
+     "at": "2026-11-10T17:46:05.057Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "You better make some type of RAG database for this conversation.",
+    "at": "2026-11-10T16:50:14.626Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "conversation-rag-index-every-voice-chat-session",
+    "brief": "# Build: conversation-rag-index-every-voice-chat-session\n\n## Brett said (verbatim)\nAt: 2026-11-10T16:50:14.626Z\n> You better make some type of RAG database for this conversation.\n\n## What to build\nContinue build \"Conversation RAG: index every voice/chat session with Brett (decisions, rules, requests) into a searchable store every agent reads\" (conversation-rag-index-every-voice-chat-session) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 16:50):\n\"You better make some type of RAG database for this conversation.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.\n[ ] s2 (~30 min) You better make some type of RAG database for this conversation.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/conversation-rag-index-every-voice-chat-session.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/conversation-rag-index-every-voice-chat-session.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step conversation-rag-index-every-voice-chat-session <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link conversation-rag-index-every-voice-chat-session --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step conversation-rag-index-every-voice-chat-session <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note conversation-rag-index-every-voice-chat-session \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T17:41:30.419Z",
+     "note": "",
+     "uid": "st-mwaxg0gx01vf4n",
+     "createdAt": "2026-11-10T16:51:21.057Z"
+    },
+    {
+     "id": "s2",
+     "text": "You better make some type of RAG database for this conversation.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T17:44:44.372Z",
+     "note": "",
+     "uid": "st-mwaxg0gx02wpg6",
+     "createdAt": "2026-11-10T16:51:21.057Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/conversation-rag-index-every-voice-chat-session.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/conversation-rag-index-every-voice-chat-session.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T17:46:09.305Z",
+     "note": "",
+     "uid": "st-mwaxg0gx03a4xl",
+     "createdAt": "2026-11-10T16:51:21.057Z"
     }
    ]
   },
@@ -115414,6 +115442,108 @@
    ]
   },
   {
+   "id": "background-token-for-every-ui-background-designe",
+   "title": "Background token for every UI + Background Designer (animated, logos, brand library, design import, semi-transparent foreground)",
+   "category": "",
+   "detail": "1) New token 'background' in the token sets (tokens.look/style) for every app, screen and asset, exposed in axHub style settings and Appearance, inheriting/overridable like other tokens. Values: colour, gradient, image, video/animation (Lottie, CSS/WebGL, GIF/MP4), logo/brand marks from Brand library, pattern. 2) Background Designer plugin: layers, animated backgrounds, generators, brand integration, design import (Figma/SVG/image/Lottie), presets saved as assets and usable in skins. 3) Foreground transparency control: make panels/cards/banners in front semi-transparent (opacity + blur) per app or skin. Respects reduced-motion and phone battery.",
+   "status": "archived",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T21:56:52.404Z",
+   "updatedAt": "2026-11-11T23:27:37.666Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T21:56:54.037Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T21:58:09.525Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a background token for every UI, included in axHub's style settings. It accepts animations and logos, integrated with the enterprise branding and all kinds of tools to build backgrounds, animated backgrounds and design import. A powerful background designer. You can make everything in front of it semi-transparent.",
+    "at": "2026-11-10T21:56:52.404Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "New token 'background' in the token sets (tokens.look/style) for every app, screen and asset, exposed in axHub style settings and Appearance, inheriting/overridable like other tokens. Values: colour, gradient, image, video/animation (Lottie, CSS/WebGL, GIF/MP4), logo/brand marks from Brand library, pattern. 2) Background Designer plugin: layers, animated backgrounds, generators, brand integration, design import (Figma/SVG/image/Lottie), presets saved as assets and usable in skins. 3) Foreground transparency control: make panels/cards/banners in front semi-transparent (opacity + blur) per app or skin. Respects reduced-motion and phone battery.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb8ekja018tom",
+     "createdAt": "2026-11-10T21:58:09.525Z"
+    },
+    {
+     "id": "s2",
+     "text": "I need a background token for every UI, included in axHub's style settings. It accepts animations and logos, integrated with the enterprise branding and all kinds of tools to build backgrounds, animated backgrounds and design import. A powerful background designer. You can make everything in front of it semi-transparent.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb8ekja02qcrh",
+     "createdAt": "2026-11-10T21:58:09.525Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/background-token-for-every-ui-background-designe.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/background-token-for-every-ui-background-designe.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb8ekja03td73",
+     "createdAt": "2026-11-10T21:58:09.525Z"
+    }
+   ]
+  },
+  {
    "id": "resolve-conflicts-and-land-460-456-457-459-342",
    "title": "Resolve conflicts and land #460, #456, #457, #459, #342",
    "category": "",
@@ -115532,108 +115662,6 @@
      "note": "",
      "uid": "st-mwb5o0et03hacq",
      "createdAt": "2026-11-10T20:41:31.157Z"
-    }
-   ]
-  },
-  {
-   "id": "background-token-for-every-ui-background-designe",
-   "title": "Background token for every UI + Background Designer (animated, logos, brand library, design import, semi-transparent foreground)",
-   "category": "",
-   "detail": "1) New token 'background' in the token sets (tokens.look/style) for every app, screen and asset, exposed in axHub style settings and Appearance, inheriting/overridable like other tokens. Values: colour, gradient, image, video/animation (Lottie, CSS/WebGL, GIF/MP4), logo/brand marks from Brand library, pattern. 2) Background Designer plugin: layers, animated backgrounds, generators, brand integration, design import (Figma/SVG/image/Lottie), presets saved as assets and usable in skins. 3) Foreground transparency control: make panels/cards/banners in front semi-transparent (opacity + blur) per app or skin. Respects reduced-motion and phone battery.",
-   "status": "archived",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "",
-   "pr": "",
-   "priority": "P0",
-   "createdAt": "2026-11-10T21:56:52.404Z",
-   "updatedAt": "2026-11-11T23:27:37.666Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-10T21:56:54.037Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T21:58:09.525Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "I need a background token for every UI, included in axHub's style settings. It accepts animations and logos, integrated with the enterprise branding and all kinds of tools to build backgrounds, animated backgrounds and design import. A powerful background designer. You can make everything in front of it semi-transparent.",
-    "at": "2026-11-10T21:56:52.404Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "New token 'background' in the token sets (tokens.look/style) for every app, screen and asset, exposed in axHub style settings and Appearance, inheriting/overridable like other tokens. Values: colour, gradient, image, video/animation (Lottie, CSS/WebGL, GIF/MP4), logo/brand marks from Brand library, pattern. 2) Background Designer plugin: layers, animated backgrounds, generators, brand integration, design import (Figma/SVG/image/Lottie), presets saved as assets and usable in skins. 3) Foreground transparency control: make panels/cards/banners in front semi-transparent (opacity + blur) per app or skin. Respects reduced-motion and phone battery.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwb8ekja018tom",
-     "createdAt": "2026-11-10T21:58:09.525Z"
-    },
-    {
-     "id": "s2",
-     "text": "I need a background token for every UI, included in axHub's style settings. It accepts animations and logos, integrated with the enterprise branding and all kinds of tools to build backgrounds, animated backgrounds and design import. A powerful background designer. You can make everything in front of it semi-transparent.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwb8ekja02qcrh",
-     "createdAt": "2026-11-10T21:58:09.525Z"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/background-token-for-every-ui-background-designe.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/background-token-for-every-ui-background-designe.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwb8ekja03td73",
-     "createdAt": "2026-11-10T21:58:09.525Z"
     }
    ]
   },
