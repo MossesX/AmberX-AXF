@@ -845,9 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-26 22:41 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` added (6 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `appearance-skins-colour-themes-only-remove-design-packs` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `prompt-caching-and-batch-api-support-in-the-buil` added (3 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `right-click-a-queued-build-to-assign-it-to-a-spe` added (3 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `orchestrator-self-check-when-stuck-verify-each-a` added (3 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `orchestrator-settings-api-account-limits-and-rou` added (3 steps) (all) · foreign-write
@@ -1245,6 +1242,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 05:48 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 - 2026-11-27 05:48 UTC · `claude-emergency-access` note (all) · orchestrator
 - 2026-11-27 05:48 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-27 05:49 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-27 05:49 UTC · `emergency-remove-every-leftover-js` s5 undone, note (all) · watchdog
+- 2026-11-27 05:49 UTC · `claude-emergency-access` note (all) · watchdog
 
 ## Token passes (log)
 

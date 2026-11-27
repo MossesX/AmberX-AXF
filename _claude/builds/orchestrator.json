@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T05:49:24.329Z",
+ "updatedAt": "2026-11-27T05:49:58.748Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14263,7 +14263,7 @@
    "branch": "claude/emergency-remove-every-leftover-js--s2",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-27T05:49:09.573Z",
+   "updatedAt": "2026-11-27T05:49:31.827Z",
    "builtAt": "",
    "notes": [
     {
@@ -14637,6 +14637,16 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $0.48",
      "at": "2026-11-27T05:47:23.360Z"
+    },
+    {
+     "text": "Watchdog: step s4 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:49:31.827Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 failed at building, attempt 5: tmux session axf-emergency-remove-every-leftover-js--s5--lenny is gone while the step was building.",
+     "at": "2026-11-27T05:49:31.827Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -14666,8 +14676,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "emergency-remove-every-leftover-js--s5",
-    "brief": "# EMERGENCY: Remove every leftover JSON data file and everything that uses it: step s5\n\nBuild emergency-remove-every-leftover-js (Pipeline 2.0), step s5 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-remove-every-leftover-js--s5 (already cut from main) · branch claude/emergency-remove-every-leftover-js--s5.\n\n## Your step\nframework/core and framework/libs writers: replace every runtime JSON data write and whole-document read in framework/core and framework/libs (.mjs/.ts runtime code, excluding data-files.mjs itself) with data-store@1 per-row calls; remove the local-file and shadow branches that keep a JSON copy next to Postgres; delete the data files. Assets, schemas, fixtures and manifests stay. Do not edit framework/cli or framework/schemas. Run the matching framework/spec checks. Commit.\n\nFiles: framework/core/, framework/libs/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nPostgres is the one store. Delete every JSON data file the database already covers, plus every reader and writer of it. No dual writes, no JSON backups.\n\nWhy: the move to Postgres left the old JSON files running alongside the database. The 7 MB pipeline status file alone pushed terabytes through axf-data and loaded the server. Switch everything over; never run both.\n\nScope: about 133 files under apps/console-web/plugins still json.dump data files. Plugins include claude-handoff, plugin-manager, builds-page, agent-manager (gittools, hubtools, toolkit, llm), feature-matrix, output-recorder (whisper_job, transcripts), claude-badge (usage_host), chat-viewer (store, tts_worker, audio), crew-live, console-terminal, maintenance (hub, maint engine, profiles), agent-swarm, agent-voice, session-checkin, theme-editor, gate (routes), claude-session (hub), molly-guide, agent-slots, plugin-commands, amberx-listeners, plus framework/ and deploy/ writers.\n\nSteps:\n1. Inventory every JSON data file and each reader and writer (framework/, apps/console-web/, deploy/, services/axf-data/). Mark each one: already in Postgres, not yet in Postgres, or true config.\n2. Already in Postgres: switch reads and writes to data-store@1 per-row calls, then delete the file and its writer.\n3. Not in Postgres yet: add the table in services/axf-data, migrate the data once, switch the code over, then delete the file.\n4. True config or export files stay only if listed in framework/spec/DATA-INVENTORY.md with a reason.\n5. Remove the entries from framework/schemas/data-store-paths.json and the manifest data list. Lower the check-json-data-writes baseline to the kept config only, and make CI fail on any new JSON data write.\n6. Never read or write a whole document for one change. Every update touches one row.\n7. Run the tests, write the report, open the PR.\n\nLeave alone: the pipeline status file. The running build pipeline-fixes-drop-7-mb-status-file already removes it.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "Ping Paulie",
+    "brief": "# EMERGENCY: Remove every leftover JSON data file and everything that uses it: step s6\n\nBuild emergency-remove-every-leftover-js (Pipeline 2.0), step s6 of 7. Model Opus. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-remove-every-leftover-js--s6 (already cut from main) · branch claude/emergency-remove-every-leftover-js--s6.\n\n## Your step\ndeploy/ writers: replace every runtime JSON data write and read in deploy/ (lander state, claude-headless and claude-workers records, console-nightly state, dryrun leftovers) with data-store@1 per-row calls through framework/core/data-files.mjs; delete the JSON data files and their writers, no dual write. Touch only deploy/. Run deploy's own tests (framework/deploy/test.sh where relevant, read-only). Commit.\n\nFiles: deploy/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nPostgres is the one store. Delete every JSON data file the database already covers, plus every reader and writer of it. No dual writes, no JSON backups.\n\nWhy: the move to Postgres left the old JSON files running alongside the database. The 7 MB pipeline status file alone pushed terabytes through axf-data and loaded the server. Switch everything over; never run both.\n\nScope: about 133 files under apps/console-web/plugins still json.dump data files. Plugins include claude-handoff, plugin-manager, builds-page, agent-manager (gittools, hubtools, toolkit, llm), feature-matrix, output-recorder (whisper_job, transcripts), claude-badge (usage_host), chat-viewer (store, tts_worker, audio), crew-live, console-terminal, maintenance (hub, maint engine, profiles), agent-swarm, agent-voice, session-checkin, theme-editor, gate (routes), claude-session (hub), molly-guide, agent-slots, plugin-commands, amberx-listeners, plus framework/ and deploy/ writers.\n\nSteps:\n1. Inventory every JSON data file and each reader and writer (framework/, apps/console-web/, deploy/, services/axf-data/). Mark each one: already in Postgres, not yet in Postgres, or true config.\n2. Already in Postgres: switch reads and writes to data-store@1 per-row calls, then delete the file and its writer.\n3. Not in Postgres yet: add the table in services/axf-data, migrate the data once, switch the code over, then delete the file.\n4. True config or export files stay only if listed in framework/spec/DATA-INVENTORY.md with a reason.\n5. Remove the entries from framework/schemas/data-store-paths.json and the manifest data list. Lower the check-json-data-writes baseline to the kept config only, and make CI fail on any new JSON data write.\n6. Never read or write a whole document for one change. Every update touches one row.\n7. Run the tests, write the report, open the PR.\n\nLeave alone: the pipeline status file. The running build pipeline-fixes-drop-7-mb-status-file already removes it.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -14802,8 +14812,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-27T05:46:00.367Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
      "uid": "st-mww2s3a81pfhzc",
      "createdAt": "2026-11-25T12:03:52.352Z"
@@ -15754,7 +15764,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s6",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T05:48:44.213Z",
+   "updatedAt": "2026-11-27T05:49:31.827Z",
    "builtAt": "",
    "notes": [
     {
@@ -16232,6 +16242,30 @@
     {
      "text": "Headless run axf-emergency-check-can-these-plugins---s1--paulie: brief only · start 12.7K tokens ($0.00) · cost $0.29 · 5 turns · 6 tools, MCP none",
      "at": "2026-11-27T05:48:44.213Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.29",
+     "at": "2026-11-27T05:48:55.835Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:49:31.827Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:49:31.827Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:49:31.827Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:49:31.827Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -20628,7 +20662,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T05:49:12.431Z",
+   "updatedAt": "2026-11-27T05:49:35.302Z",
    "builtAt": "",
    "notes": [
     {
@@ -23927,7 +23961,7 @@
    "branch": "lander/claude-emergency-access",
    "pr": "933",
    "createdAt": "2026-11-24T21:08:59.649Z",
-   "updatedAt": "2026-11-27T05:48:55.858Z",
+   "updatedAt": "2026-11-27T05:49:31.827Z",
    "builtAt": "",
    "notes": [
     {
@@ -24021,6 +24055,11 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $0.32",
      "at": "2026-11-27T05:48:55.858Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-27T05:49:31.827Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
