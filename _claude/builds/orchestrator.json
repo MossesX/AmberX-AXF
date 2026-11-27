@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T19:10:45.328Z",
+ "updatedAt": "2026-11-27T19:20:55.099Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -60570,7 +60570,7 @@
    "title": "AmberX voice command center + Molly (notes, tasks, developer, AI snippets; chains, wizards, walkthroughs)",
    "category": "AmberX app",
    "detail": "Brett Oct 28 2026 09:53: lots of voice commands for notes and todo, categories in a tab group dialog (Notes, Tasks, Developer, AI snippets), each with tab + trigger; sortable filterable searchable grid in a scrolling pane, rows expand to details + per-command settings, record button (two matching recordings or pick predefined); inner tab group Commands / Chains & wizards; voice wizard for recording/editing chains; AI-unavailable page with fix hooks; new agent Molly on axHub (like Mosses/Vinny): root VPS through approvals, knows the codebase, answers questions, narrated console walkthroughs in a floating window with next/previous. One agent, here (Brett).",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
@@ -60578,7 +60578,7 @@
    "pr": "#153",
    "mergedAt": "2026-10-28T15:21:29Z",
    "createdAt": "2026-10-28T13:59:55.535Z",
-   "updatedAt": "2026-11-27T18:39:15.413Z",
+   "updatedAt": "2026-11-27T19:20:49.644Z",
    "builtAt": "2026-10-28T15:29:37.365Z",
    "notes": [
     {
@@ -60600,6 +60600,10 @@
     {
      "text": "Watchdog: PR #153 merged 2026-10-28 15:21 and the build never heard: the merge is recorded, CI on 8296f64ec7 is next.",
      "at": "2026-11-27T18:39:15.413Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 8296f64ec7: landed.",
+     "at": "2026-11-27T19:20:49.644Z"
     }
    ],
    "approvals": [],
