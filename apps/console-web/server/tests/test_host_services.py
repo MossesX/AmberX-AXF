@@ -60,7 +60,7 @@ class Host:
         (r / "framework/core").mkdir(parents=True)
         shutil.copy(ROOT / "framework/core/host-services.mjs", r / "framework/core/")
         # the runner keeps its state through the data layer (data-files.mjs) and that reads the path map
-        for f in ("data-files.mjs", "data-store.mjs", "clip.mjs"):
+        for f in ("data-files.mjs", "data-store.mjs", "clip.mjs", "tracking-paths.mjs"):
             shutil.copy(ROOT / "framework/core" / f, r / "framework/core/")
         (r / "framework/schemas").mkdir(parents=True, exist_ok=True)
         shutil.copy(ROOT / "framework/schemas/data-store-paths.json", r / "framework/schemas/")
