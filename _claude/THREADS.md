@@ -845,57 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 23:09 UTC · `flagship-professional-skin-covering` s5 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s26 done, note (all) · foreign-write
-- 2026-11-25 23:09 UTC · `claude-emergency-access` note (all) · foreign-write
-- 2026-11-25 23:09 UTC · `pipeline-fixes-drop-7-mb-status-file` s15 done, s16 done, s17 done, note (all) · foreign-write
-- 2026-11-25 23:09 UTC · `emergency-remove-every-leftover-js` note (all) · foreign-write
-- 2026-11-25 23:09 UTC · `emergency-check-can-these-plugins-` note (all) · foreign-write
-- 2026-11-25 23:09 UTC · `emergency-rip-out-the-7-mb-status-` added (7 steps) (all) · foreign-write
-- 2026-11-25 23:09 UTC · `fast-stale-check-page-load-build-store` added (7 steps) (all) · foreign-write
-- 2026-11-25 23:09 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-25 23:10 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
-- 2026-11-25 23:10 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-25 23:10 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-25 23:10 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-25 23:10 UTC · `claude-emergency-access` → pulling-main (all) · orchestrator
-- 2026-11-25 23:11 UTC · `claude-emergency-access` branch lander/claude-emergency-access, PR 933, note (all) · orchestrator
-- 2026-11-25 23:12 UTC · `emergency-check-can-these-plugins-` → sending (all) · orchestrator
-- 2026-11-25 23:13 UTC · `emergency-remove-every-leftover-js` → sending (all) · orchestrator
-- 2026-11-25 23:14 UTC · `claude-emergency-access` → assigning-models (all) · orchestrator
-- 2026-11-25 23:14 UTC · `claude-emergency-access` → ready, note (all) · orchestrator
-- 2026-11-25 23:14 UTC · `claude-emergency-access` note (all) · orchestrator
-- 2026-11-25 23:15 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-25 23:15 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-25 23:17 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
-- 2026-11-25 23:17 UTC · `emergency-remove-every-leftover-js` → building (all) · orchestrator
-- 2026-11-25 23:19 UTC · `emergency-check-can-these-plugins-` → building (all) · orchestrator
-- 2026-11-25 23:20 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
-- 2026-11-25 23:21 UTC · `pipeline-fixes-drop-7-mb-status-file` → queued, note (all) · watchdog
-- 2026-11-25 23:23 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-25 23:28 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-25 23:29 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-25 23:29 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-25 23:30 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-25 23:30 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-25 23:31 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-25 23:31 UTC · `clash-fix-console-app-tabs-2` → landed, note (all) · watchdog
-- 2026-11-25 23:32 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-25 23:32 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-25 23:33 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-26 22:41 UTC · `emergency-rip-out-the-7-mb-status-` added (7 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `emergency-check-can-these-plugins-` added (11 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `emergency-remove-every-leftover-js` added (7 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `claude-emergency-access` added (6 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `profile-manager` added (6 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `plugin-settings-placement` added (6 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `requests-ledger` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `bugs-board` added (7 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `follow-amber-switch` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `crew-profiles` added (6 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `console-wake-finish` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `profile-lists-home-card` added (4 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `app-voice-commands` added (6 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `apps-control-surface` added (5 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `jump-menu-asset` added (5 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `settings-placement-everywhere` added (6 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `live-sessions-plugin` added (6 steps) (all) · foreign-write
@@ -1245,6 +1194,57 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 04:44 UTC · `emergency-remove-every-leftover-js` s5 undone, note (all) · watchdog
 - 2026-11-27 04:46 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
 - 2026-11-27 04:48 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 04:49 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 04:49 UTC · `emergency-remove-every-leftover-js` s4 undone (all) · orchestrator
+- 2026-11-27 04:49 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 04:49 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-27 04:49 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-27 04:49 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-27 04:49 UTC · `claude-emergency-access` note (all) · watchdog
+- 2026-11-27 04:50 UTC · `toolbar-widgets-in-any-banner-style` → fixing, note (all) · watchdog
+- 2026-11-27 04:50 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 04:51 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 04:51 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 04:53 UTC · `emergency-check-can-these-plugins-` s3 undone (all) · orchestrator
+- 2026-11-27 04:53 UTC · `emergency-rip-out-the-7-mb-status-` s5 undone (all) · orchestrator
+- 2026-11-27 04:54 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-27 04:54 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-27 04:54 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-27 04:55 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 04:55 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 04:56 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 04:57 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 04:57 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 04:58 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 04:59 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 04:59 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-27 04:59 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-27 04:59 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-27 05:00 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:01 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:01 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:01 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:02 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:02 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:02 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:03 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:03 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:04 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-27 05:05 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:05 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:06 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:06 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:07 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:07 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:07 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:08 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:08 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:08 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:09 UTC · `emergency-check-can-these-plugins-` s5 undone, note (all) · watchdog
+- 2026-11-27 05:09 UTC · `emergency-remove-every-leftover-js` s3 undone, note (all) · watchdog
+- 2026-11-27 05:10 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:10 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:10 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 
 ## Token passes (log)
 
