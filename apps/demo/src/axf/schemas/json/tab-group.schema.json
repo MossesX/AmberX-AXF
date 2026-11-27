@@ -45,7 +45,8 @@
             "pills",
             "boxed",
             "segmented",
-            "plain"
+            "plain",
+            "chips"
           ]
         },
         "align": {

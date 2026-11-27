@@ -1,0 +1,415 @@
+{
+  "$id": "axf/swarm",
+  "tags": {
+    "agent": "agent@1",
+    "skill": "agent-skill@1",
+    "roster": "swarm-roster@1",
+    "state": "swarm-state@1",
+    "job": "swarm-job@1",
+    "run": "swarm-run@1",
+    "report": "swarm-report@1",
+    "runs": "swarm-runs@1"
+  },
+  "idPattern": "^[a-z][a-z0-9-]{0,39}$",
+  "cardIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
+  "jobIdPattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$",
+  "models": {
+    "tiers": [
+      "haiku",
+      "sonnet",
+      "opus",
+      "fable"
+    ],
+    "allowed": [
+      "opus",
+      "fable"
+    ],
+    "default": "opus"
+  },
+  "agent": {
+    "required": [
+      "id",
+      "skill"
+    ],
+    "limits": {
+      "id": 40,
+      "name": 60,
+      "role": 80,
+      "skill": 40,
+      "skills": 60,
+      "home": 40,
+      "specialty": 200,
+      "keywords": 40,
+      "keyword": 40,
+      "paths": 40,
+      "path": 200,
+      "models": 4,
+      "tools": 30,
+      "tool": 120,
+      "catchphrase": 160,
+      "bio": 600,
+      "hiredAt": 40
+    },
+    "ranges": {
+      "maxTurns": [
+        1,
+        200
+      ],
+      "tokenBudget": [
+        1000,
+        10000000
+      ],
+      "salary": [
+        0,
+        10000
+      ]
+    },
+    "defaults": {
+      "maxTurns": 20,
+      "tokenBudget": 300000,
+      "salary": 10
+    },
+    "avatar": {
+      "faces": [
+        "round",
+        "square",
+        "tall"
+      ],
+      "gear": [
+        "none",
+        "glasses",
+        "shades",
+        "cap",
+        "beanie",
+        "headphones"
+      ],
+      "hair": [
+        0,
+        5
+      ],
+      "hue": [
+        0,
+        359
+      ],
+      "tokens": [
+        "--fx-brand-1",
+        "--fx-brand-2",
+        "--fx-brand-3",
+        "--fx-accent",
+        "--fx-info",
+        "--fx-success",
+        "--fx-warning",
+        "--fx-danger"
+      ]
+    }
+  },
+  "skill": {
+    "required": [
+      "id",
+      "title"
+    ],
+    "maxLines": 50,
+    "maxChars": 3000,
+    "maxFile": 20000
+  },
+  "roster": {
+    "tune": {
+      "scale": [
+        0.25,
+        2
+      ],
+      "defaultScale": 1,
+      "basis": 300
+    },
+    "fallback": ""
+  },
+  "state": {
+    "statuses": {
+      "on-duty": {
+        "label": "On duty",
+        "works": true,
+        "tone": "success",
+        "about": "Gets work."
+      },
+      "off-duty": {
+        "label": "Off duty",
+        "works": false,
+        "tone": "",
+        "about": "Skipped; keeps everything."
+      },
+      "injured": {
+        "label": "Injured",
+        "works": false,
+        "tone": "danger",
+        "about": "Keeps failing: no new jobs, flagged for a fix."
+      },
+      "medical-leave": {
+        "label": "Medical leave",
+        "works": false,
+        "tone": "warning",
+        "about": "Benched until a date, then back on duty by itself."
+      },
+      "probation": {
+        "label": "Probation",
+        "works": "small",
+        "tone": "warning",
+        "about": "Small jobs only; Brett is notified every run."
+      },
+      "fired": {
+        "label": "Fired",
+        "works": false,
+        "tone": "danger",
+        "about": "Never assigned again; kept greyed in history."
+      },
+      "custom": {
+        "label": "Custom",
+        "works": false,
+        "tone": "accent",
+        "about": "Brett names it and picks whether it gets work."
+      },
+      "suspended": {
+        "label": "Suspended",
+        "works": false,
+        "tone": "danger",
+        "about": "No jobs until the suspension ends, then back on duty by itself."
+      },
+      "quit": {
+        "label": "Quit",
+        "works": false,
+        "tone": "danger",
+        "about": "Rage-quit after too many failed jobs in a row; Rehire puts it back."
+      }
+    },
+    "pickable": [
+      "on-duty",
+      "off-duty",
+      "injured",
+      "medical-leave",
+      "probation",
+      "fired",
+      "custom"
+    ],
+    "defaultRules": {
+      "rageQuitAfter": 3
+    },
+    "rageQuitRange": [
+      1,
+      50
+    ],
+    "smallJobMinutes": 15,
+    "identityFields": [
+      "name",
+      "role",
+      "specialty",
+      "photo",
+      "employeeId",
+      "email",
+      "hiredAt",
+      "catchphrase",
+      "signature"
+    ],
+    "cardKeys": [
+      "design",
+      "orientation",
+      "logo",
+      "surface",
+      "accent",
+      "finish",
+      "photo",
+      "code",
+      "front",
+      "back",
+      "labels"
+    ],
+    "limits": {
+      "note": 300,
+      "until": 40,
+      "customName": 40,
+      "salary": 100000,
+      "topups": 100,
+      "pay": 100,
+      "bonuses": 200,
+      "history": 200,
+      "notices": 200,
+      "banterSpend": 500,
+      "hired": 50,
+      "hiredSkills": 50,
+      "designs": 50,
+      "identity": 200,
+      "photo": 600
+    }
+  },
+  "chat": {
+    "kinds": [
+      "assign",
+      "lease",
+      "report",
+      "handoff",
+      "merge",
+      "status",
+      "discipline",
+      "pay",
+      "banter",
+      "brett"
+    ],
+    "workKinds": [
+      "assign",
+      "lease",
+      "report",
+      "handoff",
+      "merge",
+      "status",
+      "discipline",
+      "pay",
+      "brett"
+    ],
+    "boss": {
+      "id": "boss",
+      "name": "Boss"
+    },
+    "brett": "brett",
+    "max": 2000,
+    "textMax": 1000,
+    "sliders": [
+      "vibe",
+      "chattiness",
+      "cussing",
+      "drama"
+    ],
+    "vibe": {
+      "min": 1,
+      "max": 500,
+      "chill": 100,
+      "amber": 250
+    },
+    "presets": {
+      "business": {
+        "label": "All business",
+        "vibe": 1,
+        "chattiness": 0,
+        "cussing": 0,
+        "drama": 0
+      },
+      "crew": {
+        "label": "Work crew",
+        "vibe": 100,
+        "chattiness": 35,
+        "cussing": 30,
+        "drama": 20
+      },
+      "breakroom": {
+        "label": "Break room",
+        "vibe": 250,
+        "chattiness": 65,
+        "cussing": 70,
+        "drama": 60
+      },
+      "rails": {
+        "label": "Off the rails",
+        "vibe": 500,
+        "chattiness": 100,
+        "cussing": 100,
+        "drama": 100
+      }
+    },
+    "defaultPreset": "crew",
+    "vibeColors": [
+      "accent",
+      "info",
+      "success",
+      "warning",
+      "danger",
+      "brand-1",
+      "brand-2",
+      "brand-3"
+    ],
+    "banterBudget": {
+      "default": 0.5,
+      "max": 1000
+    },
+    "savedPresets": 30
+  },
+  "job": {
+    "required": [
+      "id",
+      "buildId",
+      "stepId",
+      "agent",
+      "skill",
+      "model",
+      "leases",
+      "leaseKind",
+      "budget"
+    ],
+    "leaseKinds": [
+      "files",
+      "area",
+      "all"
+    ],
+    "sharedFiles": [
+      "_claude/THREADS.md",
+      "_claude/memory/STATUS.md",
+      "_claude/memory/decisions.md",
+      "_claude/builds/",
+      "tracker.json",
+      "framework/catalog/",
+      "framework/plan/",
+      "framework/catalog/plugins.json",
+      "CLAUDE.md",
+      "_claude/rules/",
+      "_claude/shared/"
+    ],
+    "limits": {
+      "text": 2000,
+      "estimate": 20,
+      "leases": 200,
+      "lease": 400,
+      "checks": 20,
+      "check": 300,
+      "after": 200
+    }
+  },
+  "run": {
+    "required": [
+      "jobId",
+      "agent",
+      "model",
+      "startedAt",
+      "status"
+    ],
+    "kinds": [
+      "build",
+      "job"
+    ],
+    "statuses": [
+      "running",
+      "done",
+      "failed",
+      "blocked",
+      "killed",
+      "error"
+    ],
+    "cacheReadWeight": 0.1,
+    "keep": 5000
+  },
+  "report": {
+    "required": [
+      "status"
+    ],
+    "statuses": [
+      "done",
+      "failed",
+      "blocked"
+    ],
+    "limits": {
+      "summary": 600,
+      "files": 200,
+      "file": 300,
+      "checks": 30,
+      "checkName": 200,
+      "notes": 2000,
+      "handoff": 1000,
+      "question": 600
+    }
+  }
+}

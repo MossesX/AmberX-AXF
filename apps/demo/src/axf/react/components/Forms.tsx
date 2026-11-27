@@ -10,6 +10,7 @@
  * and keyboard focus shows through `:focus-visible` on the visible part.
  */
 import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { SwatchFan } from './Swatches';
 import { Icon } from './Icon';
 import { paramBool, paramDefaultText, paramError, type LibraryParam } from '../../core';
 
@@ -168,14 +169,14 @@ export interface ColorFieldProps {
 
 const HEX6 = /^#[0-9a-f]{6}$/i;
 
-/** A colour: the browser's colour picker next to a text field (hex, rgb() or a theme reference like var(--fx-accent)). (theme-ok: text) */
+/** A colour: the colour swatch (SwatchFan: a pick pops it and fans out its shades) next to a text field (hex, rgb() or a theme reference like var(--fx-accent)). (theme-ok: text) */
 export function ColorField({ label, value, onChange, swatch, hint, error, disabled, className }: ColorFieldProps) {
   const pick = HEX6.test(value) ? value : swatch && HEX6.test(swatch) ? swatch : undefined;
   return (
     <Field label={label} hint={hint} error={error} className={`fx-colorfield ${className ?? ''}`}>
       {(id, describedBy) => (
         <span className="fx-row fx-colorfield__row">
-          <input type="color" className="fx-input fx-colorfield__pick" aria-label="Pick a colour" value={pick ?? '#808080'} disabled={disabled} onChange={(e) => onChange(e.target.value)} /> {/* theme-ok: the picker needs a start value */}
+          <SwatchFan className="fx-colorfield__pick" label="Pick a colour" value={pick ?? '#808080'} disabled={disabled} onChange={onChange} /> {/* theme-ok: the picker needs a start value */}
           <input id={id} className="fx-input fx-field__input fx-mono" value={value} disabled={disabled} aria-describedby={describedBy} spellCheck={false} autoComplete="off" onChange={(e) => onChange(e.target.value)} />
         </span>
       )}

@@ -122,6 +122,22 @@
           "action": "nav:pending"
         },
         {
+          "id": "s-skin",
+          "separator": true
+        },
+        {
+          "id": "next-skin",
+          "label": "Next skin",
+          "icon": "palette",
+          "action": "skin.next"
+        },
+        {
+          "id": "prev-skin",
+          "label": "Previous skin",
+          "icon": "palette",
+          "action": "skin.prev"
+        },
+        {
           "id": "spacer",
           "separator": true,
           "spacer": true

@@ -190,7 +190,7 @@ t('CLI: submit → list → state (exit 3) → decide → state, kinds', () => {
   assert.notEqual(cli('submit', '--kind', 'Bad Kind', '--title', 'x').status, 0);
   assert.notEqual(cli('submit', '--title', 'x', '--shots', join(dir, 'nope.png')).status, 0);
   assert.notEqual(cli('submit', '--name', 'r-20261101-ab12', '--app', 'A', '--screen', 'S', ...WHO, '--shots', shotA).status, 0, 'an id is not a human name');
-  assert.match(execFileSync(process.execPath, [join(HERE, 'review.mjs'), 'kinds'], { env, encoding: 'utf8' }), /design-pack\s+Design packs/);
+  assert.match(execFileSync(process.execPath, [join(HERE, 'review.mjs'), 'kinds'], { env, encoding: 'utf8' }), /design-pack\s+Skins/);
 });
 
 t('rebuild-shots has the --submit option, found by capability', () => {

@@ -23,6 +23,8 @@ export function skinSlotMap(skin: { assets?: Record<string, string>; layoutTheme
 export interface LegacyLook { at: string; own?: LookPart; settings?: Record<string, unknown> }
 /** The one-run stamp of look-migration@1 on a document. */
 export interface LookMigrated { version: number; at: string; by: string; /** picks left as the app's own (no skin could carry them) */ kept?: string[] }
+/** Fold the retired package slots of an older look: a design / appearance package id becomes the skin, a style package slot is dropped. */
+export function migrateLegacyLook<T extends AppLookDocument | null>(look: T): T;
 /** A look: what a snapshot holds and what picks add. */
 export interface LookPart { slots?: Record<string, string>; spacing?: string; hidden?: Record<string, boolean>; settings?: Record<string, unknown> }
 /** The app level: Use skin, follow the hub-wide skin while off, the skin, its overrides, and the colour theme picked inside it (absent = the skin's own; never an override, never a new skin). */

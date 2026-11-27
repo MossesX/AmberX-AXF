@@ -767,6 +767,12 @@
             "action": "settings.open:appearance"
           },
           {
+            "id": "next-skin",
+            "label": "Next skin",
+            "icon": "palette",
+            "action": "skin.next"
+          },
+          {
             "id": "theme",
             "label": "Next colour theme",
             "icon": "palette",

@@ -5,7 +5,7 @@
  * the child overrides the parent.
  *
  *   node framework/cli/skins.mjs apps                      apps, their skin switch, scopes and overrides
- *   node framework/cli/skins.mjs list                      the skins (and design packages) that can be used
+ *   node framework/cli/skins.mjs list                      the skins that can be used (every former design package and style package is one)
  *   node framework/cli/skins.mjs snapshot [--all | <app>] [--force]   save the current look as the app's default
  *   node framework/cli/skins.mjs use <app> <skin> [--scope ui:<id>|plugin:<id>]   Use skin on, in that app (or one of its screens / plugins)
  *   node framework/cli/skins.mjs off <app> [--scope ui:<id>|plugin:<id>]          back to the app's own look (or no skin inside that scope)
@@ -126,6 +126,8 @@ function assetsOf(type) {
   const dir = join(ROOT, 'framework/assets', type);
   return existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => readJson(join(dir, f))).filter(Boolean) : [];
 }
+/** Where each of a skin's four sections comes from: 'inline' (written in the skin) or the preset asset id it names. */
+const skinSectionsRow = (d) => Object.fromEntries([['colors', 'colorTheme'], ['style', 'styleTheme'], ['layout', 'layoutTheme'], ['behavior', 'behaviorTheme']].map(([s, f]) => [s, d?.sections?.[s] ? 'inline' : d?.[f] ?? '']));
 /** The Default skins on the hub (`skins/<app>.json`), the hub-wide one first. */
 export function defaultSkins() {
   if (!existsSync(skinsDir())) return [];
@@ -142,16 +144,15 @@ export function writeDefaultSkin(skin, by = 'skins-cli') {
 }
 export const skinRows = () => [
   ...defaultSkins().map((a) => ({ id: a.id, name: `${a.name} (${a.app})`, kind: 'skin', description: a.description ?? '', iconPack: '', parts: [], protected: true, app: a.app })),
-  ...assetsOf('skin').map((a) => ({ id: a.id, name: a.name, kind: 'skin', description: a.description ?? '', iconPack: a.data?.iconPack ?? '', parts: Object.keys(a.data?.parts ?? {}) })),
-  ...assetsOf('design-package').map((a) => ({ id: a.id, name: a.name, kind: 'design-package', description: a.description ?? '', iconPack: '', parts: [] })),
+  ...assetsOf('skin').map((a) => ({ id: a.id, name: a.name, kind: 'skin', description: a.description ?? '', tags: a.tags ?? [], sections: skinSectionsRow(a.data), iconPack: a.data?.iconPack ?? '', parts: Object.keys(a.data?.parts ?? {}) })),
   ...madeSkins().map((a) => ({ id: a.id, name: a.name, kind: 'skin', description: a.description ?? '', iconPack: a.data?.iconPack ?? '', parts: Object.keys(a.data?.parts ?? {}), madeBy: 'ai', app: a.app })),
 ];
 
-/** The three themes an app's look falls back to when its saved slots name none: the default design package's. */
+/** The three themes an app's look falls back to when its saved slots name none: the default skin's (hub-default). */
 function themeFill(shared) {
-  const id = shared?.slots?.['design-package'] || 'hub-default';
-  const pkg = assetsOf('design-package').find((p) => p.id === id) ?? assetsOf('design-package').find((p) => p.id === 'hub-default');
-  return pkg ? { layout: pkg.data?.layout ?? '', 'color-theme': pkg.data?.['color-theme'] ?? '', 'style-theme': pkg.data?.['style-theme'] ?? '' } : {};
+  const id = shared?.skin?.id || 'hub-default';
+  const skin = assetsOf('skin').find((p) => p.id === id) ?? assetsOf('skin').find((p) => p.id === 'hub-default');
+  return skin ? { layout: skin.data?.layoutTheme ?? '', 'color-theme': skin.data?.colorTheme ?? '', 'style-theme': skin.data?.styleTheme ?? '' } : {};
 }
 
 /**
@@ -267,8 +268,9 @@ export function color(app, scopeKey = '') {
   const l = readLook(app);
   const scope = scopeKey ? skinScopeOf(scopeKey, app) : { app };
   const inForce = resolveLookSkin(l, readGlobal(), scope);
-  const skin = inForce.id ? assetsOf('skin').find((a) => a.id === inForce.id) ?? assetsOf('design-package').find((a) => a.id === inForce.id) : null;
-  const own = skin ? (skin.type === 'skin' ? skin.data?.colorTheme : skin.data?.['color-theme']) ?? '' : '';
+  const skin = inForce.id ? assetsOf('skin').find((a) => a.id === inForce.id) : null;
+  // the skin's colours section: written in the skin (registered as `skin-<id>`) or the colour preset it names
+  const own = skin ? (skin.data?.sections?.colors ? `skin-${skin.id}` : skin.data?.colorTheme ?? '') : '';
   const shows = inForce.colorTheme || own;
   return { app, scope: scopeKey || 'app', skin: inForce.id, from: inForce.from, colorTheme: shows, own, picked: !!shows && shows !== own, pickedHere: l ? skinColorTheme(l, scopeKey || undefined) : '' };
 }
@@ -336,14 +338,13 @@ export function coverage() {
   return { summary: coverageSummary(rows), rows };
 }
 
-/** What one skin (or design package) sets or styles, type by type. */
+/** What one skin sets or styles, type by type. */
 export function covers(skinId) {
-  const a = assetsOf('skin').find((s) => s.id === skinId) ?? assetsOf('design-package').find((s) => s.id === skinId);
+  const a = assetsOf('skin').find((s) => s.id === skinId);
   if (!a) throw new Error(`no skin "${skinId}"`);
   const d = a.data ?? {};
-  const slots = a.type === 'skin'
-    ? { ...(d.assets ?? {}), ...(d.layoutTheme ? { layout: d.layoutTheme } : {}), ...(d.colorTheme ? { 'color-theme': d.colorTheme } : {}), ...(d.styleTheme ? { 'style-theme': d.styleTheme } : {}) }
-    : { ...(d.extras?.slots ?? {}), ...(d.layout ? { layout: d.layout } : {}), ...(d['color-theme'] ? { 'color-theme': d['color-theme'] } : {}), ...(d['style-theme'] ? { 'style-theme': d['style-theme'] } : {}) };
+  const section = (name, type, field) => (d.sections?.[name] ? { [type]: `skin-${skinId}` } : d[field] ? { [type]: d[field] } : {});
+  const slots = { ...(d.assets ?? {}), ...section('layout', 'layout', 'layoutTheme'), ...section('colors', 'color-theme', 'colorTheme'), ...section('style', 'style-theme', 'styleTheme'), ...section('behavior', 'behavior-theme', 'behaviorTheme') };
   const targets = readJson(join(ROOT, 'framework/schemas/customize.json')).targets ?? {};
   return coverage().rows.map((r) => {
     const how = [];

@@ -36,5 +36,17 @@ export function internalEmail(agentId: string): string;
 export function barcodeBars(text: string): number[];
 export function cardValue(field: CardField, identity?: CardIdentity, stats?: CardStats): string;
 export function cardModel(raw: unknown, identity?: CardIdentity, stats?: CardStats): CardModel;
-export const AGENT_CARD_SAMPLE: { identity: CardIdentity; stats: CardStats };
+export const AGENT_CARD_SAMPLE: { identity: CardIdentity; stats: CardStats; avatar: AvatarInput };
 export function agentCardSchemaProperties(): Record<string, unknown>;
+/** The agent's avatar fields (agent@1). */
+export interface AvatarInput { face?: string; hair?: number; gear?: string; hue?: number }
+export type AvatarPaint = 'bg' | 'skin' | 'ink' | 'line' | 'line-thick' | 'hair' | 'shirt';
+export interface AvatarPart { id: string; tag: 'circle' | 'rect' | 'ellipse' | 'path'; attrs: Record<string, number | string>; paint: AvatarPaint }
+export interface AvatarModel { box: number; face: string; hair: number; gear: string; hue: number; tokens: { hair: string; shirt: string }; parts: AvatarPart[] }
+export const AVATAR_BOX: number;
+export const AVATAR_HAIR: readonly string[];
+export const AVATAR_FACE_SHAPES: Record<string, { tag: AvatarPart['tag']; attrs: Record<string, number> }>;
+export const AVATAR_GEAR_PARTS: Record<string, AvatarPart[]>;
+export const AVATAR_PAINTS: readonly AvatarPaint[];
+export function avatarColors(av: AvatarInput | null | undefined): { hair: string; shirt: string };
+export function avatarModel(av: AvatarInput | null | undefined): AvatarModel;

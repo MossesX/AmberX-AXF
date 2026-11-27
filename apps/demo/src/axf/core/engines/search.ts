@@ -47,7 +47,7 @@ export type SearchFocuser = (entry: SearchEntry) => boolean | void;
 
 /** Labels shown next to results, per kind. */
 export const SEARCH_KIND_LABELS: Record<string, string> = {
-  view: 'Page', action: 'Action', setting: 'Setting', 'settings-tab': 'Settings', dialog: 'Dialog', asset: 'Asset', window: 'Window', text: 'On page', menu: 'Menu',
+  view: 'Page', action: 'Action', setting: 'Setting', 'settings-tab': 'Settings', dialog: 'Dialog', asset: 'Asset', window: 'Window', text: 'On page', menu: 'Menu', target: 'On screen',
 };
 
 const norm = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '');

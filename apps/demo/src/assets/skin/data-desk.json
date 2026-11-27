@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "data-desk",
+  "name": "Data Desk",
+  "version": "2.0.0",
+  "description": "Dense 13 px type on brushed steel, every pixel for grids, precise controls and quick, exact motion.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "data",
+    "skin"
+  ],
+  "data": {
+    "colorTheme": "slate-steel",
+    "styleTheme": "dense-grid",
+    "layoutTheme": "data-grid",
+    "behaviorTheme": "precise",
+    "assets": {
+      "button": "data-pro",
+      "container": "data-pro",
+      "slider": "data-pro",
+      "dialog": "data-pro",
+      "popup": "data-pro",
+      "tab-group": "data-pro",
+      "gauge": "tick-arc",
+      "meter": "segments",
+      "toolbar": "data-grid-tools"
+    },
+    "extras": {
+      "spacing": "tight"
+    }
+  }
+}

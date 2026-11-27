@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/lander-state.schema.json",
+  "title": "lander-state@1 (gate-rules@1)",
+  "type": "object",
+  "required": [
+    "$axf",
+    "at",
+    "status",
+    "paused",
+    "mode",
+    "lastRuns",
+    "waiting"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "$axf": {
+      "const": "lander-state@1"
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "enum": [
+        "running",
+        "paused",
+        "idle",
+        "off",
+        "error"
+      ]
+    },
+    "enabled": {
+      "type": "boolean",
+      "description": "the one On/Off the cron reads first"
+    },
+    "paused": {
+      "type": "boolean"
+    },
+    "pause": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "why": {
+          "type": "string"
+        },
+        "by": {
+          "type": "string"
+        },
+        "at": {
+          "type": "string"
+        }
+      }
+    },
+    "mode": {
+      "enum": [
+        "serial",
+        "batch",
+        "stack"
+      ]
+    },
+    "source": {
+      "enum": [
+        "merge-queue@1",
+        "landing-line@1",
+        "axf-molly"
+      ]
+    },
+    "landing": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "pr"
+      ],
+      "properties": {
+        "pr": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "title": {
+          "type": "string"
+        },
+        "build": {
+          "type": "string"
+        },
+        "branch": {
+          "type": "string"
+        },
+        "ci": {
+          "type": "string"
+        },
+        "since": {
+          "type": "string"
+        },
+        "runUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "lastRuns": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "required": [
+          "startedAt",
+          "result"
+        ],
+        "properties": {
+          "$axf": {
+            "const": "auto-lander-run@1"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "type": "string"
+          },
+          "result": {
+            "enum": [
+              "landed",
+              "landing",
+              "idle",
+              "skipped",
+              "error"
+            ]
+          },
+          "mode": {
+            "enum": [
+              "serial",
+              "batch",
+              "stack"
+            ]
+          },
+          "reason": {
+            "enum": [
+              "switched-off",
+              "paused",
+              "queue-empty",
+              "ci-waiting",
+              "conflict",
+              "ui-review",
+              "token-missing",
+              "locked",
+              "error",
+              ""
+            ]
+          },
+          "reasonText": {
+            "type": "string",
+            "maxLength": 600
+          },
+          "landing": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "required": [
+              "pr"
+            ],
+            "properties": {
+              "pr": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "title": {
+                "type": "string"
+              },
+              "build": {
+                "type": "string"
+              },
+              "branch": {
+                "type": "string"
+              },
+              "ci": {
+                "type": "string"
+              },
+              "since": {
+                "type": "string"
+              },
+              "runUrl": {
+                "type": "string"
+              }
+            }
+          },
+          "merged": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "waiting": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "waiting": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "required": [
+          "pr",
+          "state",
+          "reason"
+        ],
+        "properties": {
+          "position": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "pr": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "build": {
+            "type": "string"
+          },
+          "branch": {
+            "type": "string"
+          },
+          "head": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "waiting",
+              "testing",
+              "passed",
+              "merging",
+              "held",
+              "kicked",
+              "skipped",
+              "paused"
+            ]
+          },
+          "rule": {
+            "type": "string",
+            "pattern": "(^[a-z0-9][a-z0-9-]{0,40}$)|^$",
+            "description": "the gate rule that holds it, or empty for a hold by hand / a queue state"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600,
+            "description": "why it waits, in plain words"
+          },
+          "since": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "landedRecently": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      }
+    },
+    "error": {
+      "type": "string"
+    }
+  }
+}

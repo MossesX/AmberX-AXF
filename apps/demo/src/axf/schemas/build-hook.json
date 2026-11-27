@@ -1,0 +1,56 @@
+{
+  "schema": "build-hook@1",
+  "record": "build-event@1",
+  "version": 1,
+  "events": [
+    "created",
+    "steps-added",
+    "step-done",
+    "status",
+    "pr-opened",
+    "pr-merged",
+    "addendum",
+    "cancelled",
+    "restored",
+    "shipped"
+  ],
+  "buildStatuses": [
+    "pending",
+    "queued",
+    "running",
+    "waiting",
+    "fixing",
+    "blocked",
+    "failed",
+    "built",
+    "landing",
+    "landed",
+    "complete",
+    "escalated",
+    "archived",
+    "splitting",
+    "split",
+    "pulling-main",
+    "assigning-models",
+    "ready",
+    "sending",
+    "building",
+    "build-complete",
+    "merging-pr",
+    "pr-pulling-main",
+    "running-ci",
+    "merging-main"
+  ],
+  "repos": [
+    "amberx-axf",
+    "axhub"
+  ],
+  "githubRepos": {
+    "mossesx/amberx-axf": "amberx-axf",
+    "mossesx/axhub": "axhub"
+  },
+  "stepModels": [
+    "Opus",
+    "Fable"
+  ]
+}

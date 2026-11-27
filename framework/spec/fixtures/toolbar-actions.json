@@ -5005,10 +5005,10 @@
         "sameLook": true
       },
       "resolvedAs": [
-        "package/next-package→action:design.package:next",
-        "themes/next-color→action:swap:color-theme:next",
-        "themes/next-style→action:swap:style-theme:next",
-        "themes/next-layout→action:swap:layout:next",
+        "skin/next-skin→action:skin.next",
+        "skin/prev-skin→action:skin.prev",
+        "skin/random-skin→action:skin.random",
+        "skin/next-color→action:swap:color-theme:next",
         "roll/random→action:assets.random",
         "roll/reset→action:assets.reset",
         "roll/appearance→action:settings.open:appearance"
@@ -5197,8 +5197,8 @@
       "resolvedAs": [
         "doc/save→action:file.save",
         "doc/export→action:file.export",
+        "look/next-skin→action:skin.next",
         "look/color→action:swap:color-theme:next",
-        "look/layout→action:swap:layout:next",
         "ship/build→action:run.build",
         "ship/deploy→action:run.deploy"
       ]
@@ -5433,9 +5433,8 @@
         "edit/cut→action:edit.cut",
         "edit/copy→action:edit.copy",
         "edit/paste→action:edit.paste",
+        "view/next-skin→action:skin.next",
         "view/color→action:swap:color-theme:next",
-        "view/style→action:swap:style-theme:next",
-        "view/layout→action:swap:layout:next",
         "view/random→action:assets.random"
       ]
     },
@@ -5506,7 +5505,6 @@
         "sameLook": true
       },
       "resolvedAs": [
-        "layout/next-layout→action:swap:layout:next",
         "layout/toggle-nav→action:slot.hide:nav-menu:toggle"
       ]
     },
@@ -5531,9 +5529,8 @@
         "edit/cut→action:edit.cut",
         "edit/copy→action:edit.copy",
         "edit/paste→action:edit.paste",
+        "view/next-skin→action:skin.next",
         "view/color→action:swap:color-theme:next",
-        "view/style→action:swap:style-theme:next",
-        "view/layout→action:swap:layout:next",
         "view/random→action:assets.random"
       ]
     }

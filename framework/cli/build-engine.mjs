@@ -131,51 +131,20 @@ export function validateAsset(raw) {
   if (raw.type === 'context-menu' && isObj(raw.data.targets)) {
     for (const [t, items] of Object.entries(raw.data.targets)) errors.push(...validateMenuItems(items, `data.targets.${t}`));
   }
-  // skin@1 — mirrors skinErrors in core/engines/skin.ts (check-skin.mts keeps them equal)
+  // skin@2 — mirrors skinErrors in core/engines/skin.ts (check-skin.mts keeps them equal)
   if (raw.type === 'skin') errors.push(...skinErrors(raw.data));
-  // design-package@1 — mirrors designPackageErrors in core/engines/designpackage.ts (theme ids + extras slot rules)
-  if (raw.type === 'design-package') {
-    const ID = /^[a-z0-9][a-z0-9-]*$/;
-    for (const t of DESIGN_THEMES) if (typeof raw.data[t] !== 'string' || !ID.test(raw.data[t])) errors.push(`data.${t} must be a ${t} asset id`);
-    const x = raw.data.extras;
-    if ('extras' in raw.data && !isObj(x)) errors.push('data.extras must be an object');
-    if (isObj(x)) {
-      if ('slots' in x && !isObj(x.slots)) errors.push('data.extras.slots must be an object (asset type → asset id)');
-      if (isObj(x.slots)) for (const [t, id] of Object.entries(x.slots)) {
-        if (DESIGN_THEMES.includes(t)) errors.push(`data.extras.slots.${t}: ${t} is one of the package's own themes`);
-        else if (['uac-policy', 'design-package', 'appearance-package'].includes(t)) errors.push(`data.extras.slots.${t}: a package never sets ${t}`);
-        else if (typeof id !== 'string' || !ID.test(id)) errors.push(`data.extras.slots.${t} must be an asset id`);
-      }
-      if ('spacing' in x && !['tight', 'compact', 'regular'].includes(x.spacing)) errors.push('data.extras.spacing must be tight, compact or regular');
-    }
-  }
-  // style-package@1 — mirrors stylePackageErrors in core/engines/stylepackage.ts (check-style-packages.mts keeps them equal)
-  if (raw.type === 'style-package') {
-    const ID = /^[a-z0-9][a-z0-9-]{1,47}$/;
-    const MEMBERS = spec.types['style-package']?.members ?? [];
-    const d = raw.data;
-    if (!isObj(d.slots)) errors.push('data.slots must be an object of control type → asset id');
-    else {
-      const entries = Object.entries(d.slots);
-      if (!entries.length) errors.push('data.slots must name at least one control');
-      for (const [t, id] of entries) {
-        if (!MEMBERS.includes(t)) errors.push(`data.slots.${t}: not a style-package member (${MEMBERS.join(', ')})`);
-        else if (typeof id !== 'string' || !ID.test(id)) errors.push(`data.slots.${t} must be an asset id`);
-      }
-    }
-    if ('tone' in d && (typeof d.tone !== 'string' || !/^[a-z][a-z-]{1,23}$/.test(d.tone))) errors.push('data.tone must be one lowercase word');
-  }
   // interface@1 — mirrors interfaceErrors in core/engines/interface.ts (check-interface.mts keeps them equal)
   if (raw.type === 'interface') {
     const ID = /^[a-z0-9][a-z0-9-]*$/;
-    const NEVER = ['uac-policy', 'interface', 'design-package', 'appearance-package', ...DESIGN_THEMES];
+    const NEVER = ['uac-policy', 'interface', 'skin', ...RETIRED_PACKAGE_TYPES, ...SECTION_TYPES];
     const d = raw.data;
-    if (typeof d.design !== 'string' || !ID.test(d.design)) errors.push('data.design must be a design-package asset id');
+    const skin = d.skin !== undefined ? d.skin : d.design;
+    if (typeof skin !== 'string' || !ID.test(skin)) errors.push('data.skin must be a skin asset id');
     if (d.branding !== undefined && (typeof d.branding !== 'string' || !ID.test(d.branding))) errors.push('data.branding must be a branding asset id');
     if (d.slots !== undefined) {
       if (!isObj(d.slots)) errors.push('data.slots must be an object (asset type → asset id)');
       else for (const [t, v] of Object.entries(d.slots)) {
-        if (NEVER.includes(t)) errors.push(`data.slots.${t}: ${DESIGN_THEMES.includes(t) ? 'the themes come from the design package' : `an interface never sets ${t}`}`);
+        if (NEVER.includes(t)) errors.push(`data.slots.${t}: ${SECTION_TYPES.includes(t) ? 'the sections come from the skin' : `an interface never sets ${t}`}`);
         else if (!ID.test(t)) errors.push(`data.slots.${t}: not an asset type name`);
         else if (typeof v !== 'string' || !ID.test(v)) errors.push(`data.slots.${t} must be an asset id`);
       }
@@ -185,7 +154,7 @@ export function validateAsset(raw) {
     if (d.settings !== undefined && !isObj(d.settings)) errors.push('data.settings must be an object');
     if (d.tab !== undefined && (!isObj(d.tab) || typeof d.tab.label !== 'string')) errors.push('data.tab must be { label, icon? }');
   }
-  // behavior-theme@1 — mirrors behaviorErrors in core/engines/behavior.ts (check-design-package.mts keeps the lists equal)
+  // behavior-theme@1 — mirrors behaviorErrors in core/engines/behavior.ts (check-behavior-theme.mts keeps the lists equal)
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(raw.data));
   // typography@1 / density@1 / sizing@1: ONE validator shared with core (core/engines/scale-rules.mjs)
   errors.push(...scaleErrors(raw.type, raw.data));
@@ -217,22 +186,55 @@ export function validateAsset(raw) {
   return { ok: errors.length === 0, errors };
 }
 
-/* skin@1 — mirrors core/engines/skin.ts (check-skin.mts keeps the messages equal). */
-const SKIN_THEMES = { layoutTheme: 'layout', colorTheme: 'color-theme', styleTheme: 'style-theme' };
-const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
+/* skin@2 — mirrors core/engines/skin.ts (check-skin.mts keeps the messages equal). */
+const SKIN_SECTIONS = { colors: 'color-theme', style: 'style-theme', layout: 'layout', behavior: 'behavior-theme' };
+const SKIN_SECTION_FIELDS = { colors: 'colorTheme', style: 'styleTheme', layout: 'layoutTheme', behavior: 'behaviorTheme' };
+const SECTION_TYPES = Object.values(SKIN_SECTIONS);
+const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'style-package', 'interface'];
+const RETIRED_PACKAGE_TYPES = ['design-package', 'style-package', 'appearance-package'];
+function sectionSpecErrors(type, data, at) {
+  const ts = spec.types[type];
+  if (!isObj(data)) return [`${at} must be an object (${type} data)`];
+  const errors = [];
+  for (const k of ts?.required ?? []) if (!(k in data)) errors.push(`${at}.${k} is required for ${type}`);
+  for (const [k, allowed] of Object.entries(ts?.enums ?? {})) if (k in data && !allowed.includes(data[k])) errors.push(`${at}.${k} must be one of: ${allowed.join(', ')}`);
+  for (const [k, keys] of Object.entries(ts?.nested ?? {})) if (isObj(data[k])) for (const nk of keys) if (!(nk in data[k])) errors.push(`${at}.${k}.${nk} is required`);
+  return errors;
+}
+export function skinSectionErrors(section, data) {
+  const type = SKIN_SECTIONS[section];
+  const at = `data.sections.${section}`;
+  if (!type) return [`${at}: not a skin section (${Object.keys(SKIN_SECTIONS).join(', ')})`];
+  if (!isObj(data)) return [`${at} must be an object (${type} data)`];
+  const errors = type === 'behavior-theme' ? behaviorErrors(data).map((e) => `${at}: ${e}`) : sectionSpecErrors(type, data, at);
+  if (type === 'layout') errors.push(...layoutErrors('layout', data).map((e) => `${at}: ${e}`));
+  return errors;
+}
 export function skinErrors(d) {
   const isO = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
   const ID = /^[a-z0-9][a-z0-9-]*$/;
   if (!isO(d)) return ['data must be an object'];
   const errors = [];
-  for (const [k, t] of Object.entries(SKIN_THEMES)) if (typeof d[k] !== 'string' || !ID.test(d[k])) errors.push(`data.${k} must be a ${t} asset id`);
-  if ('behaviorTheme' in d && (typeof d.behaviorTheme !== 'string' || !ID.test(d.behaviorTheme))) errors.push('data.behaviorTheme must be a behavior-theme asset id');
+  const sections = isO(d.sections) ? d.sections : {};
+  for (const [s, field] of Object.entries(SKIN_SECTION_FIELDS)) {
+    const t = SKIN_SECTIONS[s];
+    const v = d[field];
+    const inline = isO(sections[s]);
+    if (s === 'behavior' && (v === undefined || v === '')) continue;
+    if (v === undefined && inline) continue;
+    if (typeof v !== 'string' || !ID.test(v)) errors.push(`data.${field} must be a ${t} asset id${s === 'behavior' ? '' : ` (or write data.sections.${s})`}`);
+  }
+  if ('sections' in d) {
+    if (!isO(d.sections)) errors.push('data.sections must be an object (colors, style, layout, behavior)');
+    else for (const [s, sd] of Object.entries(d.sections)) errors.push(...skinSectionErrors(s, sd));
+  }
   if (!isO(d.assets)) errors.push('data.assets must be an object (slot → asset id)');
   else for (const [t, id] of Object.entries(d.assets)) {
-    if (SKIN_NEVER.includes(t) || Object.values(SKIN_THEMES).includes(t)) errors.push(`data.assets.${t}: a skin never sets ${t} here`);
+    if (RETIRED_PACKAGE_TYPES.includes(t)) errors.push(`data.assets.${t}: ${t} is retired, a skin carries its slots itself`);
+    else if (SKIN_NEVER.includes(t) || (SECTION_TYPES.includes(t) && t !== 'behavior-theme')) errors.push(`data.assets.${t}: a skin never sets ${t} here`);
     else if (typeof id !== 'string' || !ID.test(id)) errors.push(`data.assets.${t} must be an asset id`);
   }
-  if ('iconPack' in d && (typeof d.iconPack !== 'string' || !ID.test(d.iconPack))) errors.push('data.iconPack must be an icon-pack asset id');
+  if (d.iconPack !== undefined && (typeof d.iconPack !== 'string' || !ID.test(d.iconPack))) errors.push('data.iconPack must be an icon-pack asset id');
   errors.push(...skinPartsErrors(d.parts, spec.types, customizeSpec.targets));
   if ('preview' in d && !isO(d.preview)) errors.push('data.preview must be an object');
   if ('extras' in d) {
@@ -248,8 +250,7 @@ export function skinErrors(d) {
   return errors;
 }
 
-/* behavior-theme@1 + design-package@1 — mirrors core/engines/behavior.ts and designpackage.ts (kept equal by check-design-package.mts). */
-export const DESIGN_THEMES = ['style-theme', 'color-theme', 'layout', 'behavior-theme'];
+/* behavior-theme@1 — mirrors core/engines/behavior.ts (kept equal by check-behavior-theme.mts). */
 export const BEHAVIOR_ENUMS = {
   'motion.speed': ['theme', 'instant', 'fast', 'normal', 'slow', 'relaxed'],
   'motion.easing': ['standard', 'emphasized', 'linear', 'spring', 'bounce'],
@@ -864,10 +865,18 @@ function skinSchemaProperties() {
   const fields = Object.fromEntries(CHROME_TYPES.map((kind) => [kind, { type: 'object', description: `${kind} under this skin: the settings interface its dialog renders through (axf.chrome.settings.${kind}) and field overrides per instance (axf.chrome.${kind}.<instance>, this kind's chrome-settings@1 fields only).`, properties: { interface: id, instances: { type: 'object', additionalProperties: { type: 'object', properties: Object.fromEntries((CHROME_FIELDS[kind] ?? []).map((f) => [f.key, f.kind === 'toggle' ? { type: 'boolean' } : f.kind === 'number' ? { type: 'number', ...(f.min !== undefined ? { minimum: f.min } : {}), ...(f.max !== undefined ? { maximum: f.max } : {}) } : Array.isArray(f.options) ? { enum: f.options } : {}])) } } }, additionalProperties: false }]));
   return {
     colorThemes: { type: 'object', description: "The skin's light and dark colour themes (skin-modes@1); colorTheme is one of the two.", required: ['light', 'dark'], properties: { light: id, dark: id } },
+    layoutTheme: id,
+    colorTheme: id,
+    styleTheme: id,
     behaviorTheme: id,
+    // skin@2: a section written in the skin (the section type's own fields) wins over the preset it names
+    sections: { type: 'object', description: 'Sections written in the skin (skin@2): each one is that section type\'s own data and wins over the preset id.', properties: Object.fromEntries(Object.keys(SKIN_SECTIONS).map((s) => [s, { type: 'object' }])), additionalProperties: false },
     chrome: { type: 'object', description: 'Chrome settings the skin puts in force per chrome-settings@1 kind; lands in the composed look\'s settings after extras.settings.', properties: fields, additionalProperties: false },
   };
 }
+
+/** skin@2: colours, style and layout each come from a preset id or a section written in the skin. */
+const skinSectionAnyOf = () => ['colors', 'style', 'layout'].map((s) => ({ anyOf: [{ required: [SKIN_SECTION_FIELDS[s]] }, { properties: { sections: { required: [s] } }, required: ['sections'] }] }));
 
 /** Emit JSON Schema files (for editor autocompletion) from the type spec. */
 export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
@@ -893,6 +902,8 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     // skin@1: the light / dark pair every skin ships (skin-modes@1), the behaviour section, the chrome block (chrome-settings@1 kinds)
     const required = type === 'skin' ? [...ts.required, 'colorThemes'] : ts.required;
     if (type === 'skin') Object.assign(props, skinSchemaProperties());
+    // interface@1: the skin it carries (skin@2), `design` = the same under its old name
+    if (type === 'interface') Object.assign(props, { skin: { type: 'string' }, design: { type: 'string', description: 'the skin under its old name' } });
     const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : type === 'toolbar' ? { toolbarItem: toolbarItemSchema() } : undefined;
     const schema = {
       ...($defs ? { $defs } : {}),
@@ -908,7 +919,7 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
         name: { type: 'string', minLength: 1 },
         version: { type: 'string' },
         description: { type: 'string' },
-        data: { type: 'object', required, properties: props },
+        data: { type: 'object', required, properties: props, ...(type === 'skin' ? { allOf: skinSectionAnyOf() } : type === 'interface' ? { anyOf: [{ required: ['skin'] }, { required: ['design'] }] } : {}) },
       },
     };
     const f = join(outDir, `${type}.schema.json`);

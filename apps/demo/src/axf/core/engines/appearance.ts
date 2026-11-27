@@ -18,12 +18,23 @@ export const APPEARANCE_FRAME = 'appearance@1';
 /** Where the document lives on the data server: project `shared`, path inside `_data`. */
 export const APPEARANCE_PROJECT = 'shared';
 export const APPEARANCE_PATH = 'settings/appearance.json';
-/** Largest document an app accepts (the hub's data API caps at 64 KB; this is far below). */
+/** Largest document an app accepts (the hub's data API caps at 64 KB; this is far below). Fixture-pinned on both ports. */
 export const APPEARANCE_MAX_BYTES = 16 * 1024;
-/** Slots an appearance document never carries: access policies come from the account / the app, never from shared data; help packs are all in force at once (no pick to share). */
-export const APPEARANCE_NEVER: readonly string[] = ['uac-policy', 'help'];
+/** Largest single look setting value (its JSON) the document carries. */
+export const APPEARANCE_SETTING_MAX_BYTES = 4 * 1024;
+/**
+ * Slots an appearance document never carries: access policies come from the account / the app, never from shared data;
+ * help packs are all in force at once (no pick to share); `appearance-package`, `design-package` and `style-package` are
+ * retired types (the design package replaced the first on Oct 27 2026; both packages folded into skins on Nov 10 2026),
+ * so a document an older build wrote with one of those slots loses it on read, and the next write by any app drops it
+ * from the hub (one-shot clean, Nov 3 2026). A skin is never a slot: it is the `skin` field (hub-wide) or an app's look.
+ */
+export const APPEARANCE_NEVER: readonly string[] = ['uac-policy', 'help', 'appearance-package', 'design-package', 'style-package', 'skin'];
 
 const ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
+/** A look settings key (`axf.look`, `axf.custom.button.amber`, …); which keys count is the runtime's call. */
+const SETTING_KEY = /^[a-z0-9][a-zA-Z0-9._:-]{1,159}$/;
+type JsonValue = string | number | boolean | null | JsonValue[] | { [k: string]: JsonValue };
 const COLOR = /^(#[0-9a-f]{3,8}|rgba?\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*(,\s*[\d.]+\s*)?\))$/i;
 const PALETTE_KEYS = ['bg', 'fg', 'muted', 'card', 'line', 'accent', 'danger', 'ok'] as const;
 
@@ -37,10 +48,34 @@ export interface AppearanceDocument {
   hidden?: Record<string, boolean>;
   /** a few colours for apps that don't run the theme engine (axHub's own pages); derived from the colour theme */
   palette?: Partial<Record<(typeof PALETTE_KEYS)[number], string>> & { scheme?: 'light' | 'dark' };
+  /**
+   * The look settings every app shares (Nov 1 2026, Brett: "Any theme change applies to all"): Sliders, per-asset
+   * tokens, banner looks, rolls… (settings keys the runtime counts as appearance) → value. Present = the hub owns them:
+   * an app clears its own look settings that aren't listed. Absent = an older document; nothing is cleared.
+   */
+  settings?: Record<string, JsonValue>;
+  /**
+   * The hub-wide skin (build skins-asset-types, Nov 2026): the `global` level of the skin chain. An app follows it only
+   * while its own look says so (`skin.inherit`, Brett: "a switch to do it, but by default they're all their own").
+   * `colorTheme` = the colour theme picked inside that skin (absent = the skin's own): switching it never changes `id`.
+   */
+  skin?: { id: string; overrides?: Record<string, string>; colorTheme?: string };
+  /**
+   * The hub default skin (build console-look-becomes-default-axhub-skin, Nov 14 2026, Brett: "make it the default axHub
+   * look, and then make all the apps inherit it right now"): the `default` level at the root of the skin chain
+   * (plugin → ui → app → global → default). Every app stands on it: an app with no skin of its own draws it, and its
+   * own picks (slots, spacing, hidden chrome, look settings) are the only edits on top. Unlike `skin`, no app has to
+   * opt in. `overrides` are hub-level picks over that skin, `colorTheme` the colour theme picked inside it. Absent =
+   * no floor: an app without a skin draws its own saved look, as before.
+   */
+  defaultSkin?: { id: string; overrides?: Record<string, string>; colorTheme?: string };
   /** who saved it last (app id), when; informational */
   updatedBy?: string;
   updatedAt?: string;
 }
+
+/** The hub-wide skin and the hub default skin share one shape: a skin id, hub-level overrides, the colour theme picked inside. */
+export type HubSkinPointer = NonNullable<AppearanceDocument['skin']>;
 
 /** What `resolveAppearance` returns: only values the app can apply, plus what it skipped and why. */
 export interface ResolvedAppearance {
@@ -66,6 +101,24 @@ export function parseAppearance(text: string | null | undefined, maxBytes = APPE
   let raw: unknown;
   try { raw = JSON.parse(text); } catch { return null; }
   return normalizeAppearance(raw);
+}
+
+/**
+ * A skin pointer on the shared document (`skin`, `defaultSkin`): `{ id, overrides?, colorTheme? }` with only ids that
+ * pass; null when there is no usable id. The colour theme picked inside the skin is its own field, never an override
+ * (engines/skin-rules.mjs): a document saved before that rule kept it among the overrides, so it is read from there.
+ */
+export function normalizeHubSkin(raw: unknown): HubSkinPointer | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const s = raw as Record<string, unknown>;
+  if (typeof s.id !== 'string' || !ID.test(s.id)) return null;
+  const overrides: Record<string, string> = {};
+  if (s.overrides && typeof s.overrides === 'object' && !Array.isArray(s.overrides)) {
+    for (const [t, id] of Object.entries(s.overrides as Record<string, unknown>)) if (ID.test(t) && typeof id === 'string' && ID.test(id) && !APPEARANCE_NEVER.includes(t)) overrides[t] = id;
+  }
+  const colorTheme = typeof s.colorTheme === 'string' && ID.test(s.colorTheme) ? s.colorTheme : overrides['color-theme'] ?? '';
+  delete overrides['color-theme'];
+  return { id: s.id, ...(Object.keys(overrides).length ? { overrides } : {}), ...(colorTheme ? { colorTheme } : {}) };
 }
 
 /** Same as parseAppearance, from an already-parsed value. */
@@ -94,6 +147,21 @@ export function normalizeAppearance(raw: unknown): AppearanceDocument | null {
     if (p.scheme === 'light' || p.scheme === 'dark') palette.scheme = p.scheme;
     if (Object.keys(palette).length) doc.palette = palette;
   }
+  if (o.settings && typeof o.settings === 'object' && !Array.isArray(o.settings)) {
+    const settings: Record<string, JsonValue> = {};
+    for (const [k, v] of Object.entries(o.settings as Record<string, unknown>)) {
+      if (!SETTING_KEY.test(k) || v === undefined || v === null) continue;
+      let text: string;
+      try { text = JSON.stringify(v); } catch { continue; }
+      if (typeof text === 'string' && text.length <= APPEARANCE_SETTING_MAX_BYTES) settings[k] = JSON.parse(text) as JsonValue;
+    }
+    doc.settings = settings; // kept even when empty: an empty map still says "the hub owns the look settings"
+  }
+  // the hub-wide skin (`skin`, the global level) and the hub default skin (`defaultSkin`, the root level) read the same way
+  const skin = normalizeHubSkin(o.skin);
+  if (skin) doc.skin = skin;
+  const defaultSkin = normalizeHubSkin(o.defaultSkin);
+  if (defaultSkin) doc.defaultSkin = defaultSkin;
   if (typeof o.updatedBy === 'string' && o.updatedBy.length <= 80) doc.updatedBy = o.updatedBy;
   if (typeof o.updatedAt === 'string' && o.updatedAt.length <= 40) doc.updatedAt = o.updatedAt;
   return doc;
@@ -133,12 +201,39 @@ export function paletteFromColorTheme(data: { scheme?: string; tokens?: Record<s
   return Object.keys(p).length ? p : undefined;
 }
 
+/** One app's change: only the keys it names (null = remove that hidden flag / look setting). */
+export interface AppearanceChange {
+  slots?: Record<string, string>;
+  spacing?: Spacing;
+  hidden?: Record<string, boolean | null>;
+  palette?: AppearanceDocument['palette'];
+  settings?: Record<string, unknown>;
+  /** The hub-wide skin: a pick, or null to clear it. */
+  skin?: AppearanceDocument['skin'] | null;
+  /** The hub default skin: a pick, or null to clear it (apps go back to their own saved looks). */
+  defaultSkin?: AppearanceDocument['defaultSkin'] | null;
+}
+
+/** Fold a later change into an earlier pending one (per key, the later wins). */
+export function combineAppearanceChanges(a: AppearanceChange | null, b: AppearanceChange): AppearanceChange {
+  if (!a) return b;
+  const out: AppearanceChange = {};
+  if (a.slots || b.slots) out.slots = { ...a.slots, ...b.slots };
+  if (a.hidden || b.hidden) out.hidden = { ...a.hidden, ...b.hidden };
+  if (a.settings || b.settings) out.settings = { ...a.settings, ...b.settings };
+  const spacing = b.spacing ?? a.spacing; if (spacing) out.spacing = spacing;
+  const palette = b.palette ?? a.palette; if (palette) out.palette = palette;
+  if (b.skin !== undefined) out.skin = b.skin; else if (a.skin !== undefined) out.skin = a.skin;
+  if (b.defaultSkin !== undefined) out.defaultSkin = b.defaultSkin; else if (a.defaultSkin !== undefined) out.defaultSkin = a.defaultSkin;
+  return out;
+}
+
 /**
  * Merge one app's change into the document (a save from Settings → Appearance, the theme manager or a designer's
  * Look). Per key, last write wins (the framework's UI-editor rule): keys the change doesn't name are kept from `base`
  * — slots of types this app doesn't have included, so one app never erases another app's choices.
  */
-export function mergeAppearance(base: AppearanceDocument | null, change: { slots?: Record<string, string>; spacing?: Spacing; hidden?: Record<string, boolean | null>; palette?: AppearanceDocument['palette'] }, by: string, now: string): AppearanceDocument {
+export function mergeAppearance(base: AppearanceDocument | null, change: AppearanceChange, by: string, now: string): AppearanceDocument {
   const doc: AppearanceDocument = normalizeAppearance({ ...(base ?? { $axf: APPEARANCE_FRAME }), $axf: APPEARANCE_FRAME }) ?? { $axf: APPEARANCE_FRAME };
   if (change.slots) doc.slots = { ...(doc.slots ?? {}), ...change.slots };
   if (change.spacing) doc.spacing = change.spacing;
@@ -148,6 +243,16 @@ export function mergeAppearance(base: AppearanceDocument | null, change: { slots
     doc.hidden = hidden;
   }
   if (change.palette) doc.palette = change.palette;
+  if (change.skin === null) delete doc.skin; else if (change.skin) doc.skin = change.skin;
+  if (change.defaultSkin === null) delete doc.defaultSkin; else if (change.defaultSkin) doc.defaultSkin = change.defaultSkin;
+  if (change.settings) {
+    const before = doc.settings;
+    const settings = { ...(before ?? {}) };
+    for (const [k, v] of Object.entries(change.settings)) { if (v === null || v === undefined) delete settings[k]; else settings[k] = v as JsonValue; }
+    doc.settings = settings;
+    // never write a document other apps would refuse: look settings that don't fit keep what the hub had
+    if (serializeAppearance(doc).length > APPEARANCE_MAX_BYTES) { if (before) doc.settings = before; else delete doc.settings; }
+  }
   doc.updatedBy = by.slice(0, 80);
   doc.updatedAt = now;
   return normalizeAppearance(doc) ?? { $axf: APPEARANCE_FRAME };
@@ -160,6 +265,10 @@ export function serializeAppearance(doc: AppearanceDocument): string {
   if (doc.spacing) ordered.spacing = doc.spacing;
   if (doc.hidden) ordered.hidden = Object.fromEntries(Object.entries(doc.hidden).sort(([a], [b]) => a.localeCompare(b)));
   if (doc.palette) ordered.palette = doc.palette;
+  if (doc.settings) ordered.settings = Object.fromEntries(Object.entries(doc.settings).sort(([a], [b]) => a.localeCompare(b)));
+  // the two skin pointers ride the text too: a writer that serialized without them lost the hub-wide skin on every save
+  if (doc.skin) ordered.skin = doc.skin;
+  if (doc.defaultSkin) ordered.defaultSkin = doc.defaultSkin;
   if (doc.updatedBy) ordered.updatedBy = doc.updatedBy;
   if (doc.updatedAt) ordered.updatedAt = doc.updatedAt;
   return JSON.stringify(ordered, null, 2);

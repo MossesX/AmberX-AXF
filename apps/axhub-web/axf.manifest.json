@@ -48,7 +48,7 @@
     "meter": "striped-pill",
     "settings": "console",
     "uac-policy": "standard",
-    "design-package": "hub-default",
+    "skin": "hub-default",
     "branding": "amberx",
     "typography": "compact",
     "density": "compact",

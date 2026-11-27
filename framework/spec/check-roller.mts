@@ -22,7 +22,7 @@ const all = readdirSync(assetsDir).flatMap((t) => readdirSync(assetsDir + t).fil
 const byType: RollerEnv['assets'] = {};
 for (const a of all) (byType[a.type] ??= []).push(a);
 const defaults = read('framework/defaults.json');
-const env: RollerEnv = { app: { id: 'demo', name: 'Demo App' }, specs: assetTypeSpecs as unknown as RollerEnv['specs'], assets: byType, active: { ...defaults, 'design-package': 'fresh', 'icon-pack': 'amberx-outline', branding: 'amberx' } };
+const env: RollerEnv = { app: { id: 'demo', name: 'Demo App' }, specs: assetTypeSpecs as unknown as RollerEnv['specs'], assets: byType, active: { ...defaults, skin: 'fresh', 'icon-pack': 'amberx-outline', branding: 'amberx' } };
 
 /* colour */
 for (const scheme of ['light', 'dark'] as const) for (const seed of [1, 2, 3, 4, 5]) {
@@ -54,7 +54,7 @@ ok(rollInterface('other-seed', env).assets.find((a) => a.type === 'color-theme')
 eq([...r.rolled].sort(), [...ROLL_PARTS].sort(), 'every part rolled when nothing is locked');
 const kept = rollInterface('demo-seed', env, { color: true, 'app-menu': true, brand: true });
 ok(!kept.assets.some((a) => a.type === 'color-theme' || a.type === 'app-menu' || a.type === 'branding') && kept.kept.length === 3, 'locks keep parts');
-eq((kept.assets.find((a) => a.type === 'design-package')!.data as { 'color-theme': string })['color-theme'], defaults['color-theme'], 'a locked theme stays the app\'s own');
+eq((kept.assets.find((a) => a.type === 'skin')!.data as { colorTheme: string }).colorTheme, defaults['color-theme'], 'a locked section stays the app\'s own');
 // structure survives: every action of the app's menus / toolbar / nav is still reachable in the rolled chrome
 const actionsOf = (data: Record<string, unknown>) => JSON.stringify(data).match(/"action":"[^"]+"/g)?.sort() ?? [];
 const baseMenu = byType['app-menu']!.find((a) => a.id === defaults['app-menu'])!.data as Record<string, unknown>;

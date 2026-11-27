@@ -221,7 +221,8 @@
       },
       "picks": {
         "color-theme": "coral-studio",
-        "behavior-theme": "brisk"
+        "behavior-theme": "brisk",
+        "style-package": "amber-signature"
       },
       "needs": true,
       "look": {
@@ -244,9 +245,7 @@
           }
         },
         "own": {
-          "slots": {
-            "style-package": "amber-signature"
-          },
+          "slots": {},
           "settings": {}
         },
         "skin": {
@@ -265,7 +264,8 @@
           "own": {
             "slots": {
               "color-theme": "coral-studio",
-              "behavior-theme": "brisk"
+              "behavior-theme": "brisk",
+              "style-package": "amber-signature"
             }
           },
           "settings": {
@@ -283,7 +283,8 @@
       "skin": "windows",
       "folded": {
         "color-theme": "coral-studio",
-        "behavior-theme": "brisk"
+        "behavior-theme": "brisk",
+        "style-package": "amber-signature"
       },
       "overrides": {
         "behavior-theme": "brisk"
@@ -310,9 +311,7 @@
           }
         },
         "own": {
-          "slots": {
-            "style-package": "amber-signature"
-          },
+          "slots": {},
           "settings": {}
         },
         "skin": {
@@ -331,7 +330,8 @@
           "own": {
             "slots": {
               "color-theme": "coral-studio",
-              "behavior-theme": "brisk"
+              "behavior-theme": "brisk",
+              "style-package": "amber-signature"
             }
           },
           "settings": {

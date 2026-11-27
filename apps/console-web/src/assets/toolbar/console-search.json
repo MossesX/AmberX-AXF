@@ -54,6 +54,12 @@
         "id": "look",
         "items": [
           {
+            "id": "next-skin",
+            "icon": "palette",
+            "label": "Next skin",
+            "action": "skin.next"
+          },
+          {
             "id": "color",
             "icon": "palette",
             "label": "Next colour theme",

@@ -35,16 +35,10 @@
     "data": {
       "type": "object",
       "required": [
-        "layoutTheme",
-        "colorTheme",
-        "styleTheme",
         "assets",
         "colorThemes"
       ],
       "properties": {
-        "layoutTheme": {},
-        "colorTheme": {},
-        "styleTheme": {},
         "assets": {},
         "colorThemes": {
           "type": "object",
@@ -64,9 +58,40 @@
             }
           }
         },
+        "layoutTheme": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "colorTheme": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "styleTheme": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
         "behaviorTheme": {
           "type": "string",
           "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "sections": {
+          "type": "object",
+          "description": "Sections written in the skin (skin@2): each one is that section type's own data and wins over the preset id.",
+          "properties": {
+            "colors": {
+              "type": "object"
+            },
+            "style": {
+              "type": "object"
+            },
+            "layout": {
+              "type": "object"
+            },
+            "behavior": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
         },
         "chrome": {
           "type": "object",
@@ -418,7 +443,72 @@
           },
           "additionalProperties": false
         }
-      }
+      },
+      "allOf": [
+        {
+          "anyOf": [
+            {
+              "required": [
+                "colorTheme"
+              ]
+            },
+            {
+              "properties": {
+                "sections": {
+                  "required": [
+                    "colors"
+                  ]
+                }
+              },
+              "required": [
+                "sections"
+              ]
+            }
+          ]
+        },
+        {
+          "anyOf": [
+            {
+              "required": [
+                "styleTheme"
+              ]
+            },
+            {
+              "properties": {
+                "sections": {
+                  "required": [
+                    "style"
+                  ]
+                }
+              },
+              "required": [
+                "sections"
+              ]
+            }
+          ]
+        },
+        {
+          "anyOf": [
+            {
+              "required": [
+                "layoutTheme"
+              ]
+            },
+            {
+              "properties": {
+                "sections": {
+                  "required": [
+                    "layout"
+                  ]
+                }
+              },
+              "required": [
+                "sections"
+              ]
+            }
+          ]
+        }
+      ]
     }
   }
 }

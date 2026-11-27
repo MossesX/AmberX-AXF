@@ -51,27 +51,165 @@
             "left",
             "right",
             "top"
-          ]
+          ],
+          "description": "token --fx-layout-nav"
         },
-        "navWidth": {},
-        "showMenubar": {},
-        "showToolbar": {},
+        "navWidth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 640,
+          "default": 224,
+          "description": "px; token --fx-layout-nav-width"
+        },
+        "showMenubar": {
+          "type": "boolean",
+          "default": true,
+          "description": "token --fx-layout-show-menubar (1 / 0)"
+        },
+        "showToolbar": {
+          "type": "boolean",
+          "default": true,
+          "description": "token --fx-layout-show-toolbar (1 / 0)"
+        },
         "toolbarPosition": {
           "enum": [
             "top",
             "bottom"
-          ]
+          ],
+          "description": "token --fx-layout-toolbar-position"
         },
-        "showStatusbar": {},
+        "showStatusbar": {
+          "type": "boolean",
+          "default": true,
+          "description": "token --fx-layout-show-statusbar (1 / 0)"
+        },
         "inspector": {
           "enum": [
             "left",
             "right",
             "none"
-          ]
+          ],
+          "description": "token --fx-layout-inspector"
         },
-        "inspectorWidth": {},
-        "contentMaxWidth": {}
+        "inspectorWidth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 800,
+          "default": 280,
+          "description": "px; token --fx-layout-inspector-width"
+        },
+        "contentMaxWidth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4000,
+          "default": 0,
+          "description": "px; token --fx-layout-content-max-width"
+        },
+        "statusHeight": {
+          "type": "integer",
+          "minimum": 16,
+          "maximum": 64,
+          "default": 26,
+          "description": "px; token --fx-layout-status-height"
+        },
+        "regionGap": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 4,
+          "default": 0,
+          "description": "× --fx-space; token --fx-layout-region-gap"
+        },
+        "mainPadTop": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 12,
+          "default": 2.4,
+          "description": "× --fx-space; token --fx-layout-main-pad-top"
+        },
+        "mainPadX": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 12,
+          "default": 4,
+          "description": "× --fx-space; token --fx-layout-main-pad-x"
+        },
+        "mainPadBottom": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 16,
+          "default": 6,
+          "description": "× --fx-space; token --fx-layout-main-pad-bottom"
+        },
+        "phoneMainPadTop": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 8,
+          "default": 1.6,
+          "description": "× --fx-space; token --fx-layout-phone-main-pad-top"
+        },
+        "phoneMainPadX": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 8,
+          "default": 1.6,
+          "description": "× --fx-space; token --fx-layout-phone-main-pad-x"
+        },
+        "phoneMainPadBottom": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 12,
+          "default": 4,
+          "description": "× --fx-space; token --fx-layout-phone-main-pad-bottom"
+        },
+        "phoneNavItemMin": {
+          "type": "integer",
+          "minimum": 40,
+          "maximum": 200,
+          "default": 64,
+          "description": "px; token --fx-layout-phone-nav-item-min"
+        },
+        "phoneEdge": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 40,
+          "default": 8,
+          "description": "px; token --fx-layout-phone-edge"
+        },
+        "tinyMaxWidth": {
+          "type": "integer",
+          "minimum": 200,
+          "maximum": 900,
+          "default": 480,
+          "description": "px; token --fx-layout-tiny-max-width"
+        },
+        "smallMaxWidth": {
+          "type": "integer",
+          "minimum": 240,
+          "maximum": 1200,
+          "default": 640,
+          "description": "px; token --fx-layout-small-max-width"
+        },
+        "phoneMaxWidth": {
+          "type": "integer",
+          "minimum": 320,
+          "maximum": 1600,
+          "default": 760,
+          "description": "px; token --fx-layout-phone-max-width"
+        },
+        "mediumMaxWidth": {
+          "type": "integer",
+          "minimum": 320,
+          "maximum": 2000,
+          "default": 900,
+          "description": "px; token --fx-layout-medium-max-width"
+        },
+        "largeMaxWidth": {
+          "type": "integer",
+          "minimum": 400,
+          "maximum": 4000,
+          "default": 1200,
+          "description": "px; token --fx-layout-large-max-width"
+        }
       }
     }
   }

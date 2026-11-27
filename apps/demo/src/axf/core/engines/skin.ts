@@ -1,0 +1,551 @@
+/**
+ * skin@2 + app-look@1 (build skins, Nov 2026; coverage, parts, icon pack and scopes added by build skins-asset-types,
+ * Fable, Nov 7 2026; sections and the end of design packs by build appearance-skins-colour-themes-only, Fable, Nov 10 2026).
+ *
+ * A skin (asset type `skin`) is the whole look of a place (Brett, Nov 9 2026: "remove design packs as a thing since
+ * everything's covered in a skin"). It has four SECTIONS, kept apart so the Skin Designer can edit each on its own:
+ *
+ *   colours    `colorTheme`    → a colour section preset (asset type `color-theme`)     or `sections.colors` inline
+ *   style      `styleTheme`    → a style section preset (asset type `style-theme`)      or `sections.style` inline
+ *   layout     `layoutTheme`   → a layout section preset (asset type `layout`)           or `sections.layout` inline
+ *   behaviour  `behaviorTheme` → a behaviour section preset (asset type `behavior-theme`) or `sections.behavior` inline
+ *
+ * and the `assets` that fill every other slot (title bar, menus, context menus, toolbars, dialogs, buttons, nav menu,
+ * the scale assets …). The section asset types are no longer picked anywhere on their own: they are the skin's
+ * section presets (the library the Skin Designer offers), read through the skin. An inline section is the section's
+ * data written in the skin itself; the runtime registers it as a preset named after the skin (`skinSectionAssets`).
+ * A skin MAY name an icon pack (`iconPack`) and MAY carry style `parts` for any type that has a style target (customize
+ * engine), so it reaches widgets, badges, labels and every other drawn piece — the registry says how each type is
+ * covered (`skin-coverage.mjs`, `skinCoverage()`), and CI fails on a type it can't reach.
+ *
+ * Design packages (design-package@1) and style packages (style-package@1) were folded into skins: every former
+ * package is now a skin with the same id (`skinFromDesignPackage`, `skinFromStylePackage` did the one-time conversion),
+ * so every reference to one keeps resolving (an old `design-package` slot or `axf.appearance.design` setting reads as
+ * that skin: `migrateLegacyLook`).
+ *
+ * A skin owns everything, and its colour theme is the one section switched on its own (Brett, Nov 9 2026: "You can
+ * change the color theme without changing the skin. If you change the color theme, it makes a new skin, don't like
+ * that."). `colorTheme` on the skin is the skin's own; a pick made while the skin is in force is kept beside the skin
+ * in the look document (`skin.colorTheme`, a scope's `colorTheme`, the hub-wide skin's `colorTheme`: skin-rules.mjs),
+ * never as an override and never as another skin. Changing the colour theme leaves the skin id, the skin asset and
+ * the list of skins exactly as they were (`lookAfterChange`, `setSkinColorTheme`, `setLookSlot`); `skinColorOf` says
+ * what a place shows.
+ *
+ * app-look@1 is one app's look on the hub (`shared/settings/looks/<app>.json`): the snapshot of its default, its own
+ * picks over that default, its skin switch, and a skin state per UI / plugin. It is what keeps apps apart (Brett,
+ * Nov 4 2026: "by default they're all their own"): the shared appearance@1 document stays the transport and the
+ * source of shared token overrides (and of the hub-wide skin, `skin` on that document), but an app's slots, spacing
+ * and chrome come from its own document, which only that app writes.
+ *
+ *   effective look at a place = default snapshot + own picks                        (no skin in the chain)
+ *                             = that + the skin in force + the chain's overrides     (plugin → ui → app → global)
+ *                               + the colour theme picked inside the skin, when one is
+ *
+ * Pure and port-neutral; Kotlin twin deferred (spec/PORTING.md, "skin@2 + app-look@1").
+ */
+import type { AppearanceChange, AppearanceDocument } from './appearance';
+import { APPEARANCE_FRAME } from './appearance';
+import type { AssetEnvelope } from '../types';
+import { spacingOf } from './spacing';
+import { CUSTOM_TARGETS, customizable, normalizeCustomValues, type CustomValues } from './customize';
+import { behaviorErrors, normalizeBehavior } from './behavior';
+import { layoutErrors } from './layout-rules.mjs';
+import spec from '../../schemas/asset-types.json';
+import { RETIRED_PACKAGE_TYPES, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_SECTIONS, SKIN_SECTION_FIELDS, isSkinSectionType, sectionOfType, normalizeLookPart, normalizeSkinChrome, resolveLookSkin, setSkinColorTheme, skinChromeErrors, skinChromeSettings, type AppLookDocument, type GlobalSkin, type LookPart, type SkinChrome, type SkinSection } from './skin-rules.mjs';
+import { SKIN_SCOPE_DEFAULT, coverageSummary, coverageTable, isSubScopeKey, partsErrors, partsTypes, skinScopeChain, skinScopeKey, uncoveredTypes, type CoverageRow, type CoverageSummary, type ResolvedSkin, type SkinScope, type TypeSpecs } from './skin-coverage.mjs';
+import { normalizeHubSkin } from './appearance';
+
+export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, LOOK_BACKUPS_MAX, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, adoptHubDefault, appLookPath, backToSkin, backupLook, hubOnlyLook, lookBackup, migrateLegacyLook, newAppLook, normalizeAppLook, normalizeLookBackup, normalizeScopeState, normalizeSkinChrome, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinChromeErrors, skinChromeSettings, skinColorTheme, undoRestore, RETIRED_PACKAGE_TYPES, SKIN_SCALE_TYPES, SKIN_SECTIONS, SKIN_SECTION_FIELDS, SKIN_SWAPPABLE_SECTION, isSkinSectionType, sectionOfType, skinSlotMap } from './skin-rules.mjs';
+export type { AppLookDocument, AppSkinState, GlobalSkin, LookBackup, LookPart, LegacyLook, LookMigrated, LookUndo, SkinChrome, SkinChromeKind, SkinSection } from './skin-rules.mjs';
+// skin-switch@1 (Nov 13 2026): use / back-to-skin / restore-default / undo per scope (hub, app:<id>, ui:<view>, plugin:<id>), one undo record in the look document
+export { SKIN_SWITCH_ACTIONS, SKIN_SWITCH_CONTRACT, SKIN_SWITCH_ERRORS, SKIN_SWITCH_HUB, SKIN_SWITCH_SCOPES, normalizeSkinSwitch, parseSwitchScope, skinSwitch, skinSwitchState, switchScopeOf, switchScopeState, switchScopes } from './skin-switch.mjs';
+export type { SkinSwitchAction, SkinSwitchCommand, SkinSwitchContext, SkinSwitchError, SkinSwitchProblem, SkinSwitchResult, SkinSwitchScopeKind, SkinSwitchState, SkinSwitchView, SwitchScope } from './skin-switch.mjs';
+// look-migration@1 (skins only, Nov 10 2026): the one-run fold of the retired theme / style / layout picks and settings
+export { DESIGN_OVERRIDES_SETTING, FOLDED_PICK_TYPES, LEGACY_LOOK_KEY, LOOK_MIGRATED_KEY, LOOK_MIGRATION_FRAME, LOOK_MIGRATION_VERSION, RETIRED_LOOK_KEYS, RETIRED_LOOK_PREFIXES, foldLegacyPicks, isFoldedPickType, isRetiredLookKey, legacyLookSettings, legacyPicks, legacyThemesInForce, lookMigrated, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, resolveLegacyLook, settingsNeedMigration } from './look-migration.mjs';
+export type { FoldContext, FoldReason, FoldReport, FoldSkin, LegacyLookBackup } from './look-migration.mjs';
+// named, not `export *`: tsx links a star re-export of a .mjs module as empty when the importer is a .mts file
+export { COVERAGE_KINDS, PART_ELEMENTS, SKIN_COVERAGE_CONTRACT, SKIN_SCOPE_APP, SKIN_SCOPE_DEFAULT, SKIN_SCOPE_GLOBAL, SKIN_SCOPE_KINDS, coverageOf, coverageSummary, coverageTable, declarationErrors, declaredCoverage, isSubScopeKey, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveSkinChain, skinScopeChain, skinScopeDomId, skinScopeKey, skinScopeKind, skinScopeOf, skinScopeSelector, uncoveredTypes } from './skin-coverage.mjs';
+export type { CoverageKind, CoverageRow, CoverageSummary, PartElement, ResolvedSkin, SkinScope, SkinScopeKind, SkinScopeState, StyleTargets, TypeSpecs } from './skin-coverage.mjs';
+
+export const SKIN_TYPE = 'skin';
+export const SKIN_FRAME = 'skin@2';
+/** Setting keys of a shared document that still reach every app: control@1 token overrides. */
+export const SHARED_SETTING_PREFIXES: readonly string[] = ['axf.tokens.'];
+/** `axf.icons.pack.<scopeKey>` = the icon pack a skin puts in force at a scope (the icon-map engine's own key, so icon maps read it as the scope's pack). */
+export const SKIN_ICON_PACK_KEY = (scopeKey: string): string => `axf.icons.pack.${scopeKey}`;
+/** The retired design-package@1 setting (`axf.appearance.design`): read once by `migrateLegacyLook`, never written. */
+export const LEGACY_DESIGN_APPLIED_KEY = 'axf.appearance.design';
+/** The retired precedence overrides of design-package@1; a document still carrying them is cleaned once. */
+export const LEGACY_DESIGN_OVERRIDES_KEY = 'axf.appearance.overrides';
+export type SkinSectionField = (typeof SKIN_SECTION_FIELDS)[SkinSection];
+
+export interface SkinExtras { spacing?: string; hidden?: Record<string, boolean>; settings?: Record<string, unknown> }
+export interface SkinData {
+  /** Layout section preset (asset type `layout`). */
+  layoutTheme: string;
+  /** Colour section preset (asset type `color-theme`). */
+  colorTheme: string;
+  /** Style section preset (asset type `style-theme`). */
+  styleTheme: string;
+  /** Behaviour section preset (asset type `behavior-theme`); '' = the framework's standard behaviour. */
+  behaviorTheme: string;
+  /** Inline sections: a section's data written in the skin; wins over the preset named for that section. */
+  sections?: Partial<Record<SkinSection, Record<string, unknown>>>;
+  /** Appearance slot → asset id, for everything but the four sections. */
+  assets: Record<string, string>;
+  /** The icon pack the skin draws its icons from (icon-pack asset id); absent = the branding's. */
+  iconPack?: string;
+  /** Style parts per asset type (customize tokens): how the type's box, text, icon and items look under this skin. */
+  parts?: Record<string, CustomValues>;
+  /** Shown in the picker; swatches are drawn from the skin's colour section. */
+  preview?: { caption?: string; image?: string };
+  /** Spacing and chrome the skin needs shown or hidden. */
+  extras?: SkinExtras;
+  /**
+   * Chrome settings per chrome kind (chrome-settings@1: tab-group, toolbar, banner, nav-menu, app-menu, context-menu):
+   * the settings interface its dialog renders through and field overrides per instance (skin-rules.mjs `SkinChrome`).
+   * Lands in the composed look's settings after `extras.settings`.
+   */
+  chrome?: SkinChrome;
+}
+/** Where an app's app-look document is kept: the hub, or a setting without one. `failed` = unreadable: nothing is written. */
+export interface AppLookStore {
+  get(): AppLookDocument | null;
+  status(): 'loading' | 'ready' | 'missing' | 'failed';
+  save(doc: AppLookDocument): void;
+  subscribe(fn: () => void): () => void;
+}
+/** One row of the Skin picker. */
+export interface SkinEntry { id: string; name: string; kind: 'skin'; description: string; tags: string[]; data: SkinData }
+/** The colour theme of a skin at a place: `id` = what shows, `own` = the skin's own, `picked` = the user switched it inside the skin. */
+export interface SkinColor { id: string; own: string; picked: boolean }
+/** What a place in an app draws: the composed document, the skin's parts and which level decided. */
+export interface ComposedLook { doc: AppearanceDocument; parts: Record<string, CustomValues>; skin: ResolvedSkin; scopeKey: string }
+
+const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
+const ID = /^[a-z0-9][a-z0-9-]*$/;
+const TYPE_SPECS = spec.types as unknown as TypeSpecs;
+type SectionSpec = { required?: string[]; enums?: Record<string, string[]>; nested?: Record<string, string[]> };
+const SECTION_TYPES = Object.values(SKIN_SECTIONS) as string[];
+
+/** The parts of a document a snapshot keeps (never the palette or who saved it). */
+export function snapshotLook(doc: AppearanceDocument | null): LookPart {
+  return normalizeLookPart(doc ?? {});
+}
+
+function idMap(raw: unknown): Record<string, string> {
+  const out: Record<string, string> = {};
+  if (isObj(raw)) for (const [k, v] of Object.entries(raw)) if (ID.test(k) && typeof v === 'string' && ID.test(v) && !SKIN_NEVER.includes(k) && !RETIRED_PACKAGE_TYPES.includes(k)) out[k] = v;
+  return out;
+}
+function boolMap(raw: unknown): Record<string, boolean> {
+  const out: Record<string, boolean> = {};
+  if (isObj(raw)) for (const [k, v] of Object.entries(raw)) if (typeof v === 'boolean') out[k] = v;
+  return out;
+}
+/** Parts kept: registered types with a style target, values checked against the type's tokens (a type left with nothing is dropped). */
+function partsMap(raw: unknown): Record<string, CustomValues> {
+  const out: Record<string, CustomValues> = {};
+  if (isObj(raw)) for (const [t, v] of Object.entries(raw)) {
+    if (!TYPE_SPECS[t] || !customizable(t) || !isObj(v)) continue;
+    const n = normalizeCustomValues(v, t);
+    if (Object.keys(n).length) out[t] = n;
+  }
+  return out;
+}
+/** Inline sections kept: known section names with object data (validated by `skinErrors`, not reshaped here). */
+function sectionsMap(raw: unknown): Partial<Record<SkinSection, Record<string, unknown>>> {
+  const out: Partial<Record<SkinSection, Record<string, unknown>>> = {};
+  if (isObj(raw)) for (const s of Object.keys(SKIN_SECTIONS) as SkinSection[]) if (isObj(raw[s])) out[s] = JSON.parse(JSON.stringify(raw[s])) as Record<string, unknown>;
+  return out;
+}
+
+/** Keep only what skin@2 holds; a malformed field is dropped, never a crash. */
+export function normalizeSkin(raw: unknown): SkinData {
+  const d = isObj(raw) ? raw : {};
+  const id = (k: string) => (typeof d[k] === 'string' && ID.test(d[k] as string) ? (d[k] as string) : '');
+  const assets = idMap(d.assets);
+  // skin@1 kept the behaviour in `assets["behavior-theme"]`: it is the behaviour section now
+  const behaviorTheme = id('behaviorTheme') || (ID.test(assets['behavior-theme'] ?? '') ? assets['behavior-theme']! : '');
+  for (const t of SECTION_TYPES) delete assets[t];
+  const out: SkinData = { layoutTheme: id('layoutTheme'), colorTheme: id('colorTheme'), styleTheme: id('styleTheme'), behaviorTheme, assets };
+  const sections = sectionsMap(d.sections);
+  if (Object.keys(sections).length) out.sections = sections;
+  if (typeof d.iconPack === 'string' && ID.test(d.iconPack)) out.iconPack = d.iconPack;
+  const parts = partsMap(d.parts);
+  if (Object.keys(parts).length) out.parts = parts;
+  if (isObj(d.preview)) {
+    const p: NonNullable<SkinData['preview']> = {};
+    if (typeof d.preview.caption === 'string') p.caption = d.preview.caption.slice(0, 200);
+    if (typeof d.preview.image === 'string') p.image = d.preview.image.slice(0, 500);
+    out.preview = p;
+  }
+  if (isObj(d.extras)) {
+    const x: SkinExtras = {};
+    if (typeof d.extras.spacing === 'string' && spacingOf(d.extras.spacing) === d.extras.spacing) x.spacing = d.extras.spacing;
+    if (isObj(d.extras.hidden)) x.hidden = boolMap(d.extras.hidden);
+    if (isObj(d.extras.settings)) x.settings = { ...d.extras.settings };
+    out.extras = x;
+  }
+  const chrome = normalizeSkinChrome(d.chrome);
+  if (Object.keys(chrome).length) out.chrome = chrome;
+  return out;
+}
+
+/** The registry's shape rules for one section type (required fields, enums, nested keys), the same as validateAsset applies. */
+function sectionSpecErrors(type: string, data: unknown, at: string): string[] {
+  const ts = (TYPE_SPECS as unknown as Record<string, SectionSpec>)[type];
+  if (!isObj(data)) return [`${at} must be an object (${type} data)`];
+  const errors: string[] = [];
+  for (const k of ts?.required ?? []) if (!(k in data)) errors.push(`${at}.${k} is required for ${type}`);
+  for (const [k, allowed] of Object.entries(ts?.enums ?? {})) if (k in data && !allowed.includes(data[k] as string)) errors.push(`${at}.${k} must be one of: ${allowed.join(', ')}`);
+  for (const [k, keys] of Object.entries(ts?.nested ?? {})) if (isObj(data[k])) for (const nk of keys) if (!(nk in (data[k] as Record<string, unknown>))) errors.push(`${at}.${k}.${nk} is required`);
+  return errors;
+}
+
+/** Validation messages for one inline section (`sections.<name>`): the section type's own validator. */
+export function skinSectionErrors(section: string, data: unknown): string[] {
+  const type = (SKIN_SECTIONS as Record<string, string>)[section];
+  const at = `data.sections.${section}`;
+  if (!type) return [`${at}: not a skin section (${Object.keys(SKIN_SECTIONS).join(', ')})`];
+  if (!isObj(data)) return [`${at} must be an object (${type} data)`];
+  // the behaviour section is as lenient as its engine (every field has a default); the others follow the registry's shape rules
+  const errors = type === 'behavior-theme' ? behaviorErrors(data).map((e) => `${at}: ${e}`) : sectionSpecErrors(type, data, at);
+  if (type === 'layout') errors.push(...layoutErrors('layout', data).map((e: string) => `${at}: ${e}`));
+  return errors;
+}
+
+/** Validation messages for a skin's data (validators call it for type `skin`). */
+export function skinErrors(raw: unknown): string[] {
+  if (!isObj(raw)) return ['data must be an object'];
+  const errors: string[] = [];
+  const sections = isObj(raw.sections) ? raw.sections : {};
+  for (const [s, field] of Object.entries(SKIN_SECTION_FIELDS) as [SkinSection, string][]) {
+    const t = SKIN_SECTIONS[s];
+    const v = raw[field];
+    const inline = isObj(sections[s]);
+    if (s === 'behavior' && (v === undefined || v === '')) continue; // the behaviour section defaults to the framework standard
+    if (v === undefined && inline) continue; // the section is written in the skin instead of a preset
+    if (typeof v !== 'string' || !ID.test(v)) errors.push(`data.${field} must be a ${t} asset id${s === 'behavior' ? '' : ` (or write data.sections.${s})`}`);
+  }
+  if ('sections' in raw) {
+    if (!isObj(raw.sections)) errors.push('data.sections must be an object (colors, style, layout, behavior)');
+    else for (const [s, d] of Object.entries(raw.sections)) errors.push(...skinSectionErrors(s, d));
+  }
+  if (!isObj(raw.assets)) errors.push('data.assets must be an object (slot → asset id)');
+  else for (const [t, id] of Object.entries(raw.assets)) {
+    if (RETIRED_PACKAGE_TYPES.includes(t)) errors.push(`data.assets.${t}: ${t} is retired, a skin carries its slots itself`);
+    else if (SKIN_NEVER.includes(t) || (SECTION_TYPES.includes(t) && t !== 'behavior-theme')) errors.push(`data.assets.${t}: a skin never sets ${t} here`);
+    else if (typeof id !== 'string' || !ID.test(id)) errors.push(`data.assets.${t} must be an asset id`);
+  }
+  if (raw.iconPack !== undefined && (typeof raw.iconPack !== 'string' || !ID.test(raw.iconPack))) errors.push('data.iconPack must be an icon-pack asset id');
+  errors.push(...partsErrors(raw.parts, TYPE_SPECS, CUSTOM_TARGETS));
+  if ('preview' in raw && !isObj(raw.preview)) errors.push('data.preview must be an object');
+  if ('extras' in raw) {
+    const x = raw.extras;
+    if (!isObj(x)) errors.push('data.extras must be an object');
+    else {
+      if ('spacing' in x && (typeof x.spacing !== 'string' || spacingOf(x.spacing) !== x.spacing)) errors.push('data.extras.spacing must be tight, compact or regular');
+      if ('hidden' in x && (!isObj(x.hidden) || Object.values(x.hidden).some((v) => typeof v !== 'boolean'))) errors.push('data.extras.hidden must map asset types to true / false');
+      if ('settings' in x && !isObj(x.settings)) errors.push('data.extras.settings must be an object');
+    }
+  }
+  errors.push(...skinChromeErrors(raw.chrome));
+  return errors;
+}
+
+/** The preset id of an inline section: the skin's own name as a section asset (`skin-<skin id>`). */
+export const inlineSectionId = (skinId: string): string => `skin-${skinId}`;
+
+/**
+ * The section assets an inline-sectioned skin brings: one `<section type>/skin-<skin id>` per inline section, so the
+ * runtime registers them and the slots point at them. Empty for a skin that only names presets.
+ */
+export function skinSectionAssets(skinId: string, skin: SkinData, name = skinId): AssetEnvelope<Record<string, unknown>>[] {
+  const out: AssetEnvelope<Record<string, unknown>>[] = [];
+  for (const [s, raw] of Object.entries(skin.sections ?? {}) as [SkinSection, Record<string, unknown>][]) {
+    const data = s === 'behavior' ? (normalizeBehavior(raw) as unknown as Record<string, unknown>) : raw; // a behaviour section may set only what it changes
+    out.push({ $axf: 'asset@1', type: SKIN_SECTIONS[s], id: inlineSectionId(skinId), name: `${name} (${s} section)`, version: '1.0.0', description: `The ${s} section written in skin ${skinId}.`, author: 'skin', tags: ['skin-section', skinId], data } as AssetEnvelope<Record<string, unknown>>);
+  }
+  return out;
+}
+
+/** The preset id in force for one section: the inline section (as `skin-<id>`) when written, else the named preset ('' = default). */
+export function skinSectionId(skin: SkinData, section: SkinSection, skinId = ''): string {
+  if (skin.sections?.[section] && skinId) return inlineSectionId(skinId);
+  return skin[SKIN_SECTION_FIELDS[section]] ?? '';
+}
+
+/** Every slot a skin sets, sections included. Empty ids are skipped. `skinId` names the skin, so inline sections resolve. */
+export function skinSlots(skin: SkinData, skinId = ''): Record<string, string> {
+  const out = { ...skin.assets };
+  for (const t of SECTION_TYPES) delete out[t];
+  for (const [s, t] of Object.entries(SKIN_SECTIONS) as [SkinSection, string][]) { const v = skinSectionId(skin, s, skinId); if (v) out[t] = v; }
+  return out;
+}
+
+/** The sections an app's default skin decides at first start, as the default design package did before skins (style and colours). */
+export const SKIN_DEFAULT_SLOTS: readonly string[] = ['color-theme', 'style-theme'];
+
+/**
+ * An app's manifest defaults with its default skin (`defaults.skin`) applied: the skin's colour and style sections become
+ * the default colour and style theme, so an app starts in the look its default skin gives (the default design package
+ * did the same until Nov 10 2026). A section the app doesn't ship (`has` false) keeps the manifest's own default. No
+ * default skin, or none of that id, = the defaults unchanged.
+ */
+export function defaultsWithSkin<T extends Record<string, string | undefined>>(defaults: T, skin: SkinData | null, skinId: string, has: (type: string, id: string) => boolean): T {
+  if (!skin) return defaults;
+  const slots = skinSlots(skin, skinId);
+  const out: Record<string, string | undefined> = { ...defaults };
+  for (const t of SKIN_DEFAULT_SLOTS) { const v = slots[t]; if (v && has(t, v)) out[t] = v; }
+  return out as T;
+}
+
+/* ---------------- conversion: design packages and style packages became skins (Nov 10 2026) ---------------- */
+
+/** What a design package (design-package@1) held. */
+export interface LegacyDesignPackage { 'style-theme'?: string; 'color-theme'?: string; layout?: string; 'behavior-theme'?: string; extras?: { slots?: Record<string, string>; spacing?: string; hidden?: Record<string, boolean>; settings?: Record<string, unknown> } }
+
+/**
+ * A design package read as a skin (the one-time conversion; also how an old package document is understood):
+ * its four themes are the four sections, `extras.slots` the assets, `extras` spacing / hidden / settings the skin's
+ * extras. A `style-package` among the slots is expanded through `stylePackageSlots` (its member controls become
+ * assets; the package's own slots win), since style packages are retired too.
+ */
+export function skinFromDesignPackage(raw: unknown, stylePackageSlots: (id: string) => Record<string, string> | null = () => null): SkinData {
+  const p = (isObj(raw) ? raw : {}) as LegacyDesignPackage;
+  const id = (v: unknown) => (typeof v === 'string' && ID.test(v) ? v : '');
+  const x = isObj(p.extras) ? p.extras : {};
+  const slots: Record<string, string> = {};
+  const pack = id(x.slots?.['style-package']);
+  if (pack) Object.assign(slots, stylePackageSlots(pack) ?? {});
+  for (const [t, v] of Object.entries(x.slots ?? {})) if (!RETIRED_PACKAGE_TYPES.includes(t) && !SECTION_TYPES.includes(t) && id(v)) slots[t] = v;
+  const skin: SkinData = { layoutTheme: id(p.layout), colorTheme: id(p['color-theme']), styleTheme: id(p['style-theme']), behaviorTheme: id(p['behavior-theme']), assets: idMap(slots) };
+  if (x.spacing || x.hidden || x.settings) skin.extras = { ...(x.spacing && spacingOf(x.spacing) === x.spacing ? { spacing: x.spacing } : {}), ...(isObj(x.hidden) ? { hidden: boolMap(x.hidden) } : {}), ...(isObj(x.settings) ? { settings: { ...x.settings } } : {}) };
+  return skin;
+}
+
+/** A style package (style-package@1: one matched set of controls) read as a skin over the default look `base`. */
+export function skinFromStylePackage(raw: unknown, base: SkinData): SkinData {
+  const d = isObj(raw) ? raw : {};
+  const members = idMap(d.slots);
+  const skin: SkinData = { ...base, assets: { ...base.assets, ...members } };
+  delete skin.sections; delete skin.parts; delete skin.iconPack; delete skin.preview;
+  return skin;
+}
+
+/** The Skin picker's list. */
+export function skinEntries(skins: readonly { id: string; name: string; description?: string; tags?: string[]; data: unknown }[]): SkinEntry[] {
+  return skins.map((a) => ({ id: a.id, name: a.name, kind: 'skin', description: a.description ?? '', tags: Array.isArray(a.tags) ? a.tags.filter((t): t is string => typeof t === 'string') : [], data: normalizeSkin(a.data) }));
+}
+
+/** What capturing the current look as a skin needs from the runtime. */
+export interface SkinCaptureEnv {
+  active: Record<string, string | undefined>;
+  types: readonly string[];
+  spacing: string;
+  /** hidden overrides the user saved (type → bool) */
+  hidden: Record<string, boolean>;
+  /** every saved settings key → value */
+  values: Record<string, unknown>;
+  /** which settings keys count as look settings */
+  isLookSetting: (key: string) => boolean;
+}
+
+/** The current look as a skin: the four section presets in force, every other slot as an asset, spacing, chrome and look settings as extras. */
+export function captureSkin(env: SkinCaptureEnv): SkinData {
+  const assets: Record<string, string> = {};
+  for (const t of env.types) if (!SECTION_TYPES.includes(t) && !SKIN_NEVER.includes(t) && !RETIRED_PACKAGE_TYPES.includes(t) && env.active[t]) assets[t] = env.active[t]!;
+  const settings: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(env.values).sort(([a], [b]) => a.localeCompare(b))) if (env.isLookSetting(k) && v !== undefined && v !== null) settings[k] = v;
+  return {
+    layoutTheme: env.active.layout ?? '', colorTheme: env.active['color-theme'] ?? '', styleTheme: env.active['style-theme'] ?? '', behaviorTheme: env.active['behavior-theme'] ?? '',
+    assets, extras: { spacing: env.spacing, hidden: { ...env.hidden }, settings },
+  };
+}
+
+/* ---------------- coverage: how a skin reaches every registered type ---------------- */
+
+/** Every registered asset type with how a skin covers it (registry order, read from asset-types.json + the style targets). */
+export function skinCoverage(): CoverageRow[] { return coverageTable(TYPE_SPECS, CUSTOM_TARGETS, SKIN_NEVER); }
+/** The types a skin can't reach (CI fails on any). */
+export function skinUncovered(): CoverageRow[] { return uncoveredTypes(TYPE_SPECS, CUSTOM_TARGETS, SKIN_NEVER); }
+/** Counts per kind. */
+export function skinCoverageSummary(): CoverageSummary { return coverageSummary(skinCoverage()); }
+/** The types a skin's `parts` may style. */
+export function skinPartsTypes(): string[] { return partsTypes(TYPE_SPECS, CUSTOM_TARGETS); }
+/** What one skin covers, type by type: `covered` = it sets or styles that type; `how` = the means it uses. */
+export function skinCovers(skin: SkinData, skinId = ''): { type: string; by: CoverageRow['by']; covered: boolean; how: string[] }[] {
+  const slots = skinSlots(skin, skinId);
+  return skinCoverage().map((r) => {
+    const how: string[] = [];
+    if (slots[r.type]) how.push(isSkinSectionType(r.type) ? `${sectionOfType(r.type)} section ${skin.sections?.[sectionOfType(r.type) as SkinSection] ? 'written in the skin' : slots[r.type]}` : `slot ${slots[r.type]}`);
+    if (skin.parts?.[r.type]) how.push(`parts ${Object.keys(skin.parts[r.type]!).join(', ')}`);
+    if (r.by === 'reference' && r.via === 'iconPack' && skin.iconPack) how.push(`iconPack ${skin.iconPack}`);
+    if (r.by === 'reference' && r.via && r.via !== 'iconPack' && slots[r.via]) how.push(`via ${r.via} ${slots[r.via]}`);
+    if (r.by === 'bundle') how.push('the skin itself');
+    if (r.by === 'none') how.push('no look');
+    return { type: r.type, by: r.by, covered: r.by !== 'none' && how.length > 0, how };
+  });
+}
+
+/* ---------------- composing ---------------- */
+
+/** The hub-wide skin a shared document carries (null = none); `colorTheme` only when one was picked inside it. */
+export function globalSkinOf(shared: AppearanceDocument | null | undefined): GlobalSkin | null {
+  const s = (shared as { skin?: unknown } | null | undefined)?.skin;
+  if (!isObj(s) || typeof s.id !== 'string' || !ID.test(s.id)) return null;
+  const overrides = idMap(s.overrides);
+  // a document saved before the colour theme had its own field kept the pick among the overrides
+  const pick = typeof s.colorTheme === 'string' && ID.test(s.colorTheme) ? s.colorTheme : overrides[SKIN_COLOR_SLOT] ?? '';
+  delete overrides[SKIN_COLOR_SLOT];
+  return pick ? { id: s.id, overrides, colorTheme: pick } : { id: s.id, overrides };
+}
+
+/**
+ * The colour theme a skin shows where `resolved` is in force: the pick made inside the skin (the nearest level that
+ * has one), else the skin's own colours section (`skinId` names the skin, so an inline colours section resolves).
+ * `picked` is false when the pick is the skin's own theme. No skin = all empty.
+ */
+export function skinColorOf(skin: SkinData | null, resolved: { colorTheme?: string; id?: string } | null | undefined, skinId = resolved?.id ?? ''): SkinColor {
+  if (!skin) return { id: '', own: '', picked: false };
+  const own = skinSectionId(skin, 'colors', skinId);
+  const pick = resolved?.colorTheme ?? '';
+  return { id: pick || own, own, picked: !!pick && pick !== own };
+}
+
+/** The hub default skin the shared document carries (`defaultSkin`; null = none): the floor every app stands on. */
+export function hubDefaultOf(shared: AppearanceDocument | null | undefined): GlobalSkin | null {
+  const p = normalizeHubSkin((shared as { defaultSkin?: unknown } | null | undefined)?.defaultSkin);
+  if (!p) return null;
+  // the same shape as globalSkinOf: overrides always present, colorTheme only when picked
+  return p.colorTheme ? { id: p.id, overrides: p.overrides ?? {}, colorTheme: p.colorTheme } : { id: p.id, overrides: p.overrides ?? {} };
+}
+
+/**
+ * What the UI / plugin levels of a place add over the deciding level, root to leaf (`ui:` then `plugin:`): their
+ * overrides merged, and the colour theme the nearest of them picked ('' = none). Used when the floor decides, where the
+ * app's own picks must sit between the hub default and these.
+ */
+function subScopeAdds(look: AppLookDocument, scope: Partial<SkinScope> | null | undefined): { overrides: Record<string, string>; colorTheme: string } {
+  const overrides: Record<string, string> = {};
+  let colorTheme = '';
+  for (const key of skinScopeChain({ ...scope, app: look.app }).filter(isSubScopeKey).reverse()) {
+    const st = look.scopes?.[key];
+    if (!st || st.use === 'off') continue;
+    Object.assign(overrides, st.overrides);
+    if (st.colorTheme) colorTheme = st.colorTheme;
+  }
+  return { overrides, colorTheme };
+}
+
+/**
+ * The document for a look with `skin` on (or none) and `overrides` over it; `scopeKey` names where the icon pack lands;
+ * `colorTheme` is the colour theme picked inside the skin ('' = the skin's own).
+ *
+ * `floor` = the skin is the hub default (the `default` level decided, Nov 14 2026): then the app's own picks are the
+ * edits drawn over it, so the order is default snapshot → hub default skin (sections, assets, extras, chrome) → the
+ * pointer's overrides and colour theme (`overrides`, `colorTheme`) → the app's own picks → the UI / plugin levels'
+ * overrides and colour theme (`floor.overrides`, `floor.colorTheme`). Without `floor` the order is the one every skin
+ * has had: snapshot + own picks → the skin → the chain's overrides → the colour theme picked inside the skin.
+ */
+function composeWith(shared: AppearanceDocument | null, look: AppLookDocument, skin: SkinData | null, skinId: string, overrides: Record<string, string>, scopeKey: string, colorTheme = '', floor: { overrides: Record<string, string>; colorTheme: string } | null = null): AppearanceDocument {
+  const slots = { ...look.default.slots, ...(floor ? {} : look.own.slots) };
+  const hidden = { ...look.default.hidden, ...(floor ? {} : look.own.hidden) };
+  let spacing = (floor ? undefined : look.own.spacing) ?? look.default.spacing;
+  const settings: Record<string, unknown> = { ...look.default.settings, ...(floor ? {} : look.own.settings) };
+  for (const [k, v] of Object.entries(shared?.settings ?? {})) if (SHARED_SETTING_PREFIXES.some((p) => k.startsWith(p))) settings[k] = v;
+  if (skin) {
+    Object.assign(slots, skinSlots(skin, skinId), overrides);
+    if (colorTheme) slots[SKIN_COLOR_SLOT] = colorTheme; // switched inside the skin: same skin, other colours
+    if (skin.extras?.spacing) spacing = skin.extras.spacing;
+    Object.assign(hidden, skin.extras?.hidden);
+    Object.assign(settings, skin.extras?.settings, skinChromeSettings(skin.chrome));
+    if (skin.iconPack) settings[SKIN_ICON_PACK_KEY(scopeKey)] = skin.iconPack;
+    if (floor) {
+      // the app's edits over the floor, then what its screens and plugins add
+      Object.assign(slots, look.own.slots, floor.overrides);
+      if (floor.colorTheme) slots[SKIN_COLOR_SLOT] = floor.colorTheme;
+      Object.assign(hidden, look.own.hidden);
+      if (look.own.spacing) spacing = look.own.spacing;
+      Object.assign(settings, look.own.settings);
+    }
+  }
+  for (const t of RETIRED_PACKAGE_TYPES) delete slots[t];
+  delete settings[LEGACY_DESIGN_OVERRIDES_KEY];
+  delete settings[LEGACY_DESIGN_APPLIED_KEY];
+  for (const [k, v] of Object.entries(settings)) if (v === null) delete settings[k];
+  const out: AppearanceDocument = { $axf: APPEARANCE_FRAME, slots, hidden, settings: settings as AppearanceDocument['settings'] };
+  if (spacing) out.spacing = spacing as AppearanceDocument['spacing'];
+  if (shared?.palette) out.palette = shared.palette;
+  return out;
+}
+
+/**
+ * The document the runtime applies for this app (the app level alone). `shared` only adds the shared token overrides:
+ * its slots, spacing and chrome belong to the snapshot now. `skin` is the data of the app's skin; null (unknown id)
+ * reads as Use skin off. The hub-wide skin and the sub scopes are `composeLookAt`'s business.
+ */
+export function composeLook(shared: AppearanceDocument | null, look: AppLookDocument, skin: SkinData | null): AppearanceDocument {
+  const on = look.skin.use && !!skin;
+  return composeWith(shared, look, on ? skin : null, look.skin.id, on ? look.skin.overrides : {}, 'app', on ? look.skin.colorTheme : '');
+}
+
+/**
+ * The look at a place: the chain plugin → ui → app → global → default decides the skin (`resolveLookSkin`), `skinOf`
+ * gives a skin's data by id (null = unknown, reads as none), and the result carries the skin's parts for the sheet.
+ * With no scope this is the app itself, hub-wide skin and hub default included. When the hub default decides
+ * (`skin.from === 'default'`) the app's own picks are the edits over it (`composeWith`, floor).
+ */
+export function composeLookAt(shared: AppearanceDocument | null, look: AppLookDocument, skinOf: (id: string) => SkinData | null, scope?: Partial<SkinScope> | null): ComposedLook {
+  const hubDefault = hubDefaultOf(shared);
+  const resolved = resolveLookSkin(look, globalSkinOf(shared), scope ?? null, hubDefault);
+  const skin = resolved.id ? skinOf(resolved.id) : null;
+  const scopeKey = skinScopeKey(scope ?? null);
+  if (skin && resolved.from === SKIN_SCOPE_DEFAULT && hubDefault) {
+    const doc = composeWith(shared, look, skin, resolved.id, hubDefault.overrides ?? {}, scopeKey, hubDefault.colorTheme ?? '', subScopeAdds(look, scope));
+    return { doc, parts: skin.parts ?? {}, skin: resolved, scopeKey };
+  }
+  return { doc: composeWith(shared, look, skin, resolved.id, skin ? resolved.overrides : {}, scopeKey, skin ? resolved.colorTheme : ''), parts: skin?.parts ?? {}, skin: skin ? resolved : { id: '', overrides: resolved.overrides, from: resolved.from }, scopeKey };
+}
+
+/**
+ * A local change after the runtime made it. A skin in force (Use skin on, or the hub-wide skin while the app follows
+ * it): a colour theme pick is switched inside the skin (`skin.colorTheme`; the skin stays the same skin and nothing is
+ * created), any other slot pick overrides that part of the skin. No skin: it is the app's own. `skin` is the data of
+ * the skin in force; `parentColor` is the colour theme a level above already picked inside it (the hub-wide skin's),
+ * so picking the theme that shows anyway keeps no pick.
+ */
+export function lookAfterChange(look: AppLookDocument, change: AppearanceChange, skin: SkinData | null, parentColor = '', skinId = look.skin.id): AppLookDocument {
+  let next: AppLookDocument = { ...look, own: { ...look.own }, skin: { ...look.skin, overrides: { ...look.skin.overrides } } };
+  const skinOn = (look.skin.use || look.skin.inherit) && !!skin;
+  const inSkin = skinOn ? skinSlots(skin!, skinId) : {};
+  for (const [t, id] of Object.entries(change.slots ?? {})) {
+    if (RETIRED_PACKAGE_TYPES.includes(t)) continue; // a retired package slot is a skin pick, never a slot (migrateLegacyLook)
+    if (skinOn && t === SKIN_COLOR_SLOT) {
+      next = setSkinColorTheme(next, id === (parentColor || inSkin[SKIN_COLOR_SLOT] || '') ? null : id);
+    } else if (skinOn && t in inSkin) {
+      if (id === null || id === inSkin[t]) delete next.skin.overrides[t];
+      else next.skin.overrides[t] = id;
+    } else {
+      const own = { ...next.own.slots };
+      if (id === null) delete own[t]; else own[t] = id;
+      next.own.slots = own;
+    }
+  }
+  if (change.spacing) next.own.spacing = change.spacing;
+  if (change.hidden) {
+    const hidden = { ...next.own.hidden };
+    for (const [t, v] of Object.entries(change.hidden)) { if (v === null) delete hidden[t]; else hidden[t] = v; }
+    next.own.hidden = hidden;
+  }
+  if (change.settings) {
+    const settings = { ...next.own.settings };
+    for (const [k, v] of Object.entries(change.settings)) {
+      if (k === LEGACY_DESIGN_OVERRIDES_KEY || k === LEGACY_DESIGN_APPLIED_KEY) continue; // retired with design packages
+      if (v === null && !(k in (look.default.settings ?? {}))) delete settings[k]; else settings[k] = v;
+    }
+    next.own.settings = settings;
+  }
+  return next;
+}

@@ -4,15 +4,20 @@
   "id": "amber",
   "name": "Amber",
   "version": "1.0.0",
-  "description": "The earlier AmberX look as an interface: the amberx design package (glass orbit style, arctic daylight colours) with AmberX branding.",
+  "description": "The earlier AmberX look as an interface: the amberx skin (glass orbit style, arctic daylight colours) with AmberX branding.",
   "author": "AmberX AXF",
-  "tags": ["classic"],
+  "tags": [
+    "classic"
+  ],
   "data": {
-    "design": "amberx",
+    "skin": "amberx",
     "branding": "amberx",
     "slots": {},
     "spacing": "tight",
-    "tab": { "label": "Amber", "icon": "sun" },
+    "tab": {
+      "label": "Amber",
+      "icon": "sun"
+    },
     "tagline": "Glass, soft shadows, the first AmberX look"
   }
 }

@@ -126,7 +126,7 @@ export function PageToolbarButton({ button: b, variant, onPress }: { button: Res
       onClick={onPress}
     >
       {variant !== 'labels' && <Icon name={b.enabled ? b.icon : 'lock'} size={16} />}
-      {variant !== 'icons' && <span>{b.label}</span>}
+      {variant !== 'icons' && <span className="fx-toolbtn__label">{b.label}</span>}
       {b.badge && <span className="fx-toolbtn__badge" aria-hidden="true">{b.badge}</span>}
     </button>
   );

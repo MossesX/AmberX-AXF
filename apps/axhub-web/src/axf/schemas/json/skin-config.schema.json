@@ -39,7 +39,7 @@
         "color-theme": {
           "type": "object",
           "additionalProperties": false,
-          "description": "Color theme (Themes)",
+          "description": "Color theme (Skin sections)",
           "properties": {
             "mode": {
               "$ref": "#/$defs/mode"
@@ -133,7 +133,7 @@
         "style-theme": {
           "type": "object",
           "additionalProperties": false,
-          "description": "Style theme (Themes)",
+          "description": "Style theme (Skin sections)",
           "properties": {
             "mode": {
               "$ref": "#/$defs/mode"
@@ -224,7 +224,7 @@
         "layout": {
           "type": "object",
           "additionalProperties": false,
-          "description": "Layout (Themes)",
+          "description": "Layout (Skin sections)",
           "properties": {
             "mode": {
               "$ref": "#/$defs/mode"
@@ -1308,6 +1308,9 @@
                           "$ref": "#/$defs/mode"
                         },
                         "contributions": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "search": {
                           "$ref": "#/$defs/mode"
                         }
                       }
@@ -7757,7 +7760,7 @@
         "behavior-theme": {
           "type": "object",
           "additionalProperties": false,
-          "description": "Behaviour theme (Themes)",
+          "description": "Behaviour theme (Skin sections)",
           "properties": {
             "mode": {
               "$ref": "#/$defs/mode"

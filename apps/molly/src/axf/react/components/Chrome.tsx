@@ -343,8 +343,8 @@ export function NavMenu({ views }: { views: ViewMap }) {
 export function StatusBar() {
   const rt = useRuntime();
   const state = useAxfState();
-  // skins only (Nov 10 2026): the look is the skin in force and its colour theme; style and layout are the skin's
-  const skinId = rt.skinInForce().id;
+  // skins only (Nov 10 2026): the status bar names the skin in force (else the app's default skin) and its colour theme
+  const skinId = rt.appliedSkin();
   const skin = skinId ? rt.skinList().find((s) => s.id === skinId)?.name ?? skinId : "This app's own look";
   return (
     <footer className="fx-status">

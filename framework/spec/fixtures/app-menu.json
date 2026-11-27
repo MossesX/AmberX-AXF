@@ -3270,31 +3270,21 @@
               "icon": "refresh",
               "items": [
                 {
+                  "id": "next-skin",
+                  "label": "Next skin",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "palette",
+                  "action": "skin.next",
+                  "shortcut": "Alt+C"
+                },
+                {
                   "id": "next-color",
                   "label": "Next color theme",
                   "locked": false,
                   "origin": "asset",
                   "icon": "palette",
-                  "action": "swap:color-theme:next",
-                  "shortcut": "Alt+C"
-                },
-                {
-                  "id": "next-style",
-                  "label": "Next style theme",
-                  "locked": false,
-                  "origin": "asset",
-                  "icon": "type",
-                  "action": "swap:style-theme:next",
-                  "shortcut": "Alt+S"
-                },
-                {
-                  "id": "next-layout",
-                  "label": "Next layout",
-                  "locked": false,
-                  "origin": "asset",
-                  "icon": "layout",
-                  "action": "swap:layout:next",
-                  "shortcut": "Alt+L"
+                  "action": "swap:color-theme:next"
                 },
                 {
                   "id": "next-button",
@@ -3530,31 +3520,21 @@
               "icon": "refresh",
               "items": [
                 {
+                  "id": "next-skin",
+                  "label": "Next skin",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "palette",
+                  "action": "skin.next",
+                  "shortcut": "Alt+C"
+                },
+                {
                   "id": "next-color",
                   "label": "Next color theme",
                   "locked": false,
                   "origin": "asset",
                   "icon": "palette",
-                  "action": "swap:color-theme:next",
-                  "shortcut": "Alt+C"
-                },
-                {
-                  "id": "next-style",
-                  "label": "Next style theme",
-                  "locked": false,
-                  "origin": "asset",
-                  "icon": "type",
-                  "action": "swap:style-theme:next",
-                  "shortcut": "Alt+S"
-                },
-                {
-                  "id": "next-layout",
-                  "label": "Next layout",
-                  "locked": false,
-                  "origin": "asset",
-                  "icon": "layout",
-                  "action": "swap:layout:next",
-                  "shortcut": "Alt+L"
+                  "action": "swap:color-theme:next"
                 },
                 {
                   "id": "next-button",
@@ -3790,31 +3770,21 @@
               "icon": "refresh",
               "items": [
                 {
+                  "id": "next-skin",
+                  "label": "Next skin",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "palette",
+                  "action": "skin.next",
+                  "shortcut": "Alt+C"
+                },
+                {
                   "id": "next-color",
                   "label": "Next color theme",
                   "locked": false,
                   "origin": "asset",
                   "icon": "palette",
-                  "action": "swap:color-theme:next",
-                  "shortcut": "Alt+C"
-                },
-                {
-                  "id": "next-style",
-                  "label": "Next style theme",
-                  "locked": false,
-                  "origin": "asset",
-                  "icon": "type",
-                  "action": "swap:style-theme:next",
-                  "shortcut": "Alt+S"
-                },
-                {
-                  "id": "next-layout",
-                  "label": "Next layout",
-                  "locked": false,
-                  "origin": "asset",
-                  "icon": "layout",
-                  "action": "swap:layout:next",
-                  "shortcut": "Alt+L"
+                  "action": "swap:color-theme:next"
                 },
                 {
                   "id": "next-button",

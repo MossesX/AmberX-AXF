@@ -1,8 +1,9 @@
 /** Shell chrome: application menu bar, toolbar, navigation menu, status bar. */
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem } from '../../core';
+import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem, type ToolbarData } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
+import { NavTree } from './NavTree';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
 import { AppMenuDropdown } from './AppMenu';
 import { HelpModeButton } from './Help';
@@ -12,6 +13,8 @@ import { WidgetView } from './Widgets';
 import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import type { PlacedAttachment } from '../../core/engines/widgets';
 import type { CompiledMenuItem } from '../../core/engines/appmenu';
+import { controlSlug } from '../controlTargets';
+import { PageToolbar } from './Toolbar';
 
 /* ---------------- MenuBar (app-menu asset) ---------------- */
 
@@ -46,17 +49,19 @@ export function MenuBar() {
   };
 
   return (
-    <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey}>
+    <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey} data-fx-ctx-target="app-menu" data-fx-ctx-payload="app">
       <div className="fx-brand">
-        {/* the branding package names the app everywhere it shows (GizmoX for the Dev Console); the manifest name is the fallback */}
+        {/* the app's own name (manifest): the branding package is one look shared by every app through axHub, so it gives the
+            mark, not the name (Nov 1 2026: the console is GizmoX AI Studio, axHub web is AXHub, AmberX is AmberX) */}
         {menuMark?.svg ? <BrandMark slot="app-menu" height={18} /> : <span className="fx-brand__mark" aria-hidden="true" />}
-        <span className="fx-brand__name">{rt.branding()?.name || rt.manifest.app.name}</span>
+        <span className="fx-brand__name">{rt.manifest.app.name || rt.branding()?.name}</span>
       </div>
       <div className="fx-menubar__menus">
         {menus.map((m) => (
           <div key={m.id} className="fx-menubar__item">
             <button
               type="button"
+              data-axf-target={`button:menu.${controlSlug(m.id)}`}
               className={`fx-menubar__btn ${open === m.id ? 'is-open' : ''}`}
               aria-haspopup="menu"
               aria-expanded={open === m.id}
@@ -72,7 +77,7 @@ export function MenuBar() {
       </div>
       {/* Help mode's switch (Brett, Nov 1 2026): a ? that lights up while it's on */}
       <HelpModeButton />
-      <button type="button" className="fx-rolechip" onClick={() => rt.navigate('account')} title="User account control">
+      <button type="button" data-axf-target="button:chrome.account" className="fx-rolechip" onClick={() => rt.navigate('account')} title="User account control">
         <Icon name="shield" size={13} />
         {role?.label ?? state.role}
       </button>
@@ -84,8 +89,10 @@ export function MenuBar() {
 
 export function Toolbar({ views }: { views: ViewMap }) {
   const rt = useRuntime();
-  const tb = useAsset('toolbar');
+  const asset = useAsset('toolbar');
   useAxfState();
+  // chrome-settings@1: the settings dialog's overrides for this toolbar (instance `app`) over the asset's data
+  const tb = { ...asset, data: rt.chromeData('toolbar', 'app', asset.data) ?? asset.data };
   const [q, setQ] = useState('');
   // Widgets (clock, search bar) at the toolbar's start / end: its own `widgets` + run-time ones (core/engines/widgets.ts).
   const widgets = rt.toolbarWidgets();
@@ -100,8 +107,8 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const fold = (on: boolean) => rt.setToolbarCollapsed(on);
   if (collapsible && collapsed) {
     return (
-      <div className={`fx-toolbar fx-toolbar--${tb.data.variant} is-collapsed`} data-align={tb.data.align} role="toolbar" aria-label="Toolbar (folded)">
-        <button type="button" className="fx-toolbtn fx-toolbar__fold" aria-label="Unfold the toolbar" aria-expanded="false" onClick={() => fold(false)}><Icon name="chevron-down" size={14} /></button>
+      <div className={`fx-toolbar fx-toolbar--${tb.data.variant} is-collapsed`} data-align={tb.data.align} role="toolbar" aria-label="Toolbar (folded)" data-axf-toolbar="app">
+        <button type="button" data-axf-target="button:toolbar.unfold" className="fx-toolbtn fx-toolbar__fold" aria-label="Unfold the toolbar" aria-expanded="false" onClick={() => fold(false)}><Icon name="chevron-down" size={14} /></button>
       </div>
     );
   }
@@ -118,7 +125,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
       return;
     }
     for (const t of ASSET_TYPES) {
-      const hit = rt.registry.list(t).find((a) => a.name.toLowerCase().includes(needle) || a.id === needle);
+      const hit = rt.registry.list(t).find((a) => rt.slotOk(t, a.id) && (a.name.toLowerCase().includes(needle) || a.id === needle));
       if (hit) {
         if (rt.swap(t, hit.id)) rt.toast(`${assetTypeSpecs[t].label} → ${hit.name}`, 'success', 'Hot-swapped');
         setQ('');
@@ -129,7 +136,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
   };
 
   return (
-    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" data-fx-ctx-target="toolbar" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
+    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-fx-ctx-target="toolbar" data-fx-ctx-payload="app" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
       <ArrangeBar host="toolbar" label="toolbar" />
       {brand?.svg && <span className="fx-toolbar__brand"><BrandMark slot="toolbar" height={20} /></span>}
       {(arrange.on || widgets.start.length > 0) && <span className="fx-toolbar__widgets is-start" {...arrange.sideProps('start')}>{arrangedSide(arrange, 'start', widgets.start, drawWidget)}</span>}
@@ -142,7 +149,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Go to view or swap asset…" aria-label="Search views and assets" />
         </form>
       )}
-      {collapsible && <button type="button" className="fx-toolbtn fx-toolbar__fold" aria-label="Fold the toolbar" aria-expanded="true" onClick={() => fold(true)}><Icon name="chevron-up" size={14} /></button>}
+      {collapsible && <button type="button" data-axf-target="button:toolbar.fold" className="fx-toolbtn fx-toolbar__fold" aria-label="Fold the toolbar" aria-expanded="true" onClick={() => fold(true)}><Icon name="chevron-up" size={14} /></button>}
     </div>
   );
 }
@@ -212,21 +219,17 @@ function ToolbarButton({ item: it, variant, lockedNote }: { item: ToolbarItem; v
 
 /**
  * A toolbar drawn from a named toolbar asset rather than the app's active one: a page's own toolbar (the settings
- * interface names one in its `toolbar` field). Same items, look and gating as the app toolbar; no widgets or fold.
- * `search` fills the asset's search spot when it has `showSearch`. Null when the asset isn't registered.
+ * interface names one in its `toolbar` field). Since page-toolbar@1 it renders through the engine (PageToolbar in
+ * Toolbar.tsx): the same items, look, gating, overrides and context menu, plus state gating, badges from the page,
+ * confirm and the More overflow; no widgets or fold. `search` fills the asset's search spot when it has `showSearch`.
+ * Nothing when the asset isn't registered.
  */
 export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: string; search?: ReactNode; label?: string }) {
   const rt = useRuntime();
   useAxfState();
   const tb = rt.registry.list('toolbar').find((a) => a.id === id);
   if (!tb) return null;
-  const data = tb.data as { variant: string; align?: string; showSearch?: boolean; groups: ToolbarGroup[] };
-  return (
-    <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id}>
-      {data.groups.map((g) => <ToolbarGroupView key={g.id} group={g} variant={data.variant} />)}
-      {data.showSearch && search}
-    </div>
-  );
+  return <PageToolbar assetId={id} label={label}>{(tb.data as ToolbarData).showSearch ? search : null}</PageToolbar>;
 }
 
 /* ---------------- NavMenu (nav-menu asset, oriented by the layout asset) ---------------- */
@@ -234,18 +237,40 @@ export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: strin
 /**
  * Sections with the same eyebrow are one section (DESIGN-LANGUAGE §11: one level, grouped by eyebrow), so plugins
  * that file their page under "Voice" join the asset's own "Voice" section instead of repeating the eyebrow. Order:
- * first appearance wins; unlabelled sections stay separate.
+ * first appearance wins; unlabelled sections stay separate. The first section's own items keep their order; items that
+ * join it later (plugins, which install in whatever order their chunks arrive) follow them sorted by label, so the
+ * menu reads the same on every load.
  */
 export function mergeNavSections<S extends { label?: string | null; items: NavItem[] }>(sections: S[]): S[] {
   const out: S[] = [];
   const byLabel = new Map<string, S>();
+  const own = new Map<S, number>();
   for (const s of sections) {
     const key = s.label ? s.label.trim().toLowerCase() : '';
     const hit = key ? byLabel.get(key) : undefined;
-    if (hit) { hit.items = [...hit.items, ...s.items.filter((it) => !hit.items.some((x) => x.view === it.view))]; continue; }
+    if (hit) { hit.items = withChildren(hit.items, s.items); continue; }
     const copy = { ...s, items: [...s.items] };
     out.push(copy);
+    own.set(copy, copy.items.length);
     if (key) byLabel.set(key, copy);
+  }
+  for (const s of out) {
+    const n = own.get(s) ?? s.items.length;
+    if (s.items.length - n > 1) s.items = [...s.items.slice(0, n), ...s.items.slice(n).sort((a, b) => a.label.localeCompare(b.label))];
+  }
+  return out;
+}
+
+/**
+ * Items joined by view: a new view is added; one already there keeps its own fields and takes the newcomer's children
+ * (NavItem.items), so a plugin can hang a sub menu on an item the nav-menu asset already has (Molly's apps).
+ */
+function withChildren(have: NavItem[], add: NavItem[]): NavItem[] {
+  const out = [...have];
+  for (const it of add) {
+    const i = out.findIndex((x) => x.view === it.view);
+    if (i === -1) { out.push(it); continue; }
+    if (it.items?.length) { const cur = out[i]!; out[i] = { ...cur, items: [...(cur.items ?? []), ...it.items.filter((c) => !(cur.items ?? []).some((x) => x.id === c.id))] }; }
   }
   return out;
 }
@@ -264,13 +289,18 @@ function NavBadge({ badge }: { badge?: string }) {
 
 export function NavMenu({ views }: { views: ViewMap }) {
   const rt = useRuntime();
-  const nav = useAsset('nav-menu');
+  const navAsset = useAsset('nav-menu');
+  // chrome-settings@1: the settings dialog's overrides for the nav (instance `app`) over the asset's data
+  const nav = { ...navAsset, data: rt.chromeData('nav-menu', 'app', navAsset.data) ?? navAsset.data };
   const layout = useAsset('layout');
   const state = useAxfState();
   const orient = layout.data.nav === 'top' ? 'horizontal' : 'vertical';
+  // a nav-menu that opts in to nav-style@1 draws sub menus (NavTree); every other nav is drawn as it always was
+  const navStyle = rt.navStyleData();
+  if (navStyle) return <NavTree sections={mergeNavSections([...nav.data.sections, ...rt.navExtras])} views={views} style={navStyle} orient={orient} header={nav.data.header} />;
 
   return (
-    <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main">
+    <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main" data-axf-nav="app" data-fx-ctx-target="nav" data-fx-ctx-payload="app">
       {nav.data.header && orient === 'vertical' && <div className="fx-nav__header">{nav.data.header}</div>}
       {mergeNavSections([...nav.data.sections, ...rt.navExtras]).map((sec, i) => {
         const items = sec.items.filter((it) => views[it.view] && rt.gate(it.requires) !== 'hide' && !rt.takenByHost({ view: it.view }));
@@ -285,6 +315,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
                 <button
                   key={it.id}
                   type="button"
+                  data-axf-target={`button:tabbar.${controlSlug(it.id)}`}
                   className={`fx-nav__item ${state.view === it.view ? 'is-active' : ''}`}
                   aria-current={state.view === it.view ? 'page' : undefined}
                   disabled={locked}
@@ -312,15 +343,16 @@ export function NavMenu({ views }: { views: ViewMap }) {
 export function StatusBar() {
   const rt = useRuntime();
   const state = useAxfState();
-  const name = (t: 'color-theme' | 'style-theme' | 'layout') => rt.asset(t).name;
+  // skins only (Nov 10 2026): the status bar names the skin in force (else the app's default skin) and its colour theme
+  const skinId = rt.appliedSkin();
+  const skin = skinId ? rt.skinList().find((s) => s.id === skinId)?.name ?? skinId : "This app's own look";
   return (
     <footer className="fx-status">
       <span className="fx-status__dot" aria-hidden="true" />
       <span>AmberX AXF {FRAMEWORK_VERSION}</span>
       <span className="fx-status__sep" />
-      <span title="Color theme">{name('color-theme')}</span>
-      <span title="Style theme">{name('style-theme')}</span>
-      <span title="Layout">{name('layout')}</span>
+      <span title="Skin">{skin}</span>
+      <span title="Colour theme">{rt.asset('color-theme').name}</span>
       <span className="fx-status__grow" />
       <span>{rt.registry.count()} assets</span>
       <span>{state.swaps} swaps</span>

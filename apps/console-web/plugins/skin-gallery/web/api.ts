@@ -4,7 +4,7 @@ import { pluginFetch } from '@console/plugins';
 export const FOLDER = 'skin-gallery';
 export const PLUGIN_ID = 'ai.amberx.axf.console.skin-gallery';
 
-export interface SkinRow { id: string; name: string; kind: 'skin' | 'design-package'; description: string; iconPack: string; parts: string[]; inForceAt: string[]; coverage: { covered: number; total: number } }
+export interface SkinRow { id: string; name: string; kind: 'skin'; description: string; iconPack: string; parts: string[]; inForceAt: string[]; coverage: { covered: number; total: number } }
 export interface ScopeView {
   app: string;
   scope: string;

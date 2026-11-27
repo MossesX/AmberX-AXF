@@ -7,9 +7,9 @@
  *   npx -y tsx framework/spec/check-look-migration.mts
  */
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { DESIGN_OVERRIDES_SETTING, FOLDED_PICK_TYPES, LEGACY_LOOK_KEY, LOOK_MIGRATED_KEY, LOOK_MIGRATION_VERSION, RETIRED_PACKAGE_TYPES, SKIN_SECTIONS, composeLook, foldLegacyPicks, isRetiredLookKey, legacyLookSettings, legacyPicks, legacyThemesInForce, lookMigrated, lookNeedsMigration, migrateLook, migrateLookSettings, newAppLook, normalizeAppLook, normalizeSkin, parseAppLook, parseLegacyLook, settingsNeedMigration, skinFromDesignPackage, skinSlots, type AppLookDocument, type SkinData } from '../core/engines/skin';
+import { DESIGN_OVERRIDES_SETTING, FOLDED_PICK_TYPES, LEGACY_LOOK_KEY, LOOK_MIGRATED_KEY, LOOK_MIGRATION_VERSION, RETIRED_PACKAGE_TYPES, SKIN_SECTIONS, composeLook, foldLegacyPicks, isRetiredLookKey, legacyLookSettings, legacyPicks, legacyThemesInForce, lookMigrated, lookNeedsMigration, migrateLook, migrateLookSettings, newAppLook, normalizeAppLook, normalizeSkin, parseAppLook, parseLegacyLook, settingsNeedMigration, skinSlots, type AppLookDocument, type SkinData } from '../core/engines/skin';
 
 const root = new URL('../', import.meta.url).pathname;
 let n = 0;
@@ -33,7 +33,10 @@ const visibleWith = (sk: (id: string) => SkinData | null) => (look: AppLookDocum
   const skin = look.skin.use ? sk(look.skin.id) : null;
   const doc = composeLook(null, look, skin);
   const slots = Object.fromEntries(Object.entries(doc.slots ?? {}).filter(([t]) => !RETIRED_PACKAGE_TYPES.includes(t)));
-  if (legacy) Object.assign(slots, legacyThemesInForce(doc.slots, doc.settings, sk));
+  // the retired rule reads the document's own slots and settings: composing drops the retired package slot and keys (skin@2)
+  const raw = { slots: { ...look.default.slots, ...look.own.slots }, settings: { ...look.default.settings, ...look.own.settings } };
+  // (under a skin in force the rule never took the skin's themes back, so it only applies with no skin)
+  if (legacy && !skin) Object.assign(slots, legacyThemesInForce({ ...doc.slots, ...raw.slots }, { ...doc.settings, ...raw.settings }, sk));
   return { slots, spacing: doc.spacing ?? null, hidden: doc.hidden ?? {} };
 };
 const visible = visibleWith(skinOf);
@@ -65,8 +68,9 @@ for (const [name, c] of Object.entries(fx.fold as Record<string, { before: AppLo
 eq(fx.fold.skinOn.reason, 'skin-on', 'a skin in force: picks under it fold');
 eq(fx.fold.skinOn.overrides, { 'behavior-theme': 'brisk' }, 'a section the skin leaves alone becomes an override');
 eq(fx.fold.skinOn.look.skin.overrides, { toolbar: 'labeled-actions', 'behavior-theme': 'brisk' }, 'existing overrides are kept');
-eq(fx.fold.skinOn.look.own.slots, { 'style-package': 'amber-signature' }, 'a style package is not folded yet (skin@2 makes it a skin)');
-ok(!FOLDED_PICK_TYPES.includes('style-package'), 'style-package is not a folded type on this contract version');
+eq(fx.fold.skinOn.look.own.slots, {}, 'a style package pick folds away (skin@2: its controls are the skin\'s assets)');
+ok(FOLDED_PICK_TYPES.includes('style-package'), 'style-package is a folded (retired) type since skin@2');
+eq(fx.fold.skinOn.overrides['style-package'], undefined, 'a retired package never becomes an override');
 // the retired precedence rule is written into the document once
 eq(fx.fold.precedence.reason, 'nothing', 'precedence: no pick to fold');
 eq(fx.fold.precedence.look.default.slots['color-theme'], 'hub-night', 'precedence: the package colour the screen showed is now the snapshot\'s');
@@ -119,10 +123,10 @@ eq(fx.combined.again.settingsChanged, false, 'again: no settings change');
 eq(strip(migrateLook(null, { 'axf.look': 1 }, ctx).report), { skin: '', folded: {}, overrides: {}, kept: {}, reason: 'no-document' }, 'no document yet: settings only');
 
 /* ---- the hub's real document shapes against the real skins and packages ---- */
-const assets = (type: string) => readdirSync(join(root, 'assets', type)).map((f) => JSON.parse(readFileSync(join(root, 'assets', type, f), 'utf8')));
+const assets = (type: string) => (existsSync(join(root, 'assets', type)) ? readdirSync(join(root, 'assets', type)).map((f) => JSON.parse(readFileSync(join(root, 'assets', type, f), 'utf8'))) : []);
 const realSkins = new Map<string, SkinData>();
+// every former design package ships as a skin of the same id (skin@2), so the real skins are the whole set
 for (const a of assets('skin')) realSkins.set(a.id, normalizeSkin(a.data));
-for (const a of assets('design-package')) if (!realSkins.has(a.id)) realSkins.set(a.id, skinFromDesignPackage(a.data));
 const realSkinOf = (id: string) => realSkins.get(id) ?? null;
 const realCtx = { skinOf: realSkinOf, skinIds: [...realSkins.keys()], has: () => true, now: '2026-11-10T00:00:00Z', by: 'axf-console' };
 const realVisible = visibleWith(realSkinOf);

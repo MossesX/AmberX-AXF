@@ -7,9 +7,8 @@
  *
  * Sources, first match wins: framework/assets/<type>/<id>.json, then the brand library
  * (framework/brand-library/<type>/<id>.json). Dependencies are followed recursively:
- *   interface       → design, branding, every slot
- *   design-package  → its four themes + extras.slots
- *   style-package   → every member control
+ *   interface       → its skin, branding, every slot
+ *   skin            → its four section presets (colour, style, layout, behaviour) + every asset
  *   branding        → mark / wordmark / lockup (logo-mark), animated (animated-logo), iconPack (icon-pack)
  *   animated-logo   → its mark
  *   toolbar         → widgets[];  banner → attach[]
@@ -35,10 +34,8 @@ export function directDeps(a) {
   const d = a.data ?? {};
   const out = [];
   const add = (t, id) => { if (typeof t === 'string' && typeof id === 'string' && id) out.push(`${t}/${id}`); };
-  if (a.type === 'interface') { add('design-package', d.design); add('branding', d.branding); for (const [t, id] of Object.entries(d.slots ?? {})) add(t, id); }
-  if (a.type === 'skin') { add('layout', d.layoutTheme); add('color-theme', d.colorTheme); add('style-theme', d.styleTheme); for (const [t, id] of Object.entries(d.assets ?? {})) add(t, id); }
-  if (a.type === 'design-package') { for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) add(t, d[t]); for (const [t, id] of Object.entries(d.extras?.slots ?? {})) add(t, id); }
-  if (a.type === 'style-package') for (const [t, id] of Object.entries(d.slots ?? {})) add(t, id);
+  if (a.type === 'interface') { add('skin', d.skin ?? d.design); add('branding', d.branding); for (const [t, id] of Object.entries(d.slots ?? {})) add(t, id); }
+  if (a.type === 'skin') { if (!d.sections?.layout) add('layout', d.layoutTheme); if (!d.sections?.colors) add('color-theme', d.colorTheme); if (!d.sections?.style) add('style-theme', d.styleTheme); if (!d.sections?.behavior) add('behavior-theme', d.behaviorTheme); for (const [t, id] of Object.entries(d.assets ?? {})) add(t, id); }
   if (a.type === 'branding') { for (const [k, id] of Object.entries(d.marks ?? {})) add(k === 'animated' ? 'animated-logo' : 'logo-mark', id); add('icon-pack', d.iconPack); }
   if (a.type === 'animated-logo') add('logo-mark', d.mark);
   if (a.type === 'toolbar') for (const w of d.widgets ?? []) add(w.type, w.id);
