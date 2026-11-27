@@ -1,13 +1,112 @@
 # DATA-INVENTORY — every JSON/JSONL data file and file-backed namespace, and its Postgres table
 
-Status: inventory, Phase 1 step s1 of build `urgent-all-data-to-postgres-builds-store` (Opus, Nov 18 2026).
+Status: **current as of Nov 27 2026** in the first section, "After the leftover removal" (build
+`emergency-remove-every-leftover-js`): what stays a file and why, and every file that is gone. The rest is the inventory
+of Nov 18–19 2026 (build `urgent-all-data-to-postgres-builds-store`), kept as the record of where each file was.
 Rule it serves (Brett, Nov 18 2026): "I don't want any data stored in JSON period. Everything needs to be a Postgres
-table." Steps s2–s4 move the rows below; s5 writes the rule into CLAUDE.md and DATA-STORE.md and adds the CI check.
+table."
 
 Taken live on the VPS on Nov 18 2026 from: the live checkout `/opt/axf` (`_claude/`, `framework/plan`, `.axf-console/`),
 axHub's volume `/projects/*/_data` and `/projects/_shared`, and the `axfdata` database in `axf-data-db` (postgres:16).
 
-## Where things stand
+## After the leftover removal (Nov 27 2026, build `emergency-remove-every-leftover-js`)
+
+Rule (Brett, Nov 25 2026): "Postgres is the one store. Delete every JSON data file the database already covers, plus
+every reader and writer of it. No dual writes, no JSON backups." This section is the current state; the sections below
+it are the Nov 18–19 inventory, kept as the record of where each file was, with its status here.
+
+- `framework/schemas/data-store-paths.json` → `store.mode: cutover`. A mapped path is a key on axf-data's tables and
+  nothing else: no file fallback, no shadow copy, no drift compare (`framework/core/data-files.mjs`,
+  `apps/console-web/server/data_store.py`). When axf-data cannot be reached a read fails; it never serves a file.
+- Every leftover document has rows: `services/axf-data/tables.py` `TABLES_VERSION 4` (the table list is in "Tables
+  added" below). One change is one row (data-patch@1), never a whole-document write.
+- The files on the VPS are moved and deleted by one command, `node framework/cli/migrate-json-leftovers.mjs --apply`
+  (copy key by key, read every row back, switch the namespace, delete the file; no backup copy). Dry run on the VPS,
+  Nov 27 2026: **17 090 files, 363 111 rows, 44 namespaces, nothing refused**. Until `--apply` has run on a machine its
+  files are still on disk and nothing reads them: **run it before the console and the pipeline start on this code**
+  (a namespace the dry run shows as `local` has no copy in axf-data yet and would read empty).
+- Guard: `framework/spec/check-json-data-writes.mjs` (CI). The baseline `json-data-writes.baseline.json` is a closed
+  list: 11 direct writes in 8 files, each with its reason (`kept`). A new write fails, a count above the baseline
+  fails, a baseline above the code fails, and `--update` only lowers. `migrate-json-leftovers.mjs --check` (in
+  `check-migrate-json-leftovers.mjs`) fails when a `to: null` rule has no reason.
+
+### JSON files that stay, and why
+
+Nothing outside this list may be written as JSON by runtime code. A file here is config, a read-only export generated
+from the tables, a spool or cache the tables already cover, a credential, or scratch for one process.
+
+| File | Kind | Why it stays | Where the reason is enforced |
+|---|---|---|---|
+| `<state>/data-store/**` (`mode.json`, drift log) | config | the data layer's own mode switch: read before every call, must not depend on axf-data | path map `local.rules` |
+| `<state>/build-hooks/events.jsonl*` | spool | delivery spool of build-hook events: derived from builds store changes, rotated and dropped once delivered | path map `local.rules` |
+| `<state>/lander/gh-cache.json`, the lander's and `stale-facts.mjs`'s GitHub ETag caches, `ui-predict.mjs` prediction cache, Plan Studio 2 sent-builds cache | cache | answers of another system or a hash of the tables: rebuilt when missing | path map `local.rules`; line markers |
+| `_claude/builds/store.json.live-outbox.jsonl*` | spool | publish spool: journal lines waiting for the next push to main; the builds journal has them | path map `local.rules`; line marker in `builds-live.mjs` |
+| `_claude/builds/store.json.exports.json` | export | per-machine index of the read-only exports generated from the builds store: paths differ per checkout | path map `local.rules`; line marker in `builds-store.mjs` |
+| `_claude/builds/store.json`, `origins.json`, `shipped/*.json`, `journal/` pointers, `framework/plan/{pending,build-queue,plan,profiles,projects}.json`, `framework/catalog/{status,libraries}.json`, `framework/schemas/project-rules.json`, `sessions/`, `changes/` **in the repo** | export | git-tracked copies published from the tables (builds-live, the seeds of a fresh clone). Read-only: the migration never touches a tracked file and no runtime writer keeps data in them | `migrate-json-leftovers.mjs` (tracked files skipped); `check-tracking-files.mjs` |
+| `tracker.json` (repo and hub `_data/tracker.json`) | export | read-only export generated from the catalog status table (`framework/cli/tracker.mjs`) | path map `local.rules`; manifest `data.shared` |
+| `framework/plan/media/` | media | binary plan media (png, mp4), not JSON; served from axf-data's `blobs` + `plan_media` rows, the repo folder is the committed seed | manifest `data.shared` |
+| hub `_shared/_data/{app-catalog,plugin-catalog}/**` | export | release artifacts (APKs, plugin packs): files served for download, not records | path map `local.rules` |
+| hub `amberx-axf/_data/builds/worktrees/**` | checkout | build worktrees parked by the reconciler: git checkouts, not data | path map `local.rules` |
+| hub `amberx-axf/_data/changes/README.md` | doc | a README | path map `local.rules` |
+| hub `amberx-axf/_data/pipeline/**` and `_claude/builds/orchestrator.json` (the pipeline status file) with their writers in `build-orchestrator` (`pipeline.mjs`, `groups.mjs`, `watchdog/sessions.mjs`) and `framework/cli/dispatch-gate.mjs` | other build | left alone here on purpose: build `pipeline-fixes-drop-7-mb-status-file` removes the folder, the status file and these writers | baseline `kept` (4 files, 7 writes) |
+| `project.manifest.json`, `axf.manifest.json`, `plugin.json`, schemas, assets, boilerplates, token and help manifests, lock files written by the generators in `framework/cli` (`build-engine`, `project`, `claude-project`, `token-registry`, `help-coverage`, `ui-port`, `rebake`, …), the glossary coverage ratchet, `model-pricing@1` | config | repo source files: generated at build time, committed and reviewed | line markers (`axf-data: not data (build-time generator …)`) |
+| Claude login files and their markers (`deploy/claude-login.mjs`, `claude-token-save.mjs`), provider API keys (`ai-assistant`, `ai-keys`, chat-viewer `tts-keys.json`), the alerts ntfy token and VAPID key, `secrets.env`, ssh and signing keys | credential | secrets never go in the data DB (see "Not data") | line markers |
+| Claude Code's own `~/.claude/settings.json` (written by `activity`, `claude-handoff`, `codebase-changes` hooks installers) and the per-run config handed to the `claude` CLI | config | another program's config file on this machine | line markers |
+| `deploy/branch-protection` machine config | config | sits next to its private key, read before any data store is reachable | line marker |
+| Headless session spool in `AXF_HEADLESS_DIR` (`events.jsonl`, `login-events.jsonl`, meters, token chains), the watchdog layer 2 heartbeat and action log, the dispatcher's tick heartbeat and draft-PR retry marks | spool (deferred) | host-local files beside a session's raw log, read straight from disk by six readers outside `deploy/`. **No table or path rule yet**: moving it needs a table, a rule and those readers switched together (report → Left) | line markers |
+| Process locks and markers (`build-lock.mjs`, `reaper.mjs`), request spools read and deleted seconds later (`host-services/workers/agent-swarm.mjs`), temp inputs for one child process, git merge-driver output, files a caller names with `--out` / `--report` | scratch | lives for one process or one command; never read back as data | line markers |
+| Test seams (`AXF_PENDING_FILE`, `AXF_QUEUE_FILE`, `AXF_ORCH_FILE`, alert sinks) | test | a test points the tool at a scratch file; without the variable the data is in the tables | line markers; baseline `kept` (`orchestrator.mjs`) |
+| `framework/cli/builds-store.mjs` local-file engine, `builds-data.mjs local --apply`, `data-mode.mjs rollback` | left | the builds store's file engine for scratch stores and checkouts with no axf-data, and two operator commands that copy rows back out to files. Not live writers on the VPS; they are the last "way back to files" in the code (report → Left) | baseline `kept` (3 files, 3 writes) |
+
+`data.shared` in `project.manifest.json` now lists only what is still a file in the hub folder:
+`framework/plan/media/` and `tracker.json`. The eleven paths that were data (pending, plan, build queue, profiles,
+projects, catalog status, libraries, project rules, `sessions/`, `changes/`, `build-rules/`) are gone from the list:
+they are rows, and `persist.mjs push | pull` no longer copies them between the repo and the hub.
+
+### Every file of the old inventory: gone
+
+"Gone" = no runtime code reads or writes the file; the data is in the table named; the file on disk is deleted by
+`migrate-json-leftovers.mjs --apply`. Namespaces, files and rows are the Nov 27 dry run.
+
+| Old section | Files | Status | Rows live in |
+|---|---|---|---|
+| 1. Builds: hub `_data/builds/**` (advice, bugs, matrices, origins, dup-check, shipped, reports, build-rules seed, profiles, reconcile report) | 25 files, 15 898 rows (`builds`) | **gone** | `builds`, `build_steps`, `build_notes`, `journal`; `plugin_build_orchestrator__*` (advice, origins, bugs, matrices, seed, dup-check), `build_profile_matrices`, `build_docs` |
+| 1. Builds: `store.json.lock`, `store.json.tmp-*`, `.live-outbox.jsonl.lock` | — | **gone** (Nov 19) | row locks |
+| 1. Builds: `plugins/build-orchestrator/merge-review.json`, `watchdog/github-etags.json`, … | 5 files, 667 rows | **gone** | `plugin_build_orchestrator__*` |
+| 1. Builds: hub `_data/build-rules/{store.json,history.jsonl,runs.jsonl}` | in `console` | **gone** | `plugin_build_rules__store` (one row per rule), `journal` |
+| 1. Builds: hub `_data/pipeline/**`, `orchestrator.json` | — | **stays for now**: other build (table above) | — |
+| 2. Shared plan data: `framework/plan/*.json`, `framework/catalog/*.json`, `project-rules.json`, hub `_data/framework/**` | in `console` | **gone** from the hub; repo copies are exports | `plan_items`, `plan_profiles`, `plan_projects`, `catalog_features`, `catalog_libraries`, `project_rules`; pending and queue in `builds` |
+| 2. `sessions/` hub archive and inbox | 11 956 files, 11 956 rows (`sessions`) | **gone** | `sessions`, `session_messages`, `session_inbox` |
+| 2. `changes/` hub log | 2 608 files, 2 608 rows (`changes`) | **gone** | `codebase_changes` |
+| 2. hub `_data/plan-studio/**`, `plan-studio-2/tree.json` | 279 files, 290 rows (`planner`) | **gone** | `planner_*` |
+| 3. Console state: `state.json`, `deploys/log.jsonl`, `alerts*.json`, `host-check.json`, `nightly.json`, `update-status.json`, `project-wizard.json`, `build-live/`, `build-progress/`, `build-hooks/` cursors, `main-gate/`, `lander/` | in `console` (202 files, 324 334 rows) | **gone** | `console_docs` (one row per key, `console/host/…`), `journal` |
+| 3. `data-store/`, `secrets.env`, keys, `plugin-backups/` | — | **stays** (table above; tar archives are not JSON) | — |
+| 4. Plugin data dirs `.axf-console/plugins/<folder>/` | 36 namespaces `plugins/*`, 409 files, 6 414 rows | **gone** | one table family per plugin `plugin_<folder>__<document>` (one row per item), `plugin_agent_memory`, `plugin_feature_matrices`, `plugin_todo_projects`, `plugin_ai_messages`, `plugin_ai_events`, `plugin_command_catalog`, `plugin_push_banner_gh_cache`, `plugin_maps`, `plugin_maintenance_plan_items`, `plugin_maintenance_profile_cleanups`, `plugin_container_access_items`, `plugin_docs` for the rest |
+| 4. ui-review items, option assets, predictions, screenshot index | 150 files, 150 rows (`ui-review`) | **gone** | `ui_review_items`, `ui_review_docs`, `plugin_ui_review__screenshots_index` |
+| 4. phone-connect devices, pairings, commands, aliases | 1 452 files, 1 452 rows (`phone`) | **gone** | `plugin_phone_connect__aliases`, `phone_items` |
+| 4. chat-viewer `chats.db`, shipped-features `ledger.sqlite`, tts audio, screenshots, worktrees | — | **not JSON**: SQLite and binary media, moved by `data-migrate.mjs` (blobs), not by this build | `chats`, `ledger_*`, `blobs` |
+| 5. Hub console data: `agent-slots/`, `auto-lander/`, `agent-swarm/chats`, `agents/`, `companion/`, `walkthrough/`, `listeners/`, `amberx-notes/`, `home-cards/`, `token-log/`, `control/`, `host-services/`, `model-triage/` | in `console` | **gone** | `agent_slots`, `plugin_auto_lander__state`, `crew_chat_messages`, `plugin_agent_swarm__*`, `agent_commands`, `client_table_rows`, `home_cards`, `control_targets`, `control_tabs`, `plugin_host_services__states`, `console_docs` |
+| 6. Shared hub data: `_shared/_data/settings/**`, `claude/settings.json`, `handoff/index.json` + `runs/*`, notifications | 9 files, 9 rows (`settings`); handoff in `console` | **gone** | `settings`, `plugin_claude_handoff__index`, `console_docs` |
+| 6. `_shared/_data/app-catalog`, `plugin-catalog`, `dns/*.md` | — | **stays** (release artifacts, Markdown) | — |
+| 7. Repo `_claude/handoff/*.json` | 8 files (`plugins/claude-handoff`) | **gone** | `plugin_claude_handoff__*`, `plugin_docs` |
+| 8. Other projects `/projects/<name>/_data/project.manifest.json` | — | rows since Nov 19 | `projects` |
+
+### Tables added (`services/axf-data/tables.py`, `TABLES_VERSION 4`: 21 tables before, 103 now)
+
+- `plugin_<folder>__<document>`: 59 documents as rows, one table per document, `section = <document>#<list>`, one row
+  per item (agent-manager, agent-swarm, agent-voice, ai-assistant, auto-lander, build-orchestrator, build-rules,
+  claude-accounts, claude-badge, claude-handoff, claude-session, console-terminal, feature-matrix, glossary-index,
+  host-services, molly-guide, phone-connect, plugin-manager, push-banner, systems-check, todo-manager, token-control,
+  ui-review, whats-shipped).
+- Item families (18): `plugin_agent_memory`, `plugin_feature_matrices`, `plugin_todo_projects`, `agent_commands`,
+  `home_cards`, `client_table_rows`, `phone_items`, `crew_chat_messages`, `plugin_ai_messages`, `plugin_ai_events`,
+  `plugin_command_catalog`, `plugin_push_banner_gh_cache`, `plugin_maps`, `plugin_maintenance_plan_items`,
+  `plugin_maintenance_profile_cleanups`, `plugin_container_access_items`, `build_profile_matrices`,
+  `pipeline_accounts`.
+- One row per key (5): `plugin_docs`, `console_docs`, `build_docs`, `ui_review_docs`, `session_inbox`.
+- No table claims `orchestrator.json` (the pipeline status file) or a copy of it.
+
+## Where things stood on Nov 18–19 2026 (history)
 
 - `axf-data` runs on Postgres (`axf-data-db`). Its engine is in **shadow** mode since Nov 17 (`engine.json`:
   `mode: shadow`, 1 760 drift entries, last Nov 18 18:07). Every client still writes its files first; axf-data gets a
