@@ -845,20 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 11:47 UTC · `nov-20-fix-list-voice-console-cont` note, removed (all) · console
-- 2026-11-25 11:48 UTC · `move-everything-axhub-web-console` note, removed (all) · console
-- 2026-11-25 11:48 UTC · `toolbars-1-5-build-orchestrator-incl` note, removed (all) · console
-- 2026-11-25 11:48 UTC · `plan-studio-live-progress-one-stor` note, removed (all) · console
-- 2026-11-25 11:50 UTC · `one-build-time-always-split-to-fill` note (all) · builds-live
-- 2026-11-25 11:50 UTC · `flagship-professional-skin-covering` branch claude/flagship-professional-skin-covering-2, PR #829, note (all) · reconciler
-- 2026-11-25 11:54 UTC · `pipeline-fixes-pending-to-one-queued` → pending, note, removed (all) · console
-- 2026-11-25 11:55 UTC · `pipeline-fixes-pending-to-one-queued` note (all) · orchestrator
-- 2026-11-25 11:55 UTC · `pipeline-fixes-drop-7-mb-status-file` added (0 steps) (all) · console
-- 2026-11-25 11:55 UTC · `pipeline-fixes-drop-7-mb-status-file` → queued, note (all) · console
-- 2026-11-25 11:57 UTC · `pipeline-fixes-drop-7-mb-status-file` note (all) · orchestrator
-- 2026-11-25 11:58 UTC · `pipeline-fixes-drop-7-mb-status-file` → running, note (all) · pipeline
-- 2026-11-25 11:58 UTC · `pipeline-fixes-drop-7-mb-status-file` branch claude/pipeline-fixes-drop-7-mb-status-file (all) · pipeline
-- 2026-11-25 11:58 UTC · `pipeline-fixes-drop-7-mb-status-file` note (all) · orchestrator
 - 2026-11-25 11:59 UTC · `remove-leftover-json-data-files-postgres` added (0 steps) (all) · console
 - 2026-11-25 11:59 UTC · `remove-leftover-json-data-files-postgres` note, removed (all) · console
 - 2026-11-25 12:01 UTC · `emergency-remove-every-leftover-js` added (0 steps) (all) · admin
@@ -1245,6 +1231,20 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 04:19 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` → fixing, note (all) · watchdog
 - 2026-11-27 04:20 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
 - 2026-11-27 04:21 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-27 04:22 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-27 04:22 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-27 04:23 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-27 04:24 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-27 04:24 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-27 04:24 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-27 04:27 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 04:28 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 04:28 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 04:29 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-27 04:29 UTC · `amberx-approvals-fix` → fixing, note (all) · watchdog
+- 2026-11-27 04:29 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 04:31 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 04:32 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 
 ## Token passes (log)
 

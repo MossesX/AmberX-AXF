@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10440,
- "updatedAt": "2026-11-27T04:21:57.453Z",
+ "rev": 10441,
+ "updatedAt": "2026-11-27T04:32:12.670Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -92481,11 +92481,11 @@
     "all"
    ],
    "order": {
-    "all": 212
+    "all": 220
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -93403,7 +93403,7 @@
    "title": "AmberX approvals fix",
    "category": "Fix",
    "detail": "",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -93411,8 +93411,8 @@
    "pr": "#353",
    "priority": "P0",
    "createdAt": "2026-11-05T02:14:31.670Z",
-   "updatedAt": "2026-11-15T00:40:34.188Z",
-   "builtAt": "2026-11-10T02:32:16.216Z",
+   "updatedAt": "2026-11-27T04:29:42.885Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "PR #353 in the merge queue, UI Review r-20261105-a07d27ac waiting. axHub PR #38 green, not merged (the session had no axHub call grant). Needs a new APK after merge. Report _claude/builds/reports/amberx-approvals-fix.md",
@@ -93429,6 +93429,14 @@
     {
      "text": "Reconciler: PR #353 names s1, s2, s4, s5, s6 done",
      "at": "2026-11-10T02:32:16.216Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 17 days: PR #353 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T04:29:42.885Z"
+    },
+    {
+     "text": "Watchdog: landing for 17 days: PR #353 was closed without merging and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T04:29:42.885Z"
     }
    ],
    "approvals": [],
@@ -93444,6 +93452,14 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-27T04:29:42.885Z",
+    "why": "landing for 17 days: PR #353 was closed without merging and nothing moved it",
+    "head": "",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -93583,7 +93599,7 @@
     "all"
    ],
    "order": {
-    "all": 294
+    "all": 298
    },
    "kind": "build",
    "planRef": "",
@@ -118653,11 +118669,11 @@
     "all"
    ],
    "order": {
-    "all": 580
+    "all": 589
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -126254,11 +126270,11 @@
     "all"
    ],
    "order": {
-    "all": 615
+    "all": 616
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -385392,7 +385408,7 @@
    "branch": "lander/emergency-remove-every-leftover-js",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-26T23:34:38.035Z",
+   "updatedAt": "2026-11-27T04:31:30.614Z",
    "builtAt": "",
    "notes": [
     {
@@ -385534,6 +385550,18 @@
     {
      "text": "Watchdog: build stuck at building (1157 min past budget): re-ran the transition (1).",
      "at": "2026-11-26T23:34:38.035Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s3--earl, shared account login)",
+     "at": "2026-11-27T04:27:23.795Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s4--gina, shared account login)",
+     "at": "2026-11-27T04:28:04.532Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s5--joey, shared account login)",
+     "at": "2026-11-27T04:31:30.614Z"
     }
    ],
    "approvals": [],
@@ -385544,8 +385572,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "emergency-remove-every-leftover-js--s3",
-    "brief": "# EMERGENCY: Remove every leftover JSON data file and everything that uses it: step s3\n\nBuild emergency-remove-every-leftover-js (Pipeline 2.0), step s3 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-remove-every-leftover-js--s3 (already cut from main) · branch claude/emergency-remove-every-leftover-js--s3.\n\n## Your step\n- claude-handoff: replace every json.dump / JSON file read and write of data in apps/console-web/plugins/claude-handoff with data-store@1 per-row calls (server/data_store.py from Python, framework/core/data-files.mjs from Node) on namespace plugins/claude-handoff; one row per item, never a whole-document read or write for one change. Delete the JSON data files, their writers and any backup or dual-write code. Update the plugin's tests and uninstall.mjs. Touch only this folder. Commit.\n- plugin-manager: replace every JSON data file read and write in apps/console-web/plugins/plugin-manager with data-store@1 per-row calls on namespace plugins/plugin-manager (one row per item, no whole-document writes). Delete the data files, their writers and any backup or dual-write code. Keep plugin.json and assets (not data). Update the plugin's tests. Touch only this folder. Commit.\n- builds-page: replace every JSON data file read and write in apps/console-web/plugins/builds-page with data-store@1 per-row calls on namespace plugins/builds-page; delete the files, their writers and any dual-write or backup code; update the plugin's tests. Do not touch the pipeline status file or its readers (another build removes it). Touch only this folder. Commit.\n- agent-manager, part 1 (gittools, hubtools): in apps/console-web/plugins/agent-manager, switch the gittools and hubtools modules from json.dump data files to data-store@1 per-row calls on namespace plugins/agent-manager; delete those data files and writers, no dual write. Update the tests for these two modules only. Do not edit the toolkit or llm modules (another step owns them). Commit.\n- agent-manager, part 2 (toolkit, llm): in apps/console-web/plugins/agent-manager, switch the toolkit and llm modules from json.dump data files to data-store@1 per-row calls on namespace plugins/agent-manager; delete those data files and writers, no dual write. Update the tests for these two modules only. Do not edit gittools or hubtools (another step ow\n\nFiles: apps/console-web/plugins/claude-handoff/, apps/console-web/plugins/plugin-manager/, apps/console-web/plugins/builds-page/, apps/console-web/plugins/agent-manager/server/gittools.py, apps/console-web/plugins/agent-manager/server/hubtools.py, apps/console-web/plugins/agent-manager/server/toolkit.py, apps/console-web/plugins/agent-manager/server/llm.py, apps/console-web/plugins/feature-matrix/, apps/console-web/plugins/output-recorder/, apps/console-web/plugins/claude-badge/, apps/console-web/plugins/chat-viewer/server/store.py, apps/console-web/plugins/chat-viewer/server/tts_worker.py, apps/console-web/plugins/chat-viewer/server/audio.py, apps/console-web/plugins/crew-live/, apps/console-web/plugins/console-terminal/, apps/console-web/plugins/maintenance/, apps/console-web/plugins/agent-swarm/, apps/console-web/plugins/agent-voice/, apps/console-web/plugins/session-checkin/, apps/console-web/plugins/theme-editor/, apps/console-web/plugins/gate/, apps/console-web/plugins/claude-session/, apps/console-web/plugins/molly-guide/, apps/console-web/plugins/amberx-listeners/, apps/console-web/plugins/agent-slots/, apps/console-web/plugins/plugin-commands/, apps/console-web/plugins/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nPostgres is the one store. Delete every JSON data file the database already covers, plus every reader and writer of it. No dual writes, no JSON backups.\n\nWhy: the move to Postgres left the old JSON files running alongside the database. The 7 MB pipeline status file alone pushed terabytes through axf-data and loaded the server. Switch everything over; never run both.\n\nScope: about 133 files under apps/console-web/plugins still json.dump data files. Plugins include claude-handoff, plugin-manager, builds-page, agent-manager (gittools, hubtools, toolkit, llm), feature-matrix, output-recorder (whisper_job, transcripts), claude-badge (usage_host), chat-viewer (store, tts_worker, audio), crew-live, console-terminal, maintenance (hub, maint engine, profiles), agent-swarm, agent-voice, session-checkin, theme-editor, gate (routes), claude-session (hub), molly-guide, agent-slots, plugin-commands, amberx-listeners, plus framework/ and deploy/ writers.\n\nSteps:\n1. Inventory every JSON data file and each reader and writer (framework/, apps/console-web/, deploy/, services/axf-data/). Mark each one: already in Postgres, not yet in Postgres, or true config.\n2. Already in Postgres: switch reads and writes to data-store@1 per-row calls, then delete the file and its writer.\n3. Not in Postgres yet: add the table in services/axf-data, migrate the data once, switch the code over, then delete the file.\n4. True config or export files stay only if listed in framework/spec/DATA-INVENTORY.md with a reason.\n5. Remove the entries from framework/schemas/data-store-paths.json and the manifest data list. Lower the check-json-data-writes baseline to the kept config only, and make CI fail on any new JSON data write.\n6. Never read or write a whole document for one change. Every update touches one row.\n7. Run the tests, write the report, open the PR.\n\nLeave alone: the pipeline status file. The running build pipeline-fixes-drop-7-mb-status-file already removes it.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "emergency-remove-every-leftover-js--s5",
+    "brief": "# EMERGENCY: Remove every leftover JSON data file and everything that uses it: step s5\n\nBuild emergency-remove-every-leftover-js (Pipeline 2.0), step s5 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-remove-every-leftover-js--s5 (already cut from main) · branch claude/emergency-remove-every-leftover-js--s5.\n\n## Your step\nframework/core and framework/libs writers: replace every runtime JSON data write and whole-document read in framework/core and framework/libs (.mjs/.ts runtime code, excluding data-files.mjs itself) with data-store@1 per-row calls; remove the local-file and shadow branches that keep a JSON copy next to Postgres; delete the data files. Assets, schemas, fixtures and manifests stay. Do not edit framework/cli or framework/schemas. Run the matching framework/spec checks. Commit.\n\nFiles: framework/core/, framework/libs/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nPostgres is the one store. Delete every JSON data file the database already covers, plus every reader and writer of it. No dual writes, no JSON backups.\n\nWhy: the move to Postgres left the old JSON files running alongside the database. The 7 MB pipeline status file alone pushed terabytes through axf-data and loaded the server. Switch everything over; never run both.\n\nScope: about 133 files under apps/console-web/plugins still json.dump data files. Plugins include claude-handoff, plugin-manager, builds-page, agent-manager (gittools, hubtools, toolkit, llm), feature-matrix, output-recorder (whisper_job, transcripts), claude-badge (usage_host), chat-viewer (store, tts_worker, audio), crew-live, console-terminal, maintenance (hub, maint engine, profiles), agent-swarm, agent-voice, session-checkin, theme-editor, gate (routes), claude-session (hub), molly-guide, agent-slots, plugin-commands, amberx-listeners, plus framework/ and deploy/ writers.\n\nSteps:\n1. Inventory every JSON data file and each reader and writer (framework/, apps/console-web/, deploy/, services/axf-data/). Mark each one: already in Postgres, not yet in Postgres, or true config.\n2. Already in Postgres: switch reads and writes to data-store@1 per-row calls, then delete the file and its writer.\n3. Not in Postgres yet: add the table in services/axf-data, migrate the data once, switch the code over, then delete the file.\n4. True config or export files stay only if listed in framework/spec/DATA-INVENTORY.md with a reason.\n5. Remove the entries from framework/schemas/data-store-paths.json and the manifest data list. Lower the check-json-data-writes baseline to the kept config only, and make CI fail on any new JSON data write.\n6. Never read or write a whole document for one change. Every update touches one row.\n7. Run the tests, write the report, open the PR.\n\nLeave alone: the pipeline status file. The running build pipeline-fixes-drop-7-mb-status-file already removes it.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -385912,10 +385940,10 @@
      "done": false,
      "doneAt": "",
      "note": "Part 3: 23 plan steps in one session (they touch the same files).",
-     "rev": 5,
+     "rev": 7,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-26T22:48:47.686Z",
-     "statusAt": "2026-11-26T22:48:47.521Z",
+     "updatedAt": "2026-11-27T04:27:19.033Z",
+     "statusAt": "2026-11-27T04:27:18.962Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -385938,13 +385966,27 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T04:26:58.615Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-27T04:27:18.962Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-emergency-remove-every-leftover-js--s3--earl on hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-remove-every-leftover-js--s3",
      "branch": "claude/emergency-remove-every-leftover-js--s3",
-     "tmux": "axf-emergency-remove-every-leftover-js--s3--rhonda"
+     "tmux": "axf-emergency-remove-every-leftover-js--s3--earl"
     },
     {
      "id": "s4",
@@ -385966,10 +386008,10 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 7,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-26T22:49:15.282Z",
-     "statusAt": "2026-11-26T22:49:15.207Z",
+     "updatedAt": "2026-11-27T04:27:57.673Z",
+     "statusAt": "2026-11-27T04:27:57.592Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -385992,11 +386034,27 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T04:27:28.151Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-27T04:27:57.592Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-emergency-remove-every-leftover-js--s4--gina on hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "building",
+     "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-remove-every-leftover-js--s4",
-     "branch": "claude/emergency-remove-every-leftover-js--s4"
+     "branch": "claude/emergency-remove-every-leftover-js--s4",
+     "tmux": "axf-emergency-remove-every-leftover-js--s4--gina"
     },
     {
      "id": "s5",
@@ -386019,10 +386077,10 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 7,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-26T22:49:45.871Z",
-     "statusAt": "2026-11-26T22:49:45.763Z",
+     "updatedAt": "2026-11-27T04:31:24.177Z",
+     "statusAt": "2026-11-27T04:31:24.098Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -386045,11 +386103,27 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T04:30:43.805Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-27T04:31:24.098Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-emergency-remove-every-leftover-js--s5--joey on hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "building",
+     "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-remove-every-leftover-js--s5",
-     "branch": "claude/emergency-remove-every-leftover-js--s5"
+     "branch": "claude/emergency-remove-every-leftover-js--s5",
+     "tmux": "axf-emergency-remove-every-leftover-js--s5--joey"
     },
     {
      "id": "s6",
@@ -386164,11 +386238,11 @@
     "all"
    ],
    "order": {
-    "all": 95
+    "all": 105
    },
    "kind": "build",
    "planRef": "emergency-remove-every-leftover--7jpc",
-   "rev": 83,
+   "rev": 99,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -386253,7 +386327,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s4",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-26T23:34:38.035Z",
+   "updatedAt": "2026-11-27T04:31:59.414Z",
    "builtAt": "",
    "notes": [
     {
@@ -386423,6 +386497,30 @@
     {
      "text": "Watchdog: build stuck at building (1155 min past budget): re-ran the transition (1).",
      "at": "2026-11-26T23:34:38.035Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 4 on hulu0241.",
+     "at": "2026-11-27T04:24:27.708Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-27T04:24:27.708Z"
+    },
+    {
+     "text": "Watchdog: step s4 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-27T04:24:27.708Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s2--rhonda, shared account login)",
+     "at": "2026-11-27T04:28:51.226Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s3--lenny, shared account login)",
+     "at": "2026-11-27T04:29:49.172Z"
+    },
+    {
+     "text": "Headless run axf-emergency-check-can-these-plugins---s2--rhonda: brief only · start 12.6K tokens ($0.07) · cost $1.17 · 12 turns · 6 tools, MCP none",
+     "at": "2026-11-27T04:31:59.414Z"
     }
    ],
    "approvals": [],
@@ -386433,8 +386531,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "Greenlight Gina",
-    "brief": "# EMERGENCY CHECK: Can these plugins go? (report only, no deletes): step s4\n\nBuild emergency-check-can-these-plugins- (Pipeline 2.0), step s4 of 11. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-check-can-these-plugins---s4 (already cut from main) · branch claude/emergency-check-can-these-plugins---s4.\n\n## Your step\nREPORT ONLY, no deletes and no code changes. Audit plugins builds-page, main-build-status, merge-queue-view and fable-rebuilds (apps/console-web/plugins/<plugin>/). For each, read plugin.json (capabilities, dataDir, routes, commands, nav, banner chips or status widgets, settings tab, notify.json) and grep the whole repo outside its own folder for its folder name, ids, view addresses (e.g. view:merge-queue), capabilities, route prefix, MCP tool names, setting keys, data paths and Postgres tables: framework/ (builds store, landing line, console-control registry, check scripts), apps/, deploy/ (lander), services/axf-data, .github/workflows, CLAUDE.md and _claude/ rule markers. Write only _claude/builds/reports/plugin-removal-check/04-builds.md: one row per plugin (plugin, verdict SAFE / MOVE FIRST / KEEP, what depends on it with file:line, what to move and where), plus short evidence. Commit that one file.\n\nFiles: _claude/builds/reports/plugin-removal-check/04-builds.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nFable audits every plugin on the removal lists and reports which are safe to remove and which are still used. Changes nothing.\n\nBrett: run this check first, before any removal build. REPORT ONLY. Do not delete or change any plugin.\n\nFor each plugin below, find every import, call, route, MCP tool, nav link, setting, data file and Postgres table that other code depends on: framework/, apps/console-web/, deploy/, services/, the AmberX app, CI checks. Mark it:\n- SAFE: nothing kept depends on it\n- MOVE FIRST: a kept screen uses a piece of it (name the piece and where it should live)\n- KEEP: still needed (say why)\n\nPlugins:\nfeature-matrix, session-checkin, codebase-changes, agent-slots, ai-assistant, feature-assist, claude-handoff, build-breaker, builds-page, main-build-status, merge-queue-view, shipped-features, whats-shipped, notes-browser, notes-tasks, todo-manager, theme-editor, theme-manager, skin-editor, skin-gallery, plugin-manager, plugin-update, plugins-menu, changes-grid, demonstration-designer, fable-rebuilds, molly-guide, glossary-index, ref-links, md-studio, voice-notes, axhub-handoff, activity, basic-filter, status-styles, snapshot-manager, project-wizard, context-menu-designer.\n\nOutput: write _claude/builds/reports/plugin-removal-check.md with one table (plugin, verdict, what depends on it, what to move). Open a PR with only that report. No code changes.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "emergency-check-can-these-plugins---s3",
+    "brief": "# EMERGENCY CHECK: Can these plugins go? (report only, no deletes): step s3\n\nBuild emergency-check-can-these-plugins- (Pipeline 2.0), step s3 of 11. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-check-can-these-plugins---s3 (already cut from main) · branch claude/emergency-check-can-these-plugins---s3.\n\n## Your step\nREPORT ONLY, no deletes and no code changes. Audit plugins ai-assistant, feature-assist, feature-matrix and build-breaker (apps/console-web/plugins/<plugin>/). For each, read plugin.json (capabilities such as axf.llm@1 and who provides it, dataDir, routes, commands, settings tab, nav, notify.json) and grep the whole repo outside its own folder for its folder name, ids, capabilities, route prefix, MCP tool names, setting keys, data paths and Postgres tables: framework/, apps/ (console-web src and server, every other plugin via plugin_services, other apps), deploy/, services/axf-data, .github/workflows (tests that run a plugin's test file), CLAUDE.md and _claude/ rule markers. Write only _claude/builds/reports/plugin-removal-check/03-assist.md: one row per plugin (plugin, verdict SAFE / MOVE FIRST / KEEP, what depends on it with file:line, what to move and where), plus short evidence. Commit that one file.\n\nFiles: _claude/builds/reports/plugin-removal-check/03-assist.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nFable audits every plugin on the removal lists and reports which are safe to remove and which are still used. Changes nothing.\n\nBrett: run this check first, before any removal build. REPORT ONLY. Do not delete or change any plugin.\n\nFor each plugin below, find every import, call, route, MCP tool, nav link, setting, data file and Postgres table that other code depends on: framework/, apps/console-web/, deploy/, services/, the AmberX app, CI checks. Mark it:\n- SAFE: nothing kept depends on it\n- MOVE FIRST: a kept screen uses a piece of it (name the piece and where it should live)\n- KEEP: still needed (say why)\n\nPlugins:\nfeature-matrix, session-checkin, codebase-changes, agent-slots, ai-assistant, feature-assist, claude-handoff, build-breaker, builds-page, main-build-status, merge-queue-view, shipped-features, whats-shipped, notes-browser, notes-tasks, todo-manager, theme-editor, theme-manager, skin-editor, skin-gallery, plugin-manager, plugin-update, plugins-menu, changes-grid, demonstration-designer, fable-rebuilds, molly-guide, glossary-index, ref-links, md-studio, voice-notes, axhub-handoff, activity, basic-filter, status-styles, snapshot-manager, project-wizard, context-menu-designer.\n\nOutput: write _claude/builds/reports/plugin-removal-check.md with one table (plugin, verdict, what depends on it, what to move). Open a PR with only that report. No code changes.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -386466,13 +386564,13 @@
     "budgetUsd": 0,
     "spentUsd": 0,
     "runEnd": {
-     "at": "2026-11-26T23:24:30.693Z",
+     "at": "2026-11-27T04:31:42.121Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-emergency-check-can-these-plugins---s4--gina",
+     "session": "axf-emergency-check-can-these-plugins---s2--rhonda",
      "phase": ""
     }
    },
@@ -386630,16 +386728,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-27T04:31:06.073Z",
      "note": "",
-     "rev": 15,
+     "rev": 20,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T23:21:25.860Z",
-     "statusAt": "2026-11-26T23:21:25.776Z",
+     "updatedAt": "2026-11-27T04:31:06.566Z",
+     "statusAt": "2026-11-27T04:28:45.704Z",
      "statusBy": "orchestrator",
-     "attempt": 3,
-     "failedFrom": "building",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -386716,13 +386813,34 @@
        "by": "orchestrator",
        "attempt": 3,
        "why": "session exit 1"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-27T04:24:27.708Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at building, attempt 4"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T04:28:19.320Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-27T04:28:45.704Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "axf-emergency-check-can-these-plugins---s2--rhonda on hulu0241"
       }
      ],
-     "status": "failed",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s2",
      "branch": "claude/emergency-check-can-these-plugins---s2",
-     "tmux": "axf-emergency-check-can-these-plugins---s2--gina"
+     "tmux": "axf-emergency-check-can-these-plugins---s2--rhonda"
     },
     {
      "id": "s3",
@@ -386744,13 +386862,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 8,
+     "rev": 12,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T23:19:44.211Z",
-     "statusAt": "2026-11-26T23:19:37.607Z",
-     "statusBy": "watchdog",
-     "attempt": 1,
-     "failedFrom": "building",
+     "updatedAt": "2026-11-27T04:29:42.283Z",
+     "statusAt": "2026-11-27T04:29:42.206Z",
+     "statusBy": "orchestrator",
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -386792,13 +386909,34 @@
        "by": "watchdog",
        "attempt": 1,
        "why": "usage limit on hulu0241: \"out of credits\""
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-27T04:24:27.708Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "retry forward at building, attempt 2"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T04:29:03.202Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-27T04:29:42.206Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-emergency-check-can-these-plugins---s3--lenny on hulu0241"
       }
      ],
-     "status": "failed",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s3",
      "branch": "claude/emergency-check-can-these-plugins---s3",
-     "tmux": "axf-emergency-check-can-these-plugins---s3--gina",
+     "tmux": "axf-emergency-check-can-these-plugins---s3--lenny",
      "tried": [
       "hulu0241"
      ]
@@ -386823,13 +386961,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 11,
+     "rev": 13,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T23:27:40.929Z",
-     "statusAt": "2026-11-26T23:27:40.835Z",
-     "statusBy": "orchestrator",
-     "attempt": 2,
-     "failedFrom": "building",
+     "updatedAt": "2026-11-27T04:27:42.153Z",
+     "statusAt": "2026-11-27T04:24:27.708Z",
+     "statusBy": "watchdog",
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -386885,9 +387022,16 @@
        "by": "orchestrator",
        "attempt": 2,
        "why": "session exit 1"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-27T04:24:27.708Z",
+       "by": "watchdog",
+       "attempt": 3,
+       "why": "retry forward at building, attempt 3"
       }
      ],
-     "status": "failed",
+     "status": "ready",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s4",
      "branch": "claude/emergency-check-can-these-plugins---s4",
@@ -387263,11 +387407,11 @@
     "all"
    ],
    "order": {
-    "all": 117
+    "all": 118
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 104,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -387352,7 +387496,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T04:21:32.292Z",
+   "updatedAt": "2026-11-27T04:29:27.718Z",
    "builtAt": "",
    "notes": [
     {
@@ -387570,6 +387714,44 @@
     {
      "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s4--sully, shared account login)",
      "at": "2026-11-27T04:21:32.292Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s3--lenny: brief only · start 11.7K tokens ($0.08) · cost $0.75 · 11 turns · 6 tools, MCP none",
+     "at": "2026-11-27T04:22:26.821Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.75",
+     "at": "2026-11-27T04:22:41.254Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s4--sully: brief only · start 11.9K tokens ($0.06) · cost $0.46 · 8 turns · 6 tools, MCP none",
+     "at": "2026-11-27T04:23:55.354Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.46",
+     "at": "2026-11-27T04:24:01.424Z"
+    },
+    {
+     "text": "Watchdog: step s3 failed at building, attempt 2: tmux session axf-emergency-rip-out-the-7-mb-status---s3--lenny is gone while the step was building.",
+     "at": "2026-11-27T04:24:27.708Z"
+    },
+    {
+     "text": "Watchdog: step s4 failed at building, attempt 2: tmux session axf-emergency-rip-out-the-7-mb-status---s4--sully is gone while the step was building.",
+     "at": "2026-11-27T04:24:27.708Z"
+    },
+    {
+     "text": "Watchdog: step s5 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-27T04:24:27.708Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-27T04:29:27.718Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-27T04:29:27.718Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -387613,13 +387795,13 @@
     "budgetUsd": 0,
     "spentUsd": 0,
     "runEnd": {
-     "at": "2026-11-26T23:25:51.380Z",
+     "at": "2026-11-27T04:23:41.666Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-emergency-rip-out-the-7-mb-status---s5--paulie",
+     "session": "axf-emergency-rip-out-the-7-mb-status---s4--sully",
      "phase": ""
     }
    },
@@ -387924,12 +388106,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 13,
+     "rev": 15,
      "createdAt": "2026-11-25T22:55:50.328Z",
-     "updatedAt": "2026-11-27T04:20:32.701Z",
-     "statusAt": "2026-11-27T04:20:32.622Z",
-     "statusBy": "orchestrator",
-     "attempt": 2,
+     "updatedAt": "2026-11-27T04:29:35.168Z",
+     "statusAt": "2026-11-27T04:29:27.718Z",
+     "statusBy": "watchdog",
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -387992,9 +388174,23 @@
        "by": "orchestrator",
        "attempt": 2,
        "why": "axf-emergency-rip-out-the-7-mb-status---s3--lenny on hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-27T04:24:27.708Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "tmux session axf-emergency-rip-out-the-7-mb-status---s3--lenny is gone while the step was building"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-27T04:29:27.718Z",
+       "by": "watchdog",
+       "attempt": 3,
+       "why": "retry forward at building, attempt 3"
       }
      ],
-     "status": "building",
+     "status": "ready",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-rip-out-the-7-mb-status---s3",
      "branch": "claude/emergency-rip-out-the-7-mb-status---s3",
@@ -388023,12 +388219,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 10,
+     "rev": 12,
      "createdAt": "2026-11-25T22:55:50.328Z",
-     "updatedAt": "2026-11-27T04:21:26.883Z",
-     "statusAt": "2026-11-27T04:20:52.632Z",
-     "statusBy": "orchestrator",
-     "attempt": 2,
+     "updatedAt": "2026-11-27T04:29:35.168Z",
+     "statusAt": "2026-11-27T04:29:27.718Z",
+     "statusBy": "watchdog",
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -388077,9 +388273,23 @@
        "by": "orchestrator",
        "attempt": 2,
        "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-27T04:24:27.708Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "tmux session axf-emergency-rip-out-the-7-mb-status---s4--sully is gone while the step was building"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-27T04:29:27.718Z",
+       "by": "watchdog",
+       "attempt": 3,
+       "why": "retry forward at building, attempt 3"
       }
      ],
-     "status": "building",
+     "status": "ready",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-rip-out-the-7-mb-status---s4",
      "branch": "claude/emergency-rip-out-the-7-mb-status---s4",
@@ -388108,13 +388318,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 9,
+     "rev": 11,
      "createdAt": "2026-11-25T22:55:50.329Z",
-     "updatedAt": "2026-11-26T23:28:11.584Z",
-     "statusAt": "2026-11-26T23:28:11.477Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "failedFrom": "building",
+     "updatedAt": "2026-11-27T04:27:42.153Z",
+     "statusAt": "2026-11-27T04:24:27.708Z",
+     "statusBy": "watchdog",
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -388156,9 +388365,16 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "session exit 1"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-27T04:24:27.708Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "retry forward at building, attempt 2"
       }
      ],
-     "status": "failed",
+     "status": "ready",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-rip-out-the-7-mb-status---s5",
      "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
@@ -388281,11 +388497,11 @@
     "all"
    ],
    "order": {
-    "all": 139
+    "all": 147
    },
    "kind": "build",
    "planRef": "emergency-rip-out-the-7-mb-statu-qsmm",
-   "rev": 117,
+   "rev": 128,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

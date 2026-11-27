@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T04:21:57.453Z",
+ "updatedAt": "2026-11-27T04:32:12.670Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13797,361 +13797,6 @@
    "steps": []
   },
   {
-   "id": "emergency-remove-every-leftover-js",
-   "title": "EMERGENCY: Remove every leftover JSON data file and everything that uses it",
-   "category": "",
-   "detail": "Postgres is the one store. Delete every JSON data file the database already covers, plus every reader and writer of it. No dual writes, no JSON backups.\n\nWhy: the move to Postgres left the old JSON files running alongside the database. The 7 MB pipeline status file alone pushed terabytes through axf-data and loaded the server. Switch everything over; never run both.\n\nScope: about 133 files under apps/console-web/plugins still json.dump data files. Plugins include claude-handoff, plugin-manager, builds-page, agent-manager (gittools, hubtools, toolkit, llm), feature-matrix, output-recorder (whisper_job, transcripts), claude-badge (usage_host), chat-viewer (store, tts_worker, audio), crew-live, console-terminal, maintenance (hub, maint engine, profiles), agent-swarm, agent-voice, session-checkin, theme-editor, gate (routes), claude-session (hub), molly-guide, agent-slots, plugin-commands, amberx-listeners, plus framework/ and deploy/ writers.\n\nSteps:\n1. Inventory every JSON data file and each reader and writer (framework/, apps/console-web/, deploy/, services/axf-data/). Mark each one: already in Postgres, not yet in Postgres, or true config.\n2. Already in Postgres: switch reads and writes to data-store@1 per-row calls, then delete the file and its writer.\n3. Not in Postgres yet: add the table in services/axf-data, migrate the data once, switch the code over, then delete the file.\n4. True config or export files stay only if listed in framework/spec/DATA-INVENTORY.md with a reason.\n5. Remove the entries from framework/schemas/data-store-paths.json and the manifest data list. Lower the check-json-data-writes baseline to the kept config only, and make CI fail on any new JSON data write.\n6. Never read or write a whole document for one change. Every update touches one row.\n7. Run the tests, write the report, open the PR.\n\nLeave alone: the pipeline status file. The running build pipeline-fixes-drop-7-mb-status-file already removes it.",
-   "status": "building",
-   "hidden": false,
-   "flow": "pipeline-2",
-   "source": "plan-studio-2",
-   "pendingId": "",
-   "branch": "lander/emergency-remove-every-leftover-js",
-   "pr": "928",
-   "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-26T23:34:38.035Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Plan Studio 2.0 item: emergency-remove-every-leftover--7jpc (EMERGENCY: Remove every leftover JSON data file and everything that uses it). Passed plan-build@1; sent as one Pipeline 2.0 build with 0 planning steps. The splitting stage designs its build steps; Plan Studio lists them from this store once they are filed.",
-     "at": "2026-11-25T12:01:11.961Z"
-    },
-    {
-     "text": "Sent to emergency by admin: it skips the line, builds in the emergency slots and lands first.",
-     "at": "2026-11-25T12:01:17.901Z"
-    },
-    {
-     "text": "Split by Fable into 30 steps (400 min). The triage gate assigns the models.",
-     "at": "2026-11-25T12:03:52.344Z"
-    },
-    {
-     "text": "Draft PR #928 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/928.",
-     "at": "2026-11-25T12:04:22.852Z"
-    },
-    {
-     "text": "Watchdog: step s1 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-25T12:06:02.065Z"
-    },
-    {
-     "text": "Watchdog: step s2 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-25T12:06:02.065Z"
-    },
-    {
-     "text": "Watchdog: step s3 retried at pulling-main, attempt 2.",
-     "at": "2026-11-25T12:06:02.065Z"
-    },
-    {
-     "text": "Watchdog: step s3 retried at pulling-main, attempt 3.",
-     "at": "2026-11-25T12:15:02.239Z"
-    },
-    {
-     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at pulling-main. Alerted Brett.",
-     "at": "2026-11-25T12:18:01.318Z"
-    },
-    {
-     "text": "Retry by console: Brett Nov 25: stuck pulling main since disk filled this morning. Steps s3 start again at attempt 1.",
-     "at": "2026-11-25T22:58:00.391Z"
-    },
-    {
-     "text": "Models assigned by the triage gate: s1 Fable (Splitter's suggestion: marked Fable when it was split); s2 Fable (Contracts: it touches framework/schemas/data-store-paths.json); s3 Fable (Blast radius: 23 files depend on what it touches (limit 10)); s4 Opus (Splitter's suggestion: the splitting stage judged it Opus work); s5 Fable (Contracts: it touches framework/core/); s6 Opus (Splitter's suggestion: the splitting stage judged it Opus work); s7 Fable (Contracts: it touches framework/spec/check-json-data-writes.mjs).",
-     "at": "2026-11-25T23:04:23.920Z"
-    },
-    {
-     "text": "Models assigned by the triage gate: s1 Fable (Splitter's suggestion: marked Fable when it was split); s2 Fable (Contracts: it touches framework/schemas/data-store-paths.json); s3 Fable (Blast radius: 23 files depend on what it touches (limit 10)); s4 Opus (Splitter's suggestion: the splitting stage judged it Opus work); s5 Fable (Contracts: it touches framework/core/); s6 Opus (Splitter's suggestion: the splitting stage judged it Opus work); s7 Fable (Contracts: it touches framework/spec/check-json-data-writes.mjs).",
-     "at": "2026-11-25T23:04:31.498Z"
-    },
-    {
-     "text": "Watchdog: step s2 stuck at ready (609 min past budget): re-ran the transition (1), the tick exited 1.",
-     "at": "2026-11-25T23:15:06.964Z"
-    },
-    {
-     "text": "Watchdog: step s2 retried at ready, attempt 3 on hulu0241.",
-     "at": "2026-11-25T23:20:02.632Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s1--joey, shared account login)",
-     "at": "2026-11-26T22:46:59.685Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s2--joey, shared account login)",
-     "at": "2026-11-26T22:47:18.663Z"
-    },
-    {
-     "text": "Watchdog: step s1 retried at ready, attempt 3 on hulu0241.",
-     "at": "2026-11-26T22:54:01.635Z"
-    },
-    {
-     "text": "Watchdog: step s1 retried at ready, attempt 5 on hulu0241.",
-     "at": "2026-11-26T22:59:01.470Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:04:36.682Z"
-    },
-    {
-     "text": "Headless run axf-emergency-remove-every-leftover-js--s1--joey: brief only · start 14.2K tokens ($0.08) · cost $6.46 · 50 turns · 6 tools, MCP none",
-     "at": "2026-11-26T23:06:07.901Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $6.46",
-     "at": "2026-11-26T23:06:35.093Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:14:37.224Z"
-    },
-    {
-     "text": "Watchdog: step s2 retried at ready, attempt 5 on hulu0241.",
-     "at": "2026-11-26T23:14:37.224Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:19:37.607Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:19:37.607Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:24:37.806Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:24:37.806Z"
-    },
-    {
-     "text": "Headless run axf-emergency-remove-every-leftover-js--s2--joey: brief only · start 14.2K tokens ($0.08) · cost $8.70 · 68 turns · 6 tools, MCP none",
-     "at": "2026-11-26T23:27:59.698Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $8.70",
-     "at": "2026-11-26T23:28:09.206Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:29:37.862Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:29:37.862Z"
-    },
-    {
-     "text": "Watchdog: build stuck at building (1152 min past budget): re-ran the transition (1).",
-     "at": "2026-11-26T23:29:37.862Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:34:38.035Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:34:38.035Z"
-    },
-    {
-     "text": "Watchdog: build stuck at building (1157 min past budget): re-ran the transition (1).",
-     "at": "2026-11-26T23:34:38.035Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "",
-    "at": "",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "emergency-remove-every-leftover-js--s3",
-    "brief": "# EMERGENCY: Remove every leftover JSON data file and everything that uses it: step s3\n\nBuild emergency-remove-every-leftover-js (Pipeline 2.0), step s3 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-remove-every-leftover-js--s3 (already cut from main) · branch claude/emergency-remove-every-leftover-js--s3.\n\n## Your step\n- claude-handoff: replace every json.dump / JSON file read and write of data in apps/console-web/plugins/claude-handoff with data-store@1 per-row calls (server/data_store.py from Python, framework/core/data-files.mjs from Node) on namespace plugins/claude-handoff; one row per item, never a whole-document read or write for one change. Delete the JSON data files, their writers and any backup or dual-write code. Update the plugin's tests and uninstall.mjs. Touch only this folder. Commit.\n- plugin-manager: replace every JSON data file read and write in apps/console-web/plugins/plugin-manager with data-store@1 per-row calls on namespace plugins/plugin-manager (one row per item, no whole-document writes). Delete the data files, their writers and any backup or dual-write code. Keep plugin.json and assets (not data). Update the plugin's tests. Touch only this folder. Commit.\n- builds-page: replace every JSON data file read and write in apps/console-web/plugins/builds-page with data-store@1 per-row calls on namespace plugins/builds-page; delete the files, their writers and any dual-write or backup code; update the plugin's tests. Do not touch the pipeline status file or its readers (another build removes it). Touch only this folder. Commit.\n- agent-manager, part 1 (gittools, hubtools): in apps/console-web/plugins/agent-manager, switch the gittools and hubtools modules from json.dump data files to data-store@1 per-row calls on namespace plugins/agent-manager; delete those data files and writers, no dual write. Update the tests for these two modules only. Do not edit the toolkit or llm modules (another step owns them). Commit.\n- agent-manager, part 2 (toolkit, llm): in apps/console-web/plugins/agent-manager, switch the toolkit and llm modules from json.dump data files to data-store@1 per-row calls on namespace plugins/agent-manager; delete those data files and writers, no dual write. Update the tests for these two modules only. Do not edit gittools or hubtools (another step ow\n\nFiles: apps/console-web/plugins/claude-handoff/, apps/console-web/plugins/plugin-manager/, apps/console-web/plugins/builds-page/, apps/console-web/plugins/agent-manager/server/gittools.py, apps/console-web/plugins/agent-manager/server/hubtools.py, apps/console-web/plugins/agent-manager/server/toolkit.py, apps/console-web/plugins/agent-manager/server/llm.py, apps/console-web/plugins/feature-matrix/, apps/console-web/plugins/output-recorder/, apps/console-web/plugins/claude-badge/, apps/console-web/plugins/chat-viewer/server/store.py, apps/console-web/plugins/chat-viewer/server/tts_worker.py, apps/console-web/plugins/chat-viewer/server/audio.py, apps/console-web/plugins/crew-live/, apps/console-web/plugins/console-terminal/, apps/console-web/plugins/maintenance/, apps/console-web/plugins/agent-swarm/, apps/console-web/plugins/agent-voice/, apps/console-web/plugins/session-checkin/, apps/console-web/plugins/theme-editor/, apps/console-web/plugins/gate/, apps/console-web/plugins/claude-session/, apps/console-web/plugins/molly-guide/, apps/console-web/plugins/amberx-listeners/, apps/console-web/plugins/agent-slots/, apps/console-web/plugins/plugin-commands/, apps/console-web/plugins/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nPostgres is the one store. Delete every JSON data file the database already covers, plus every reader and writer of it. No dual writes, no JSON backups.\n\nWhy: the move to Postgres left the old JSON files running alongside the database. The 7 MB pipeline status file alone pushed terabytes through axf-data and loaded the server. Switch everything over; never run both.\n\nScope: about 133 files under apps/console-web/plugins still json.dump data files. Plugins include claude-handoff, plugin-manager, builds-page, agent-manager (gittools, hubtools, toolkit, llm), feature-matrix, output-recorder (whisper_job, transcripts), claude-badge (usage_host), chat-viewer (store, tts_worker, audio), crew-live, console-terminal, maintenance (hub, maint engine, profiles), agent-swarm, agent-voice, session-checkin, theme-editor, gate (routes), claude-session (hub), molly-guide, agent-slots, plugin-commands, amberx-listeners, plus framework/ and deploy/ writers.\n\nSteps:\n1. Inventory every JSON data file and each reader and writer (framework/, apps/console-web/, deploy/, services/axf-data/). Mark each one: already in Postgres, not yet in Postgres, or true config.\n2. Already in Postgres: switch reads and writes to data-store@1 per-row calls, then delete the file and its writer.\n3. Not in Postgres yet: add the table in services/axf-data, migrate the data once, switch the code over, then delete the file.\n4. True config or export files stay only if listed in framework/spec/DATA-INVENTORY.md with a reason.\n5. Remove the entries from framework/schemas/data-store-paths.json and the manifest data list. Lower the check-json-data-writes baseline to the kept config only, and make CI fail on any new JSON data write.\n6. Never read or write a whole document for one change. Every update touches one row.\n7. Run the tests, write the report, open the PR.\n\nLeave alone: the pipeline status file. The running build pipeline-fixes-drop-7-mb-status-file already removes it.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
-    "verbatim": false,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Add the Postgres tables for every leftover JSON data file not yet covered. Read main's json.dump / writeFileSync(JSON.stringify) writers in apps/console-web/plugins (claude-handoff, plugin-manager, builds-page, agent-manager, feature-matrix, output-recorder, claude-badge, chat-viewer, crew-live, console-terminal, maintenance, agent-swarm, agent-voice, session-checkin, theme-editor, gate, claude-session, molly-guide, agent-slots, plugin-commands, amberx-listeners and any other plugin that writes one), framework/, deploy/ and apps/console-web/server. For each document with no table, add a DocTable or RecordTable (one row per item, keyed by the item's id) in services/axf-data/tables.py under namespace plugins/<folder> (or the existing registry namespace for framework/deploy/server data). Every table must support single-row get/put/delete so no caller writes a whole document. Add or extend the table tests in services/axf-data. Leave the pipeline status file alone (build pipeline-fixes-drop-7-mb-status-file owns it). Commit.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "15 min",
-     "files": [
-      "services/axf-data/tables.py",
-      "services/axf-data/tests/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mww2s3a81l7y79",
-     "createdAt": "2026-11-25T12:03:52.352Z"
-    },
-    {
-     "id": "s2",
-     "text": "- Path map and one-time migration. In framework/schemas/data-store-paths.json remove every entry that points at a JSON data file this build deletes (the plugin dataDir files of the plugins listed in the build body, plus framework/, deploy/ and console server data files) and map each namespace to its Postgres table only, with no file fallback and no shadow/dual-write mode. Write a new one-shot script framework/cli/migrate-json-leftovers.mjs that reads each leftover JSON data file once, writes it row by row through data-store@1, verifies the row counts, and then deletes the file (--dry-run lists w\n- framework/cli writers: replace every runtime JSON data write and whole-document read in framework/cli (agent-slots.mjs, builds-live.mjs outbox, tracker and queue state, and the others check-json-data-writes lists there) with framework/core/data-files.mjs per-row calls; delete the data files and any dual-write or backup code. Read-only exports generated from the tables get `// axf-data: not data (<reason>)`. Do not touch the pipeline status file, framework/core, framework/schemas/data-store-paths.json or the check's baseline (other steps own them). Run the matching framework/spec checks. Commit",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "framework/schemas/data-store-paths.json",
-      "framework/cli/migrate-json-leftovers.mjs",
-      "framework/cli/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-26T23:27:19.826Z",
-     "note": "Part 2: 2 plan steps in one session (they touch the same files).",
-     "uid": "st-mww2s3a81moinb",
-     "createdAt": "2026-11-25T12:03:52.352Z"
-    },
-    {
-     "id": "s3",
-     "text": "- claude-handoff: replace every json.dump / JSON file read and write of data in apps/console-web/plugins/claude-handoff with data-store@1 per-row calls (server/data_store.py from Python, framework/core/data-files.mjs from Node) on namespace plugins/claude-handoff; one row per item, never a whole-document read or write for one change. Delete the JSON data files, their writers and any backup or dual-write code. Update the plugin's tests and uninstall.mjs. Touch only this folder. Commit.\n- plugin-manager: replace every JSON data file read and write in apps/console-web/plugins/plugin-manager with data-store@1 per-row calls on namespace plugins/plugin-manager (one row per item, no whole-document writes). Delete the data files, their writers and any backup or dual-write code. Keep plugin.json and assets (not data). Update the plugin's tests. Touch only this folder. Commit.\n- builds-page: replace every JSON data file read and write in apps/console-web/plugins/builds-page with data-store@1 per-row calls on namespace plugins/builds-page; delete the files, their writers and any dual-write or backup code; update the plugin's tests. Do not touch the pipeline status file or its readers (another build removes it). Touch only this folder. Commit.\n- agent-manager, part 1 (gittools, hubtools): in apps/console-web/plugins/agent-manager, switch the gittools and hubtools modules from json.dump data files to data-store@1 per-row calls on namespace plugins/agent-manager; delete those data files and writers, no dual write. Update the tests for these two modules only. Do not edit the toolkit or llm modules (another step owns them). Commit.\n- agent-manager, part 2 (toolkit, llm): in apps/console-web/plugins/agent-manager, switch the toolkit and llm modules from json.dump data files to data-store@1 per-row calls on namespace plugins/agent-manager; delete those data files and writers, no dual write. Update the tests for these two modules only. Do not edit gittools or hubtools (another step ow",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "295 min",
-     "files": [
-      "apps/console-web/plugins/claude-handoff/",
-      "apps/console-web/plugins/plugin-manager/",
-      "apps/console-web/plugins/builds-page/",
-      "apps/console-web/plugins/agent-manager/server/gittools.py",
-      "apps/console-web/plugins/agent-manager/server/hubtools.py",
-      "apps/console-web/plugins/agent-manager/server/toolkit.py",
-      "apps/console-web/plugins/agent-manager/server/llm.py",
-      "apps/console-web/plugins/feature-matrix/",
-      "apps/console-web/plugins/output-recorder/",
-      "apps/console-web/plugins/claude-badge/",
-      "apps/console-web/plugins/chat-viewer/server/store.py",
-      "apps/console-web/plugins/chat-viewer/server/tts_worker.py",
-      "apps/console-web/plugins/chat-viewer/server/audio.py",
-      "apps/console-web/plugins/crew-live/",
-      "apps/console-web/plugins/console-terminal/",
-      "apps/console-web/plugins/maintenance/",
-      "apps/console-web/plugins/agent-swarm/",
-      "apps/console-web/plugins/agent-voice/",
-      "apps/console-web/plugins/session-checkin/",
-      "apps/console-web/plugins/theme-editor/",
-      "apps/console-web/plugins/gate/",
-      "apps/console-web/plugins/claude-session/",
-      "apps/console-web/plugins/molly-guide/",
-      "apps/console-web/plugins/amberx-listeners/",
-      "apps/console-web/plugins/agent-slots/",
-      "apps/console-web/plugins/plugin-commands/",
-      "apps/console-web/plugins/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "Part 3: 23 plan steps in one session (they touch the same files).",
-     "uid": "st-mww2s3a81n7thj",
-     "createdAt": "2026-11-25T12:03:52.352Z"
-    },
-    {
-     "id": "s4",
-     "text": "Console server: in apps/console-web/server (not the plugins), replace every json.dump / JSON data file read and write with server/data_store.py per-row calls; remove any local-file fallback, shadow or dual-write branch and any JSON backup writer so Postgres is the only store; delete the data files. Do not edit data_store.py's public API. Update the server tests. Commit.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "15 min",
-     "files": [
-      "apps/console-web/server/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mww2s3a81odxjb",
-     "createdAt": "2026-11-25T12:03:52.352Z"
-    },
-    {
-     "id": "s5",
-     "text": "framework/core and framework/libs writers: replace every runtime JSON data write and whole-document read in framework/core and framework/libs (.mjs/.ts runtime code, excluding data-files.mjs itself) with data-store@1 per-row calls; remove the local-file and shadow branches that keep a JSON copy next to Postgres; delete the data files. Assets, schemas, fixtures and manifests stay. Do not edit framework/cli or framework/schemas. Run the matching framework/spec checks. Commit.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "15 min",
-     "files": [
-      "framework/core/",
-      "framework/libs/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mww2s3a81pfhzc",
-     "createdAt": "2026-11-25T12:03:52.352Z"
-    },
-    {
-     "id": "s6",
-     "text": "deploy/ writers: replace every runtime JSON data write and read in deploy/ (lander state, claude-headless and claude-workers records, console-nightly state, dryrun leftovers) with data-store@1 per-row calls through framework/core/data-files.mjs; delete the JSON data files and their writers, no dual write. Touch only deploy/. Run deploy's own tests (framework/deploy/test.sh where relevant, read-only). Commit.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "15 min",
-     "files": [
-      "deploy/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mww2s3a81qmos9",
-     "createdAt": "2026-11-25T12:03:52.352Z"
-    },
-    {
-     "id": "s7",
-     "text": "Tests, guard and report (works on the merged build branch). Run `node framework/cli/migrate-json-leftovers.mjs --dry-run`, the services/axf-data tests, the console server and plugin tests and the framework/spec checks. Update framework/spec/DATA-INVENTORY.md so every JSON file that stays (true config or read-only export) is listed with its reason and every removed file is marked gone. Remove the deleted paths from the `data.shared` list in project.manifest.json. Lower the baseline with `node framework/spec/check-json-data-writes.mjs --update` to the kept config only, and make the check fail on any new JSON data write with no baseline growth allowed. Write _claude/builds/reports/emergency-remove-every-leftover-js.md: what was removed per plugin and area, tables added, migration result, baseline before and after, test results before and after, anything left and why. Commit.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "15 min",
-     "files": [
-      "framework/spec/check-json-data-writes.mjs",
-      "framework/spec/json-data-writes-baseline.json",
-      "framework/spec/DATA-INVENTORY.md",
-      "project.manifest.json",
-      "_claude/builds/reports/emergency-remove-every-leftover-js.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mww2s3a81ru3yo",
-     "createdAt": "2026-11-25T12:03:52.352Z"
-    }
-   ]
-  },
-  {
    "id": "build-breaker",
    "title": "build-breaker",
    "category": "",
@@ -14564,6 +14209,373 @@
     "addenda": []
    },
    "steps": []
+  },
+  {
+   "id": "emergency-remove-every-leftover-js",
+   "title": "EMERGENCY: Remove every leftover JSON data file and everything that uses it",
+   "category": "",
+   "detail": "Postgres is the one store. Delete every JSON data file the database already covers, plus every reader and writer of it. No dual writes, no JSON backups.\n\nWhy: the move to Postgres left the old JSON files running alongside the database. The 7 MB pipeline status file alone pushed terabytes through axf-data and loaded the server. Switch everything over; never run both.\n\nScope: about 133 files under apps/console-web/plugins still json.dump data files. Plugins include claude-handoff, plugin-manager, builds-page, agent-manager (gittools, hubtools, toolkit, llm), feature-matrix, output-recorder (whisper_job, transcripts), claude-badge (usage_host), chat-viewer (store, tts_worker, audio), crew-live, console-terminal, maintenance (hub, maint engine, profiles), agent-swarm, agent-voice, session-checkin, theme-editor, gate (routes), claude-session (hub), molly-guide, agent-slots, plugin-commands, amberx-listeners, plus framework/ and deploy/ writers.\n\nSteps:\n1. Inventory every JSON data file and each reader and writer (framework/, apps/console-web/, deploy/, services/axf-data/). Mark each one: already in Postgres, not yet in Postgres, or true config.\n2. Already in Postgres: switch reads and writes to data-store@1 per-row calls, then delete the file and its writer.\n3. Not in Postgres yet: add the table in services/axf-data, migrate the data once, switch the code over, then delete the file.\n4. True config or export files stay only if listed in framework/spec/DATA-INVENTORY.md with a reason.\n5. Remove the entries from framework/schemas/data-store-paths.json and the manifest data list. Lower the check-json-data-writes baseline to the kept config only, and make CI fail on any new JSON data write.\n6. Never read or write a whole document for one change. Every update touches one row.\n7. Run the tests, write the report, open the PR.\n\nLeave alone: the pipeline status file. The running build pipeline-fixes-drop-7-mb-status-file already removes it.",
+   "status": "building",
+   "hidden": false,
+   "flow": "pipeline-2",
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "lander/emergency-remove-every-leftover-js",
+   "pr": "928",
+   "createdAt": "2026-11-25T12:01:11.961Z",
+   "updatedAt": "2026-11-27T04:31:30.614Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: emergency-remove-every-leftover--7jpc (EMERGENCY: Remove every leftover JSON data file and everything that uses it). Passed plan-build@1; sent as one Pipeline 2.0 build with 0 planning steps. The splitting stage designs its build steps; Plan Studio lists them from this store once they are filed.",
+     "at": "2026-11-25T12:01:11.961Z"
+    },
+    {
+     "text": "Sent to emergency by admin: it skips the line, builds in the emergency slots and lands first.",
+     "at": "2026-11-25T12:01:17.901Z"
+    },
+    {
+     "text": "Split by Fable into 30 steps (400 min). The triage gate assigns the models.",
+     "at": "2026-11-25T12:03:52.344Z"
+    },
+    {
+     "text": "Draft PR #928 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/928.",
+     "at": "2026-11-25T12:04:22.852Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-25T12:06:02.065Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-25T12:06:02.065Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at pulling-main, attempt 2.",
+     "at": "2026-11-25T12:06:02.065Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at pulling-main, attempt 3.",
+     "at": "2026-11-25T12:15:02.239Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at pulling-main. Alerted Brett.",
+     "at": "2026-11-25T12:18:01.318Z"
+    },
+    {
+     "text": "Retry by console: Brett Nov 25: stuck pulling main since disk filled this morning. Steps s3 start again at attempt 1.",
+     "at": "2026-11-25T22:58:00.391Z"
+    },
+    {
+     "text": "Models assigned by the triage gate: s1 Fable (Splitter's suggestion: marked Fable when it was split); s2 Fable (Contracts: it touches framework/schemas/data-store-paths.json); s3 Fable (Blast radius: 23 files depend on what it touches (limit 10)); s4 Opus (Splitter's suggestion: the splitting stage judged it Opus work); s5 Fable (Contracts: it touches framework/core/); s6 Opus (Splitter's suggestion: the splitting stage judged it Opus work); s7 Fable (Contracts: it touches framework/spec/check-json-data-writes.mjs).",
+     "at": "2026-11-25T23:04:23.920Z"
+    },
+    {
+     "text": "Models assigned by the triage gate: s1 Fable (Splitter's suggestion: marked Fable when it was split); s2 Fable (Contracts: it touches framework/schemas/data-store-paths.json); s3 Fable (Blast radius: 23 files depend on what it touches (limit 10)); s4 Opus (Splitter's suggestion: the splitting stage judged it Opus work); s5 Fable (Contracts: it touches framework/core/); s6 Opus (Splitter's suggestion: the splitting stage judged it Opus work); s7 Fable (Contracts: it touches framework/spec/check-json-data-writes.mjs).",
+     "at": "2026-11-25T23:04:31.498Z"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at ready (609 min past budget): re-ran the transition (1), the tick exited 1.",
+     "at": "2026-11-25T23:15:06.964Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-25T23:20:02.632Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s1--joey, shared account login)",
+     "at": "2026-11-26T22:46:59.685Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s2--joey, shared account login)",
+     "at": "2026-11-26T22:47:18.663Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 5 on hulu0241.",
+     "at": "2026-11-26T22:59:01.470Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:04:36.682Z"
+    },
+    {
+     "text": "Headless run axf-emergency-remove-every-leftover-js--s1--joey: brief only · start 14.2K tokens ($0.08) · cost $6.46 · 50 turns · 6 tools, MCP none",
+     "at": "2026-11-26T23:06:07.901Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $6.46",
+     "at": "2026-11-26T23:06:35.093Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:14:37.224Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 5 on hulu0241.",
+     "at": "2026-11-26T23:14:37.224Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:19:37.607Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:19:37.607Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:24:37.806Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:24:37.806Z"
+    },
+    {
+     "text": "Headless run axf-emergency-remove-every-leftover-js--s2--joey: brief only · start 14.2K tokens ($0.08) · cost $8.70 · 68 turns · 6 tools, MCP none",
+     "at": "2026-11-26T23:27:59.698Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $8.70",
+     "at": "2026-11-26T23:28:09.206Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:29:37.862Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:29:37.862Z"
+    },
+    {
+     "text": "Watchdog: build stuck at building (1152 min past budget): re-ran the transition (1).",
+     "at": "2026-11-26T23:29:37.862Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:34:38.035Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:34:38.035Z"
+    },
+    {
+     "text": "Watchdog: build stuck at building (1157 min past budget): re-ran the transition (1).",
+     "at": "2026-11-26T23:34:38.035Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s3--earl, shared account login)",
+     "at": "2026-11-27T04:27:23.795Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s4--gina, shared account login)",
+     "at": "2026-11-27T04:28:04.532Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s5--joey, shared account login)",
+     "at": "2026-11-27T04:31:30.614Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "emergency-remove-every-leftover-js--s5",
+    "brief": "# EMERGENCY: Remove every leftover JSON data file and everything that uses it: step s5\n\nBuild emergency-remove-every-leftover-js (Pipeline 2.0), step s5 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-remove-every-leftover-js--s5 (already cut from main) · branch claude/emergency-remove-every-leftover-js--s5.\n\n## Your step\nframework/core and framework/libs writers: replace every runtime JSON data write and whole-document read in framework/core and framework/libs (.mjs/.ts runtime code, excluding data-files.mjs itself) with data-store@1 per-row calls; remove the local-file and shadow branches that keep a JSON copy next to Postgres; delete the data files. Assets, schemas, fixtures and manifests stay. Do not edit framework/cli or framework/schemas. Run the matching framework/spec checks. Commit.\n\nFiles: framework/core/, framework/libs/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nPostgres is the one store. Delete every JSON data file the database already covers, plus every reader and writer of it. No dual writes, no JSON backups.\n\nWhy: the move to Postgres left the old JSON files running alongside the database. The 7 MB pipeline status file alone pushed terabytes through axf-data and loaded the server. Switch everything over; never run both.\n\nScope: about 133 files under apps/console-web/plugins still json.dump data files. Plugins include claude-handoff, plugin-manager, builds-page, agent-manager (gittools, hubtools, toolkit, llm), feature-matrix, output-recorder (whisper_job, transcripts), claude-badge (usage_host), chat-viewer (store, tts_worker, audio), crew-live, console-terminal, maintenance (hub, maint engine, profiles), agent-swarm, agent-voice, session-checkin, theme-editor, gate (routes), claude-session (hub), molly-guide, agent-slots, plugin-commands, amberx-listeners, plus framework/ and deploy/ writers.\n\nSteps:\n1. Inventory every JSON data file and each reader and writer (framework/, apps/console-web/, deploy/, services/axf-data/). Mark each one: already in Postgres, not yet in Postgres, or true config.\n2. Already in Postgres: switch reads and writes to data-store@1 per-row calls, then delete the file and its writer.\n3. Not in Postgres yet: add the table in services/axf-data, migrate the data once, switch the code over, then delete the file.\n4. True config or export files stay only if listed in framework/spec/DATA-INVENTORY.md with a reason.\n5. Remove the entries from framework/schemas/data-store-paths.json and the manifest data list. Lower the check-json-data-writes baseline to the kept config only, and make CI fail on any new JSON data write.\n6. Never read or write a whole document for one change. Every update touches one row.\n7. Run the tests, write the report, open the PR.\n\nLeave alone: the pipeline status file. The running build pipeline-fixes-drop-7-mb-status-file already removes it.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Add the Postgres tables for every leftover JSON data file not yet covered. Read main's json.dump / writeFileSync(JSON.stringify) writers in apps/console-web/plugins (claude-handoff, plugin-manager, builds-page, agent-manager, feature-matrix, output-recorder, claude-badge, chat-viewer, crew-live, console-terminal, maintenance, agent-swarm, agent-voice, session-checkin, theme-editor, gate, claude-session, molly-guide, agent-slots, plugin-commands, amberx-listeners and any other plugin that writes one), framework/, deploy/ and apps/console-web/server. For each document with no table, add a DocTable or RecordTable (one row per item, keyed by the item's id) in services/axf-data/tables.py under namespace plugins/<folder> (or the existing registry namespace for framework/deploy/server data). Every table must support single-row get/put/delete so no caller writes a whole document. Add or extend the table tests in services/axf-data. Leave the pipeline status file alone (build pipeline-fixes-drop-7-mb-status-file owns it). Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "services/axf-data/tables.py",
+      "services/axf-data/tests/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mww2s3a81l7y79",
+     "createdAt": "2026-11-25T12:03:52.352Z"
+    },
+    {
+     "id": "s2",
+     "text": "- Path map and one-time migration. In framework/schemas/data-store-paths.json remove every entry that points at a JSON data file this build deletes (the plugin dataDir files of the plugins listed in the build body, plus framework/, deploy/ and console server data files) and map each namespace to its Postgres table only, with no file fallback and no shadow/dual-write mode. Write a new one-shot script framework/cli/migrate-json-leftovers.mjs that reads each leftover JSON data file once, writes it row by row through data-store@1, verifies the row counts, and then deletes the file (--dry-run lists w\n- framework/cli writers: replace every runtime JSON data write and whole-document read in framework/cli (agent-slots.mjs, builds-live.mjs outbox, tracker and queue state, and the others check-json-data-writes lists there) with framework/core/data-files.mjs per-row calls; delete the data files and any dual-write or backup code. Read-only exports generated from the tables get `// axf-data: not data (<reason>)`. Do not touch the pipeline status file, framework/core, framework/schemas/data-store-paths.json or the check's baseline (other steps own them). Run the matching framework/spec checks. Commit",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "framework/schemas/data-store-paths.json",
+      "framework/cli/migrate-json-leftovers.mjs",
+      "framework/cli/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-26T23:27:19.826Z",
+     "note": "Part 2: 2 plan steps in one session (they touch the same files).",
+     "uid": "st-mww2s3a81moinb",
+     "createdAt": "2026-11-25T12:03:52.352Z"
+    },
+    {
+     "id": "s3",
+     "text": "- claude-handoff: replace every json.dump / JSON file read and write of data in apps/console-web/plugins/claude-handoff with data-store@1 per-row calls (server/data_store.py from Python, framework/core/data-files.mjs from Node) on namespace plugins/claude-handoff; one row per item, never a whole-document read or write for one change. Delete the JSON data files, their writers and any backup or dual-write code. Update the plugin's tests and uninstall.mjs. Touch only this folder. Commit.\n- plugin-manager: replace every JSON data file read and write in apps/console-web/plugins/plugin-manager with data-store@1 per-row calls on namespace plugins/plugin-manager (one row per item, no whole-document writes). Delete the data files, their writers and any backup or dual-write code. Keep plugin.json and assets (not data). Update the plugin's tests. Touch only this folder. Commit.\n- builds-page: replace every JSON data file read and write in apps/console-web/plugins/builds-page with data-store@1 per-row calls on namespace plugins/builds-page; delete the files, their writers and any dual-write or backup code; update the plugin's tests. Do not touch the pipeline status file or its readers (another build removes it). Touch only this folder. Commit.\n- agent-manager, part 1 (gittools, hubtools): in apps/console-web/plugins/agent-manager, switch the gittools and hubtools modules from json.dump data files to data-store@1 per-row calls on namespace plugins/agent-manager; delete those data files and writers, no dual write. Update the tests for these two modules only. Do not edit the toolkit or llm modules (another step owns them). Commit.\n- agent-manager, part 2 (toolkit, llm): in apps/console-web/plugins/agent-manager, switch the toolkit and llm modules from json.dump data files to data-store@1 per-row calls on namespace plugins/agent-manager; delete those data files and writers, no dual write. Update the tests for these two modules only. Do not edit gittools or hubtools (another step ow",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "295 min",
+     "files": [
+      "apps/console-web/plugins/claude-handoff/",
+      "apps/console-web/plugins/plugin-manager/",
+      "apps/console-web/plugins/builds-page/",
+      "apps/console-web/plugins/agent-manager/server/gittools.py",
+      "apps/console-web/plugins/agent-manager/server/hubtools.py",
+      "apps/console-web/plugins/agent-manager/server/toolkit.py",
+      "apps/console-web/plugins/agent-manager/server/llm.py",
+      "apps/console-web/plugins/feature-matrix/",
+      "apps/console-web/plugins/output-recorder/",
+      "apps/console-web/plugins/claude-badge/",
+      "apps/console-web/plugins/chat-viewer/server/store.py",
+      "apps/console-web/plugins/chat-viewer/server/tts_worker.py",
+      "apps/console-web/plugins/chat-viewer/server/audio.py",
+      "apps/console-web/plugins/crew-live/",
+      "apps/console-web/plugins/console-terminal/",
+      "apps/console-web/plugins/maintenance/",
+      "apps/console-web/plugins/agent-swarm/",
+      "apps/console-web/plugins/agent-voice/",
+      "apps/console-web/plugins/session-checkin/",
+      "apps/console-web/plugins/theme-editor/",
+      "apps/console-web/plugins/gate/",
+      "apps/console-web/plugins/claude-session/",
+      "apps/console-web/plugins/molly-guide/",
+      "apps/console-web/plugins/amberx-listeners/",
+      "apps/console-web/plugins/agent-slots/",
+      "apps/console-web/plugins/plugin-commands/",
+      "apps/console-web/plugins/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "Part 3: 23 plan steps in one session (they touch the same files).",
+     "uid": "st-mww2s3a81n7thj",
+     "createdAt": "2026-11-25T12:03:52.352Z"
+    },
+    {
+     "id": "s4",
+     "text": "Console server: in apps/console-web/server (not the plugins), replace every json.dump / JSON data file read and write with server/data_store.py per-row calls; remove any local-file fallback, shadow or dual-write branch and any JSON backup writer so Postgres is the only store; delete the data files. Do not edit data_store.py's public API. Update the server tests. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mww2s3a81odxjb",
+     "createdAt": "2026-11-25T12:03:52.352Z"
+    },
+    {
+     "id": "s5",
+     "text": "framework/core and framework/libs writers: replace every runtime JSON data write and whole-document read in framework/core and framework/libs (.mjs/.ts runtime code, excluding data-files.mjs itself) with data-store@1 per-row calls; remove the local-file and shadow branches that keep a JSON copy next to Postgres; delete the data files. Assets, schemas, fixtures and manifests stay. Do not edit framework/cli or framework/schemas. Run the matching framework/spec checks. Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/core/",
+      "framework/libs/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mww2s3a81pfhzc",
+     "createdAt": "2026-11-25T12:03:52.352Z"
+    },
+    {
+     "id": "s6",
+     "text": "deploy/ writers: replace every runtime JSON data write and read in deploy/ (lander state, claude-headless and claude-workers records, console-nightly state, dryrun leftovers) with data-store@1 per-row calls through framework/core/data-files.mjs; delete the JSON data files and their writers, no dual write. Touch only deploy/. Run deploy's own tests (framework/deploy/test.sh where relevant, read-only). Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "deploy/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mww2s3a81qmos9",
+     "createdAt": "2026-11-25T12:03:52.352Z"
+    },
+    {
+     "id": "s7",
+     "text": "Tests, guard and report (works on the merged build branch). Run `node framework/cli/migrate-json-leftovers.mjs --dry-run`, the services/axf-data tests, the console server and plugin tests and the framework/spec checks. Update framework/spec/DATA-INVENTORY.md so every JSON file that stays (true config or read-only export) is listed with its reason and every removed file is marked gone. Remove the deleted paths from the `data.shared` list in project.manifest.json. Lower the baseline with `node framework/spec/check-json-data-writes.mjs --update` to the kept config only, and make the check fail on any new JSON data write with no baseline growth allowed. Write _claude/builds/reports/emergency-remove-every-leftover-js.md: what was removed per plugin and area, tables added, migration result, baseline before and after, test results before and after, anything left and why. Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/spec/check-json-data-writes.mjs",
+      "framework/spec/json-data-writes-baseline.json",
+      "framework/spec/DATA-INVENTORY.md",
+      "project.manifest.json",
+      "_claude/builds/reports/emergency-remove-every-leftover-js.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mww2s3a81ru3yo",
+     "createdAt": "2026-11-25T12:03:52.352Z"
+    }
+   ]
   },
   {
    "id": "claude-accounts-switch",
@@ -15351,6 +15363,147 @@
    ]
   },
   {
+   "id": "merge-profiles-one",
+   "title": "Merge every build profile into one (all)",
+   "category": "Builds",
+   "detail": "Every build profile (current, urgent, angel, big-dog, breakroom, refactor) merged into one profile all; each build keeps its id, status, steps and step states and gains fromProfile; urgency is the per-build priority tag. Supersedes profile-manager.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/merge-profiles-one",
+   "pr": "",
+   "mergedAt": "2026-11-07T10:32:38Z",
+   "createdAt": "2026-11-07T09:19:46.590Z",
+   "updatedAt": "2026-11-09T02:14:07Z",
+   "builtAt": "2026-11-07T09:19:46.590Z",
+   "notes": [
+    {
+     "text": "Launched headless as merge-profiles-one; the brief summarised the request (\"Owner (Brett) request: …\").",
+     "at": "2026-11-07T09:19:46.590Z"
+    },
+    {
+     "text": "Follow-up profiles-all-finish (branch claude/profiles-all-finish): main-framework folded into all too, all is the base profile, old profile folders deleted in repo + hub.",
+     "at": "2026-11-07T10:29:30.278Z"
+    },
+    {
+     "text": "Shipped manifest sm-merge-profiles-one rev 1 sent to Shipped features (orchestrator): landed 7babeb631, 77 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-09T02:14:07Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "combine every build profile into ONE new profile on main and delete the others.",
+    "at": "2026-11-07",
+    "source": "console",
+    "session": "",
+    "link": "",
+    "by": "merge-profiles-one",
+    "brief": "",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Store core: retired-profile alias (resolveProfile), fromProfile, urgent → priority P0, mergeProfiles",
+     "model": "Fable",
+     "why": "store migration design",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T09:19:46.590Z",
+     "note": "",
+     "uid": "st-mw66zqg501f5o5",
+     "createdAt": "2026-11-07T09:19:46.590Z"
+    },
+    {
+     "id": "s2",
+     "text": "Registry + persist: readProfiles folds retired profiles into all; AXF_BUILD_PROFILE / saved pick / plan links resolve",
+     "model": "Opus",
+     "why": "wiring",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T09:19:46.590Z",
+     "note": "",
+     "uid": "st-mw66zqg50235md",
+     "createdAt": "2026-11-07T09:19:46.590Z"
+    },
+    {
+     "id": "s3",
+     "text": "Run the merge: 229 builds into all, matrices merged, old profile folders and registry entries removed",
+     "model": "Opus",
+     "why": "data migration run",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T09:19:46.590Z",
+     "note": "",
+     "uid": "st-mw66zqg503zxzp",
+     "createdAt": "2026-11-07T09:19:46.590Z"
+    },
+    {
+     "id": "s4",
+     "text": "Priority stays a per-build field: build-priority + merge-queue no longer read the urgent profile",
+     "model": "Opus",
+     "why": "wiring",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T09:19:46.590Z",
+     "note": "",
+     "uid": "st-mw66zqg504kqnx",
+     "createdAt": "2026-11-07T09:19:46.590Z"
+    },
+    {
+     "id": "s5",
+     "text": "Docs, tests, THREADS + STATUS",
+     "model": "Opus",
+     "why": "docs + tests",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T09:19:46.590Z",
+     "note": "",
+     "uid": "st-mw66zqg505k79g",
+     "createdAt": "2026-11-07T09:19:46.590Z"
+    }
+   ]
+  },
+  {
    "id": "emergency-check-can-these-plugins-",
    "title": "EMERGENCY CHECK: Can these plugins go? (report only, no deletes)",
    "category": "",
@@ -15363,7 +15516,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s4",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-26T23:34:38.035Z",
+   "updatedAt": "2026-11-27T04:31:59.414Z",
    "builtAt": "",
    "notes": [
     {
@@ -15533,6 +15686,30 @@
     {
      "text": "Watchdog: build stuck at building (1155 min past budget): re-ran the transition (1).",
      "at": "2026-11-26T23:34:38.035Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 4 on hulu0241.",
+     "at": "2026-11-27T04:24:27.708Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-27T04:24:27.708Z"
+    },
+    {
+     "text": "Watchdog: step s4 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-27T04:24:27.708Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s2--rhonda, shared account login)",
+     "at": "2026-11-27T04:28:51.226Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s3--lenny, shared account login)",
+     "at": "2026-11-27T04:29:49.172Z"
+    },
+    {
+     "text": "Headless run axf-emergency-check-can-these-plugins---s2--rhonda: brief only · start 12.6K tokens ($0.07) · cost $1.17 · 12 turns · 6 tools, MCP none",
+     "at": "2026-11-27T04:31:59.414Z"
     }
    ],
    "approvals": [],
@@ -15543,8 +15720,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "Greenlight Gina",
-    "brief": "# EMERGENCY CHECK: Can these plugins go? (report only, no deletes): step s4\n\nBuild emergency-check-can-these-plugins- (Pipeline 2.0), step s4 of 11. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-check-can-these-plugins---s4 (already cut from main) · branch claude/emergency-check-can-these-plugins---s4.\n\n## Your step\nREPORT ONLY, no deletes and no code changes. Audit plugins builds-page, main-build-status, merge-queue-view and fable-rebuilds (apps/console-web/plugins/<plugin>/). For each, read plugin.json (capabilities, dataDir, routes, commands, nav, banner chips or status widgets, settings tab, notify.json) and grep the whole repo outside its own folder for its folder name, ids, view addresses (e.g. view:merge-queue), capabilities, route prefix, MCP tool names, setting keys, data paths and Postgres tables: framework/ (builds store, landing line, console-control registry, check scripts), apps/, deploy/ (lander), services/axf-data, .github/workflows, CLAUDE.md and _claude/ rule markers. Write only _claude/builds/reports/plugin-removal-check/04-builds.md: one row per plugin (plugin, verdict SAFE / MOVE FIRST / KEEP, what depends on it with file:line, what to move and where), plus short evidence. Commit that one file.\n\nFiles: _claude/builds/reports/plugin-removal-check/04-builds.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nFable audits every plugin on the removal lists and reports which are safe to remove and which are still used. Changes nothing.\n\nBrett: run this check first, before any removal build. REPORT ONLY. Do not delete or change any plugin.\n\nFor each plugin below, find every import, call, route, MCP tool, nav link, setting, data file and Postgres table that other code depends on: framework/, apps/console-web/, deploy/, services/, the AmberX app, CI checks. Mark it:\n- SAFE: nothing kept depends on it\n- MOVE FIRST: a kept screen uses a piece of it (name the piece and where it should live)\n- KEEP: still needed (say why)\n\nPlugins:\nfeature-matrix, session-checkin, codebase-changes, agent-slots, ai-assistant, feature-assist, claude-handoff, build-breaker, builds-page, main-build-status, merge-queue-view, shipped-features, whats-shipped, notes-browser, notes-tasks, todo-manager, theme-editor, theme-manager, skin-editor, skin-gallery, plugin-manager, plugin-update, plugins-menu, changes-grid, demonstration-designer, fable-rebuilds, molly-guide, glossary-index, ref-links, md-studio, voice-notes, axhub-handoff, activity, basic-filter, status-styles, snapshot-manager, project-wizard, context-menu-designer.\n\nOutput: write _claude/builds/reports/plugin-removal-check.md with one table (plugin, verdict, what depends on it, what to move). Open a PR with only that report. No code changes.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "emergency-check-can-these-plugins---s3",
+    "brief": "# EMERGENCY CHECK: Can these plugins go? (report only, no deletes): step s3\n\nBuild emergency-check-can-these-plugins- (Pipeline 2.0), step s3 of 11. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-check-can-these-plugins---s3 (already cut from main) · branch claude/emergency-check-can-these-plugins---s3.\n\n## Your step\nREPORT ONLY, no deletes and no code changes. Audit plugins ai-assistant, feature-assist, feature-matrix and build-breaker (apps/console-web/plugins/<plugin>/). For each, read plugin.json (capabilities such as axf.llm@1 and who provides it, dataDir, routes, commands, settings tab, nav, notify.json) and grep the whole repo outside its own folder for its folder name, ids, capabilities, route prefix, MCP tool names, setting keys, data paths and Postgres tables: framework/, apps/ (console-web src and server, every other plugin via plugin_services, other apps), deploy/, services/axf-data, .github/workflows (tests that run a plugin's test file), CLAUDE.md and _claude/ rule markers. Write only _claude/builds/reports/plugin-removal-check/03-assist.md: one row per plugin (plugin, verdict SAFE / MOVE FIRST / KEEP, what depends on it with file:line, what to move and where), plus short evidence. Commit that one file.\n\nFiles: _claude/builds/reports/plugin-removal-check/03-assist.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nFable audits every plugin on the removal lists and reports which are safe to remove and which are still used. Changes nothing.\n\nBrett: run this check first, before any removal build. REPORT ONLY. Do not delete or change any plugin.\n\nFor each plugin below, find every import, call, route, MCP tool, nav link, setting, data file and Postgres table that other code depends on: framework/, apps/console-web/, deploy/, services/, the AmberX app, CI checks. Mark it:\n- SAFE: nothing kept depends on it\n- MOVE FIRST: a kept screen uses a piece of it (name the piece and where it should live)\n- KEEP: still needed (say why)\n\nPlugins:\nfeature-matrix, session-checkin, codebase-changes, agent-slots, ai-assistant, feature-assist, claude-handoff, build-breaker, builds-page, main-build-status, merge-queue-view, shipped-features, whats-shipped, notes-browser, notes-tasks, todo-manager, theme-editor, theme-manager, skin-editor, skin-gallery, plugin-manager, plugin-update, plugins-menu, changes-grid, demonstration-designer, fable-rebuilds, molly-guide, glossary-index, ref-links, md-studio, voice-notes, axhub-handoff, activity, basic-filter, status-styles, snapshot-manager, project-wizard, context-menu-designer.\n\nOutput: write _claude/builds/reports/plugin-removal-check.md with one table (plugin, verdict, what depends on it, what to move). Open a PR with only that report. No code changes.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -15586,8 +15763,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-27T04:31:06.073Z",
      "note": "",
      "uid": "st-mww38q3o1mibak",
      "createdAt": "2026-11-25T12:16:48.420Z"
@@ -15781,147 +15958,6 @@
      "note": "",
      "uid": "st-mww38q3o1v9d4n",
      "createdAt": "2026-11-25T12:16:48.420Z"
-    }
-   ]
-  },
-  {
-   "id": "merge-profiles-one",
-   "title": "Merge every build profile into one (all)",
-   "category": "Builds",
-   "detail": "Every build profile (current, urgent, angel, big-dog, breakroom, refactor) merged into one profile all; each build keeps its id, status, steps and step states and gains fromProfile; urgency is the per-build priority tag. Supersedes profile-manager.",
-   "status": "complete",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/merge-profiles-one",
-   "pr": "",
-   "mergedAt": "2026-11-07T10:32:38Z",
-   "createdAt": "2026-11-07T09:19:46.590Z",
-   "updatedAt": "2026-11-09T02:14:07Z",
-   "builtAt": "2026-11-07T09:19:46.590Z",
-   "notes": [
-    {
-     "text": "Launched headless as merge-profiles-one; the brief summarised the request (\"Owner (Brett) request: …\").",
-     "at": "2026-11-07T09:19:46.590Z"
-    },
-    {
-     "text": "Follow-up profiles-all-finish (branch claude/profiles-all-finish): main-framework folded into all too, all is the base profile, old profile folders deleted in repo + hub.",
-     "at": "2026-11-07T10:29:30.278Z"
-    },
-    {
-     "text": "Shipped manifest sm-merge-profiles-one rev 1 sent to Shipped features (orchestrator): landed 7babeb631, 77 file(s), 0 test line(s), 0 open.",
-     "at": "2026-11-09T02:14:07Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "combine every build profile into ONE new profile on main and delete the others.",
-    "at": "2026-11-07",
-    "source": "console",
-    "session": "",
-    "link": "",
-    "by": "merge-profiles-one",
-    "brief": "",
-    "verbatim": false,
-    "from": "brief",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Store core: retired-profile alias (resolveProfile), fromProfile, urgent → priority P0, mergeProfiles",
-     "model": "Fable",
-     "why": "store migration design",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-07T09:19:46.590Z",
-     "note": "",
-     "uid": "st-mw66zqg501f5o5",
-     "createdAt": "2026-11-07T09:19:46.590Z"
-    },
-    {
-     "id": "s2",
-     "text": "Registry + persist: readProfiles folds retired profiles into all; AXF_BUILD_PROFILE / saved pick / plan links resolve",
-     "model": "Opus",
-     "why": "wiring",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-07T09:19:46.590Z",
-     "note": "",
-     "uid": "st-mw66zqg50235md",
-     "createdAt": "2026-11-07T09:19:46.590Z"
-    },
-    {
-     "id": "s3",
-     "text": "Run the merge: 229 builds into all, matrices merged, old profile folders and registry entries removed",
-     "model": "Opus",
-     "why": "data migration run",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-07T09:19:46.590Z",
-     "note": "",
-     "uid": "st-mw66zqg503zxzp",
-     "createdAt": "2026-11-07T09:19:46.590Z"
-    },
-    {
-     "id": "s4",
-     "text": "Priority stays a per-build field: build-priority + merge-queue no longer read the urgent profile",
-     "model": "Opus",
-     "why": "wiring",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-07T09:19:46.590Z",
-     "note": "",
-     "uid": "st-mw66zqg504kqnx",
-     "createdAt": "2026-11-07T09:19:46.590Z"
-    },
-    {
-     "id": "s5",
-     "text": "Docs, tests, THREADS + STATUS",
-     "model": "Opus",
-     "why": "docs + tests",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-07T09:19:46.590Z",
-     "note": "",
-     "uid": "st-mw66zqg505k79g",
-     "createdAt": "2026-11-07T09:19:46.590Z"
     }
    ]
   },
@@ -19274,417 +19310,6 @@
    ]
   },
   {
-   "id": "emergency-rip-out-the-7-mb-status-",
-   "title": "EMERGENCY: rip out the 7 MB status file",
-   "category": "",
-   "detail": "Brett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.",
-   "status": "building",
-   "hidden": false,
-   "flow": "pipeline-2",
-   "source": "plan-studio-2",
-   "pendingId": "",
-   "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
-   "pr": "932",
-   "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T04:21:32.292Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Plan Studio 2.0 item: emergency-rip-out-the-7-mb-statu-qsmm (Fixes › Watchdog hunts real processes, not just slot rows › EMERGENCY: rip out the 7 MB status file). Passed plan-build@1; sent as one Pipeline 2.0 build with 0 planning steps. The splitting stage designs its build steps; Plan Studio lists them from this store once they are filed.",
-     "at": "2026-11-25T22:53:22.832Z"
-    },
-    {
-     "text": "Sent to emergency by admin: it skips the line, builds in the emergency slots and lands first.",
-     "at": "2026-11-25T22:53:34.694Z"
-    },
-    {
-     "text": "Split by Fable into 10 steps (147 min). The triage gate assigns the models.",
-     "at": "2026-11-25T22:55:50.321Z"
-    },
-    {
-     "text": "Draft PR #932 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/932.",
-     "at": "2026-11-25T22:56:49.813Z"
-    },
-    {
-     "text": "Models assigned by the triage gate: s1 Fable (Contracts: it touches framework/cli/builds-store.mjs); s2 Fable (Contracts: it says \"builds store\"); s3 Fable (Contracts: it says \"builds store\"); s4 Fable (Contracts: it says \"builds store\"); s5 Fable (Contracts: it says \"builds store\"); s6 Fable (Splitter's suggestion: marked Fable when it was split); s7 Fable (Contracts: it touches framework/schemas/data-store-paths.json).",
-     "at": "2026-11-25T23:00:26.640Z"
-    },
-    {
-     "text": "Watchdog: step s2 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s2--sully is gone while the step was building.",
-     "at": "2026-11-25T23:10:07.035Z"
-    },
-    {
-     "text": "Watchdog: step s2 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-25T23:15:06.964Z"
-    },
-    {
-     "text": "s1 pushed (claude/emergency-rip-out-the-7-mb-status---s1): the status file is _claude/builds/orchestrator.json; the Node store, builds-live, lander, worktree setup, feature matrix and agent swarm no longer read or write it. New builds-store.mjs exports for the other steps: readBuild, withBuild, queryBuilds({status, project, limit, offset}), pipelineSummary. Open: data-store@1 on main has no server-side row read or filter, so those reads still assemble the record from the tables once per call; a real row query needs services/axf-data (the stalled build pipeline-fixes-drop-7-mb-status-file has one in commit 170aba583), which no step of this build owns.",
-     "at": "2026-11-25T23:15:25.274Z"
-    },
-    {
-     "text": "Watchdog: step s4 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-25T23:23:02.078Z"
-    },
-    {
-     "text": "Watchdog: step s2 failed at building, attempt 3: tmux session axf-emergency-rip-out-the-7-mb-status---s2--rhonda is gone while the step was building.",
-     "at": "2026-11-25T23:28:02.044Z"
-    },
-    {
-     "text": "Watchdog: step s2 retried at ready, attempt 4 on hulu0241.",
-     "at": "2026-11-25T23:29:02.024Z"
-    },
-    {
-     "text": "Watchdog: step s3 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s3--paulie is gone while the step was building.",
-     "at": "2026-11-25T23:29:02.024Z"
-    },
-    {
-     "text": "Watchdog: step s3 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-25T23:30:02.885Z"
-    },
-    {
-     "text": "Watchdog: step s1 failed at building, attempt 3: tmux session axf-emergency-rip-out-the-7-mb-status---s1--joey is gone while the step was building.",
-     "at": "2026-11-25T23:31:04.442Z"
-    },
-    {
-     "text": "Watchdog: step s1 retried at ready, attempt 4 on hulu0241.",
-     "at": "2026-11-25T23:32:02.769Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s1--joey, shared account login)",
-     "at": "2026-11-26T22:44:29.723Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s2--paulie, shared account login)",
-     "at": "2026-11-26T22:45:25.349Z"
-    },
-    {
-     "text": "Watchdog: step s1 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s1--joey is gone while the step was building.",
-     "at": "2026-11-26T22:54:01.635Z"
-    },
-    {
-     "text": "Watchdog: step s2 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s2--paulie is gone while the step was building.",
-     "at": "2026-11-26T22:54:01.635Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s1--sully, shared account login)",
-     "at": "2026-11-26T22:58:23.150Z"
-    },
-    {
-     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s2--earl: brief only · start 11.7K tokens ($0.05) · cost $0.72 · 14 turns · 6 tools, MCP none",
-     "at": "2026-11-26T23:03:21.695Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $0.72",
-     "at": "2026-11-26T23:03:43.629Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s3--gina, shared account login)",
-     "at": "2026-11-26T23:04:17.441Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:04:36.682Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s4--rhonda, shared account login)",
-     "at": "2026-11-26T23:04:59.901Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $0.66",
-     "at": "2026-11-26T23:09:16.337Z"
-    },
-    {
-     "text": "s1: code was already pushed by the first run; re-verified after merging main (builds-store 64, builds-live 140, data-store 16, lander 97, landing-line 32, gate-rules 38 all green) and pushed. The step kept failing because the VPS root disk is 100% full (387G, 300 MB free): sessions and tests die with ENOSPC. Freed 1.4 GB by removing day-old test scratch folders in /tmp (lander-run-*, axf-live-check-*, reconcile-*). Needs Brett: clear old worktrees under /root/axf-builds (257 of them) and add a disk-space check to Systems check.",
-     "at": "2026-11-26T23:09:51.420Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $1.39",
-     "at": "2026-11-26T23:12:35.051Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s2--joey, shared account login)",
-     "at": "2026-11-26T23:12:53.445Z"
-    },
-    {
-     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s1--sully: brief only · start 12.3K tokens ($0.06) · cost $1.39 · 28 turns · 6 tools, MCP none",
-     "at": "2026-11-26T23:13:12.635Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:14:37.224Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:14:37.224Z"
-    },
-    {
-     "text": "Watchdog: step s3 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s3--gina is gone while the step was building.",
-     "at": "2026-11-26T23:14:37.224Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s5--paulie, shared account login)",
-     "at": "2026-11-26T23:15:46.588Z"
-    },
-    {
-     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s2--joey: brief only · start 11.7K tokens ($0.00) · cost $0.50 · 7 turns · 6 tools, MCP none",
-     "at": "2026-11-26T23:16:22.482Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $0.50",
-     "at": "2026-11-26T23:16:53.009Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:19:37.607Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:19:37.607Z"
-    },
-    {
-     "text": "Watchdog: step s3 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-26T23:19:37.607Z"
-    },
-    {
-     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s4--rhonda: brief only · start 11.9K tokens ($0.06) · cost $3.77 · 37 turns · 6 tools, MCP none",
-     "at": "2026-11-26T23:22:03.954Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $3.77",
-     "at": "2026-11-26T23:22:19.401Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:24:37.806Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:24:37.806Z"
-    },
-    {
-     "text": "Watchdog: step s4 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s4--rhonda is gone while the step was building.",
-     "at": "2026-11-26T23:24:37.806Z"
-    },
-    {
-     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s5--paulie: brief only · start 11.9K tokens ($0.06) · cost $3.46 · 26 turns · 6 tools, MCP none",
-     "at": "2026-11-26T23:26:11.165Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $3.46",
-     "at": "2026-11-26T23:26:17.002Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:29:37.862Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:29:37.862Z"
-    },
-    {
-     "text": "Watchdog: build stuck at building (1168 min past budget): re-ran the transition (1).",
-     "at": "2026-11-26T23:29:37.862Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:34:38.035Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
-     "at": "2026-11-26T23:34:38.035Z"
-    },
-    {
-     "text": "Watchdog: build stuck at building (1173 min past budget): re-ran the transition (1).",
-     "at": "2026-11-26T23:34:38.035Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s3--lenny, shared account login)",
-     "at": "2026-11-27T04:20:38.865Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s4--sully, shared account login)",
-     "at": "2026-11-27T04:21:32.292Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "",
-    "at": "",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "emergency-rip-out-the-7-mb-status---s4",
-    "brief": "# EMERGENCY: rip out the 7 MB status file: step s4\n\nBuild emergency-rip-out-the-7-mb-status- (Pipeline 2.0), step s4 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-rip-out-the-7-mb-status---s4 (already cut from main) · branch claude/emergency-rip-out-the-7-mb-status---s4.\n\n## Your step\nDispatcher: stop using the status file. In apps/console-web/plugins/build-orchestrator/pipeline.mjs (intake, queue, tick), find every read or write of the pipeline status JSON file and replace it. Each status change is one per-build row update through the builds store / data-store@1 API already on main. The tick reads only the rows it needs (queued and running builds, by status) rather than a whole document. Delete any code that recreates the file. Touch only pipeline.mjs and helper .mjs files in the plugin folder that are not under server/ or the web UI. Run the plugin's existing pipeline tests, then commit.\n\nFiles: apps/console-web/plugins/build-orchestrator/pipeline.mjs. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
-    "verbatim": false,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "- Remove the whole-file pipeline status JSON from the Node builds store. In framework/cli/builds-store.mjs and framework/core/data-files.mjs, find every read, write, export or regeneration of the pipeline status JSON file and delete it. Status writes (step, status, note, branch, PR) become per-build row updates through the existing data-store@1 calls (Postgres builds store). Status reads become queries by status/project with limit and offset, never a whole-document load. Keep the exported function names and signatures other callers use, so parallel steps stay compatible. Run node framework/cli/b\n- Lander: no status file. In deploy/lander/ (run.mjs and its helpers), find every read or write of the pipeline status JSON file and replace it with per-build row reads and updates through the builds store / data-store@1 API already on main (builds-store.mjs exports, data-files.mjs readData/writeData for rows). Delete any code that regenerates the file after a landing. Do not change landing behaviour, queue, accounts or cancel logic. Run node framework/spec/check-landing-line.mjs and check-gate-rules.mjs, then commit.\n- Watchdog and remaining writers: no status file. Grep the repo for the pipeline status file name outside the files owned by other steps (builds-store.mjs, data-files.mjs, data_store.py, mcp_server.py, apps/console-web/plugins/build-orchestrator/, deploy/lander/). Fix the watchdog (deploy/ and framework/cli watchdog scripts), builds-live.mjs, builds-reconcile.mjs and any other CLI or cron script that reads, writes or recreates it, so they use per-build row reads and updates through data-store@1. Leave builds-store.mjs and data-files.mjs alone. Commit with a list of every file changed in the mess",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "42 min",
-     "files": [
-      "framework/cli/builds-store.mjs",
-      "framework/core/data-files.mjs",
-      "deploy/lander/",
-      "deploy/",
-      "framework/cli/builds-live.mjs",
-      "framework/cli/builds-reconcile.mjs",
-      "framework/cli/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-26T23:10:43.214Z",
-     "note": "Part 1: 3 plan steps in one session (they touch the same files).",
-     "uid": "st-mwwq2iwo1lkdwx",
-     "createdAt": "2026-11-25T22:55:50.328Z"
-    },
-    {
-     "id": "s2",
-     "text": "Remove the pipeline status file from the console server's data layer. In apps/console-web/server/data_store.py, delete every path that reads, writes, caches or recreates the pipeline status JSON file (including any local or shadow fallback for it). Status writes go through per-build row updates. Add or keep a paged read (filter by status and project, limit/offset, plus counts per status) against the Postgres builds store through data-store@1. Keep existing public function names working for current callers. Run the server's existing data_store tests, then commit.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "15 min",
-     "files": [
-      "apps/console-web/server/data_store.py"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwwq2iwo1msd97",
-     "createdAt": "2026-11-25T22:55:50.328Z"
-    },
-    {
-     "id": "s3",
-     "text": "Make pipeline_status small. In apps/console-web/server/mcp_server.py, rewrite the pipeline_status MCP tool and its REST route so they never open the status JSON file. They return a small summary (counts per status, the active build, the head of the queue, optional status/project filter with limit/offset paging and a hard cap on rows and response size) read from the Postgres builds store through the data_store API that already exists on main. Remove any code in this file that writes or refreshes the status file. Touch only this file; put any helper the tool needs inside it. Commit.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "15 min",
-     "files": [
-      "apps/console-web/server/mcp_server.py"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwwq2iwo1n81b6",
-     "createdAt": "2026-11-25T22:55:50.328Z"
-    },
-    {
-     "id": "s4",
-     "text": "Dispatcher: stop using the status file. In apps/console-web/plugins/build-orchestrator/pipeline.mjs (intake, queue, tick), find every read or write of the pipeline status JSON file and replace it. Each status change is one per-build row update through the builds store / data-store@1 API already on main. The tick reads only the rows it needs (queued and running builds, by status) rather than a whole document. Delete any code that recreates the file. Touch only pipeline.mjs and helper .mjs files in the plugin folder that are not under server/ or the web UI. Run the plugin's existing pipeline tests, then commit.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "15 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwwq2iwo1ozo68",
-     "createdAt": "2026-11-25T22:55:50.328Z"
-    },
-    {
-     "id": "s5",
-     "text": "Build-orchestrator server routes: no status file. In apps/console-web/plugins/build-orchestrator/server/, find every route that reads, serves or writes the pipeline status JSON file (orchestrator tabs data, fill status, pipeline lists). Change them to query the Postgres builds store by status/project with limit/offset paging and to write status as per-build row updates through the existing data_store API. Responses carry a page of rows plus totals, never the whole set. Keep route paths and the response fields the UI reads, adding only paging fields (limit, offset, total). Touch only files under server/. Commit.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "15 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/server/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwwq2iwp1pdwcm",
-     "createdAt": "2026-11-25T22:55:50.329Z"
-    },
-    {
-     "id": "s6",
-     "text": "Build-orchestrator UI: paged status reads. In the plugin's web UI (apps/console-web/plugins/build-orchestrator/ui/ or its .tsx views; not server/, not pipeline.mjs), update the orchestrator tabs and the fill-status view to request status by tab/status/project with limit/offset and load more on scroll or page. They must tolerate both the current response and one carrying limit/offset/total, and never fetch or hold the whole status document. Remove any client code that reads a status file URL. Use framework controls and tokens only. Run the console typecheck, then commit.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "15 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/ui/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwwq2iwp1qqks4",
-     "createdAt": "2026-11-25T22:55:50.329Z"
-    },
-    {
-     "id": "s7",
-     "text": "- Delete the file and guard against its return. git rm the leftover 7 MB pipeline status JSON file (under _claude/builds/ or wherever grep finds it) and any committed copies or exports of it. Remove its entry from framework/schemas/data-store-paths.json and its line in framework/spec/DATA-INVENTORY.md, and add it to .gitignore. Add the CI guard framework/spec/check-no-pipeline-status-file.mjs: it fails if the file exists anywhere in the checkout, if any source file references its name outside the guard itself, or if any tracked runtime .json under _claude/builds exceeds a size cap. Wire it into \n- Tests and report. Add new test files only. framework/spec/check-pipeline-status-rows.mjs: a status write changes one build row and creates no status file; a paged read by status/project returns the right page and totals. apps/console-web/server/tests/test_pipeline_status_summary.py: pipeline_status MCP and REST responses stay under a small byte cap with many builds seeded, honour limit/offset, and no status file appears on disk afterwards. Run the console typecheck, check-builds-store, check-json-data-writes and the server tests, and record the results. Write _claude/builds/reports/emergency-r",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "_claude/builds/",
-      "framework/schemas/data-store-paths.json",
-      "framework/spec/DATA-INVENTORY.md",
-      "framework/spec/check-no-pipeline-status-file.mjs",
-      ".github/workflows/",
-      ".gitignore",
-      "framework/spec/check-pipeline-status-rows.mjs",
-      "apps/console-web/server/tests/test_pipeline_status_summary.py",
-      "_claude/builds/reports/emergency-rip-out-the-7-mb-status-.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "Part 7: 2 plan steps in one session (they touch the same files).",
-     "uid": "st-mwwq2iwp1ripa4",
-     "createdAt": "2026-11-25T22:55:50.329Z"
-    }
-   ]
-  },
-  {
    "id": "land-round-2",
    "title": "Land round 2: catch up and land the rest, Molly first",
    "category": "Landing",
@@ -20465,6 +20090,455 @@
      "note": "",
      "uid": "st-mw23gp6508tldc",
      "createdAt": "2026-11-04T12:29:55.130Z"
+    }
+   ]
+  },
+  {
+   "id": "emergency-rip-out-the-7-mb-status-",
+   "title": "EMERGENCY: rip out the 7 MB status file",
+   "category": "",
+   "detail": "Brett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.",
+   "status": "building",
+   "hidden": false,
+   "flow": "pipeline-2",
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
+   "pr": "932",
+   "createdAt": "2026-11-25T22:53:22.832Z",
+   "updatedAt": "2026-11-27T04:29:27.718Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: emergency-rip-out-the-7-mb-statu-qsmm (Fixes › Watchdog hunts real processes, not just slot rows › EMERGENCY: rip out the 7 MB status file). Passed plan-build@1; sent as one Pipeline 2.0 build with 0 planning steps. The splitting stage designs its build steps; Plan Studio lists them from this store once they are filed.",
+     "at": "2026-11-25T22:53:22.832Z"
+    },
+    {
+     "text": "Sent to emergency by admin: it skips the line, builds in the emergency slots and lands first.",
+     "at": "2026-11-25T22:53:34.694Z"
+    },
+    {
+     "text": "Split by Fable into 10 steps (147 min). The triage gate assigns the models.",
+     "at": "2026-11-25T22:55:50.321Z"
+    },
+    {
+     "text": "Draft PR #932 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/932.",
+     "at": "2026-11-25T22:56:49.813Z"
+    },
+    {
+     "text": "Models assigned by the triage gate: s1 Fable (Contracts: it touches framework/cli/builds-store.mjs); s2 Fable (Contracts: it says \"builds store\"); s3 Fable (Contracts: it says \"builds store\"); s4 Fable (Contracts: it says \"builds store\"); s5 Fable (Contracts: it says \"builds store\"); s6 Fable (Splitter's suggestion: marked Fable when it was split); s7 Fable (Contracts: it touches framework/schemas/data-store-paths.json).",
+     "at": "2026-11-25T23:00:26.640Z"
+    },
+    {
+     "text": "Watchdog: step s2 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s2--sully is gone while the step was building.",
+     "at": "2026-11-25T23:10:07.035Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-25T23:15:06.964Z"
+    },
+    {
+     "text": "s1 pushed (claude/emergency-rip-out-the-7-mb-status---s1): the status file is _claude/builds/orchestrator.json; the Node store, builds-live, lander, worktree setup, feature matrix and agent swarm no longer read or write it. New builds-store.mjs exports for the other steps: readBuild, withBuild, queryBuilds({status, project, limit, offset}), pipelineSummary. Open: data-store@1 on main has no server-side row read or filter, so those reads still assemble the record from the tables once per call; a real row query needs services/axf-data (the stalled build pipeline-fixes-drop-7-mb-status-file has one in commit 170aba583), which no step of this build owns.",
+     "at": "2026-11-25T23:15:25.274Z"
+    },
+    {
+     "text": "Watchdog: step s4 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-25T23:23:02.078Z"
+    },
+    {
+     "text": "Watchdog: step s2 failed at building, attempt 3: tmux session axf-emergency-rip-out-the-7-mb-status---s2--rhonda is gone while the step was building.",
+     "at": "2026-11-25T23:28:02.044Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 4 on hulu0241.",
+     "at": "2026-11-25T23:29:02.024Z"
+    },
+    {
+     "text": "Watchdog: step s3 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s3--paulie is gone while the step was building.",
+     "at": "2026-11-25T23:29:02.024Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-25T23:30:02.885Z"
+    },
+    {
+     "text": "Watchdog: step s1 failed at building, attempt 3: tmux session axf-emergency-rip-out-the-7-mb-status---s1--joey is gone while the step was building.",
+     "at": "2026-11-25T23:31:04.442Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 4 on hulu0241.",
+     "at": "2026-11-25T23:32:02.769Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s1--joey, shared account login)",
+     "at": "2026-11-26T22:44:29.723Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s2--paulie, shared account login)",
+     "at": "2026-11-26T22:45:25.349Z"
+    },
+    {
+     "text": "Watchdog: step s1 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s1--joey is gone while the step was building.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Watchdog: step s2 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s2--paulie is gone while the step was building.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s1--sully, shared account login)",
+     "at": "2026-11-26T22:58:23.150Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s2--earl: brief only · start 11.7K tokens ($0.05) · cost $0.72 · 14 turns · 6 tools, MCP none",
+     "at": "2026-11-26T23:03:21.695Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.72",
+     "at": "2026-11-26T23:03:43.629Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s3--gina, shared account login)",
+     "at": "2026-11-26T23:04:17.441Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:04:36.682Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s4--rhonda, shared account login)",
+     "at": "2026-11-26T23:04:59.901Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.66",
+     "at": "2026-11-26T23:09:16.337Z"
+    },
+    {
+     "text": "s1: code was already pushed by the first run; re-verified after merging main (builds-store 64, builds-live 140, data-store 16, lander 97, landing-line 32, gate-rules 38 all green) and pushed. The step kept failing because the VPS root disk is 100% full (387G, 300 MB free): sessions and tests die with ENOSPC. Freed 1.4 GB by removing day-old test scratch folders in /tmp (lander-run-*, axf-live-check-*, reconcile-*). Needs Brett: clear old worktrees under /root/axf-builds (257 of them) and add a disk-space check to Systems check.",
+     "at": "2026-11-26T23:09:51.420Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $1.39",
+     "at": "2026-11-26T23:12:35.051Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s2--joey, shared account login)",
+     "at": "2026-11-26T23:12:53.445Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s1--sully: brief only · start 12.3K tokens ($0.06) · cost $1.39 · 28 turns · 6 tools, MCP none",
+     "at": "2026-11-26T23:13:12.635Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:14:37.224Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:14:37.224Z"
+    },
+    {
+     "text": "Watchdog: step s3 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s3--gina is gone while the step was building.",
+     "at": "2026-11-26T23:14:37.224Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s5--paulie, shared account login)",
+     "at": "2026-11-26T23:15:46.588Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s2--joey: brief only · start 11.7K tokens ($0.00) · cost $0.50 · 7 turns · 6 tools, MCP none",
+     "at": "2026-11-26T23:16:22.482Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.50",
+     "at": "2026-11-26T23:16:53.009Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:19:37.607Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:19:37.607Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-26T23:19:37.607Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s4--rhonda: brief only · start 11.9K tokens ($0.06) · cost $3.77 · 37 turns · 6 tools, MCP none",
+     "at": "2026-11-26T23:22:03.954Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $3.77",
+     "at": "2026-11-26T23:22:19.401Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:24:37.806Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:24:37.806Z"
+    },
+    {
+     "text": "Watchdog: step s4 failed at building, attempt 1: tmux session axf-emergency-rip-out-the-7-mb-status---s4--rhonda is gone while the step was building.",
+     "at": "2026-11-26T23:24:37.806Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s5--paulie: brief only · start 11.9K tokens ($0.06) · cost $3.46 · 26 turns · 6 tools, MCP none",
+     "at": "2026-11-26T23:26:11.165Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $3.46",
+     "at": "2026-11-26T23:26:17.002Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:29:37.862Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:29:37.862Z"
+    },
+    {
+     "text": "Watchdog: build stuck at building (1168 min past budget): re-ran the transition (1).",
+     "at": "2026-11-26T23:29:37.862Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:34:38.035Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-26T23:34:38.035Z"
+    },
+    {
+     "text": "Watchdog: build stuck at building (1173 min past budget): re-ran the transition (1).",
+     "at": "2026-11-26T23:34:38.035Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s3--lenny, shared account login)",
+     "at": "2026-11-27T04:20:38.865Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s4--sully, shared account login)",
+     "at": "2026-11-27T04:21:32.292Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s3--lenny: brief only · start 11.7K tokens ($0.08) · cost $0.75 · 11 turns · 6 tools, MCP none",
+     "at": "2026-11-27T04:22:26.821Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.75",
+     "at": "2026-11-27T04:22:41.254Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s4--sully: brief only · start 11.9K tokens ($0.06) · cost $0.46 · 8 turns · 6 tools, MCP none",
+     "at": "2026-11-27T04:23:55.354Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.46",
+     "at": "2026-11-27T04:24:01.424Z"
+    },
+    {
+     "text": "Watchdog: step s3 failed at building, attempt 2: tmux session axf-emergency-rip-out-the-7-mb-status---s3--lenny is gone while the step was building.",
+     "at": "2026-11-27T04:24:27.708Z"
+    },
+    {
+     "text": "Watchdog: step s4 failed at building, attempt 2: tmux session axf-emergency-rip-out-the-7-mb-status---s4--sully is gone while the step was building.",
+     "at": "2026-11-27T04:24:27.708Z"
+    },
+    {
+     "text": "Watchdog: step s5 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-27T04:24:27.708Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-27T04:29:27.718Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-27T04:29:27.718Z",
+     "by": "watchdog"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "emergency-rip-out-the-7-mb-status---s4",
+    "brief": "# EMERGENCY: rip out the 7 MB status file: step s4\n\nBuild emergency-rip-out-the-7-mb-status- (Pipeline 2.0), step s4 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-rip-out-the-7-mb-status---s4 (already cut from main) · branch claude/emergency-rip-out-the-7-mb-status---s4.\n\n## Your step\nDispatcher: stop using the status file. In apps/console-web/plugins/build-orchestrator/pipeline.mjs (intake, queue, tick), find every read or write of the pipeline status JSON file and replace it. Each status change is one per-build row update through the builds store / data-store@1 API already on main. The tick reads only the rows it needs (queued and running builds, by status) rather than a whole document. Delete any code that recreates the file. Touch only pipeline.mjs and helper .mjs files in the plugin folder that are not under server/ or the web UI. Run the plugin's existing pipeline tests, then commit.\n\nFiles: apps/console-web/plugins/build-orchestrator/pipeline.mjs. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "- Remove the whole-file pipeline status JSON from the Node builds store. In framework/cli/builds-store.mjs and framework/core/data-files.mjs, find every read, write, export or regeneration of the pipeline status JSON file and delete it. Status writes (step, status, note, branch, PR) become per-build row updates through the existing data-store@1 calls (Postgres builds store). Status reads become queries by status/project with limit and offset, never a whole-document load. Keep the exported function names and signatures other callers use, so parallel steps stay compatible. Run node framework/cli/b\n- Lander: no status file. In deploy/lander/ (run.mjs and its helpers), find every read or write of the pipeline status JSON file and replace it with per-build row reads and updates through the builds store / data-store@1 API already on main (builds-store.mjs exports, data-files.mjs readData/writeData for rows). Delete any code that regenerates the file after a landing. Do not change landing behaviour, queue, accounts or cancel logic. Run node framework/spec/check-landing-line.mjs and check-gate-rules.mjs, then commit.\n- Watchdog and remaining writers: no status file. Grep the repo for the pipeline status file name outside the files owned by other steps (builds-store.mjs, data-files.mjs, data_store.py, mcp_server.py, apps/console-web/plugins/build-orchestrator/, deploy/lander/). Fix the watchdog (deploy/ and framework/cli watchdog scripts), builds-live.mjs, builds-reconcile.mjs and any other CLI or cron script that reads, writes or recreates it, so they use per-build row reads and updates through data-store@1. Leave builds-store.mjs and data-files.mjs alone. Commit with a list of every file changed in the mess",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "42 min",
+     "files": [
+      "framework/cli/builds-store.mjs",
+      "framework/core/data-files.mjs",
+      "deploy/lander/",
+      "deploy/",
+      "framework/cli/builds-live.mjs",
+      "framework/cli/builds-reconcile.mjs",
+      "framework/cli/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-26T23:10:43.214Z",
+     "note": "Part 1: 3 plan steps in one session (they touch the same files).",
+     "uid": "st-mwwq2iwo1lkdwx",
+     "createdAt": "2026-11-25T22:55:50.328Z"
+    },
+    {
+     "id": "s2",
+     "text": "Remove the pipeline status file from the console server's data layer. In apps/console-web/server/data_store.py, delete every path that reads, writes, caches or recreates the pipeline status JSON file (including any local or shadow fallback for it). Status writes go through per-build row updates. Add or keep a paged read (filter by status and project, limit/offset, plus counts per status) against the Postgres builds store through data-store@1. Keep existing public function names working for current callers. Run the server's existing data_store tests, then commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/server/data_store.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwwq2iwo1msd97",
+     "createdAt": "2026-11-25T22:55:50.328Z"
+    },
+    {
+     "id": "s3",
+     "text": "Make pipeline_status small. In apps/console-web/server/mcp_server.py, rewrite the pipeline_status MCP tool and its REST route so they never open the status JSON file. They return a small summary (counts per status, the active build, the head of the queue, optional status/project filter with limit/offset paging and a hard cap on rows and response size) read from the Postgres builds store through the data_store API that already exists on main. Remove any code in this file that writes or refreshes the status file. Touch only this file; put any helper the tool needs inside it. Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/server/mcp_server.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwwq2iwo1n81b6",
+     "createdAt": "2026-11-25T22:55:50.328Z"
+    },
+    {
+     "id": "s4",
+     "text": "Dispatcher: stop using the status file. In apps/console-web/plugins/build-orchestrator/pipeline.mjs (intake, queue, tick), find every read or write of the pipeline status JSON file and replace it. Each status change is one per-build row update through the builds store / data-store@1 API already on main. The tick reads only the rows it needs (queued and running builds, by status) rather than a whole document. Delete any code that recreates the file. Touch only pipeline.mjs and helper .mjs files in the plugin folder that are not under server/ or the web UI. Run the plugin's existing pipeline tests, then commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwwq2iwo1ozo68",
+     "createdAt": "2026-11-25T22:55:50.328Z"
+    },
+    {
+     "id": "s5",
+     "text": "Build-orchestrator server routes: no status file. In apps/console-web/plugins/build-orchestrator/server/, find every route that reads, serves or writes the pipeline status JSON file (orchestrator tabs data, fill status, pipeline lists). Change them to query the Postgres builds store by status/project with limit/offset paging and to write status as per-build row updates through the existing data_store API. Responses carry a page of rows plus totals, never the whole set. Keep route paths and the response fields the UI reads, adding only paging fields (limit, offset, total). Touch only files under server/. Commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwwq2iwp1pdwcm",
+     "createdAt": "2026-11-25T22:55:50.329Z"
+    },
+    {
+     "id": "s6",
+     "text": "Build-orchestrator UI: paged status reads. In the plugin's web UI (apps/console-web/plugins/build-orchestrator/ui/ or its .tsx views; not server/, not pipeline.mjs), update the orchestrator tabs and the fill-status view to request status by tab/status/project with limit/offset and load more on scroll or page. They must tolerate both the current response and one carrying limit/offset/total, and never fetch or hold the whole status document. Remove any client code that reads a status file URL. Use framework controls and tokens only. Run the console typecheck, then commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/ui/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwwq2iwp1qqks4",
+     "createdAt": "2026-11-25T22:55:50.329Z"
+    },
+    {
+     "id": "s7",
+     "text": "- Delete the file and guard against its return. git rm the leftover 7 MB pipeline status JSON file (under _claude/builds/ or wherever grep finds it) and any committed copies or exports of it. Remove its entry from framework/schemas/data-store-paths.json and its line in framework/spec/DATA-INVENTORY.md, and add it to .gitignore. Add the CI guard framework/spec/check-no-pipeline-status-file.mjs: it fails if the file exists anywhere in the checkout, if any source file references its name outside the guard itself, or if any tracked runtime .json under _claude/builds exceeds a size cap. Wire it into \n- Tests and report. Add new test files only. framework/spec/check-pipeline-status-rows.mjs: a status write changes one build row and creates no status file; a paged read by status/project returns the right page and totals. apps/console-web/server/tests/test_pipeline_status_summary.py: pipeline_status MCP and REST responses stay under a small byte cap with many builds seeded, honour limit/offset, and no status file appears on disk afterwards. Run the console typecheck, check-builds-store, check-json-data-writes and the server tests, and record the results. Write _claude/builds/reports/emergency-r",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "_claude/builds/",
+      "framework/schemas/data-store-paths.json",
+      "framework/spec/DATA-INVENTORY.md",
+      "framework/spec/check-no-pipeline-status-file.mjs",
+      ".github/workflows/",
+      ".gitignore",
+      "framework/spec/check-pipeline-status-rows.mjs",
+      "apps/console-web/server/tests/test_pipeline_status_summary.py",
+      "_claude/builds/reports/emergency-rip-out-the-7-mb-status-.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "Part 7: 2 plan steps in one session (they touch the same files).",
+     "uid": "st-mwwq2iwp1ripa4",
+     "createdAt": "2026-11-25T22:55:50.329Z"
     }
    ]
   },
@@ -32781,146 +32855,6 @@
    ]
   },
   {
-   "id": "changes-chat-log",
-   "title": "Changes as chat log: Codebase changes entries render as a conversation timeline",
-   "category": "Console > Builds",
-   "detail": "Expanded Codebase changes entry renders like the Chat viewer: Brett bubbles (verbatim said + addenda), Amber bubble (brief as Markdown, collapsed, session-rules boilerplate hidden), agent bubbles per step/commit/PR, system lines for status; metadata chip row; Classic view toggle; shared component reused in Build manager row expansion.",
-   "status": "fixing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/changes-chat-log",
-   "pr": "#347",
-   "createdAt": "2026-11-04T21:53:46.271Z",
-   "updatedAt": "2026-11-27T02:38:54.125Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    },
-    {
-     "text": "Fixing: the push failed (landing for 22 days: PR #347 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
-     "at": "2026-11-27T02:38:54.125Z"
-    },
-    {
-     "text": "Watchdog: landing for 22 days: PR #347 was closed without merging and nothing moved it. The retry ladder answers it.",
-     "at": "2026-11-27T02:38:54.125Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "This needs to be displayed like the chat log.",
-    "at": "2026-11-04T21:53:46.271Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Timeline core: turn a change entry (+ build origin) into chat messages (brett/amber/agent/system), split session-rules boilerplate out of the brief; unit tests",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "25 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T22:04:39.681Z",
-     "note": "",
-     "uid": "st-mw2nlthg06ptfh",
-     "createdAt": "2026-11-04T21:53:46.272Z"
-    },
-    {
-     "id": "s2",
-     "text": "Shared ChatLog component built on the Chat viewer's message components (export them), Markdown brief collapsed with Show full brief, Session rules toggle",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T22:04:41.459Z",
-     "note": "",
-     "uid": "st-mw2nlthg07r09v",
-     "createdAt": "2026-11-04T21:53:46.272Z"
-    },
-    {
-     "id": "s3",
-     "text": "Codebase changes expanded entry: chip header + chat log, Classic view toggle (saved setting)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "25 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T22:04:43.435Z",
-     "note": "",
-     "uid": "st-mw2nlthg08a1yr",
-     "createdAt": "2026-11-04T21:53:46.272Z"
-    },
-    {
-     "id": "s4",
-     "text": "Build manager row expansion uses the same component",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T22:04:45.451Z",
-     "note": "",
-     "uid": "st-mw2nlthg0968y7",
-     "createdAt": "2026-11-04T21:53:46.272Z"
-    },
-    {
-     "id": "s5",
-     "text": "Type-check, tests, README, phone + desktop shots to UI Review Screenshots, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "25 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T22:09:41.397Z",
-     "note": "",
-     "uid": "st-mw2nlthg0act8j",
-     "createdAt": "2026-11-04T21:53:46.272Z"
-    }
-   ]
-  },
-  {
    "id": "axhub-google",
    "title": "It's gonna be linked to our Gmail through axHub's MCP server, not Claude's. axHub is gonna connect to my Gmail, my Googl",
    "category": "",
@@ -34346,6 +34280,146 @@
      "note": "",
      "uid": "st-mw5x6wuc0lw2oj",
      "createdAt": "2026-11-07T04:02:18.386Z"
+    }
+   ]
+  },
+  {
+   "id": "changes-chat-log",
+   "title": "Changes as chat log: Codebase changes entries render as a conversation timeline",
+   "category": "Console > Builds",
+   "detail": "Expanded Codebase changes entry renders like the Chat viewer: Brett bubbles (verbatim said + addenda), Amber bubble (brief as Markdown, collapsed, session-rules boilerplate hidden), agent bubbles per step/commit/PR, system lines for status; metadata chip row; Classic view toggle; shared component reused in Build manager row expansion.",
+   "status": "fixing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/changes-chat-log",
+   "pr": "#347",
+   "createdAt": "2026-11-04T21:53:46.271Z",
+   "updatedAt": "2026-11-27T02:38:54.125Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 22 days: PR #347 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T02:38:54.125Z"
+    },
+    {
+     "text": "Watchdog: landing for 22 days: PR #347 was closed without merging and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T02:38:54.125Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "This needs to be displayed like the chat log.",
+    "at": "2026-11-04T21:53:46.271Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Timeline core: turn a change entry (+ build origin) into chat messages (brett/amber/agent/system), split session-rules boilerplate out of the brief; unit tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T22:04:39.681Z",
+     "note": "",
+     "uid": "st-mw2nlthg06ptfh",
+     "createdAt": "2026-11-04T21:53:46.272Z"
+    },
+    {
+     "id": "s2",
+     "text": "Shared ChatLog component built on the Chat viewer's message components (export them), Markdown brief collapsed with Show full brief, Session rules toggle",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T22:04:41.459Z",
+     "note": "",
+     "uid": "st-mw2nlthg07r09v",
+     "createdAt": "2026-11-04T21:53:46.272Z"
+    },
+    {
+     "id": "s3",
+     "text": "Codebase changes expanded entry: chip header + chat log, Classic view toggle (saved setting)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T22:04:43.435Z",
+     "note": "",
+     "uid": "st-mw2nlthg08a1yr",
+     "createdAt": "2026-11-04T21:53:46.272Z"
+    },
+    {
+     "id": "s4",
+     "text": "Build manager row expansion uses the same component",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T22:04:45.451Z",
+     "note": "",
+     "uid": "st-mw2nlthg0968y7",
+     "createdAt": "2026-11-04T21:53:46.272Z"
+    },
+    {
+     "id": "s5",
+     "text": "Type-check, tests, README, phone + desktop shots to UI Review Screenshots, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T22:09:41.397Z",
+     "note": "",
+     "uid": "st-mw2nlthg0act8j",
+     "createdAt": "2026-11-04T21:53:46.272Z"
     }
    ]
   },
@@ -50981,170 +51055,6 @@
    ]
   },
   {
-   "id": "amberx-approvals-fix",
-   "title": "AmberX approvals fix",
-   "category": "Fix",
-   "detail": "",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/amberx-approvals-fix",
-   "pr": "#353",
-   "priority": "P0",
-   "createdAt": "2026-11-05T02:14:31.670Z",
-   "updatedAt": "2026-11-15T00:40:34.188Z",
-   "builtAt": "2026-11-10T02:32:16.216Z",
-   "notes": [
-    {
-     "text": "PR #353 in the merge queue, UI Review r-20261105-a07d27ac waiting. axHub PR #38 green, not merged (the session had no axHub call grant). Needs a new APK after merge. Report _claude/builds/reports/amberx-approvals-fix.md",
-     "at": "2026-11-05T02:36:57.204Z"
-    },
-    {
-     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
-     "at": "2026-11-05T03:00:45.690Z"
-    },
-    {
-     "text": "Merged from build profile \"urgent\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    },
-    {
-     "text": "Reconciler: PR #353 names s1, s2, s4, s5, s6 done",
-     "at": "2026-11-10T02:32:16.216Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "Why isn't AmberX launching approvals on my phone? It used to always pop up approvals. ... Nope, only when I open AmberX, and it says 'web page not available' in the approval waiting dialog. ... (Queue a fix?) Yep.",
-    "at": "2026-11-05T02:14:31.670Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Find the real cause on the live system (hub logs, headers, catalog)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-05T02:14:32.846Z",
-     "note": "",
-     "uid": "st-mw2wx5oh07dywo",
-     "createdAt": "2026-11-05T02:14:31.678Z"
-    },
-    {
-     "id": "s2",
-     "text": "axHub: frame origins, /apps/download latest, ntfy 429 cooldown, test approval route, tests, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-05T02:36:13.336Z",
-     "note": "",
-     "uid": "st-mw2wx5oi08gv97",
-     "createdAt": "2026-11-05T02:14:31.678Z"
-    },
-    {
-     "id": "s3",
-     "text": "Native approval dialog in place of the iframe (AmberX, Molly, console), nginx frame origins",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-05T02:36:16.920Z",
-     "note": "",
-     "uid": "st-mw2wx5oi09wyiz",
-     "createdAt": "2026-11-05T02:14:31.678Z"
-    },
-    {
-     "id": "s4",
-     "text": "AmberX Android: watch survives (battery exemption, alarm watchdog, restart), approve/deny on the notification, dead-page fallback",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-05T02:36:18.843Z",
-     "note": "",
-     "uid": "st-mw2wx5oi0aaq0m",
-     "createdAt": "2026-11-05T02:14:31.678Z"
-    },
-    {
-     "id": "s5",
-     "text": "Send test approval + phone health in Settings; systems check row 'Phone gets approvals'",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-05T02:36:21.747Z",
-     "note": "",
-     "uid": "st-mw2wx5oi0biqgf",
-     "createdAt": "2026-11-05T02:14:31.678Z"
-    },
-    {
-     "id": "s6",
-     "text": "Tests, phone shots to UI Review, report, PRs through the merge queue, APK notice",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-10T02:32:16.216Z",
-     "note": "PR #353 (claude/amberx-approvals-fix)",
-     "uid": "st-mw2wx5oi0c9bnr",
-     "createdAt": "2026-11-05T02:14:31.678Z"
-    }
-   ]
-  },
-  {
    "id": "enterprise-branding",
    "title": "Enterprise design + hot-swappable branding: branding engine, design packages, behaviour themes, 700+ generated brand assets, AmberX app + GizmoX console refactor",
    "category": "Design & branding",
@@ -52781,6 +52691,178 @@
      "note": "",
      "uid": "st-12x3lda",
      "createdAt": "2026-10-31T23:41:15.585Z"
+    }
+   ]
+  },
+  {
+   "id": "amberx-approvals-fix",
+   "title": "AmberX approvals fix",
+   "category": "Fix",
+   "detail": "",
+   "status": "fixing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/amberx-approvals-fix",
+   "pr": "#353",
+   "priority": "P0",
+   "createdAt": "2026-11-05T02:14:31.670Z",
+   "updatedAt": "2026-11-27T04:29:42.885Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "PR #353 in the merge queue, UI Review r-20261105-a07d27ac waiting. axHub PR #38 green, not merged (the session had no axHub call grant). Needs a new APK after merge. Report _claude/builds/reports/amberx-approvals-fix.md",
+     "at": "2026-11-05T02:36:57.204Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-05T03:00:45.690Z"
+    },
+    {
+     "text": "Merged from build profile \"urgent\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Reconciler: PR #353 names s1, s2, s4, s5, s6 done",
+     "at": "2026-11-10T02:32:16.216Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 17 days: PR #353 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T04:29:42.885Z"
+    },
+    {
+     "text": "Watchdog: landing for 17 days: PR #353 was closed without merging and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T04:29:42.885Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why isn't AmberX launching approvals on my phone? It used to always pop up approvals. ... Nope, only when I open AmberX, and it says 'web page not available' in the approval waiting dialog. ... (Queue a fix?) Yep.",
+    "at": "2026-11-05T02:14:31.670Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Find the real cause on the live system (hub logs, headers, catalog)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-05T02:14:32.846Z",
+     "note": "",
+     "uid": "st-mw2wx5oh07dywo",
+     "createdAt": "2026-11-05T02:14:31.678Z"
+    },
+    {
+     "id": "s2",
+     "text": "axHub: frame origins, /apps/download latest, ntfy 429 cooldown, test approval route, tests, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-05T02:36:13.336Z",
+     "note": "",
+     "uid": "st-mw2wx5oi08gv97",
+     "createdAt": "2026-11-05T02:14:31.678Z"
+    },
+    {
+     "id": "s3",
+     "text": "Native approval dialog in place of the iframe (AmberX, Molly, console), nginx frame origins",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-05T02:36:16.920Z",
+     "note": "",
+     "uid": "st-mw2wx5oi09wyiz",
+     "createdAt": "2026-11-05T02:14:31.678Z"
+    },
+    {
+     "id": "s4",
+     "text": "AmberX Android: watch survives (battery exemption, alarm watchdog, restart), approve/deny on the notification, dead-page fallback",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-05T02:36:18.843Z",
+     "note": "",
+     "uid": "st-mw2wx5oi0aaq0m",
+     "createdAt": "2026-11-05T02:14:31.678Z"
+    },
+    {
+     "id": "s5",
+     "text": "Send test approval + phone health in Settings; systems check row 'Phone gets approvals'",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-05T02:36:21.747Z",
+     "note": "",
+     "uid": "st-mw2wx5oi0biqgf",
+     "createdAt": "2026-11-05T02:14:31.678Z"
+    },
+    {
+     "id": "s6",
+     "text": "Tests, phone shots to UI Review, report, PRs through the merge queue, APK notice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T02:32:16.216Z",
+     "note": "PR #353 (claude/amberx-approvals-fix)",
+     "uid": "st-mw2wx5oi0c9bnr",
+     "createdAt": "2026-11-05T02:14:31.678Z"
     }
    ]
   },
@@ -90530,133 +90612,6 @@
    ]
   },
   {
-   "id": "terminal-header-responsive",
-   "title": "Terminal window header: responsive overflow",
-   "category": "Console > Terminal",
-   "detail": "Terminal toolbar + context-chain bar measure their own width (ResizeObserver) and move items into the framework ⋯ overflow menu (the banner's control, made generic), priority order (session/status first), setting to pin items; never overlap at any width.",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/terminal-header-responsive",
-   "pr": "#387",
-   "createdAt": "2026-11-08T16:15:18.411Z",
-   "updatedAt": "2026-11-15T00:44:36.218Z",
-   "builtAt": "2026-11-08T16:32:45.756Z",
-   "notes": [],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "The header on Terminal windows that open when a headless session starts (shows the output pane and the context chain) gets squished on smaller screens: items overlap.\n\n1. Make the header measure its available width (ResizeObserver, not just viewport) and adapt live.\n2. When space runs out, move items into a three-dots overflow menu, exactly like the top banner's overflow does. Reuse the same framework overflow control, don't build a new one.\n3. Priority order for what stays visible (title/session name and status first); setting to choose which items stay pinned.\n4. Never overlap or clip at any width; check desktop, tablet and phone widths.",
-    "at": "2026-11-08T16:15:18.411Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Framework: lift the banner's ⋯ overflow (useBannerOverflow + BannerMore) into one generic control (useOverflow + OverflowMore) on overflowWidgets; banner uses it unchanged",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T16:24:20.151Z",
-     "note": "",
-     "uid": "st-mw819yja069qye",
-     "createdAt": "2026-11-08T16:15:18.413Z"
-    },
-    {
-     "id": "s2",
-     "text": "Terminal toolbar + context-chain bar on the overflow control: ResizeObserver, priorities (session/status first), items live in the ⋯ menu",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T16:24:22.167Z",
-     "note": "",
-     "uid": "st-mw819yja07bg2c",
-     "createdAt": "2026-11-08T16:15:18.413Z"
-    },
-    {
-     "id": "s3",
-     "text": "Pinned-items setting (Terminal settings, collapsible Header section) + voice/API/MCP/CLI parity",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T16:24:23.823Z",
-     "note": "",
-     "uid": "st-mw819yja085nup",
-     "createdAt": "2026-11-08T16:15:18.413Z"
-    },
-    {
-     "id": "s4",
-     "text": "Tests (engine + overflow hook + settings), shots at phone/tablet/desktop, 3 options to UI Review",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T16:32:44.170Z",
-     "note": "",
-     "uid": "st-mw819yja097yd5",
-     "createdAt": "2026-11-08T16:15:18.413Z"
-    },
-    {
-     "id": "s5",
-     "text": "Report, STATUS, THREADS, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T16:32:45.753Z",
-     "note": "",
-     "uid": "st-mw819yja0a4pm2",
-     "createdAt": "2026-11-08T16:15:18.413Z"
-    }
-   ]
-  },
-  {
    "id": "terminal-toolbar-responsive-overflow-every-item-",
    "title": "Terminal toolbar: responsive overflow, every item a snappable asset",
    "category": "",
@@ -91650,6 +91605,133 @@
      "note": "",
      "uid": "st-mw8ef93s032vl0",
      "createdAt": "2026-11-08T22:23:20.536Z"
+    }
+   ]
+  },
+  {
+   "id": "terminal-header-responsive",
+   "title": "Terminal window header: responsive overflow",
+   "category": "Console > Terminal",
+   "detail": "Terminal toolbar + context-chain bar measure their own width (ResizeObserver) and move items into the framework ⋯ overflow menu (the banner's control, made generic), priority order (session/status first), setting to pin items; never overlap at any width.",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/terminal-header-responsive",
+   "pr": "#387",
+   "createdAt": "2026-11-08T16:15:18.411Z",
+   "updatedAt": "2026-11-15T00:44:36.218Z",
+   "builtAt": "2026-11-08T16:32:45.756Z",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The header on Terminal windows that open when a headless session starts (shows the output pane and the context chain) gets squished on smaller screens: items overlap.\n\n1. Make the header measure its available width (ResizeObserver, not just viewport) and adapt live.\n2. When space runs out, move items into a three-dots overflow menu, exactly like the top banner's overflow does. Reuse the same framework overflow control, don't build a new one.\n3. Priority order for what stays visible (title/session name and status first); setting to choose which items stay pinned.\n4. Never overlap or clip at any width; check desktop, tablet and phone widths.",
+    "at": "2026-11-08T16:15:18.411Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Framework: lift the banner's ⋯ overflow (useBannerOverflow + BannerMore) into one generic control (useOverflow + OverflowMore) on overflowWidgets; banner uses it unchanged",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T16:24:20.151Z",
+     "note": "",
+     "uid": "st-mw819yja069qye",
+     "createdAt": "2026-11-08T16:15:18.413Z"
+    },
+    {
+     "id": "s2",
+     "text": "Terminal toolbar + context-chain bar on the overflow control: ResizeObserver, priorities (session/status first), items live in the ⋯ menu",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T16:24:22.167Z",
+     "note": "",
+     "uid": "st-mw819yja07bg2c",
+     "createdAt": "2026-11-08T16:15:18.413Z"
+    },
+    {
+     "id": "s3",
+     "text": "Pinned-items setting (Terminal settings, collapsible Header section) + voice/API/MCP/CLI parity",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T16:24:23.823Z",
+     "note": "",
+     "uid": "st-mw819yja085nup",
+     "createdAt": "2026-11-08T16:15:18.413Z"
+    },
+    {
+     "id": "s4",
+     "text": "Tests (engine + overflow hook + settings), shots at phone/tablet/desktop, 3 options to UI Review",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T16:32:44.170Z",
+     "note": "",
+     "uid": "st-mw819yja097yd5",
+     "createdAt": "2026-11-08T16:15:18.413Z"
+    },
+    {
+     "id": "s5",
+     "text": "Report, STATUS, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T16:32:45.753Z",
+     "note": "",
+     "uid": "st-mw819yja0a4pm2",
+     "createdAt": "2026-11-08T16:15:18.413Z"
     }
    ]
   },
@@ -94556,120 +94638,6 @@
    ]
   },
   {
-   "id": "tabs-api-control",
-   "title": "Tabs get API control (every tab, sub-tab, section: action + console_open screen/tab + deep links + CI)",
-   "category": "Framework > Console control",
-   "detail": "",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/tabs-api-control",
-   "pr": "#398",
-   "priority": "P0",
-   "createdAt": "2026-11-08T22:30:52.988Z",
-   "updatedAt": "2026-11-15T00:41:35.150Z",
-   "builtAt": "2026-11-08T22:46:45.882Z",
-   "notes": [
-    {
-     "text": "Automatic fix (self-heal, no AI): Removed stale git lock /opt/axf/.git/worktrees/tabs-api-control/index.lock (stale)",
-     "at": "2026-11-10T03:34:03.927Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "Tabs get API control (Brett, urgent)\n\nAgents can open a screen but can't switch its tabs (e.g. Build orchestrator > Pipeline). Fix in the framework so every tab and tab group in every app is API/voice/MCP controllable:\n1. Every tab registers an action (e.g. `tab.open` with screen + tab id/label) and shows in console_list actions; console_open accepts `screen/tab` (\"build-orchestrator/pipeline\") and console_show can target a tab.\n2. Also sub-tabs, settings sections and accordions: open/expand by id or label.\n3. Deep links for screen/tab.\n4. Test on Build orchestrator > Pipeline, Plan Studio, Settings.\n5. CI check: any tab without an action fails.\nKeep it small and land fast: tests, report, PR. Create a build record so it shows in Plan Studio.",
-    "at": "2026-11-08T22:30:52.988Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "headless",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Framework tab control: live registry of every TabGroup / titled Container, pure resolver (screen/tab path, id or label), tab.open + per-tab actions",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T22:46:16.233Z",
-     "note": "",
-     "uid": "st-mw8eoyc005hmgx",
-     "createdAt": "2026-11-08T22:30:52.990Z"
-    },
-    {
-     "id": "s2",
-     "text": "console_open screen/tab (console-commands engine + client), console_show tab targets, deep links ?axf-open=screen/tab",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T22:46:17.245Z",
-     "note": "",
-     "uid": "st-mw8eoyc006njrf",
-     "createdAt": "2026-11-08T22:30:52.990Z"
-    },
-    {
-     "id": "s3",
-     "text": "CI check check-tab-actions.mjs (tab rows without control fail) + tests on Build orchestrator > Pipeline, Plan Studio, Settings",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T22:46:18.206Z",
-     "note": "",
-     "uid": "st-mw8eoyc007no72",
-     "createdAt": "2026-11-08T22:30:52.990Z"
-    },
-    {
-     "id": "s4",
-     "text": "Report, THREADS row, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-08T22:46:45.881Z",
-     "note": "",
-     "uid": "st-mw8eoyc008ieem",
-     "createdAt": "2026-11-08T22:30:52.990Z"
-    }
-   ]
-  },
-  {
    "id": "split-builds-pages-build-manager-pending-complet-2",
    "title": "Split builds pages (Build Manager = Pending + Complete; Orchestrator = Queued + Active) with one clean shared table design",
    "category": "",
@@ -94976,6 +94944,120 @@
      "note": "",
      "uid": "st-mwazeotz1ipxus",
      "createdAt": "2026-11-10T17:46:18.551Z"
+    }
+   ]
+  },
+  {
+   "id": "tabs-api-control",
+   "title": "Tabs get API control (every tab, sub-tab, section: action + console_open screen/tab + deep links + CI)",
+   "category": "Framework > Console control",
+   "detail": "",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/tabs-api-control",
+   "pr": "#398",
+   "priority": "P0",
+   "createdAt": "2026-11-08T22:30:52.988Z",
+   "updatedAt": "2026-11-15T00:41:35.150Z",
+   "builtAt": "2026-11-08T22:46:45.882Z",
+   "notes": [
+    {
+     "text": "Automatic fix (self-heal, no AI): Removed stale git lock /opt/axf/.git/worktrees/tabs-api-control/index.lock (stale)",
+     "at": "2026-11-10T03:34:03.927Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Tabs get API control (Brett, urgent)\n\nAgents can open a screen but can't switch its tabs (e.g. Build orchestrator > Pipeline). Fix in the framework so every tab and tab group in every app is API/voice/MCP controllable:\n1. Every tab registers an action (e.g. `tab.open` with screen + tab id/label) and shows in console_list actions; console_open accepts `screen/tab` (\"build-orchestrator/pipeline\") and console_show can target a tab.\n2. Also sub-tabs, settings sections and accordions: open/expand by id or label.\n3. Deep links for screen/tab.\n4. Test on Build orchestrator > Pipeline, Plan Studio, Settings.\n5. CI check: any tab without an action fails.\nKeep it small and land fast: tests, report, PR. Create a build record so it shows in Plan Studio.",
+    "at": "2026-11-08T22:30:52.988Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "headless",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Framework tab control: live registry of every TabGroup / titled Container, pure resolver (screen/tab path, id or label), tab.open + per-tab actions",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T22:46:16.233Z",
+     "note": "",
+     "uid": "st-mw8eoyc005hmgx",
+     "createdAt": "2026-11-08T22:30:52.990Z"
+    },
+    {
+     "id": "s2",
+     "text": "console_open screen/tab (console-commands engine + client), console_show tab targets, deep links ?axf-open=screen/tab",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T22:46:17.245Z",
+     "note": "",
+     "uid": "st-mw8eoyc006njrf",
+     "createdAt": "2026-11-08T22:30:52.990Z"
+    },
+    {
+     "id": "s3",
+     "text": "CI check check-tab-actions.mjs (tab rows without control fail) + tests on Build orchestrator > Pipeline, Plan Studio, Settings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T22:46:18.206Z",
+     "note": "",
+     "uid": "st-mw8eoyc007no72",
+     "createdAt": "2026-11-08T22:30:52.990Z"
+    },
+    {
+     "id": "s4",
+     "text": "Report, THREADS row, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-08T22:46:45.881Z",
+     "note": "",
+     "uid": "st-mw8eoyc008ieem",
+     "createdAt": "2026-11-08T22:30:52.990Z"
     }
    ]
   },
