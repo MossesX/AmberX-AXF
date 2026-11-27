@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10483,
- "updatedAt": "2026-11-27T20:40:13.696Z",
+ "rev": 10484,
+ "updatedAt": "2026-11-27T20:40:30.916Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -260921,7 +260921,7 @@
    "mergedAt": "2026-11-17T18:57:50Z",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-20T00:09:28Z",
+   "updatedAt": "2026-11-27T20:40:14.000Z",
    "builtAt": "2026-11-16T23:28:28.907Z",
    "notes": [
     {
@@ -261039,6 +261039,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #761 merged 2026-11-17 18:57 and the build never heard: the merge is recorded, CI on 6dddf68941 is next.",
+     "at": "2026-11-27T20:40:14.000Z"
     }
    ],
    "approvals": [
@@ -261111,6 +261115,17 @@
     "maxParallel": 0,
     "budgetUsd": 0,
     "spentUsd": 0
+   },
+   "landed": {
+    "pr": 761,
+    "sha": "6dddf6894186f4ed8569c2ee4d1bfaf5de0220fd",
+    "mergedAt": "2026-11-17T18:57:50Z",
+    "ci": "none",
+    "ciAt": "",
+    "ciRun": "",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
    },
    "shipped": {
     "id": "sm-fable-rebuild-plan-studio-cleared-out",
@@ -261197,7 +261212,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
