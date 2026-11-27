@@ -845,10 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-27 17:19 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` → archived, note (all) · cron
-- 2026-11-27 17:29 UTC · `amberx-approvals-fix` → queued, note (all) · watchdog
-- 2026-11-27 17:29 UTC · `amberx-approvals-fix` → archived, note (all) · cron
-- 2026-11-27 17:39 UTC · `merge-main-land-one-source-truth-console` → queued, note (all) · watchdog
 - 2026-11-27 17:39 UTC · `merge-main-land-one-source-truth-console` → archived, note (all) · cron
 - 2026-11-27 17:48 UTC · `toolbar-widgets-in-any-banner-style` → queued, note (all) · watchdog
 - 2026-11-27 17:49 UTC · `toolbar-widgets-in-any-banner-style` note (all) · pipeline
@@ -1245,6 +1241,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 19:21 UTC · `orch-pending-sync` note (all) · watchdog
 - 2026-11-27 19:21 UTC · `agent-voice` note (all) · watchdog
 - 2026-11-27 19:21 UTC · `veto-everywhere` note (all) · watchdog
+- 2026-11-27 19:23 UTC · `amberx-voice-center` → complete, note (all) · verify
+- 2026-11-27 19:31 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
+- 2026-11-27 19:31 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
+- 2026-11-27 19:31 UTC · `amberx-handsfree` → landed, note (all) · watchdog
 
 ## Token passes (log)
 

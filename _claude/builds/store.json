@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10476,
- "updatedAt": "2026-11-27T19:21:17.217Z",
+ "rev": 10477,
+ "updatedAt": "2026-11-27T19:31:35.569Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -33079,7 +33079,7 @@
    "title": "AmberX: hands-free listening on screen + in background, ActiveX-style detection overlay (level graph, dB, quick settings)",
    "category": "AI & voice",
    "detail": "Brett, Oct 27 2026 (claude.ai): 'It only detects words when I press speak' in AmberX (apps/amberx-droid). Cause: the native wake listener runs only while 'Watch axHub in the background' is on (default off) and pauses while the app is on screen. Fix: hands-free listening is its own setting (default on), works on screen and in the background, independent of axHub monitoring; optional always-armed (no wake phrase). Plus a detection overlay like ActiveX: floating draggable window over other apps with a moving audio-level line graph, decibel number, what was heard, and quick settings (listening on/off, always armed, hide). Colours from the app's theme tokens. Profile refactor, Opus (Brett's pick). Android exception: AmberX shell is allowed (rule Oct 25).",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
@@ -33087,7 +33087,7 @@
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/141",
    "mergedAt": "2026-10-28T00:27:04Z",
    "createdAt": "2026-10-27T23:42:02.902Z",
-   "updatedAt": "2026-11-27T18:49:11.874Z",
+   "updatedAt": "2026-11-27T19:31:24.728Z",
    "builtAt": "2026-10-28T19:08:50.137Z",
    "notes": [
     {
@@ -33117,6 +33117,10 @@
     {
      "text": "Watchdog: PR #141 merged 2026-10-28 00:27 and the build never heard: the merge is recorded, CI on eaba8c587b is next.",
      "at": "2026-11-27T18:49:11.874Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on eaba8c587b: landed.",
+     "at": "2026-11-27T19:31:24.728Z"
     }
    ],
    "approvals": [],
@@ -33137,9 +33141,9 @@
     "pr": 141,
     "sha": "eaba8c587bd42ebe23fa1ccb5c73e37dd90989c2",
     "mergedAt": "2026-10-28T00:27:04Z",
-    "ci": "none",
-    "ciAt": "",
-    "ciRun": "",
+    "ci": "success",
+    "ciAt": "2026-11-27T19:31:24.728Z",
+    "ciRun": "commit@eaba8c587bd42ebe23fa1ccb5c73e37dd90989c2",
     "verifiedAt": "",
     "verifyHow": "",
     "verifyLog": ""
@@ -33248,7 +33252,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -34755,7 +34759,7 @@
    "title": "AmberX voice command center + Molly (notes, tasks, developer, AI snippets; chains, wizards, walkthroughs)",
    "category": "AmberX app",
    "detail": "Brett Oct 28 2026 09:53: lots of voice commands for notes and todo, categories in a tab group dialog (Notes, Tasks, Developer, AI snippets), each with tab + trigger; sortable filterable searchable grid in a scrolling pane, rows expand to details + per-command settings, record button (two matching recordings or pick predefined); inner tab group Commands / Chains & wizards; voice wizard for recording/editing chains; AI-unavailable page with fix hooks; new agent Molly on axHub (like Mosses/Vinny): root VPS through approvals, knows the codebase, answers questions, narrated console walkthroughs in a floating window with next/previous. One agent, here (Brett).",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
@@ -34763,7 +34767,7 @@
    "pr": "#153",
    "mergedAt": "2026-10-28T15:21:29Z",
    "createdAt": "2026-10-28T13:59:55.535Z",
-   "updatedAt": "2026-11-27T19:20:49.644Z",
+   "updatedAt": "2026-11-27T19:23:28.550Z",
    "builtAt": "2026-10-28T15:29:37.365Z",
    "notes": [
     {
@@ -34789,6 +34793,10 @@
     {
      "text": "Watchdog: merged and CI is green on 8296f64ec7: landed.",
      "at": "2026-11-27T19:20:49.644Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-27T19:23:28.550Z"
     }
    ],
    "approvals": [],
@@ -34812,9 +34820,9 @@
     "ci": "success",
     "ciAt": "2026-11-27T19:20:49.644Z",
     "ciRun": "commit@8296f64ec7bbee2442e978ec8a3ea9555bf2f3d4",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+    "verifiedAt": "2026-11-27T19:23:28.550Z",
+    "verifyHow": "deploy",
+    "verifyLog": "No verify command: CI green on the merge commit is the verify."
    },
    "shipped": {
     "id": "sm-amberx-voice-center",
@@ -35140,7 +35148,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129267,7 +129275,7 @@
    "branch": "claude/plan-studio-receives-a-valid-shipped-feature-man",
    "pr": "#404",
    "createdAt": "2026-11-09T00:37:43.238Z",
-   "updatedAt": "2026-11-27T18:16:26.312Z",
+   "updatedAt": "2026-11-27T19:31:24.280Z",
    "builtAt": "2026-11-09T04:13:50.725Z",
    "notes": [
     {
@@ -129305,6 +129313,14 @@
     {
      "text": "Retry: PR #404 was built on Plan Studio 1.0, which main removed (644dfa4d7), so it could never merge. Rebuilt on Plan Studio 2.0 and reopened as PR #937 (same branch). Steps s1-s3 were already ticked; landing waits on #937 merging with CI green.",
      "at": "2026-11-27T18:16:26.312Z"
+    },
+    {
+     "text": "Headless run axf-plan-studio-receives-a-valid-shipped-feature-man--paulie: brief only · start 14.8K tokens ($0.05) · cost $10.45 · 68 turns · 6 tools, MCP none",
+     "at": "2026-11-27T19:31:16.174Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $10.45",
+     "at": "2026-11-27T19:31:24.280Z"
     }
    ],
    "approvals": [
@@ -129329,6 +129345,43 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-27T19:30:56.738Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-plan-studio-receives-a-valid-shipped-feature-man--paulie",
+     "phase": ""
+    }
    },
    "steps": [
     {
@@ -129409,7 +129462,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 88,
+   "rev": 91,
    "deleted": false,
    "deletedAt": "",
    "pending": {
