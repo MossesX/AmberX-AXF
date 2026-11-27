@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10450,
- "updatedAt": "2026-11-27T04:57:28.545Z",
+ "rev": 10451,
+ "updatedAt": "2026-11-27T05:08:10.689Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -31575,11 +31575,11 @@
     "all"
    ],
    "order": {
-    "all": 346
+    "all": 347
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86658,11 +86658,11 @@
     "all"
    ],
    "order": {
-    "all": 187
+    "all": 189
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -114709,11 +114709,11 @@
     "all"
    ],
    "order": {
-    "all": 626
+    "all": 629
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -130796,11 +130796,11 @@
     "all"
    ],
    "order": {
-    "all": 628
+    "all": 630
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130956,11 +130956,11 @@
     "all"
    ],
    "order": {
-    "all": 629
+    "all": 632
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -131116,11 +131116,11 @@
     "all"
    ],
    "order": {
-    "all": 630
+    "all": 631
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134223,11 +134223,11 @@
     "all"
    ],
    "order": {
-    "all": 644
+    "all": 645
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134785,11 +134785,11 @@
     "all"
    ],
    "order": {
-    "all": 650
+    "all": 651
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138130,11 +138130,11 @@
     "all"
    ],
    "order": {
-    "all": 666
+    "all": 668
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138294,11 +138294,11 @@
     "all"
    ],
    "order": {
-    "all": 667
+    "all": 670
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140519,11 +140519,11 @@
     "all"
    ],
    "order": {
-    "all": 682
+    "all": 683
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146747,11 +146747,11 @@
     "all"
    ],
    "order": {
-    "all": 697
+    "all": 698
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146903,11 +146903,11 @@
     "all"
    ],
    "order": {
-    "all": 699
+    "all": 700
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -147223,11 +147223,11 @@
     "all"
    ],
    "order": {
-    "all": 703
+    "all": 705
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -258236,7 +258236,7 @@
    "title": "Toolbar widgets in any banner style",
    "category": "",
    "detail": "Fresh build on current main replacing the stale toolbar-widgets-attach-any-banner-style (about 2,004 behind; archive the old record and close its PR, branch kept). Any widget can be attached to any toolbar, styled like banner widgets (any banner widget style and shape), with snap-not-overlap. Old branch for intent only, don't merge it. Framework controls and tokens, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -258244,8 +258244,8 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:50.833Z",
-   "updatedAt": "2026-11-16T23:01:20.198Z",
-   "builtAt": "2026-11-16T23:01:20.198Z",
+   "updatedAt": "2026-11-27T04:50:17.564Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 19 steps (7 Fable).",
@@ -258254,6 +258254,14 @@
     {
      "text": "Same feature as attach-widgets-to-any-toolbar-banner: built there (branch claude/attach-widgets-to-any-toolbar-banner, design note _claude/builds/reports/attach-widgets-to-any-toolbar-banner.design.md). Marked complete so it is not built twice.",
      "at": "2026-11-16T23:01:17.147Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 10 days: no PR reached GitHub and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T04:50:17.564Z"
+    },
+    {
+     "text": "Watchdog: landing for 10 days: no PR reached GitHub and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T04:50:17.564Z"
     }
    ],
    "approvals": [],
@@ -258308,6 +258316,14 @@
     "maxParallel": 0,
     "budgetUsd": 0,
     "spentUsd": 0
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-27T04:50:17.564Z",
+    "why": "landing for 10 days: no PR reached GitHub and nothing moved it",
+    "head": "",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -258796,7 +258812,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -372627,7 +372643,7 @@
    "branch": "lander/claude-emergency-access",
    "pr": "933",
    "createdAt": "2026-11-24T21:08:59.649Z",
-   "updatedAt": "2026-11-27T04:44:42.355Z",
+   "updatedAt": "2026-11-27T04:49:28.909Z",
    "builtAt": "",
    "notes": [
     {
@@ -372693,6 +372709,11 @@
     {
      "text": "Watchdog: build stuck at sending (6 min past budget): re-ran the transition (1).",
      "at": "2026-11-26T23:34:38.035Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-27T04:49:28.909Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -372746,13 +372767,12 @@
        "priorFailures": 0
       }
      },
-     "rev": 11,
+     "rev": 12,
      "createdAt": "2026-11-24T21:10:08.425Z",
-     "updatedAt": "2026-11-27T04:44:42.455Z",
-     "statusAt": "2026-11-27T04:44:42.355Z",
-     "statusBy": "orchestrator",
-     "attempt": 2,
-     "failedFrom": "sending",
+     "updatedAt": "2026-11-27T04:49:38.234Z",
+     "statusAt": "2026-11-27T04:49:28.909Z",
+     "statusBy": "watchdog",
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -372808,9 +372828,16 @@
        "by": "orchestrator",
        "attempt": 2,
        "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: the VPS hard build limit is reached (6/6 builds running). Nothing started. Running: axf-emergency-remove-every-leftover-js--s3--earl, axf-emergency-remove-every-leftover-js--s6--lenny, axf-emergency-remove-every-leftover-js--s7--gina, ax"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-27T04:49:28.909Z",
+       "by": "watchdog",
+       "attempt": 3,
+       "why": "retry forward at sending, attempt 3"
       }
      ],
-     "status": "failed",
+     "status": "ready",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/claude-emergency-access--s1",
      "branch": "claude/claude-emergency-access--s1"
@@ -373164,7 +373191,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "let-claude-send-builds-to-emerge-aewn",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -385447,10 +385474,10 @@
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
-   "branch": "claude/emergency-remove-every-leftover-js--s5",
+   "branch": "claude/emergency-remove-every-leftover-js--s2",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-27T04:56:46.127Z",
+   "updatedAt": "2026-11-27T05:07:53.290Z",
    "builtAt": "",
    "notes": [
     {
@@ -385656,6 +385683,50 @@
     {
      "text": "Watchdog: step s4 retried at ready, attempt 3 on hulu0241.",
      "at": "2026-11-27T04:54:29.024Z"
+    },
+    {
+     "text": "Headless run axf-emergency-remove-every-leftover-js--s6--lenny: brief only · start 12.5K tokens ($0.03) · cost $3.47 · 71 turns · 6 tools, MCP none",
+     "at": "2026-11-27T04:57:30.268Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $3.47",
+     "at": "2026-11-27T04:57:42.291Z"
+    },
+    {
+     "text": "Watchdog: step s4 retried at ready, attempt 4 on hulu0241.",
+     "at": "2026-11-27T04:59:29.680Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s2--earl, shared account login)",
+     "at": "2026-11-27T05:01:12.326Z"
+    },
+    {
+     "text": "Headless run axf-emergency-remove-every-leftover-js--s1--earl: brief only · start 14.1K tokens ($0.08) · cost $2.30 · 27 turns · 6 tools, MCP none",
+     "at": "2026-11-27T05:02:27.384Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $2.30",
+     "at": "2026-11-27T05:02:34.308Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s4--earl, shared account login)",
+     "at": "2026-11-27T05:03:23.824Z"
+    },
+    {
+     "text": "Watchdog: step s6 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-27T05:04:29.795Z"
+    },
+    {
+     "text": "Headless run axf-emergency-remove-every-leftover-js--s3--earl: brief only · start 15.1K tokens ($0.10) · cost $9.75 · 93 turns · 6 tools, MCP none",
+     "at": "2026-11-27T05:06:24.421Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $9.75",
+     "at": "2026-11-27T05:06:32.605Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.58",
+     "at": "2026-11-27T05:07:53.290Z"
     }
    ],
    "approvals": [
@@ -385685,8 +385756,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "Greenlight Gina",
-    "brief": "# EMERGENCY: Remove every leftover JSON data file and everything that uses it: step s4\n\nBuild emergency-remove-every-leftover-js (Pipeline 2.0), step s4 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-remove-every-leftover-js--s4 (already cut from main) · branch claude/emergency-remove-every-leftover-js--s4.\n\n## Your step\nConsole server: in apps/console-web/server (not the plugins), replace every json.dump / JSON data file read and write with server/data_store.py per-row calls; remove any local-file fallback, shadow or dual-write branch and any JSON backup writer so Postgres is the only store; delete the data files. Do not edit data_store.py's public API. Update the server tests. Commit.\n\nFiles: apps/console-web/server/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nPostgres is the one store. Delete every JSON data file the database already covers, plus every reader and writer of it. No dual writes, no JSON backups.\n\nWhy: the move to Postgres left the old JSON files running alongside the database. The 7 MB pipeline status file alone pushed terabytes through axf-data and loaded the server. Switch everything over; never run both.\n\nScope: about 133 files under apps/console-web/plugins still json.dump data files. Plugins include claude-handoff, plugin-manager, builds-page, agent-manager (gittools, hubtools, toolkit, llm), feature-matrix, output-recorder (whisper_job, transcripts), claude-badge (usage_host), chat-viewer (store, tts_worker, audio), crew-live, console-terminal, maintenance (hub, maint engine, profiles), agent-swarm, agent-voice, session-checkin, theme-editor, gate (routes), claude-session (hub), molly-guide, agent-slots, plugin-commands, amberx-listeners, plus framework/ and deploy/ writers.\n\nSteps:\n1. Inventory every JSON data file and each reader and writer (framework/, apps/console-web/, deploy/, services/axf-data/). Mark each one: already in Postgres, not yet in Postgres, or true config.\n2. Already in Postgres: switch reads and writes to data-store@1 per-row calls, then delete the file and its writer.\n3. Not in Postgres yet: add the table in services/axf-data, migrate the data once, switch the code over, then delete the file.\n4. True config or export files stay only if listed in framework/spec/DATA-INVENTORY.md with a reason.\n5. Remove the entries from framework/schemas/data-store-paths.json and the manifest data list. Lower the check-json-data-writes baseline to the kept config only, and make CI fail on any new JSON data write.\n6. Never read or write a whole document for one change. Every update touches one row.\n7. Run the tests, write the report, open the PR.\n\nLeave alone: the pipeline status file. The running build pipeline-fixes-drop-7-mb-status-file already removes it.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "Earl the Ear",
+    "brief": "# EMERGENCY: Remove every leftover JSON data file and everything that uses it: step s5\n\nBuild emergency-remove-every-leftover-js (Pipeline 2.0), step s5 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-remove-every-leftover-js--s5 (already cut from main) · branch claude/emergency-remove-every-leftover-js--s5.\n\n## Your step\nframework/core and framework/libs writers: replace every runtime JSON data write and whole-document read in framework/core and framework/libs (.mjs/.ts runtime code, excluding data-files.mjs itself) with data-store@1 per-row calls; remove the local-file and shadow branches that keep a JSON copy next to Postgres; delete the data files. Assets, schemas, fixtures and manifests stay. Do not edit framework/cli or framework/schemas. Run the matching framework/spec checks. Commit.\n\nFiles: framework/core/, framework/libs/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nPostgres is the one store. Delete every JSON data file the database already covers, plus every reader and writer of it. No dual writes, no JSON backups.\n\nWhy: the move to Postgres left the old JSON files running alongside the database. The 7 MB pipeline status file alone pushed terabytes through axf-data and loaded the server. Switch everything over; never run both.\n\nScope: about 133 files under apps/console-web/plugins still json.dump data files. Plugins include claude-handoff, plugin-manager, builds-page, agent-manager (gittools, hubtools, toolkit, llm), feature-matrix, output-recorder (whisper_job, transcripts), claude-badge (usage_host), chat-viewer (store, tts_worker, audio), crew-live, console-terminal, maintenance (hub, maint engine, profiles), agent-swarm, agent-voice, session-checkin, theme-editor, gate (routes), claude-session (hub), molly-guide, agent-slots, plugin-commands, amberx-listeners, plus framework/ and deploy/ writers.\n\nSteps:\n1. Inventory every JSON data file and each reader and writer (framework/, apps/console-web/, deploy/, services/axf-data/). Mark each one: already in Postgres, not yet in Postgres, or true config.\n2. Already in Postgres: switch reads and writes to data-store@1 per-row calls, then delete the file and its writer.\n3. Not in Postgres yet: add the table in services/axf-data, migrate the data once, switch the code over, then delete the file.\n4. True config or export files stay only if listed in framework/spec/DATA-INVENTORY.md with a reason.\n5. Remove the entries from framework/schemas/data-store-paths.json and the manifest data list. Lower the check-json-data-writes baseline to the kept config only, and make CI fail on any new JSON data write.\n6. Never read or write a whole document for one change. Every update touches one row.\n7. Run the tests, write the report, open the PR.\n\nLeave alone: the pipeline status file. The running build pipeline-fixes-drop-7-mb-status-file already removes it.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -385718,13 +385789,13 @@
     "budgetUsd": 0,
     "spentUsd": 0,
     "runEnd": {
-     "at": "2026-11-27T04:56:46.127Z",
+     "at": "2026-11-27T05:07:17.806Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-emergency-remove-every-leftover-js--s6--lenny",
+     "session": "axf-emergency-remove-every-leftover-js--s4--earl",
      "phase": ""
     }
    },
@@ -385751,12 +385822,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-27T05:01:47.795Z",
      "note": "",
-     "rev": 19,
+     "rev": 20,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-26T23:00:37.002Z",
+     "updatedAt": "2026-11-27T05:01:48.506Z",
      "statusAt": "2026-11-26T23:00:36.919Z",
      "statusBy": "orchestrator",
      "attempt": 5,
@@ -385893,11 +385964,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-26T23:27:19.826Z",
+     "doneAt": "2026-11-27T05:06:47.782Z",
      "note": "Part 2: 2 plan steps in one session (they touch the same files).",
-     "rev": 18,
+     "rev": 19,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-26T23:27:20.462Z",
+     "updatedAt": "2026-11-27T05:06:48.559Z",
      "statusAt": "2026-11-26T23:18:44.317Z",
      "statusBy": "orchestrator",
      "attempt": 5,
@@ -386050,12 +386121,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-27T05:05:44.528Z",
      "note": "Part 3: 23 plan steps in one session (they touch the same files).",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-27T04:27:19.033Z",
+     "updatedAt": "2026-11-27T05:05:45.101Z",
      "statusAt": "2026-11-27T04:27:18.962Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -386135,13 +386206,12 @@
        "priorFailures": 1
       }
      },
-     "rev": 15,
+     "rev": 21,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-27T04:57:13.712Z",
-     "statusAt": "2026-11-27T04:56:46.107Z",
+     "updatedAt": "2026-11-27T05:03:15.208Z",
+     "statusAt": "2026-11-27T05:03:15.088Z",
      "statusBy": "orchestrator",
-     "attempt": 3,
-     "failedFrom": "sending",
+     "attempt": 5,
      "statusLog": [
       {
        "status": "pending",
@@ -386218,13 +386288,48 @@
        "by": "orchestrator",
        "attempt": 3,
        "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: the VPS hard build limit is reached (6/6 builds running). Nothing started. Running: axf-emergency-remove-every-leftover-js--s3--earl, axf-emergency-remove-every-leftover-js--s6--lenny, axf-emergency-remove-every-leftover-js--s7--gina, ax"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-27T04:59:29.680Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at sending, attempt 4"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T05:00:35.251Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-27T05:01:03.748Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: the dispatch token is not emergency-remove-every-leftover-js's. Only the orchestrator starts builds. Queue it (Build orchestrator → Pending → Queue, or its pipeline-queue command: console API, MCP, or the orchestrator plugin CLI `pipelin"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T05:02:40.487Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-27T05:03:15.088Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "axf-emergency-remove-every-leftover-js--s4--earl on hulu0241"
       }
      ],
-     "status": "failed",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-remove-every-leftover-js--s4",
      "branch": "claude/emergency-remove-every-leftover-js--s4",
-     "tmux": "axf-emergency-remove-every-leftover-js--s4--gina"
+     "tmux": "axf-emergency-remove-every-leftover-js--s4--earl"
     },
     {
      "id": "s5",
@@ -386247,11 +386352,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 11,
+     "rev": 13,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-27T04:52:48.907Z",
-     "statusAt": "2026-11-27T04:49:28.909Z",
-     "statusBy": "watchdog",
+     "updatedAt": "2026-11-27T05:07:39.917Z",
+     "statusAt": "2026-11-27T05:07:39.575Z",
+     "statusBy": "orchestrator",
      "attempt": 2,
      "statusLog": [
       {
@@ -386301,13 +386406,27 @@
        "by": "watchdog",
        "attempt": 2,
        "why": "retry forward at building, attempt 2"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T05:06:41.487Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-27T05:07:39.575Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-emergency-remove-every-leftover-js--s5--earl on hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-remove-every-leftover-js--s5",
      "branch": "claude/emergency-remove-every-leftover-js--s5",
-     "tmux": "axf-emergency-remove-every-leftover-js--s5--joey",
+     "tmux": "axf-emergency-remove-every-leftover-js--s5--earl",
      "tried": [
       "hulu0241"
      ]
@@ -386332,12 +386451,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 9,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-27T04:35:19.513Z",
-     "statusAt": "2026-11-27T04:35:19.434Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
+     "updatedAt": "2026-11-27T05:04:35.820Z",
+     "statusAt": "2026-11-27T05:04:29.795Z",
+     "statusBy": "watchdog",
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -386372,9 +386491,23 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "axf-emergency-remove-every-leftover-js--s6--lenny on hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-27T04:59:34.201Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "session exit 1"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-27T05:04:29.795Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "retry forward at building, attempt 2"
       }
      ],
-     "status": "building",
+     "status": "ready",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-remove-every-leftover-js--s6",
      "branch": "claude/emergency-remove-every-leftover-js--s6",
@@ -386482,7 +386615,7 @@
    },
    "kind": "build",
    "planRef": "emergency-remove-every-leftover--7jpc",
-   "rev": 138,
+   "rev": 169,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -386567,7 +386700,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s4",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T04:56:51.302Z",
+   "updatedAt": "2026-11-27T05:07:53.739Z",
    "builtAt": "",
    "notes": [
     {
@@ -386813,6 +386946,58 @@
     {
      "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s1--earl, shared account login)",
      "at": "2026-11-27T04:56:38.338Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s2--earl, shared account login)",
+     "at": "2026-11-27T04:58:00.553Z"
+    },
+    {
+     "text": "Headless run axf-emergency-check-can-these-plugins---s1--earl: brief only · start 12.7K tokens ($0.07) · cost $0.35 · 4 turns · 6 tools, MCP none",
+     "at": "2026-11-27T04:59:35.133Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T04:59:29.680Z"
+    },
+    {
+     "text": "Watchdog: step s4 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T04:59:29.680Z"
+    },
+    {
+     "text": "Watchdog: step s5 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-27T04:59:29.680Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.35",
+     "at": "2026-11-27T04:59:57.881Z"
+    },
+    {
+     "text": "Headless run axf-emergency-check-can-these-plugins---s2--earl: brief only · start 12.6K tokens ($0.06) · cost $0.32 · 3 turns · 6 tools, MCP none",
+     "at": "2026-11-27T05:01:20.254Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.32",
+     "at": "2026-11-27T05:01:26.033Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s5--gina, shared account login)",
+     "at": "2026-11-27T05:02:25.011Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:04:29.795Z"
+    },
+    {
+     "text": "Watchdog: step s4 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:04:29.795Z"
+    },
+    {
+     "text": "Headless run axf-emergency-check-can-these-plugins---s5--gina: brief only · start 12.6K tokens ($0.06) · cost $2.84 · 27 turns · 6 tools, MCP none",
+     "at": "2026-11-27T05:07:30.379Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $2.84",
+     "at": "2026-11-27T05:07:53.739Z"
     }
    ],
    "approvals": [],
@@ -386823,8 +387008,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "emergency-check-can-these-plugins---s3",
-    "brief": "# EMERGENCY CHECK: Can these plugins go? (report only, no deletes): step s3\n\nBuild emergency-check-can-these-plugins- (Pipeline 2.0), step s3 of 11. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-check-can-these-plugins---s3 (already cut from main) · branch claude/emergency-check-can-these-plugins---s3.\n\n## Your step\nREPORT ONLY, no deletes and no code changes. Audit plugins ai-assistant, feature-assist, feature-matrix and build-breaker (apps/console-web/plugins/<plugin>/). For each, read plugin.json (capabilities such as axf.llm@1 and who provides it, dataDir, routes, commands, settings tab, nav, notify.json) and grep the whole repo outside its own folder for its folder name, ids, capabilities, route prefix, MCP tool names, setting keys, data paths and Postgres tables: framework/, apps/ (console-web src and server, every other plugin via plugin_services, other apps), deploy/, services/axf-data, .github/workflows (tests that run a plugin's test file), CLAUDE.md and _claude/ rule markers. Write only _claude/builds/reports/plugin-removal-check/03-assist.md: one row per plugin (plugin, verdict SAFE / MOVE FIRST / KEEP, what depends on it with file:line, what to move and where), plus short evidence. Commit that one file.\n\nFiles: _claude/builds/reports/plugin-removal-check/03-assist.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nFable audits every plugin on the removal lists and reports which are safe to remove and which are still used. Changes nothing.\n\nBrett: run this check first, before any removal build. REPORT ONLY. Do not delete or change any plugin.\n\nFor each plugin below, find every import, call, route, MCP tool, nav link, setting, data file and Postgres table that other code depends on: framework/, apps/console-web/, deploy/, services/, the AmberX app, CI checks. Mark it:\n- SAFE: nothing kept depends on it\n- MOVE FIRST: a kept screen uses a piece of it (name the piece and where it should live)\n- KEEP: still needed (say why)\n\nPlugins:\nfeature-matrix, session-checkin, codebase-changes, agent-slots, ai-assistant, feature-assist, claude-handoff, build-breaker, builds-page, main-build-status, merge-queue-view, shipped-features, whats-shipped, notes-browser, notes-tasks, todo-manager, theme-editor, theme-manager, skin-editor, skin-gallery, plugin-manager, plugin-update, plugins-menu, changes-grid, demonstration-designer, fable-rebuilds, molly-guide, glossary-index, ref-links, md-studio, voice-notes, axhub-handoff, activity, basic-filter, status-styles, snapshot-manager, project-wizard, context-menu-designer.\n\nOutput: write _claude/builds/reports/plugin-removal-check.md with one table (plugin, verdict, what depends on it, what to move). Open a PR with only that report. No code changes.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "emergency-check-can-these-plugins---s5",
+    "brief": "# EMERGENCY CHECK: Can these plugins go? (report only, no deletes): step s5\n\nBuild emergency-check-can-these-plugins- (Pipeline 2.0), step s5 of 11. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-check-can-these-plugins---s5 (already cut from main) · branch claude/emergency-check-can-these-plugins---s5.\n\n## Your step\nREPORT ONLY, no deletes and no code changes. Audit plugins shipped-features, whats-shipped, glossary-index and ref-links (apps/console-web/plugins/<plugin>/). For each, read plugin.json (capabilities, build-hook@1 listeners, dataDir, routes, commands, nav, settings tab) and grep the whole repo outside its own folder for its folder name, ids, capabilities, route prefix, MCP tool names, setting keys, data paths and Postgres tables: framework/, apps/, deploy/, services/axf-data, the build rules store (Shipped features manifest rule), .github/workflows (glossary-index catalog.mjs --check and coverage.json), CLAUDE.md and _claude/ rule markers. Write only _claude/builds/reports/plugin-removal-check/05-shipped-catalog.md: one row per plugin (plugin, verdict SAFE / MOVE FIRST / KEEP, what depends on it with file:line, what to move and where), plus short evidence. Commit that one file.\n\nFiles: _claude/builds/reports/plugin-removal-check/05-shipped-catalog.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nFable audits every plugin on the removal lists and reports which are safe to remove and which are still used. Changes nothing.\n\nBrett: run this check first, before any removal build. REPORT ONLY. Do not delete or change any plugin.\n\nFor each plugin below, find every import, call, route, MCP tool, nav link, setting, data file and Postgres table that other code depends on: framework/, apps/console-web/, deploy/, services/, the AmberX app, CI checks. Mark it:\n- SAFE: nothing kept depends on it\n- MOVE FIRST: a kept screen uses a piece of it (name the piece and where it should live)\n- KEEP: still needed (say why)\n\nPlugins:\nfeature-matrix, session-checkin, codebase-changes, agent-slots, ai-assistant, feature-assist, claude-handoff, build-breaker, builds-page, main-build-status, merge-queue-view, shipped-features, whats-shipped, notes-browser, notes-tasks, todo-manager, theme-editor, theme-manager, skin-editor, skin-gallery, plugin-manager, plugin-update, plugins-menu, changes-grid, demonstration-designer, fable-rebuilds, molly-guide, glossary-index, ref-links, md-studio, voice-notes, axhub-handoff, activity, basic-filter, status-styles, snapshot-manager, project-wizard, context-menu-designer.\n\nOutput: write _claude/builds/reports/plugin-removal-check.md with one table (plugin, verdict, what depends on it, what to move). Open a PR with only that report. No code changes.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -386856,13 +387041,13 @@
     "budgetUsd": 0,
     "spentUsd": 0,
     "runEnd": {
-     "at": "2026-11-27T04:47:57.635Z",
+     "at": "2026-11-27T05:07:05.575Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-emergency-check-can-these-plugins---s3--rhonda",
+     "session": "axf-emergency-check-can-these-plugins---s5--gina",
      "phase": ""
     }
    },
@@ -387021,11 +387206,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-27T05:00:37.990Z",
      "note": "",
-     "rev": 25,
+     "rev": 26,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-27T04:39:32.631Z",
+     "updatedAt": "2026-11-27T05:00:38.967Z",
      "statusAt": "2026-11-27T04:39:28.279Z",
      "statusBy": "watchdog",
      "attempt": 1,
@@ -387503,15 +387688,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-27T05:06:47.830Z",
      "note": "",
-     "rev": 5,
+     "rev": 11,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T22:46:52.989Z",
-     "statusAt": "2026-11-26T22:46:52.897Z",
+     "updatedAt": "2026-11-27T05:06:48.497Z",
+     "statusAt": "2026-11-27T05:02:15.491Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -387532,11 +387717,48 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T04:57:42.506Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-27T04:58:34.658Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: the VPS hard build limit is reached (6/6 builds running). Nothing started. Running: axf-emergency-remove-every-leftover-js--s3--earl, axf-emergency-remove-every-leftover-js--s7--gina, axf-emergency-remove-every-leftover-js--s1--earl, axf"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-27T04:59:29.680Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "retry forward at sending, attempt 2"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T05:01:35.822Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-27T05:02:15.491Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "axf-emergency-check-can-these-plugins---s5--gina on hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "building",
+     "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s5",
-     "branch": "claude/emergency-check-can-these-plugins---s5"
+     "branch": "claude/emergency-check-can-these-plugins---s5",
+     "tmux": "axf-emergency-check-can-these-plugins---s5--gina"
     },
     {
      "id": "s6",
@@ -387558,12 +387780,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 7,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-26T22:53:31.980Z",
-     "statusAt": "2026-11-26T22:53:31.907Z",
+     "updatedAt": "2026-11-27T05:07:38.681Z",
+     "statusAt": "2026-11-27T05:07:38.459Z",
      "statusBy": "orchestrator",
      "attempt": 1,
+     "failedFrom": "sending",
      "statusLog": [
       {
        "status": "pending",
@@ -387584,9 +387807,24 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T05:07:17.164Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-27T05:07:38.459Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: emergency-check-can-these-plugins- was not dispatched by the orchestrator (no token on file). Only the orchestrator starts builds. Queue it (Build orchestrator → Pending → Queue, or its pipeline-queue command: console API, MCP, or the or"
       }
      ],
-     "status": "ready",
+     "status": "failed",
+     "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s6",
      "branch": "claude/emergency-check-can-these-plugins---s6"
     },
@@ -387860,7 +388098,7 @@
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 164,
+   "rev": 188,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -387945,7 +388183,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T04:55:42.306Z",
+   "updatedAt": "2026-11-27T05:05:33.010Z",
    "builtAt": "",
    "notes": [
     {
@@ -388263,6 +388501,30 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $0.51",
      "at": "2026-11-27T04:55:42.306Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T04:59:29.680Z"
+    },
+    {
+     "text": "Watchdog: step s5 retried at ready, attempt 4 on hulu0241.",
+     "at": "2026-11-27T04:59:29.680Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s5--rhonda, shared account login)",
+     "at": "2026-11-27T05:03:38.762Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:04:29.795Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s5--rhonda: brief only · start 11.8K tokens ($0.00) · cost $0.13 · 4 turns · 6 tools, MCP none",
+     "at": "2026-11-27T05:05:21.385Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.13",
+     "at": "2026-11-27T05:05:33.010Z"
     }
    ],
    "approvals": [],
@@ -388306,13 +388568,13 @@
     "budgetUsd": 0,
     "spentUsd": 0,
     "runEnd": {
-     "at": "2026-11-27T04:54:51.260Z",
+     "at": "2026-11-27T05:04:58.306Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-emergency-rip-out-the-7-mb-status---s2--gina",
+     "session": "axf-emergency-rip-out-the-7-mb-status---s5--rhonda",
      "phase": ""
     }
    },
@@ -388921,12 +389183,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 17,
+     "rev": 23,
      "createdAt": "2026-11-25T22:55:50.329Z",
-     "updatedAt": "2026-11-27T04:57:13.712Z",
-     "statusAt": "2026-11-27T04:54:29.024Z",
-     "statusBy": "watchdog",
-     "attempt": 3,
+     "updatedAt": "2026-11-27T05:03:23.801Z",
+     "statusAt": "2026-11-27T05:03:23.693Z",
+     "statusBy": "orchestrator",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -389003,13 +389265,48 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "retry forward at building, attempt 3"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T04:57:55.855Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-27T04:58:37.870Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: the VPS hard build limit is reached (6/6 builds running). Nothing started. Running: axf-emergency-remove-every-leftover-js--s3--earl, axf-emergency-remove-every-leftover-js--s7--gina, axf-emergency-remove-every-leftover-js--s1--earl, axf"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-27T04:59:29.680Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at sending, attempt 4"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T05:02:51.632Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-27T05:03:23.693Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "axf-emergency-rip-out-the-7-mb-status---s5--rhonda on hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-rip-out-the-7-mb-status---s5",
      "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
-     "tmux": "axf-emergency-rip-out-the-7-mb-status---s5--joey"
+     "tmux": "axf-emergency-rip-out-the-7-mb-status---s5--rhonda"
     },
     {
      "id": "s6",
@@ -389132,7 +389429,7 @@
    },
    "kind": "build",
    "planRef": "emergency-rip-out-the-7-mb-statu-qsmm",
-   "rev": 174,
+   "rev": 186,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

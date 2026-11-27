@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T04:57:28.545Z",
+ "updatedAt": "2026-11-27T05:08:10.689Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14260,10 +14260,10 @@
    "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
-   "branch": "claude/emergency-remove-every-leftover-js--s5",
+   "branch": "claude/emergency-remove-every-leftover-js--s2",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-27T04:56:46.127Z",
+   "updatedAt": "2026-11-27T05:07:53.290Z",
    "builtAt": "",
    "notes": [
     {
@@ -14469,6 +14469,50 @@
     {
      "text": "Watchdog: step s4 retried at ready, attempt 3 on hulu0241.",
      "at": "2026-11-27T04:54:29.024Z"
+    },
+    {
+     "text": "Headless run axf-emergency-remove-every-leftover-js--s6--lenny: brief only · start 12.5K tokens ($0.03) · cost $3.47 · 71 turns · 6 tools, MCP none",
+     "at": "2026-11-27T04:57:30.268Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $3.47",
+     "at": "2026-11-27T04:57:42.291Z"
+    },
+    {
+     "text": "Watchdog: step s4 retried at ready, attempt 4 on hulu0241.",
+     "at": "2026-11-27T04:59:29.680Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s2--earl, shared account login)",
+     "at": "2026-11-27T05:01:12.326Z"
+    },
+    {
+     "text": "Headless run axf-emergency-remove-every-leftover-js--s1--earl: brief only · start 14.1K tokens ($0.08) · cost $2.30 · 27 turns · 6 tools, MCP none",
+     "at": "2026-11-27T05:02:27.384Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $2.30",
+     "at": "2026-11-27T05:02:34.308Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-remove-every-leftover-js--s4--earl, shared account login)",
+     "at": "2026-11-27T05:03:23.824Z"
+    },
+    {
+     "text": "Watchdog: step s6 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-27T05:04:29.795Z"
+    },
+    {
+     "text": "Headless run axf-emergency-remove-every-leftover-js--s3--earl: brief only · start 15.1K tokens ($0.10) · cost $9.75 · 93 turns · 6 tools, MCP none",
+     "at": "2026-11-27T05:06:24.421Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $9.75",
+     "at": "2026-11-27T05:06:32.605Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.58",
+     "at": "2026-11-27T05:07:53.290Z"
     }
    ],
    "approvals": [
@@ -14498,8 +14542,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "Greenlight Gina",
-    "brief": "# EMERGENCY: Remove every leftover JSON data file and everything that uses it: step s4\n\nBuild emergency-remove-every-leftover-js (Pipeline 2.0), step s4 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-remove-every-leftover-js--s4 (already cut from main) · branch claude/emergency-remove-every-leftover-js--s4.\n\n## Your step\nConsole server: in apps/console-web/server (not the plugins), replace every json.dump / JSON data file read and write with server/data_store.py per-row calls; remove any local-file fallback, shadow or dual-write branch and any JSON backup writer so Postgres is the only store; delete the data files. Do not edit data_store.py's public API. Update the server tests. Commit.\n\nFiles: apps/console-web/server/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nPostgres is the one store. Delete every JSON data file the database already covers, plus every reader and writer of it. No dual writes, no JSON backups.\n\nWhy: the move to Postgres left the old JSON files running alongside the database. The 7 MB pipeline status file alone pushed terabytes through axf-data and loaded the server. Switch everything over; never run both.\n\nScope: about 133 files under apps/console-web/plugins still json.dump data files. Plugins include claude-handoff, plugin-manager, builds-page, agent-manager (gittools, hubtools, toolkit, llm), feature-matrix, output-recorder (whisper_job, transcripts), claude-badge (usage_host), chat-viewer (store, tts_worker, audio), crew-live, console-terminal, maintenance (hub, maint engine, profiles), agent-swarm, agent-voice, session-checkin, theme-editor, gate (routes), claude-session (hub), molly-guide, agent-slots, plugin-commands, amberx-listeners, plus framework/ and deploy/ writers.\n\nSteps:\n1. Inventory every JSON data file and each reader and writer (framework/, apps/console-web/, deploy/, services/axf-data/). Mark each one: already in Postgres, not yet in Postgres, or true config.\n2. Already in Postgres: switch reads and writes to data-store@1 per-row calls, then delete the file and its writer.\n3. Not in Postgres yet: add the table in services/axf-data, migrate the data once, switch the code over, then delete the file.\n4. True config or export files stay only if listed in framework/spec/DATA-INVENTORY.md with a reason.\n5. Remove the entries from framework/schemas/data-store-paths.json and the manifest data list. Lower the check-json-data-writes baseline to the kept config only, and make CI fail on any new JSON data write.\n6. Never read or write a whole document for one change. Every update touches one row.\n7. Run the tests, write the report, open the PR.\n\nLeave alone: the pipeline status file. The running build pipeline-fixes-drop-7-mb-status-file already removes it.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "Earl the Ear",
+    "brief": "# EMERGENCY: Remove every leftover JSON data file and everything that uses it: step s5\n\nBuild emergency-remove-every-leftover-js (Pipeline 2.0), step s5 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-remove-every-leftover-js--s5 (already cut from main) · branch claude/emergency-remove-every-leftover-js--s5.\n\n## Your step\nframework/core and framework/libs writers: replace every runtime JSON data write and whole-document read in framework/core and framework/libs (.mjs/.ts runtime code, excluding data-files.mjs itself) with data-store@1 per-row calls; remove the local-file and shadow branches that keep a JSON copy next to Postgres; delete the data files. Assets, schemas, fixtures and manifests stay. Do not edit framework/cli or framework/schemas. Run the matching framework/spec checks. Commit.\n\nFiles: framework/core/, framework/libs/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nPostgres is the one store. Delete every JSON data file the database already covers, plus every reader and writer of it. No dual writes, no JSON backups.\n\nWhy: the move to Postgres left the old JSON files running alongside the database. The 7 MB pipeline status file alone pushed terabytes through axf-data and loaded the server. Switch everything over; never run both.\n\nScope: about 133 files under apps/console-web/plugins still json.dump data files. Plugins include claude-handoff, plugin-manager, builds-page, agent-manager (gittools, hubtools, toolkit, llm), feature-matrix, output-recorder (whisper_job, transcripts), claude-badge (usage_host), chat-viewer (store, tts_worker, audio), crew-live, console-terminal, maintenance (hub, maint engine, profiles), agent-swarm, agent-voice, session-checkin, theme-editor, gate (routes), claude-session (hub), molly-guide, agent-slots, plugin-commands, amberx-listeners, plus framework/ and deploy/ writers.\n\nSteps:\n1. Inventory every JSON data file and each reader and writer (framework/, apps/console-web/, deploy/, services/axf-data/). Mark each one: already in Postgres, not yet in Postgres, or true config.\n2. Already in Postgres: switch reads and writes to data-store@1 per-row calls, then delete the file and its writer.\n3. Not in Postgres yet: add the table in services/axf-data, migrate the data once, switch the code over, then delete the file.\n4. True config or export files stay only if listed in framework/spec/DATA-INVENTORY.md with a reason.\n5. Remove the entries from framework/schemas/data-store-paths.json and the manifest data list. Lower the check-json-data-writes baseline to the kept config only, and make CI fail on any new JSON data write.\n6. Never read or write a whole document for one change. Every update touches one row.\n7. Run the tests, write the report, open the PR.\n\nLeave alone: the pipeline status file. The running build pipeline-fixes-drop-7-mb-status-file already removes it.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -14521,8 +14565,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-27T05:01:47.795Z",
      "note": "",
      "uid": "st-mww2s3a81l7y79",
      "createdAt": "2026-11-25T12:03:52.352Z"
@@ -14545,7 +14589,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-26T23:27:19.826Z",
+     "doneAt": "2026-11-27T05:06:47.782Z",
      "note": "Part 2: 2 plan steps in one session (they touch the same files).",
      "uid": "st-mww2s3a81moinb",
      "createdAt": "2026-11-25T12:03:52.352Z"
@@ -14591,8 +14635,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-27T05:05:44.528Z",
      "note": "Part 3: 23 plan steps in one session (they touch the same files).",
      "uid": "st-mww2s3a81n7thj",
      "createdAt": "2026-11-25T12:03:52.352Z"
@@ -15586,7 +15630,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s4",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T04:56:51.302Z",
+   "updatedAt": "2026-11-27T05:07:53.739Z",
    "builtAt": "",
    "notes": [
     {
@@ -15832,6 +15876,58 @@
     {
      "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s1--earl, shared account login)",
      "at": "2026-11-27T04:56:38.338Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s2--earl, shared account login)",
+     "at": "2026-11-27T04:58:00.553Z"
+    },
+    {
+     "text": "Headless run axf-emergency-check-can-these-plugins---s1--earl: brief only · start 12.7K tokens ($0.07) · cost $0.35 · 4 turns · 6 tools, MCP none",
+     "at": "2026-11-27T04:59:35.133Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T04:59:29.680Z"
+    },
+    {
+     "text": "Watchdog: step s4 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T04:59:29.680Z"
+    },
+    {
+     "text": "Watchdog: step s5 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-27T04:59:29.680Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.35",
+     "at": "2026-11-27T04:59:57.881Z"
+    },
+    {
+     "text": "Headless run axf-emergency-check-can-these-plugins---s2--earl: brief only · start 12.6K tokens ($0.06) · cost $0.32 · 3 turns · 6 tools, MCP none",
+     "at": "2026-11-27T05:01:20.254Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.32",
+     "at": "2026-11-27T05:01:26.033Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s5--gina, shared account login)",
+     "at": "2026-11-27T05:02:25.011Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:04:29.795Z"
+    },
+    {
+     "text": "Watchdog: step s4 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:04:29.795Z"
+    },
+    {
+     "text": "Headless run axf-emergency-check-can-these-plugins---s5--gina: brief only · start 12.6K tokens ($0.06) · cost $2.84 · 27 turns · 6 tools, MCP none",
+     "at": "2026-11-27T05:07:30.379Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $2.84",
+     "at": "2026-11-27T05:07:53.739Z"
     }
    ],
    "approvals": [],
@@ -15842,8 +15938,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "emergency-check-can-these-plugins---s3",
-    "brief": "# EMERGENCY CHECK: Can these plugins go? (report only, no deletes): step s3\n\nBuild emergency-check-can-these-plugins- (Pipeline 2.0), step s3 of 11. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-check-can-these-plugins---s3 (already cut from main) · branch claude/emergency-check-can-these-plugins---s3.\n\n## Your step\nREPORT ONLY, no deletes and no code changes. Audit plugins ai-assistant, feature-assist, feature-matrix and build-breaker (apps/console-web/plugins/<plugin>/). For each, read plugin.json (capabilities such as axf.llm@1 and who provides it, dataDir, routes, commands, settings tab, nav, notify.json) and grep the whole repo outside its own folder for its folder name, ids, capabilities, route prefix, MCP tool names, setting keys, data paths and Postgres tables: framework/, apps/ (console-web src and server, every other plugin via plugin_services, other apps), deploy/, services/axf-data, .github/workflows (tests that run a plugin's test file), CLAUDE.md and _claude/ rule markers. Write only _claude/builds/reports/plugin-removal-check/03-assist.md: one row per plugin (plugin, verdict SAFE / MOVE FIRST / KEEP, what depends on it with file:line, what to move and where), plus short evidence. Commit that one file.\n\nFiles: _claude/builds/reports/plugin-removal-check/03-assist.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nFable audits every plugin on the removal lists and reports which are safe to remove and which are still used. Changes nothing.\n\nBrett: run this check first, before any removal build. REPORT ONLY. Do not delete or change any plugin.\n\nFor each plugin below, find every import, call, route, MCP tool, nav link, setting, data file and Postgres table that other code depends on: framework/, apps/console-web/, deploy/, services/, the AmberX app, CI checks. Mark it:\n- SAFE: nothing kept depends on it\n- MOVE FIRST: a kept screen uses a piece of it (name the piece and where it should live)\n- KEEP: still needed (say why)\n\nPlugins:\nfeature-matrix, session-checkin, codebase-changes, agent-slots, ai-assistant, feature-assist, claude-handoff, build-breaker, builds-page, main-build-status, merge-queue-view, shipped-features, whats-shipped, notes-browser, notes-tasks, todo-manager, theme-editor, theme-manager, skin-editor, skin-gallery, plugin-manager, plugin-update, plugins-menu, changes-grid, demonstration-designer, fable-rebuilds, molly-guide, glossary-index, ref-links, md-studio, voice-notes, axhub-handoff, activity, basic-filter, status-styles, snapshot-manager, project-wizard, context-menu-designer.\n\nOutput: write _claude/builds/reports/plugin-removal-check.md with one table (plugin, verdict, what depends on it, what to move). Open a PR with only that report. No code changes.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "emergency-check-can-these-plugins---s5",
+    "brief": "# EMERGENCY CHECK: Can these plugins go? (report only, no deletes): step s5\n\nBuild emergency-check-can-these-plugins- (Pipeline 2.0), step s5 of 11. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-check-can-these-plugins---s5 (already cut from main) · branch claude/emergency-check-can-these-plugins---s5.\n\n## Your step\nREPORT ONLY, no deletes and no code changes. Audit plugins shipped-features, whats-shipped, glossary-index and ref-links (apps/console-web/plugins/<plugin>/). For each, read plugin.json (capabilities, build-hook@1 listeners, dataDir, routes, commands, nav, settings tab) and grep the whole repo outside its own folder for its folder name, ids, capabilities, route prefix, MCP tool names, setting keys, data paths and Postgres tables: framework/, apps/, deploy/, services/axf-data, the build rules store (Shipped features manifest rule), .github/workflows (glossary-index catalog.mjs --check and coverage.json), CLAUDE.md and _claude/ rule markers. Write only _claude/builds/reports/plugin-removal-check/05-shipped-catalog.md: one row per plugin (plugin, verdict SAFE / MOVE FIRST / KEEP, what depends on it with file:line, what to move and where), plus short evidence. Commit that one file.\n\nFiles: _claude/builds/reports/plugin-removal-check/05-shipped-catalog.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nFable audits every plugin on the removal lists and reports which are safe to remove and which are still used. Changes nothing.\n\nBrett: run this check first, before any removal build. REPORT ONLY. Do not delete or change any plugin.\n\nFor each plugin below, find every import, call, route, MCP tool, nav link, setting, data file and Postgres table that other code depends on: framework/, apps/console-web/, deploy/, services/, the AmberX app, CI checks. Mark it:\n- SAFE: nothing kept depends on it\n- MOVE FIRST: a kept screen uses a piece of it (name the piece and where it should live)\n- KEEP: still needed (say why)\n\nPlugins:\nfeature-matrix, session-checkin, codebase-changes, agent-slots, ai-assistant, feature-assist, claude-handoff, build-breaker, builds-page, main-build-status, merge-queue-view, shipped-features, whats-shipped, notes-browser, notes-tasks, todo-manager, theme-editor, theme-manager, skin-editor, skin-gallery, plugin-manager, plugin-update, plugins-menu, changes-grid, demonstration-designer, fable-rebuilds, molly-guide, glossary-index, ref-links, md-studio, voice-notes, axhub-handoff, activity, basic-filter, status-styles, snapshot-manager, project-wizard, context-menu-designer.\n\nOutput: write _claude/builds/reports/plugin-removal-check.md with one table (plugin, verdict, what depends on it, what to move). Open a PR with only that report. No code changes.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -15886,7 +15982,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-27T05:00:37.990Z",
      "note": "",
      "uid": "st-mww38q3o1mibak",
      "createdAt": "2026-11-25T12:16:48.420Z"
@@ -15948,8 +16044,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-27T05:06:47.830Z",
      "note": "",
      "uid": "st-mww38q3o1po13q",
      "createdAt": "2026-11-25T12:16:48.420Z"
@@ -20228,7 +20324,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T04:55:42.306Z",
+   "updatedAt": "2026-11-27T05:05:33.010Z",
    "builtAt": "",
    "notes": [
     {
@@ -20546,6 +20642,30 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $0.51",
      "at": "2026-11-27T04:55:42.306Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T04:59:29.680Z"
+    },
+    {
+     "text": "Watchdog: step s5 retried at ready, attempt 4 on hulu0241.",
+     "at": "2026-11-27T04:59:29.680Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s5--rhonda, shared account login)",
+     "at": "2026-11-27T05:03:38.762Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:04:29.795Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s5--rhonda: brief only · start 11.8K tokens ($0.00) · cost $0.13 · 4 turns · 6 tools, MCP none",
+     "at": "2026-11-27T05:05:21.385Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.13",
+     "at": "2026-11-27T05:05:33.010Z"
     }
    ],
    "approvals": [],
@@ -23407,7 +23527,7 @@
    "branch": "lander/claude-emergency-access",
    "pr": "933",
    "createdAt": "2026-11-24T21:08:59.649Z",
-   "updatedAt": "2026-11-27T04:44:42.355Z",
+   "updatedAt": "2026-11-27T04:49:28.909Z",
    "builtAt": "",
    "notes": [
     {
@@ -23473,6 +23593,11 @@
     {
      "text": "Watchdog: build stuck at sending (6 min past budget): re-ran the transition (1).",
      "at": "2026-11-26T23:34:38.035Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-27T04:49:28.909Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -25622,175 +25747,6 @@
    ]
   },
   {
-   "id": "apps-control-surface",
-   "title": "Apps control surface: every app on the API, MCP and CLI (AmberX, Molly, axHub web, template), apps_list, Follow Amber app:",
-   "category": "Framework",
-   "detail": "Finishes molly-console-commands s6-s7 (#288 addendum, never built): the console's control surface (open/show/action/dialog/settings, list of screens/dialogs/settings/actions/nav/clients) becomes a framework contract every app implements through one broker on the console server and a framework library (framework/libs/control-surface); apps_list; AmberX (web + Android shell) screens openable via MCP/API/CLI so Amber can open his to-dos; Molly, axHub web and the app template ship it; console_show takes app:. Agent: Ping Paulie.",
-   "status": "fixing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/apps-control-surface",
-   "pr": "#322",
-   "createdAt": "2026-11-04T15:00:59.141Z",
-   "updatedAt": "2026-11-27T00:28:45.499Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Assigned: Ping Paulie. Headless worktree /root/axf-builds/apps-control-surface, branch claude/apps-control-surface, session on Fable (s1 Fable, the Opus steps run in the same session, no upgrade phase).",
-     "at": "2026-11-04T15:01:01.143Z"
-    },
-    {
-     "text": "PR #322 open (CI pending, auto-merge when green). Report _claude/builds/reports/apps-control-surface.md. UI Review waiting for the console settings page + Remote control sub-tab (no browser in this session).",
-     "at": "2026-11-04T15:37:59.010Z"
-    },
-    {
-     "text": "CI round 1: Node sweep red on help coverage (two relabelled wake settings) → fixed, pushed. tracker --check, session-checkin test and plugins --check are red on main too (urgent-main-ci-green).",
-     "at": "2026-11-04T15:42:17.208Z"
-    },
-    {
-     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T09:19:06.251Z"
-    },
-    {
-     "text": "molly-one-shell (Nov 8 2026) builds on this PR: its shell-surface@1 / menu index / layout steps reuse it. Land it before molly-one-shell phase 3 (Opus UI) starts, or that phase rebases on it.",
-     "at": "2026-11-08T16:59:20.451Z"
-    },
-    {
-     "text": "Note from build remove-old-molly-app-project-keep-axf (Nov 16 2026): the Molly app is removed (apps/molly, molly.amberxai.com, the molly agent add-on; the guide is now gizmo-guide). Drop the Molly part of this build; the rest stands.",
-     "at": "2026-11-16T16:44:06.666Z"
-    },
-    {
-     "text": "Fixing: the push failed (landing for 22 days: PR #322 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
-     "at": "2026-11-27T00:28:45.499Z"
-    },
-    {
-     "text": "Watchdog: landing for 22 days: PR #322 was closed without merging and nothing moved it. The retry ladder answers it.",
-     "at": "2026-11-27T00:28:45.499Z"
-    }
-   ],
-   "approvals": [
-    {
-     "phase": 1,
-     "from": "Fable",
-     "to": "Opus",
-     "at": "2026-11-04T15:33:04.185Z",
-     "by": "auto",
-     "kind": "downgrade"
-    }
-   ],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "Nov 3: \"Put EVERY app on the API, MCP and CLI\" (Molly, axHub web, AmberX, and every future app via the framework template; plus an apps_list read). Nov 4, after Amber couldn't open AmberX's notes/to-dos for him because the console has no AmberX screen and AmberX has no control surface: \"All right, move that to next in queue.\"",
-    "at": "2026-11-04T15:00:00.000Z",
-    "source": "voice",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Generalise the console control surface into a framework contract every app implements: apps.* targets in control@1 (screens, dialogs, settings, actions, nav, clients, apps list) with an app filter, engine app matching, apps registry (framework/schemas/apps.json), framework/libs/control-surface client library, fixtures + checks + CONTROL.md + PORTING.md",
-     "model": "Fable",
-     "why": "cross-app contract: engine + control@1 targets + fixtures",
-     "phase": "Contract",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T15:11:05.987Z",
-     "note": "",
-     "uid": "st-mw28uz06066k9f",
-     "createdAt": "2026-11-04T15:00:59.142Z"
-    },
-    {
-     "id": "s2",
-     "text": "Broker: console-commands server + MCP (apps_list, app_show/app_open/app_list/app_where/app_action) + REST /app/* + CLI axf app <app> …, per-app wake URL; Follow Amber console_show takes app:",
-     "model": "Opus",
-     "why": "",
-     "phase": "Apps",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T15:33:04.185Z",
-     "note": "",
-     "uid": "st-mw28uz0607nfxe",
-     "createdAt": "2026-11-04T15:00:59.142Z"
-    },
-    {
-     "id": "s3",
-     "text": "AmberX (web + Android shell): installs the control-surface library, its server forwards console-commands routes; screens (Notes, To-dos, Lists, Inbox, Voice, Settings…) openable via app_show; items tools unchanged; wake through AmberX open_url when not in front",
-     "model": "Opus",
-     "why": "",
-     "phase": "Apps",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T15:33:06.227Z",
-     "note": "",
-     "uid": "st-mw28uz06080uy6",
-     "createdAt": "2026-11-04T15:00:59.142Z"
-    },
-    {
-     "id": "s4",
-     "text": "Molly (switch apps, IDE mode, pane layout, banners, what is on screen), axHub web (approvals, passes, services), the react-ts template + axf init ship the library; console-web client uses the library; Expenses and Gizmo get it when their PRs rebase (note)",
-     "model": "Opus",
-     "why": "",
-     "phase": "Apps",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T15:33:07.686Z",
-     "note": "",
-     "uid": "st-mw28uz0609mx5j",
-     "createdAt": "2026-11-04T15:00:59.142Z"
-    },
-    {
-     "id": "s5",
-     "text": "Voice: control-surface commands registered for the voice-command generator (build app-voice-commands owns the rule; no duplicate), tests (node + python + tsc), report _claude/builds/reports/apps-control-surface.md, PR, redeploy notes",
-     "model": "Opus",
-     "why": "",
-     "phase": "Apps",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-04T15:37:57.962Z",
-     "note": "",
-     "uid": "st-mw28uz060adk91",
-     "createdAt": "2026-11-04T15:00:59.142Z"
-    }
-   ]
-  },
-  {
    "id": "partial-land-ship-completed-steps-of-a-build",
    "title": "Partial land: ship completed steps of a build",
    "category": "",
@@ -26021,6 +25977,175 @@
      "note": "",
      "uid": "st-mw87xpu3064n0k",
      "createdAt": "2026-11-08T19:21:44.715Z"
+    }
+   ]
+  },
+  {
+   "id": "apps-control-surface",
+   "title": "Apps control surface: every app on the API, MCP and CLI (AmberX, Molly, axHub web, template), apps_list, Follow Amber app:",
+   "category": "Framework",
+   "detail": "Finishes molly-console-commands s6-s7 (#288 addendum, never built): the console's control surface (open/show/action/dialog/settings, list of screens/dialogs/settings/actions/nav/clients) becomes a framework contract every app implements through one broker on the console server and a framework library (framework/libs/control-surface); apps_list; AmberX (web + Android shell) screens openable via MCP/API/CLI so Amber can open his to-dos; Molly, axHub web and the app template ship it; console_show takes app:. Agent: Ping Paulie.",
+   "status": "fixing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/apps-control-surface",
+   "pr": "#322",
+   "createdAt": "2026-11-04T15:00:59.141Z",
+   "updatedAt": "2026-11-27T00:28:45.499Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Assigned: Ping Paulie. Headless worktree /root/axf-builds/apps-control-surface, branch claude/apps-control-surface, session on Fable (s1 Fable, the Opus steps run in the same session, no upgrade phase).",
+     "at": "2026-11-04T15:01:01.143Z"
+    },
+    {
+     "text": "PR #322 open (CI pending, auto-merge when green). Report _claude/builds/reports/apps-control-surface.md. UI Review waiting for the console settings page + Remote control sub-tab (no browser in this session).",
+     "at": "2026-11-04T15:37:59.010Z"
+    },
+    {
+     "text": "CI round 1: Node sweep red on help coverage (two relabelled wake settings) → fixed, pushed. tracker --check, session-checkin test and plugins --check are red on main too (urgent-main-ci-green).",
+     "at": "2026-11-04T15:42:17.208Z"
+    },
+    {
+     "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "molly-one-shell (Nov 8 2026) builds on this PR: its shell-surface@1 / menu index / layout steps reuse it. Land it before molly-one-shell phase 3 (Opus UI) starts, or that phase rebases on it.",
+     "at": "2026-11-08T16:59:20.451Z"
+    },
+    {
+     "text": "Note from build remove-old-molly-app-project-keep-axf (Nov 16 2026): the Molly app is removed (apps/molly, molly.amberxai.com, the molly agent add-on; the guide is now gizmo-guide). Drop the Molly part of this build; the rest stands.",
+     "at": "2026-11-16T16:44:06.666Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 22 days: PR #322 was closed without merging and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T00:28:45.499Z"
+    },
+    {
+     "text": "Watchdog: landing for 22 days: PR #322 was closed without merging and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T00:28:45.499Z"
+    }
+   ],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-04T15:33:04.185Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Nov 3: \"Put EVERY app on the API, MCP and CLI\" (Molly, axHub web, AmberX, and every future app via the framework template; plus an apps_list read). Nov 4, after Amber couldn't open AmberX's notes/to-dos for him because the console has no AmberX screen and AmberX has no control surface: \"All right, move that to next in queue.\"",
+    "at": "2026-11-04T15:00:00.000Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Generalise the console control surface into a framework contract every app implements: apps.* targets in control@1 (screens, dialogs, settings, actions, nav, clients, apps list) with an app filter, engine app matching, apps registry (framework/schemas/apps.json), framework/libs/control-surface client library, fixtures + checks + CONTROL.md + PORTING.md",
+     "model": "Fable",
+     "why": "cross-app contract: engine + control@1 targets + fixtures",
+     "phase": "Contract",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T15:11:05.987Z",
+     "note": "",
+     "uid": "st-mw28uz06066k9f",
+     "createdAt": "2026-11-04T15:00:59.142Z"
+    },
+    {
+     "id": "s2",
+     "text": "Broker: console-commands server + MCP (apps_list, app_show/app_open/app_list/app_where/app_action) + REST /app/* + CLI axf app <app> …, per-app wake URL; Follow Amber console_show takes app:",
+     "model": "Opus",
+     "why": "",
+     "phase": "Apps",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T15:33:04.185Z",
+     "note": "",
+     "uid": "st-mw28uz0607nfxe",
+     "createdAt": "2026-11-04T15:00:59.142Z"
+    },
+    {
+     "id": "s3",
+     "text": "AmberX (web + Android shell): installs the control-surface library, its server forwards console-commands routes; screens (Notes, To-dos, Lists, Inbox, Voice, Settings…) openable via app_show; items tools unchanged; wake through AmberX open_url when not in front",
+     "model": "Opus",
+     "why": "",
+     "phase": "Apps",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T15:33:06.227Z",
+     "note": "",
+     "uid": "st-mw28uz06080uy6",
+     "createdAt": "2026-11-04T15:00:59.142Z"
+    },
+    {
+     "id": "s4",
+     "text": "Molly (switch apps, IDE mode, pane layout, banners, what is on screen), axHub web (approvals, passes, services), the react-ts template + axf init ship the library; console-web client uses the library; Expenses and Gizmo get it when their PRs rebase (note)",
+     "model": "Opus",
+     "why": "",
+     "phase": "Apps",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T15:33:07.686Z",
+     "note": "",
+     "uid": "st-mw28uz0609mx5j",
+     "createdAt": "2026-11-04T15:00:59.142Z"
+    },
+    {
+     "id": "s5",
+     "text": "Voice: control-surface commands registered for the voice-command generator (build app-voice-commands owns the rule; no duplicate), tests (node + python + tsc), report _claude/builds/reports/apps-control-surface.md, PR, redeploy notes",
+     "model": "Opus",
+     "why": "",
+     "phase": "Apps",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T15:37:57.962Z",
+     "note": "",
+     "uid": "st-mw28uz060adk91",
+     "createdAt": "2026-11-04T15:00:59.142Z"
     }
    ]
   },
@@ -62571,6 +62696,34 @@
    ]
   },
   {
+   "id": "pending-list-manager",
+   "title": "Pending build list manager (console)",
+   "category": "Feature",
+   "detail": "Console view of this list: date added for unbuilt items, date built for built ones, sortable by status and date. Built on Opus at Brett's request.",
+   "status": "complete",
+   "hidden": false,
+   "source": "plan",
+   "pendingId": "pending-list-manager",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-18T04:10:00.000Z",
+   "updatedAt": "2026-11-12T03:26:15Z",
+   "builtAt": "2026-10-18T04:21:56.128Z",
+   "notes": [
+    {
+     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
+     "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-pending-list-manager rev 1 sent to Shipped features (backfill): complete 2026-10-18 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:15Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": []
+  },
+  {
    "id": "builds-one-page",
    "title": "Builds: one dataset, one page with selectable views (Plan, Tracker, Queue, Pending, Orchestrator)",
    "category": "Console UI",
@@ -62972,34 +63125,6 @@
      "createdAt": "2026-10-31T23:41:15.585Z"
     }
    ]
-  },
-  {
-   "id": "pending-list-manager",
-   "title": "Pending build list manager (console)",
-   "category": "Feature",
-   "detail": "Console view of this list: date added for unbuilt items, date built for built ones, sortable by status and date. Built on Opus at Brett's request.",
-   "status": "complete",
-   "hidden": false,
-   "source": "plan",
-   "pendingId": "pending-list-manager",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-10-18T04:10:00.000Z",
-   "updatedAt": "2026-11-12T03:26:15Z",
-   "builtAt": "2026-10-18T04:21:56.128Z",
-   "notes": [
-    {
-     "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
-     "at": "2026-11-07T10:19:24.553Z"
-    },
-    {
-     "text": "Shipped manifest sm-pending-list-manager rev 1 sent to Shipped features (backfill): complete 2026-10-18 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
-     "at": "2026-11-12T03:26:15Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "steps": []
   },
   {
    "id": "lib-mcp",
@@ -96364,324 +96489,6 @@
    ]
   },
   {
-   "id": "blueprint-notes-tasks",
-   "title": "Blueprints switch notes, tasks and to-dos too (+ permanent Global group)",
-   "category": "Plan Studio",
-   "detail": "Switching the active blueprint (blueprint@1, build plan-blueprints) also switches the notes-tasks plugin's notes, tasks, to-dos and lists (amberx.items, amberx.lists). Optional `blueprint` field on items/lists; existing ones go to the blueprint the plans went to. Permanent Global group in Plan Studio and the notes/tasks manager (can't be deleted or moved); any plan/note/task/to-do/list can be set Global; Quick notes lives in Global. Voice/control@1/MCP/CLI; active-blueprint chip in AmberX and the console; UI Review 3 options; tests; Shipped features. Based on claude/plan-blueprints.",
-   "status": "failed",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/blueprint-notes-tasks",
-   "pr": "",
-   "createdAt": "2026-11-07T14:45:07.894Z",
-   "updatedAt": "2026-11-26T23:34:38.035Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Built on claude/blueprint-notes-tasks (on top of claude/plan-blueprints, both local, not pushed). UI Review r-20261107-b05bba4e (3 options). Hub notes migrated with backup. Report _claude/builds/reports/blueprint-notes-tasks.md",
-     "at": "2026-11-07T15:11:03.372Z"
-    },
-    {
-     "text": "Fixing: the push failed (every step is done but no PR reached GitHub after 15 min). The server retries on its ladder; nothing stops here.",
-     "at": "2026-11-17T19:11:35.654Z"
-    },
-    {
-     "text": "Fixing: the push failed (every step is done but no PR reached GitHub after 15 min). The server retries on its ladder; nothing stops here.",
-     "at": "2026-11-17T22:41:55.276Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (2362 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T14:13:32.247Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (2366 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T14:18:01.648Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (2371 min past its budget).",
-     "at": "2026-11-19T14:23:01.277Z"
-    },
-    {
-     "text": "Watchdog: build retried at pending, attempt 2.",
-     "at": "2026-11-19T14:24:01.548Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T14:34:02.103Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T14:39:01.187Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-19T14:44:01.143Z"
-    },
-    {
-     "text": "Watchdog: build retried at pending, attempt 3.",
-     "at": "2026-11-19T14:45:02.399Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (358 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T20:52:35.014Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (369 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T21:03:46.519Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (374 min past its budget).",
-     "at": "2026-11-19T21:09:02.150Z"
-    },
-    {
-     "text": "Watchdog: build retried at pending, attempt 4.",
-     "at": "2026-11-19T21:10:01.739Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T21:20:02.058Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T21:25:05.623Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (46 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T22:06:03.379Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (51 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T22:11:03.590Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 4: pending did not move after 2 re-run(s) of the transition (56 min past its budget).",
-     "at": "2026-11-19T22:16:01.483Z"
-    },
-    {
-     "text": "Watchdog: build retried at pending, attempt 5.",
-     "at": "2026-11-19T22:17:01.276Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (71 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T23:38:01.267Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (87 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T23:53:37.736Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (137 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T00:43:39.480Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (147 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T00:53:39.784Z"
-    },
-    {
-     "text": "Watchdog: build stuck at pending (163 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T01:09:47.341Z"
-    },
-    {
-     "text": "Watchdog: build failed at pending, attempt 5: pending did not move after 2 re-run(s) of the transition (168 min past its budget).",
-     "at": "2026-11-20T01:15:02.563Z"
-    },
-    {
-     "text": "Watchdog: build gave up: attempt 5 of 5 failed at pending. Alerted Brett.",
-     "at": "2026-11-20T01:16:01.941Z"
-    },
-    {
-     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
-     "at": "2026-11-26T22:42:01.468Z"
-    },
-    {
-     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
-     "at": "2026-11-26T22:48:02.234Z"
-    },
-    {
-     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
-     "at": "2026-11-26T22:54:01.635Z"
-    },
-    {
-     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
-     "at": "2026-11-26T22:59:01.470Z"
-    },
-    {
-     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
-     "at": "2026-11-26T23:04:36.682Z"
-    },
-    {
-     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
-     "at": "2026-11-26T23:14:37.224Z"
-    },
-    {
-     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
-     "at": "2026-11-26T23:19:37.607Z"
-    },
-    {
-     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
-     "at": "2026-11-26T23:24:37.806Z"
-    },
-    {
-     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
-     "at": "2026-11-26T23:29:37.862Z"
-    },
-    {
-     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
-     "at": "2026-11-26T23:34:38.035Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "Blueprints switch notes, tasks and to-dos too (Brett, Nov 7)\n\n1. Switching the active blueprint switches EVERYTHING scoped to it: Plan Studio plans, AND AmberX/console notes, tasks, to-do items and lists (notes-tasks plugin, amberx.items, amberx.lists).\n2. Items/lists get an optional `blueprint` field (backward compatible). Existing notes/tasks/to-dos go to the same blueprint the existing plans went to.\n3. Global lists: some lists are shared across all blueprints. \"Quick notes\" is global by default. A per-list switch \"show in every blueprint\".\n4. Voice: \"add X to quick notes\" always works; \"switch blueprint to X\" switches all of it. control@1, MCP, CLI.\n5. Active blueprint visible in AmberX and the console (chip), settings in place, assets only, no hard-coded styling. UI Review three options (--choices).\n6. Tests: switch filters plans + notes + tasks + to-dos; global lists stay; nothing lost. Add to Shipped features.\n\nAddendum (Brett, Nov 7): permanent Global group\n- Notes/tasks/to-do manager AND Plan Studio each get a permanent group called **Global** (can't be deleted or moved).\n- Global holds repo-wide items: they show no matter which blueprint is open.\n- Any plan, note, task, to-do or list can be set to Global (toggle + drag in), and back.\n- Quick notes lives in Global by default. Replaces the per-list \"show in every blueprint\" switch: Global is that switch.",
-    "at": "2026-11-07T14:45:07.894Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Scope contract: optional blueprint field on items/lists, Global pseudo-blueprint (permanent), filter rules in plan-core + notes-tasks core",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-07T14:52:35.187Z",
-     "note": "",
-     "uid": "st-mw6im53908y0iy",
-     "createdAt": "2026-11-07T14:45:07.895Z"
-    },
-    {
-     "id": "s2",
-     "text": "notes-tasks store/API/CLI: filter by active blueprint, set Global/back, migration of existing items into the plans' blueprint, Quick notes Global",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-07T14:55:32.069Z",
-     "note": "",
-     "uid": "st-mw6im53909glq4",
-     "createdAt": "2026-11-07T14:45:07.895Z"
-    },
-    {
-     "id": "s3",
-     "text": "Plan Studio: permanent Global group, plan toggle + drag into Global",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-07T14:55:32.875Z",
-     "note": "",
-     "uid": "st-mw6im5390a602e",
-     "createdAt": "2026-11-07T14:45:07.895Z"
-    },
-    {
-     "id": "s4",
-     "text": "control@1 / MCP / voice: switch blueprint switches all, add to quick notes always works",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-07T14:55:33.995Z",
-     "note": "",
-     "uid": "st-mw6im5390bklyy",
-     "createdAt": "2026-11-07T14:45:07.895Z"
-    },
-    {
-     "id": "s5",
-     "text": "UI: active blueprint chip in console + AmberX, Global group in notes manager, settings in place (assets only)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-07T15:00:10.024Z",
-     "note": "",
-     "uid": "st-mw6im5390cby9t",
-     "createdAt": "2026-11-07T14:45:07.895Z"
-    },
-    {
-     "id": "s6",
-     "text": "Tests + Shipped features + docs",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-07T15:09:17.384Z",
-     "note": "",
-     "uid": "st-mw6im5390d2g3v",
-     "createdAt": "2026-11-07T14:45:07.895Z"
-    },
-    {
-     "id": "s7",
-     "text": "UI Review with 3 options (--choices), report, THREADS",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-07T15:11:01.804Z",
-     "note": "",
-     "uid": "st-mw6im5390e9ooy",
-     "createdAt": "2026-11-07T14:45:07.895Z"
-    }
-   ]
-  },
-  {
    "id": "appearance-skins-colour-themes-only-remove-design-packs",
    "title": "Appearance = skins + colour themes only (remove design packs)",
    "category": "Appearance",
@@ -97146,52 +96953,183 @@
    ]
   },
   {
-   "id": "right-click-a-queued-build-to-assign-it-to-a-spe",
-   "title": "Right-click a queued build to assign it to a specific saved Claude account",
-   "category": "",
-   "detail": "In the orchestrator's Pending/Queue/Building tables, add a right-click menu on a build to pick any saved account (subscription logins and API-key accounts, e.g. Hulu, Moses X, Moses X API) or Auto. Dispatcher honors the pinned account: waits for its slot, respects API daily/weekly caps, shows the pinned account on the row. Also allow changing it while queued. Expose the same as a control command for voice.",
-   "status": "landing",
+   "id": "blueprint-notes-tasks",
+   "title": "Blueprints switch notes, tasks and to-dos too (+ permanent Global group)",
+   "category": "Plan Studio",
+   "detail": "Switching the active blueprint (blueprint@1, build plan-blueprints) also switches the notes-tasks plugin's notes, tasks, to-dos and lists (amberx.items, amberx.lists). Optional `blueprint` field on items/lists; existing ones go to the blueprint the plans went to. Permanent Global group in Plan Studio and the notes/tasks manager (can't be deleted or moved); any plan/note/task/to-do/list can be set Global; Quick notes lives in Global. Voice/control@1/MCP/CLI; active-blueprint chip in AmberX and the console; UI Review 3 options; tests; Shipped features. Based on claude/plan-blueprints.",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/right-click-a-queued-build-to-assign-it-to-a-spe",
-   "pr": "#411",
-   "priority": "P2",
-   "createdAt": "2026-11-09T16:03:35.870Z",
-   "updatedAt": "2026-11-15T00:44:18.547Z",
-   "builtAt": "2026-11-09T18:17:08.338Z",
+   "branch": "claude/blueprint-notes-tasks",
+   "pr": "",
+   "createdAt": "2026-11-07T14:45:07.894Z",
+   "updatedAt": "2026-11-26T23:34:38.035Z",
+   "builtAt": "",
    "notes": [
     {
-     "text": "Queued by console.",
-     "at": "2026-11-09T16:03:37.031Z"
+     "text": "Built on claude/blueprint-notes-tasks (on top of claude/plan-blueprints, both local, not pushed). UI Review r-20261107-b05bba4e (3 options). Hub notes migrated with backup. Report _claude/builds/reports/blueprint-notes-tasks.md",
+     "at": "2026-11-07T15:11:03.372Z"
     },
     {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-09T16:04:14.593Z"
+     "text": "Fixing: the push failed (every step is done but no PR reached GitHub after 15 min). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     },
     {
-     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-right-click-a-queued-build-to-assign-it-to-a-spe--joey.",
-     "at": "2026-11-09T17:41:20.383Z"
+     "text": "Fixing: the push failed (every step is done but no PR reached GitHub after 15 min). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T22:41:55.276Z"
     },
     {
-     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-right-click-a-queued-build-to-assign-it-to-a-spe--joey, own login copy)",
-     "at": "2026-11-09T17:41:23.966Z"
+     "text": "Watchdog: build stuck at pending (2362 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z"
     },
     {
-     "text": "Headless run axf-right-click-a-queued-build-to-assign-it-to-a-spe--joey: brief only · start 11.0K tokens ($0.03) · cost $5.75 · 140 turns · 6 tools, MCP none",
-     "at": "2026-11-09T18:17:30.275Z"
+     "text": "Watchdog: build stuck at pending (2366 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (2371 min past its budget).",
+     "at": "2026-11-19T14:23:01.277Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 2.",
+     "at": "2026-11-19T14:24:01.548Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:34:02.103Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:39:01.187Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 3.",
+     "at": "2026-11-19T14:45:02.399Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (358 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T20:52:35.014Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (369 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T21:03:46.519Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (374 min past its budget).",
+     "at": "2026-11-19T21:09:02.150Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 4.",
+     "at": "2026-11-19T21:10:01.739Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T21:20:02.058Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T21:25:05.623Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (46 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T22:06:03.379Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (51 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T22:11:03.590Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 4: pending did not move after 2 re-run(s) of the transition (56 min past its budget).",
+     "at": "2026-11-19T22:16:01.483Z"
+    },
+    {
+     "text": "Watchdog: build retried at pending, attempt 5.",
+     "at": "2026-11-19T22:17:01.276Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (71 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T23:38:01.267Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (87 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T23:53:37.736Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (137 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T00:43:39.480Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (147 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T00:53:39.784Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (163 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T01:09:47.341Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 5: pending did not move after 2 re-run(s) of the transition (168 min past its budget).",
+     "at": "2026-11-20T01:15:02.563Z"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at pending. Alerted Brett.",
+     "at": "2026-11-20T01:16:01.941Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:42:01.468Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:48:02.234Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:54:01.635Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T22:59:01.470Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T23:04:36.682Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T23:14:37.224Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T23:19:37.607Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T23:24:37.806Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T23:29:37.862Z"
+    },
+    {
+     "text": "Watchdog: build gave up: failed with no failedFrom: the watchdog cannot tell where to continue. Alerted Brett.",
+     "at": "2026-11-26T23:34:38.035Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
-    "said": "I need to be able to right-click jobs in the orchestrator and assign them to one of my stored accounts.",
-    "at": "2026-11-09T16:03:35.870Z",
+    "said": "Blueprints switch notes, tasks and to-dos too (Brett, Nov 7)\n\n1. Switching the active blueprint switches EVERYTHING scoped to it: Plan Studio plans, AND AmberX/console notes, tasks, to-do items and lists (notes-tasks plugin, amberx.items, amberx.lists).\n2. Items/lists get an optional `blueprint` field (backward compatible). Existing notes/tasks/to-dos go to the same blueprint the existing plans went to.\n3. Global lists: some lists are shared across all blueprints. \"Quick notes\" is global by default. A per-list switch \"show in every blueprint\".\n4. Voice: \"add X to quick notes\" always works; \"switch blueprint to X\" switches all of it. control@1, MCP, CLI.\n5. Active blueprint visible in AmberX and the console (chip), settings in place, assets only, no hard-coded styling. UI Review three options (--choices).\n6. Tests: switch filters plans + notes + tasks + to-dos; global lists stay; nothing lost. Add to Shipped features.\n\nAddendum (Brett, Nov 7): permanent Global group\n- Notes/tasks/to-do manager AND Plan Studio each get a permanent group called **Global** (can't be deleted or moved).\n- Global holds repo-wide items: they show no matter which blueprint is open.\n- Any plan, note, task, to-do or list can be set to Global (toggle + drag in), and back.\n- Quick notes lives in Global by default. Replaces the per-list \"show in every blueprint\" switch: Global is that switch.",
+    "at": "2026-11-07T14:45:07.894Z",
     "source": "",
     "session": "",
     "link": "",
-    "by": "right-click-a-queued-build-to-assign-it-to-a-spe",
-    "brief": "# Build: right-click-a-queued-build-to-assign-it-to-a-spe\n\n## Brett said (verbatim)\nAt: 2026-11-09T16:03:35.870Z\n> I need to be able to right-click jobs in the orchestrator and assign them to one of my stored accounts.\n\n## What to build\nContinue build \"Right-click a queued build to assign it to a specific saved Claude account\" (right-click-a-queued-build-to-assign-it-to-a-spe) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-09 16:03):\n\"I need to be able to right-click jobs in the orchestrator and assign them to one of my stored accounts.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) In the orchestrator's Pending/Queue/Building tables, add a right-click menu on a build to pick any saved account (subscription logins and API-key accounts, e.g. Hulu, Moses X, Moses X API) or Auto. Dispatcher honors the pinned account: waits for its slot, respects API daily/weekly caps, shows the pinned account on the row. Also allow changing it while queued. Expose the same as a control command for voice.\n[ ] s2 (~30 min) I need to be able to right-click jobs in the orchestrator and assign them to one of my stored accounts.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/right-click-a-queued-build-to-assign-it-to-a-spe.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/right-click-a-queued-build-to-assign-it-to-a-spe.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step right-click-a-queued-build-to-assign-it-to-a-spe <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link right-click-a-queued-build-to-assign-it-to-a-spe --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step right-click-a-queued-build-to-assign-it-to-a-spe <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note right-click-a-queued-build-to-assign-it-to-a-spe \"…\"); the build goes back to Pending for Brett.\n",
+    "by": "",
+    "brief": "",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -97199,181 +97137,136 @@
    "steps": [
     {
      "id": "s1",
-     "text": "In the orchestrator's Pending/Queue/Building tables, add a right-click menu on a build to pick any saved account (subscription logins and API-key accounts, e.g. Hulu, Moses X, Moses X API) or Auto. Dispatcher honors the pinned account: waits for its slot, respects API daily/weekly caps, shows the pinned account on the row. Also allow changing it while queued. Expose the same as a control command for voice.",
+     "text": "Scope contract: optional blueprint field on items/lists, Global pseudo-blueprint (permanent), filter rules in plan-core + notes-tasks core",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
+     "estimate": "",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-09T17:47:01.281Z",
+     "doneAt": "2026-11-07T14:52:35.187Z",
      "note": "",
-     "uid": "st-mw9gbkw101jm9k",
-     "createdAt": "2026-11-09T16:04:14.593Z"
+     "uid": "st-mw6im53908y0iy",
+     "createdAt": "2026-11-07T14:45:07.895Z"
     },
     {
      "id": "s2",
-     "text": "I need to be able to right-click jobs in the orchestrator and assign them to one of my stored accounts.",
+     "text": "notes-tasks store/API/CLI: filter by active blueprint, set Global/back, migration of existing items into the plans' blueprint, Quick notes Global",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
+     "estimate": "",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-09T18:15:34.387Z",
+     "doneAt": "2026-11-07T14:55:32.069Z",
      "note": "",
-     "uid": "st-mw9gbkw102t6qc",
-     "createdAt": "2026-11-09T16:04:14.593Z"
+     "uid": "st-mw6im53909glq4",
+     "createdAt": "2026-11-07T14:45:07.895Z"
     },
     {
      "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/right-click-a-queued-build-to-assign-it-to-a-spe.md, THREADS row, commit, push, PR",
+     "text": "Plan Studio: permanent Global group, plan toggle + drag into Global",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/right-click-a-queued-build-to-assign-it-to-a-spe.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-09T18:17:08.338Z",
-     "note": "",
-     "uid": "st-mw9gbkw1038x4q",
-     "createdAt": "2026-11-09T16:04:14.593Z"
-    }
-   ]
-  },
-  {
-   "id": "orchestrator-self-check-when-stuck-verify-each-a",
-   "title": "Orchestrator self-check when stuck: verify each account one by one, clear stale jobs",
-   "category": "",
-   "detail": "On every load and whenever the queue is stuck (e.g. 'no Claude account is signed in on the VPS' while accounts are actually signed in), the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, slots), rebuilds its account list, and reaps stale jobs/running counts with no live process. Log what it found and fixed; notify AmberX. Fold in pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper where they overlap.",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/orchestrator-self-check-when-stuck-verify-each-a",
-   "pr": "#407",
-   "priority": "P0",
-   "createdAt": "2026-11-09T16:25:52.442Z",
-   "updatedAt": "2026-11-15T00:41:27.044Z",
-   "builtAt": "2026-11-09T16:45:22.046Z",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-09T16:25:53.571Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-09T16:26:19.535Z"
-    },
-    {
-     "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-orchestrator-self-check-when-stuck-verify-each-a--joey, own login copy)",
-     "at": "2026-11-09T16:40:19.177Z"
-    },
-    {
-     "text": "Started run 1 on account-3 (Opus, Phase 1): axf-orchestrator-self-check-when-stuck-verify-each-a--joey.",
-     "at": "2026-11-09T16:40:15.588Z"
-    },
-    {
-     "text": "Headless run axf-orchestrator-self-check-when-stuck-verify-each-a--joey: brief only · start 10.9K tokens ($0.03) · cost $1.17 · 38 turns · 6 tools, MCP none",
-     "at": "2026-11-09T16:45:22.046Z"
-    },
-    {
-     "text": "PR #407 supersedes #406 (carries its commit). Added: self-check runs on every orchestrator load, the dispatcher's first tick after downtime, stuck ticks and a 30 min sweep. UI Review shots of the Self-check card still owed: no branch preview here.",
-     "at": "2026-11-09T16:45:06.486Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.",
-    "at": "2026-11-09T16:25:52.442Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "orchestrator-self-check-when-stuck-verify-each-a",
-    "brief": "# Build: orchestrator-self-check-when-stuck-verify-each-a\n\n## Brett said (verbatim)\nAt: 2026-11-09T16:25:52.442Z\n> The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.\n\n## What to build\nContinue build \"Orchestrator self-check when stuck: verify each account one by one, clear stale jobs\" (orchestrator-self-check-when-stuck-verify-each-a) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-09 16:25):\n\"The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) On every load and whenever the queue is stuck (e.g. 'no Claude account is signed in on the VPS' while accounts are actually signed in), the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, slots), rebuilds its account list, and reaps stale jobs/running counts with no live process. Log what it found and fixed; notify AmberX. Fold in pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper where they overlap.\n[ ] s2 (~30 min) The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-self-check-when-stuck-verify-each-a <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-self-check-when-stuck-verify-each-a --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step orchestrator-self-check-when-stuck-verify-each-a <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-self-check-when-stuck-verify-each-a \"…\"); the build goes back to Pending for Brett.\n",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "On every load and whenever the queue is stuck (e.g. 'no Claude account is signed in on the VPS' while accounts are actually signed in), the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, slots), rebuilds its account list, and reaps stale jobs/running counts with no live process. Log what it found and fixed; notify AmberX. Fold in pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper where they overlap.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
+     "estimate": "",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-09T16:44:08.704Z",
+     "doneAt": "2026-11-07T14:55:32.875Z",
      "note": "",
-     "uid": "st-mw9h3z7z01y8m1",
-     "createdAt": "2026-11-09T16:26:19.535Z"
+     "uid": "st-mw6im5390a602e",
+     "createdAt": "2026-11-07T14:45:07.895Z"
     },
     {
-     "id": "s2",
-     "text": "The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.",
+     "id": "s4",
+     "text": "control@1 / MCP / voice: switch blueprint switches all, add to quick notes always works",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
+     "estimate": "",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-09T16:44:09.880Z",
+     "doneAt": "2026-11-07T14:55:33.995Z",
      "note": "",
-     "uid": "st-mw9h3z7z02m9s8",
-     "createdAt": "2026-11-09T16:26:19.535Z"
+     "uid": "st-mw6im5390bklyy",
+     "createdAt": "2026-11-07T14:45:07.895Z"
     },
     {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md, THREADS row, commit, push, PR",
+     "id": "s5",
+     "text": "UI: active blueprint chip in console + AmberX, Global group in notes manager, settings in place (assets only)",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md",
-      "_claude/THREADS.md"
-     ],
+     "estimate": "",
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-09T16:45:08.306Z",
+     "doneAt": "2026-11-07T15:00:10.024Z",
      "note": "",
-     "uid": "st-mw9h3z7z03iiym",
-     "createdAt": "2026-11-09T16:26:19.535Z"
+     "uid": "st-mw6im5390cby9t",
+     "createdAt": "2026-11-07T14:45:07.895Z"
+    },
+    {
+     "id": "s6",
+     "text": "Tests + Shipped features + docs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T15:09:17.384Z",
+     "note": "",
+     "uid": "st-mw6im5390d2g3v",
+     "createdAt": "2026-11-07T14:45:07.895Z"
+    },
+    {
+     "id": "s7",
+     "text": "UI Review with 3 options (--choices), report, THREADS",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-07T15:11:01.804Z",
+     "note": "",
+     "uid": "st-mw6im5390e9ooy",
+     "createdAt": "2026-11-07T14:45:07.895Z"
     }
    ]
   },
@@ -97601,6 +97494,120 @@
      "note": "",
      "uid": "st-mwazh2gp1uzvl2",
      "createdAt": "2026-11-10T17:48:09.529Z"
+    }
+   ]
+  },
+  {
+   "id": "right-click-a-queued-build-to-assign-it-to-a-spe",
+   "title": "Right-click a queued build to assign it to a specific saved Claude account",
+   "category": "",
+   "detail": "In the orchestrator's Pending/Queue/Building tables, add a right-click menu on a build to pick any saved account (subscription logins and API-key accounts, e.g. Hulu, Moses X, Moses X API) or Auto. Dispatcher honors the pinned account: waits for its slot, respects API daily/weekly caps, shows the pinned account on the row. Also allow changing it while queued. Expose the same as a control command for voice.",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/right-click-a-queued-build-to-assign-it-to-a-spe",
+   "pr": "#411",
+   "priority": "P2",
+   "createdAt": "2026-11-09T16:03:35.870Z",
+   "updatedAt": "2026-11-15T00:44:18.547Z",
+   "builtAt": "2026-11-09T18:17:08.338Z",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T16:03:37.031Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T16:04:14.593Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-right-click-a-queued-build-to-assign-it-to-a-spe--joey.",
+     "at": "2026-11-09T17:41:20.383Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-right-click-a-queued-build-to-assign-it-to-a-spe--joey, own login copy)",
+     "at": "2026-11-09T17:41:23.966Z"
+    },
+    {
+     "text": "Headless run axf-right-click-a-queued-build-to-assign-it-to-a-spe--joey: brief only · start 11.0K tokens ($0.03) · cost $5.75 · 140 turns · 6 tools, MCP none",
+     "at": "2026-11-09T18:17:30.275Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need to be able to right-click jobs in the orchestrator and assign them to one of my stored accounts.",
+    "at": "2026-11-09T16:03:35.870Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "right-click-a-queued-build-to-assign-it-to-a-spe",
+    "brief": "# Build: right-click-a-queued-build-to-assign-it-to-a-spe\n\n## Brett said (verbatim)\nAt: 2026-11-09T16:03:35.870Z\n> I need to be able to right-click jobs in the orchestrator and assign them to one of my stored accounts.\n\n## What to build\nContinue build \"Right-click a queued build to assign it to a specific saved Claude account\" (right-click-a-queued-build-to-assign-it-to-a-spe) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-09 16:03):\n\"I need to be able to right-click jobs in the orchestrator and assign them to one of my stored accounts.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) In the orchestrator's Pending/Queue/Building tables, add a right-click menu on a build to pick any saved account (subscription logins and API-key accounts, e.g. Hulu, Moses X, Moses X API) or Auto. Dispatcher honors the pinned account: waits for its slot, respects API daily/weekly caps, shows the pinned account on the row. Also allow changing it while queued. Expose the same as a control command for voice.\n[ ] s2 (~30 min) I need to be able to right-click jobs in the orchestrator and assign them to one of my stored accounts.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/right-click-a-queued-build-to-assign-it-to-a-spe.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/right-click-a-queued-build-to-assign-it-to-a-spe.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step right-click-a-queued-build-to-assign-it-to-a-spe <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link right-click-a-queued-build-to-assign-it-to-a-spe --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step right-click-a-queued-build-to-assign-it-to-a-spe <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note right-click-a-queued-build-to-assign-it-to-a-spe \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "In the orchestrator's Pending/Queue/Building tables, add a right-click menu on a build to pick any saved account (subscription logins and API-key accounts, e.g. Hulu, Moses X, Moses X API) or Auto. Dispatcher honors the pinned account: waits for its slot, respects API daily/weekly caps, shows the pinned account on the row. Also allow changing it while queued. Expose the same as a control command for voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-09T17:47:01.281Z",
+     "note": "",
+     "uid": "st-mw9gbkw101jm9k",
+     "createdAt": "2026-11-09T16:04:14.593Z"
+    },
+    {
+     "id": "s2",
+     "text": "I need to be able to right-click jobs in the orchestrator and assign them to one of my stored accounts.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-09T18:15:34.387Z",
+     "note": "",
+     "uid": "st-mw9gbkw102t6qc",
+     "createdAt": "2026-11-09T16:04:14.593Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/right-click-a-queued-build-to-assign-it-to-a-spe.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/right-click-a-queued-build-to-assign-it-to-a-spe.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-09T18:17:08.338Z",
+     "note": "",
+     "uid": "st-mw9gbkw1038x4q",
+     "createdAt": "2026-11-09T16:04:14.593Z"
     }
    ]
   },
@@ -97909,6 +97916,124 @@
      "note": "",
      "uid": "st-mw9jydmv03yq8x",
      "createdAt": "2026-11-09T17:45:57.126Z"
+    }
+   ]
+  },
+  {
+   "id": "orchestrator-self-check-when-stuck-verify-each-a",
+   "title": "Orchestrator self-check when stuck: verify each account one by one, clear stale jobs",
+   "category": "",
+   "detail": "On every load and whenever the queue is stuck (e.g. 'no Claude account is signed in on the VPS' while accounts are actually signed in), the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, slots), rebuilds its account list, and reaps stale jobs/running counts with no live process. Log what it found and fixed; notify AmberX. Fold in pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper where they overlap.",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/orchestrator-self-check-when-stuck-verify-each-a",
+   "pr": "#407",
+   "priority": "P0",
+   "createdAt": "2026-11-09T16:25:52.442Z",
+   "updatedAt": "2026-11-15T00:41:27.044Z",
+   "builtAt": "2026-11-09T16:45:22.046Z",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T16:25:53.571Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T16:26:19.535Z"
+    },
+    {
+     "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-orchestrator-self-check-when-stuck-verify-each-a--joey, own login copy)",
+     "at": "2026-11-09T16:40:19.177Z"
+    },
+    {
+     "text": "Started run 1 on account-3 (Opus, Phase 1): axf-orchestrator-self-check-when-stuck-verify-each-a--joey.",
+     "at": "2026-11-09T16:40:15.588Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-self-check-when-stuck-verify-each-a--joey: brief only · start 10.9K tokens ($0.03) · cost $1.17 · 38 turns · 6 tools, MCP none",
+     "at": "2026-11-09T16:45:22.046Z"
+    },
+    {
+     "text": "PR #407 supersedes #406 (carries its commit). Added: self-check runs on every orchestrator load, the dispatcher's first tick after downtime, stuck ticks and a 30 min sweep. UI Review shots of the Self-check card still owed: no branch preview here.",
+     "at": "2026-11-09T16:45:06.486Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.",
+    "at": "2026-11-09T16:25:52.442Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "orchestrator-self-check-when-stuck-verify-each-a",
+    "brief": "# Build: orchestrator-self-check-when-stuck-verify-each-a\n\n## Brett said (verbatim)\nAt: 2026-11-09T16:25:52.442Z\n> The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.\n\n## What to build\nContinue build \"Orchestrator self-check when stuck: verify each account one by one, clear stale jobs\" (orchestrator-self-check-when-stuck-verify-each-a) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-09 16:25):\n\"The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) On every load and whenever the queue is stuck (e.g. 'no Claude account is signed in on the VPS' while accounts are actually signed in), the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, slots), rebuilds its account list, and reaps stale jobs/running counts with no live process. Log what it found and fixed; notify AmberX. Fold in pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper where they overlap.\n[ ] s2 (~30 min) The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-self-check-when-stuck-verify-each-a <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-self-check-when-stuck-verify-each-a --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step orchestrator-self-check-when-stuck-verify-each-a <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-self-check-when-stuck-verify-each-a \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "On every load and whenever the queue is stuck (e.g. 'no Claude account is signed in on the VPS' while accounts are actually signed in), the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, slots), rebuilds its account list, and reaps stale jobs/running counts with no live process. Log what it found and fixed; notify AmberX. Fold in pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper where they overlap.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-09T16:44:08.704Z",
+     "note": "",
+     "uid": "st-mw9h3z7z01y8m1",
+     "createdAt": "2026-11-09T16:26:19.535Z"
+    },
+    {
+     "id": "s2",
+     "text": "The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-09T16:44:09.880Z",
+     "note": "",
+     "uid": "st-mw9h3z7z02m9s8",
+     "createdAt": "2026-11-09T16:26:19.535Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/orchestrator-self-check-when-stuck-verify-each-a.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-09T16:45:08.306Z",
+     "note": "",
+     "uid": "st-mw9h3z7z03iiym",
+     "createdAt": "2026-11-09T16:26:19.535Z"
     }
    ]
   },
@@ -101568,128 +101693,6 @@
    ]
   },
   {
-   "id": "one-source-of-truth-for-claude-accounts-the-orch",
-   "title": "One source of truth for Claude accounts: the orchestrator reads Claude accounts / Job routing",
-   "category": "",
-   "detail": "Today the orchestrator's dispatcher keeps its own account list and API settings (pipeline-settings: apiOverflow, apiAccounts, its own account records), separate from Claude accounts (deploy/claude-workers.mjs, workers.json: accounts, roles, API workers, caps, Job routing rules, 'API fallback when subscriptions are busy'). So the orchestrator didn't see Hulu API or the fallback Gizmo turned on. Fix: Claude accounts / workers.json is the single source of truth for accounts, models per account, API workers, caps, fallback and routing rules. The orchestrator reads it live and keeps no copy; remove the duplicate settings (migrate any values), and show the same account status in both places.",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/one-source-of-truth-for-claude-accounts-the-orch",
-   "pr": "#414",
-   "priority": "P0",
-   "createdAt": "2026-11-09T20:26:33.987Z",
-   "updatedAt": "2026-11-15T00:41:16.445Z",
-   "builtAt": "2026-11-09T20:44:45.045Z",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-09T20:26:35.400Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-09T20:27:49.018Z"
-    },
-    {
-     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-one-source-of-truth-for-claude-accounts-the-orch--lenny.",
-     "at": "2026-11-09T20:31:08.358Z"
-    },
-    {
-     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-source-of-truth-for-claude-accounts-the-orch--lenny, own login copy)",
-     "at": "2026-11-09T20:31:11.413Z"
-    },
-    {
-     "text": "Headless run axf-one-source-of-truth-for-claude-accounts-the-orch--lenny: brief only · start 11.1K tokens ($0.03) · cost $3.83 · 61 turns · 6 tools, MCP none",
-     "at": "2026-11-09T20:44:45.045Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "Why doesn't the orchestrator see the API accounts? ... I need him to read from one source, dude. One true source.",
-    "at": "2026-11-09T20:26:33.987Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "one-source-of-truth-for-claude-accounts-the-orch",
-    "brief": "# Build: one-source-of-truth-for-claude-accounts-the-orch\n\n## Brett said (verbatim)\nAt: 2026-11-09T20:26:33.987Z\n> Why doesn't the orchestrator see the API accounts? ... I need him to read from one source, dude. One true source.\n\n## What to build\nContinue build \"One source of truth for Claude accounts: the orchestrator reads Claude accounts / Job routing\" (one-source-of-truth-for-claude-accounts-the-orch) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-09 20:26):\n\"Why doesn't the orchestrator see the API accounts? ... I need him to read from one source, dude. One true source.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Today the orchestrator's dispatcher keeps its own account list and API settings (pipeline-settings: apiOverflow, apiAccounts, its own account records), separate from Claude accounts (deploy/claude-workers.mjs, workers.json: accounts, roles, API workers, caps, Job routing rules, 'API fallback when subscriptions are busy'). So the orchestrator didn't see Hulu API or the fallback Gizmo turned on. Fix: Claude accounts / workers.json is the single source of truth for accounts, models per account, API workers, caps, fallback and routing rules. The orchestrator reads it live and keeps no copy; remove the duplicate settings (migrate any values), and show the same account status in both places.\n[ ] s2 (~30 min) Why doesn't the orchestrator see the API accounts? ... I need him to read from one source, dude. One true source.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/one-source-of-truth-for-claude-accounts-the-orch.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/one-source-of-truth-for-claude-accounts-the-orch.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step one-source-of-truth-for-claude-accounts-the-orch <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link one-source-of-truth-for-claude-accounts-the-orch --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step one-source-of-truth-for-claude-accounts-the-orch <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note one-source-of-truth-for-claude-accounts-the-orch \"…\"); the build goes back to Pending for Brett.\n",
-    "verbatim": true,
-    "from": "",
-    "addenda": [
-     {
-      "said": "It doesn't matter what account, it goes by the parallel builds limit, not the account limit. It needs to be one setting. They can't be two. How am I supposed to keep track of that? There needs to be one setting.",
-      "at": "",
-      "source": "voice",
-      "by": "Claude voice (Gizmo)",
-      "verbatim": true
-     }
-    ]
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Today the orchestrator's dispatcher keeps its own account list and API settings (pipeline-settings: apiOverflow, apiAccounts, its own account records), separate from Claude accounts (deploy/claude-workers.mjs, workers.json: accounts, roles, API workers, caps, Job routing rules, 'API fallback when subscriptions are busy'). So the orchestrator didn't see Hulu API or the fallback Gizmo turned on. Fix: Claude accounts / workers.json is the single source of truth for accounts, models per account, API workers, caps, fallback and routing rules. The orchestrator reads it live and keeps no copy; remove the duplicate settings (migrate any values), and show the same account status in both places.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-09T20:42:52.554Z",
-     "note": "",
-     "uid": "st-mw9pqjdm0434bd",
-     "createdAt": "2026-11-09T20:27:49.018Z"
-    },
-    {
-     "id": "s2",
-     "text": "Why doesn't the orchestrator see the API accounts? ... I need him to read from one source, dude. One true source.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-09T20:42:57.126Z",
-     "note": "",
-     "uid": "st-mw9pqjdm05c4bh",
-     "createdAt": "2026-11-09T20:27:49.018Z"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/one-source-of-truth-for-claude-accounts-the-orch.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/one-source-of-truth-for-claude-accounts-the-orch.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-09T20:44:24.810Z",
-     "note": "",
-     "uid": "st-mw9pqjdm06hauw",
-     "createdAt": "2026-11-09T20:27:49.018Z"
-    }
-   ]
-  },
-  {
    "id": "audit-pending-fable-builds-against-main-close-wh",
    "title": "Audit Pending Fable builds against main: close what's done, queue only what's left",
    "category": "",
@@ -101816,6 +101819,128 @@
      "note": "",
      "uid": "st-mwa6v8hw03ucf9",
      "createdAt": "2026-11-10T04:27:21.668Z"
+    }
+   ]
+  },
+  {
+   "id": "one-source-of-truth-for-claude-accounts-the-orch",
+   "title": "One source of truth for Claude accounts: the orchestrator reads Claude accounts / Job routing",
+   "category": "",
+   "detail": "Today the orchestrator's dispatcher keeps its own account list and API settings (pipeline-settings: apiOverflow, apiAccounts, its own account records), separate from Claude accounts (deploy/claude-workers.mjs, workers.json: accounts, roles, API workers, caps, Job routing rules, 'API fallback when subscriptions are busy'). So the orchestrator didn't see Hulu API or the fallback Gizmo turned on. Fix: Claude accounts / workers.json is the single source of truth for accounts, models per account, API workers, caps, fallback and routing rules. The orchestrator reads it live and keeps no copy; remove the duplicate settings (migrate any values), and show the same account status in both places.",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/one-source-of-truth-for-claude-accounts-the-orch",
+   "pr": "#414",
+   "priority": "P0",
+   "createdAt": "2026-11-09T20:26:33.987Z",
+   "updatedAt": "2026-11-15T00:41:16.445Z",
+   "builtAt": "2026-11-09T20:44:45.045Z",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-09T20:26:35.400Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-09T20:27:49.018Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-one-source-of-truth-for-claude-accounts-the-orch--lenny.",
+     "at": "2026-11-09T20:31:08.358Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-source-of-truth-for-claude-accounts-the-orch--lenny, own login copy)",
+     "at": "2026-11-09T20:31:11.413Z"
+    },
+    {
+     "text": "Headless run axf-one-source-of-truth-for-claude-accounts-the-orch--lenny: brief only · start 11.1K tokens ($0.03) · cost $3.83 · 61 turns · 6 tools, MCP none",
+     "at": "2026-11-09T20:44:45.045Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why doesn't the orchestrator see the API accounts? ... I need him to read from one source, dude. One true source.",
+    "at": "2026-11-09T20:26:33.987Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "one-source-of-truth-for-claude-accounts-the-orch",
+    "brief": "# Build: one-source-of-truth-for-claude-accounts-the-orch\n\n## Brett said (verbatim)\nAt: 2026-11-09T20:26:33.987Z\n> Why doesn't the orchestrator see the API accounts? ... I need him to read from one source, dude. One true source.\n\n## What to build\nContinue build \"One source of truth for Claude accounts: the orchestrator reads Claude accounts / Job routing\" (one-source-of-truth-for-claude-accounts-the-orch) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-09 20:26):\n\"Why doesn't the orchestrator see the API accounts? ... I need him to read from one source, dude. One true source.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Today the orchestrator's dispatcher keeps its own account list and API settings (pipeline-settings: apiOverflow, apiAccounts, its own account records), separate from Claude accounts (deploy/claude-workers.mjs, workers.json: accounts, roles, API workers, caps, Job routing rules, 'API fallback when subscriptions are busy'). So the orchestrator didn't see Hulu API or the fallback Gizmo turned on. Fix: Claude accounts / workers.json is the single source of truth for accounts, models per account, API workers, caps, fallback and routing rules. The orchestrator reads it live and keeps no copy; remove the duplicate settings (migrate any values), and show the same account status in both places.\n[ ] s2 (~30 min) Why doesn't the orchestrator see the API accounts? ... I need him to read from one source, dude. One true source.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/one-source-of-truth-for-claude-accounts-the-orch.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/one-source-of-truth-for-claude-accounts-the-orch.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step one-source-of-truth-for-claude-accounts-the-orch <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link one-source-of-truth-for-claude-accounts-the-orch --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step one-source-of-truth-for-claude-accounts-the-orch <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note one-source-of-truth-for-claude-accounts-the-orch \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": [
+     {
+      "said": "It doesn't matter what account, it goes by the parallel builds limit, not the account limit. It needs to be one setting. They can't be two. How am I supposed to keep track of that? There needs to be one setting.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     }
+    ]
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Today the orchestrator's dispatcher keeps its own account list and API settings (pipeline-settings: apiOverflow, apiAccounts, its own account records), separate from Claude accounts (deploy/claude-workers.mjs, workers.json: accounts, roles, API workers, caps, Job routing rules, 'API fallback when subscriptions are busy'). So the orchestrator didn't see Hulu API or the fallback Gizmo turned on. Fix: Claude accounts / workers.json is the single source of truth for accounts, models per account, API workers, caps, fallback and routing rules. The orchestrator reads it live and keeps no copy; remove the duplicate settings (migrate any values), and show the same account status in both places.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-09T20:42:52.554Z",
+     "note": "",
+     "uid": "st-mw9pqjdm0434bd",
+     "createdAt": "2026-11-09T20:27:49.018Z"
+    },
+    {
+     "id": "s2",
+     "text": "Why doesn't the orchestrator see the API accounts? ... I need him to read from one source, dude. One true source.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-09T20:42:57.126Z",
+     "note": "",
+     "uid": "st-mw9pqjdm05c4bh",
+     "createdAt": "2026-11-09T20:27:49.018Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/one-source-of-truth-for-claude-accounts-the-orch.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/one-source-of-truth-for-claude-accounts-the-orch.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-09T20:44:24.810Z",
+     "note": "",
+     "uid": "st-mw9pqjdm06hauw",
+     "createdAt": "2026-11-09T20:27:49.018Z"
     }
    ]
   },
@@ -105727,124 +105852,6 @@
    ]
   },
   {
-   "id": "one-amberx-build-notification-veto-approval-befo",
-   "title": "One AmberX build notification: veto approval before every start, pop-up on every finish",
-   "category": "",
-   "detail": "This REPLACES the build 'AmberX phone pop-up for every build start and finish: build name, account, model': remove it from Pending or the Queue and mark it superseded. Also upgrade, don't duplicate, brief-approval-dialog-before-every-headless-sess. 1) START = VETO: before every launch (new, retry, rerun, resume), one AmberX heads-up pop-up on the phone, also mirrored in the console. It shows the build name, what it will do, steps, model, account and employee, with Approve, Deny and a countdown (default 90 s, adjustable down to 0 via the approvals countdown setting). It launches on Approve or when the countdown ends; Deny sends it back to Pending. 2) FINISH: a pop-up with the build, account and outcome (done, failed, needs something and what). Tap to open the build. 3) One notification type, not two. Plain code, no AI. Respects the auto-approve toggle. Full API and voice control.",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/one-amberx-build-notification-veto-approval-befo",
-   "pr": "#436",
-   "priority": "P0",
-   "createdAt": "2026-11-10T02:24:15.337Z",
-   "updatedAt": "2026-11-15T00:40:20.634Z",
-   "builtAt": "2026-11-10T03:43:20.593Z",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-10T02:24:21.854Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T02:26:28.473Z"
-    },
-    {
-     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-one-amberx-build-notification-veto-approval-befo--sully.",
-     "at": "2026-11-10T03:28:17.523Z"
-    },
-    {
-     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-amberx-build-notification-veto-approval-befo--sully, own login copy)",
-     "at": "2026-11-10T03:28:19.516Z"
-    },
-    {
-     "text": "Headless run axf-one-amberx-build-notification-veto-approval-befo--sully: brief only · start 11.2K tokens ($0.03) · cost $3.84 · 84 turns · 6 tools, MCP none",
-     "at": "2026-11-10T03:43:20.593Z"
-    },
-    {
-     "text": "Built, PR #436 (folds in and closes #433). Veto before every start on the AmberX start notification, 90 s default, Approve / Deny / auto-approve, console Waiting to start card. UI Review shots not taken (VPS headless browser broke on #433): capture Pipeline tab Waiting to start + Phone pop-ups, desktop and phone, and submit. Real phone test after merge.",
-     "at": "2026-11-10T03:43:00.518Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification.",
-    "at": "2026-11-10T02:24:15.337Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "one-amberx-build-notification-veto-approval-befo",
-    "brief": "# Build: one-amberx-build-notification-veto-approval-befo\n\n## Brett said (verbatim)\nAt: 2026-11-10T02:24:15.337Z\n> Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification.\n\n## What to build\nContinue build \"One AmberX build notification: veto approval before every start, pop-up on every finish\" (one-amberx-build-notification-veto-approval-befo) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 02:24):\n\"Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) This REPLACES the build 'AmberX phone pop-up for every build start and finish: build name, account, model': remove it from Pending or the Queue and mark it superseded. Also upgrade, don't duplicate, brief-approval-dialog-before-every-headless-sess. 1) START = VETO: before every launch (new, retry, rerun, resume), one AmberX heads-up pop-up on the phone, also mirrored in the console. It shows the build name, what it will do, steps, model, account and employee, with Approve, Deny and a countdown (default 90 s, adjustable down to 0 via the approvals countdown setting). It launches on Approve or when the countdown ends; Deny sends it back to Pending. 2) FINISH: a pop-up with the build, account and outcome (done, failed, needs something and what). Tap to open the build. 3) One notification type, not two. Plain code, no AI. Respects the auto-approve toggle. Full API and voice control.\n[ ] s2 (~30 min) Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/one-amberx-build-notification-veto-approval-befo.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/one-amberx-build-notification-veto-approval-befo.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step one-amberx-build-notification-veto-approval-befo <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link one-amberx-build-notification-veto-approval-befo --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step one-amberx-build-notification-veto-approval-befo <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note one-amberx-build-notification-veto-approval-befo \"…\"); the build goes back to Pending for Brett.\n",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "This REPLACES the build 'AmberX phone pop-up for every build start and finish: build name, account, model': remove it from Pending or the Queue and mark it superseded. Also upgrade, don't duplicate, brief-approval-dialog-before-every-headless-sess. 1) START = VETO: before every launch (new, retry, rerun, resume), one AmberX heads-up pop-up on the phone, also mirrored in the console. It shows the build name, what it will do, steps, model, account and employee, with Approve, Deny and a countdown (default 90 s, adjustable down to 0 via the approvals countdown setting). It launches on Approve or when the countdown ends; Deny sends it back to Pending. 2) FINISH: a pop-up with the build, account and outcome (done, failed, needs something and what). Tap to open the build. 3) One notification type, not two. Plain code, no AI. Respects the auto-approve toggle. Full API and voice control.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-10T03:41:48.346Z",
-     "note": "",
-     "uid": "st-mwa2jrw901jcus",
-     "createdAt": "2026-11-10T02:26:28.473Z"
-    },
-    {
-     "id": "s2",
-     "text": "Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-10T03:41:49.874Z",
-     "note": "",
-     "uid": "st-mwa2jrw902q4s9",
-     "createdAt": "2026-11-10T02:26:28.473Z"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/one-amberx-build-notification-veto-approval-befo.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/one-amberx-build-notification-veto-approval-befo.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-10T03:43:03.611Z",
-     "note": "",
-     "uid": "st-mwa2jrw903m8ys",
-     "createdAt": "2026-11-10T02:26:28.473Z"
-    }
-   ]
-  },
-  {
    "id": "agent-manager-training-wizard-for-employee-agent",
    "title": "Agent Manager: training wizard for employee agents (data sources, processing, RAG, auto-built tools, skills, persona, vocabulary)",
    "category": "",
@@ -106145,128 +106152,6 @@
      "note": "",
      "uid": "st-mwazufum4zw9ul",
      "createdAt": "2026-11-10T17:58:33.406Z"
-    }
-   ]
-  },
-  {
-   "id": "one-vps-plugin-everything-vps-in-one-place-gauge",
-   "title": "One VPS plugin: everything VPS in one place (gauges, banner widget with heat-colour icons and dropdown, cleanup, settings, status)",
-   "category": "",
-   "detail": "ONE VPS plugin (e.g. 'VPS'), reachable from Maintenance and its own nav entry. 1) CONSOLIDATE: find every VPS-related feature across the console and move it into this plugin as tabs or sections, leaving no duplicates behind. That includes the claude-badge VPS check, agent-slots resource and swap settings and warnings, the VPS settings/orchestrator-only rule plugin (from vps-orchestrator-only-rule-vps-settings-console), Docker/container views, container-access, the Coolify/Hostinger links, VPS terminal shortcuts, ai-keys VPS sync, maintenance cleanup/redundancy scans, the disk alerts, and the running-builds watchdog's resource bits. Old entry points redirect to the new plugin. 2) STATUS tab: live gauges and meters for CPU load (1/5/15 min), RAM, swap, disk per filesystem, plus Docker per-container CPU/RAM and the top processes. Several views (radial, bars, compact strip, history sparklines), switchable and remembered, with adjustable thresholds. 3) BANNER WIDGET: a snappable widget for the banner, toolbars and title bars, with modes icon only, icon plus value, or mini meters. It has its own settings (metrics, mode, thresholds, refresh). 4) ICON-ONLY HEAT COLOUR: each icon's colour follows its level on a smooth scale, white (low) to gray to black to red (high). The stops are editable and the theme can override them. 5) BANNER DROPDOWN: clicking any banner gauge opens a dropdown listing every gauge, one row each: a dot in the same heat colour as that gauge, the name (Load, RAM, Swap, Disk /), the percentage, and the actual values (e.g. 9.4 / 16 GB). Rows update live, the clicked one is highlighted, and the footer has Open VPS plugin and quick cleanup links. 6) CLEANUP tab: docker builder/image/container prune, apt/npm/pip caches, journal vacuum, old build worktrees and logs, /tmp, the Playwright cache, and stale git locks. Each has a size preview and a confirm, shows the space freed and logs to the fix log. Optional auto-cleanup over a threshold (off by default). 7) SETTINGS tab: every VPS setting in one place. Plain code, no AI. Full REST, MCP, CLI and voice control. Desktop and phone screenshots go to UI Review.",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/one-vps-plugin-everything-vps-in-one-place-gauge",
-   "pr": "#443",
-   "priority": "P1",
-   "createdAt": "2026-11-10T02:44:38.021Z",
-   "updatedAt": "2026-11-15T00:42:58.740Z",
-   "builtAt": "2026-11-10T15:10:28.257Z",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-10T02:44:40.475Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T02:46:47.916Z"
-    },
-    {
-     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-one-vps-plugin-everything-vps-in-one-place-gauge--sully.",
-     "at": "2026-11-10T14:51:40.129Z"
-    },
-    {
-     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-vps-plugin-everything-vps-in-one-place-gauge--sully, own login copy)",
-     "at": "2026-11-10T14:51:42.208Z"
-    },
-    {
-     "text": "Headless run axf-one-vps-plugin-everything-vps-in-one-place-gauge--sully: brief only · start 12.3K tokens ($0.04) · cost $4.77 · 77 turns · 6 tools, MCP none",
-     "at": "2026-11-10T15:10:22.011Z"
-    },
-    {
-     "text": "Reconciler: PR #443",
-     "at": "2026-11-10T15:10:28.257Z"
-    },
-    {
-     "text": "PR #443 open. UI Review screenshots (desktop + phone) not taken in this session: needed before the PR counts as ready.",
-     "at": "2026-11-10T15:10:09.706Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "Is there a plugin that shows the VPS status, like its load and disk space? I need gauges and meter widgets for the VPS: load, RAM usage, swap usage, hard drive space, with different views. Various cleanup options. Put it in maintenance, a server maintenance tab. Add a banner widget. In the banner widget, if it's icon only, I want the colours to represent the load and the space: start with white, go up to gray to black, then all the way up to red, representing low or high. Move all the other VPS stuff over to that plugin. I want it all in one plugin. When you click the banner items, it's a drop-down menu showing all the gauges, each with a dot in the same colour as the gauge, the text, the percentage and what it is.",
-    "at": "2026-11-10T02:44:38.021Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "one-vps-plugin-everything-vps-in-one-place-gauge",
-    "brief": "# Build: one-vps-plugin-everything-vps-in-one-place-gauge\n\n## Brett said (verbatim)\nAt: 2026-11-10T02:44:38.021Z\n> Is there a plugin that shows the VPS status, like its load and disk space? I need gauges and meter widgets for the VPS: load, RAM usage, swap usage, hard drive space, with different views. Various cleanup options. Put it in maintenance, a server maintenance tab. Add a banner widget. In the banner widget, if it's icon only, I want the colours to represent the load and the space: start with white, go up to gray to black, then all the way up to red, representing low or high. Move all the other VPS stuff over to that plugin. I want it all in one plugin. When you click the banner items, it's a drop-down menu showing all the gauges, each with a dot in the same colour as the gauge, the text, the percentage and what it is.\n\n## What to build\nContinue build \"One VPS plugin: everything VPS in one place (gauges, banner widget with heat-colour icons and dropdown, cleanup, settings, status)\" (one-vps-plugin-everything-vps-in-one-place-gauge) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 02:44):\n\"Is there a plugin that shows the VPS status, like its load and disk space? I need gauges and meter widgets for the VPS: load, RAM usage, swap usage, hard drive space, with different views. Various cleanup options. Put it in maintenance, a server maintenance tab. Add a banner widget. In the banner widget, if it's icon only, I want the colours to represent the load and the space: start with white, go up to gray to black, then all the way up to red, representing low or high. Move all the other VPS stuff over to that plugin. I want it all in one plugin. When you click the banner items, it's a drop-down menu showing all the gauges, each with a dot in the same colour as the gauge, the text, the percentage and what it is.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) ONE VPS plugin (e.g. 'VPS'), reachable from Maintenance and its own nav entry. 1) CONSOLIDATE: find every VPS-related feature across the console and move it into this plugin as tabs or sections, leaving no duplicates behind. That includes the claude-badge VPS check, agent-slots resource and swap settings and warnings, the VPS settings/orchestrator-only rule plugin (from vps-orchestrator-only-rule-vps-settings-console), Docker/container views, container-access, the Coolify/Hostinger links, VPS terminal shortcuts, ai-keys VPS sync, maintenance cleanup/redundancy scans, the disk alerts, and the running-builds watchdog's resource bits. Old entry points redirect to the new plugin. 2) STATUS tab: live gauges and meters for CPU load (1/5/15 min), RAM, swap, disk per filesystem, plus Docker per-container CPU/RAM and the top processes. Several views (radial, bars, compact strip, history sparklines), switchable and remembered, with adjustable thresholds. 3) BANNER WIDGET: a snappable widget for the banner, toolbars and title bars, with modes icon only, icon plus value, or mini meters. It has its own settings (metrics, mode, thresholds, refresh). 4) ICON-ONLY HEAT COLOUR: each icon's colour follows its level on a smooth scale, white (low) to gray to black to red (high). The stops are editable and the theme can override them. 5) BANNER DROPDOWN: clicking any banner gauge opens a dropdown listing every gauge, one row each: a dot in the same heat colour as that gauge, the name (Load, RAM, Swap, Disk /), the percentage, and the actual values (e.g. 9.4 / 16 GB). Rows update live, the clicked one is highlighted, and the footer has Open VPS plugin and quick cleanup links. 6) CLEANUP tab: docker builder/image/container prune, apt/npm/pip caches, journal vacuum, old build worktrees and logs, /tmp, the Playwright cache, and stale git locks. Each has a size preview and a confirm, shows the space freed and logs to the fix log. Optional auto-cleanup over a threshold (off by default). 7) SE\n[ ] s2 (~30 min) Is there a plugin that shows the VPS status, like its load and disk space? I need gauges and meter widgets for the VPS: load, RAM usage, swap usage, hard drive space, with different views. Various cleanup options. Put it in maintenance, a server maintenance tab. Add a banner widget. In the banner widget, if it's icon only, I want the colours to represent the load and the space: start with white, go up to gray to black, then all the way up to red, representing low or high. Move all the other VPS stuff over to that plugin. I want it all in one plugin. When you click the banner items, it's a drop-down menu showing all the gauges, each with a dot in the same colour as the gauge, the text, the percentage and what it is.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/one-vps-plugin-everything-vps-in-one-place-gauge.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/one-vps-plugin-everything-vps-in-one-place-gauge.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step one-vps-plugin-everything-vps-in-one-place-gauge <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link one-vps-plugin-everything-vps-in-one-place-gauge --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step one-vps-plugin-everything-vps-in-one-place-gauge <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note one-vps-plugin-everything-vps-in-one-place-gauge \"…\"); the build goes back to Pending for Brett.\n",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "ONE VPS plugin (e.g. 'VPS'), reachable from Maintenance and its own nav entry. 1) CONSOLIDATE: find every VPS-related feature across the console and move it into this plugin as tabs or sections, leaving no duplicates behind. That includes the claude-badge VPS check, agent-slots resource and swap settings and warnings, the VPS settings/orchestrator-only rule plugin (from vps-orchestrator-only-rule-vps-settings-console), Docker/container views, container-access, the Coolify/Hostinger links, VPS terminal shortcuts, ai-keys VPS sync, maintenance cleanup/redundancy scans, the disk alerts, and the running-builds watchdog's resource bits. Old entry points redirect to the new plugin. 2) STATUS tab: live gauges and meters for CPU load (1/5/15 min), RAM, swap, disk per filesystem, plus Docker per-container CPU/RAM and the top processes. Several views (radial, bars, compact strip, history sparklines), switchable and remembered, with adjustable thresholds. 3) BANNER WIDGET: a snappable widget for the banner, toolbars and title bars, with modes icon only, icon plus value, or mini meters. It has its own settings (metrics, mode, thresholds, refresh). 4) ICON-ONLY HEAT COLOUR: each icon's colour follows its level on a smooth scale, white (low) to gray to black to red (high). The stops are editable and the theme can override them. 5) BANNER DROPDOWN: clicking any banner gauge opens a dropdown listing every gauge, one row each: a dot in the same heat colour as that gauge, the name (Load, RAM, Swap, Disk /), the percentage, and the actual values (e.g. 9.4 / 16 GB). Rows update live, the clicked one is highlighted, and the footer has Open VPS plugin and quick cleanup links. 6) CLEANUP tab: docker builder/image/container prune, apt/npm/pip caches, journal vacuum, old build worktrees and logs, /tmp, the Playwright cache, and stale git locks. Each has a size preview and a confirm, shows the space freed and logs to the fix log. Optional auto-cleanup over a threshold (off by default). 7) SE",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-10T15:06:23.167Z",
-     "note": "",
-     "uid": "st-mwa39wto01007l",
-     "createdAt": "2026-11-10T02:46:47.916Z"
-    },
-    {
-     "id": "s2",
-     "text": "Is there a plugin that shows the VPS status, like its load and disk space? I need gauges and meter widgets for the VPS: load, RAM usage, swap usage, hard drive space, with different views. Various cleanup options. Put it in maintenance, a server maintenance tab. Add a banner widget. In the banner widget, if it's icon only, I want the colours to represent the load and the space: start with white, go up to gray to black, then all the way up to red, representing low or high. Move all the other VPS stuff over to that plugin. I want it all in one plugin. When you click the banner items, it's a drop-down menu showing all the gauges, each with a dot in the same colour as the gauge, the text, the percentage and what it is.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-10T15:08:59.622Z",
-     "note": "",
-     "uid": "st-mwa39wtp02gypd",
-     "createdAt": "2026-11-10T02:46:47.916Z"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/one-vps-plugin-everything-vps-in-one-place-gauge.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/one-vps-plugin-everything-vps-in-one-place-gauge.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-10T15:10:08.567Z",
-     "note": "",
-     "uid": "st-mwa39wtp039y3n",
-     "createdAt": "2026-11-10T02:46:47.916Z"
     }
    ]
   },
@@ -106670,6 +106555,124 @@
      "note": "",
      "uid": "st-mwazvad75b694y",
      "createdAt": "2026-11-10T17:59:12.954Z"
+    }
+   ]
+  },
+  {
+   "id": "one-amberx-build-notification-veto-approval-befo",
+   "title": "One AmberX build notification: veto approval before every start, pop-up on every finish",
+   "category": "",
+   "detail": "This REPLACES the build 'AmberX phone pop-up for every build start and finish: build name, account, model': remove it from Pending or the Queue and mark it superseded. Also upgrade, don't duplicate, brief-approval-dialog-before-every-headless-sess. 1) START = VETO: before every launch (new, retry, rerun, resume), one AmberX heads-up pop-up on the phone, also mirrored in the console. It shows the build name, what it will do, steps, model, account and employee, with Approve, Deny and a countdown (default 90 s, adjustable down to 0 via the approvals countdown setting). It launches on Approve or when the countdown ends; Deny sends it back to Pending. 2) FINISH: a pop-up with the build, account and outcome (done, failed, needs something and what). Tap to open the build. 3) One notification type, not two. Plain code, no AI. Respects the auto-approve toggle. Full API and voice control.",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/one-amberx-build-notification-veto-approval-befo",
+   "pr": "#436",
+   "priority": "P0",
+   "createdAt": "2026-11-10T02:24:15.337Z",
+   "updatedAt": "2026-11-15T00:40:20.634Z",
+   "builtAt": "2026-11-10T03:43:20.593Z",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T02:24:21.854Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T02:26:28.473Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-one-amberx-build-notification-veto-approval-befo--sully.",
+     "at": "2026-11-10T03:28:17.523Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-amberx-build-notification-veto-approval-befo--sully, own login copy)",
+     "at": "2026-11-10T03:28:19.516Z"
+    },
+    {
+     "text": "Headless run axf-one-amberx-build-notification-veto-approval-befo--sully: brief only · start 11.2K tokens ($0.03) · cost $3.84 · 84 turns · 6 tools, MCP none",
+     "at": "2026-11-10T03:43:20.593Z"
+    },
+    {
+     "text": "Built, PR #436 (folds in and closes #433). Veto before every start on the AmberX start notification, 90 s default, Approve / Deny / auto-approve, console Waiting to start card. UI Review shots not taken (VPS headless browser broke on #433): capture Pipeline tab Waiting to start + Phone pop-ups, desktop and phone, and submit. Real phone test after merge.",
+     "at": "2026-11-10T03:43:00.518Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification.",
+    "at": "2026-11-10T02:24:15.337Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "one-amberx-build-notification-veto-approval-befo",
+    "brief": "# Build: one-amberx-build-notification-veto-approval-befo\n\n## Brett said (verbatim)\nAt: 2026-11-10T02:24:15.337Z\n> Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification.\n\n## What to build\nContinue build \"One AmberX build notification: veto approval before every start, pop-up on every finish\" (one-amberx-build-notification-veto-approval-befo) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 02:24):\n\"Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) This REPLACES the build 'AmberX phone pop-up for every build start and finish: build name, account, model': remove it from Pending or the Queue and mark it superseded. Also upgrade, don't duplicate, brief-approval-dialog-before-every-headless-sess. 1) START = VETO: before every launch (new, retry, rerun, resume), one AmberX heads-up pop-up on the phone, also mirrored in the console. It shows the build name, what it will do, steps, model, account and employee, with Approve, Deny and a countdown (default 90 s, adjustable down to 0 via the approvals countdown setting). It launches on Approve or when the countdown ends; Deny sends it back to Pending. 2) FINISH: a pop-up with the build, account and outcome (done, failed, needs something and what). Tap to open the build. 3) One notification type, not two. Plain code, no AI. Respects the auto-approve toggle. Full API and voice control.\n[ ] s2 (~30 min) Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/one-amberx-build-notification-veto-approval-befo.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/one-amberx-build-notification-veto-approval-befo.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step one-amberx-build-notification-veto-approval-befo <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link one-amberx-build-notification-veto-approval-befo --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step one-amberx-build-notification-veto-approval-befo <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note one-amberx-build-notification-veto-approval-befo \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "This REPLACES the build 'AmberX phone pop-up for every build start and finish: build name, account, model': remove it from Pending or the Queue and mark it superseded. Also upgrade, don't duplicate, brief-approval-dialog-before-every-headless-sess. 1) START = VETO: before every launch (new, retry, rerun, resume), one AmberX heads-up pop-up on the phone, also mirrored in the console. It shows the build name, what it will do, steps, model, account and employee, with Approve, Deny and a countdown (default 90 s, adjustable down to 0 via the approvals countdown setting). It launches on Approve or when the countdown ends; Deny sends it back to Pending. 2) FINISH: a pop-up with the build, account and outcome (done, failed, needs something and what). Tap to open the build. 3) One notification type, not two. Plain code, no AI. Respects the auto-approve toggle. Full API and voice control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T03:41:48.346Z",
+     "note": "",
+     "uid": "st-mwa2jrw901jcus",
+     "createdAt": "2026-11-10T02:26:28.473Z"
+    },
+    {
+     "id": "s2",
+     "text": "Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T03:41:49.874Z",
+     "note": "",
+     "uid": "st-mwa2jrw902q4s9",
+     "createdAt": "2026-11-10T02:26:28.473Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/one-amberx-build-notification-veto-approval-befo.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/one-amberx-build-notification-veto-approval-befo.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T03:43:03.611Z",
+     "note": "",
+     "uid": "st-mwa2jrw903m8ys",
+     "createdAt": "2026-11-10T02:26:28.473Z"
     }
    ]
   },
@@ -107095,6 +107098,128 @@
      "note": "",
      "uid": "st-mwazyd7y5yazpr",
      "createdAt": "2026-11-10T18:01:36.622Z"
+    }
+   ]
+  },
+  {
+   "id": "one-vps-plugin-everything-vps-in-one-place-gauge",
+   "title": "One VPS plugin: everything VPS in one place (gauges, banner widget with heat-colour icons and dropdown, cleanup, settings, status)",
+   "category": "",
+   "detail": "ONE VPS plugin (e.g. 'VPS'), reachable from Maintenance and its own nav entry. 1) CONSOLIDATE: find every VPS-related feature across the console and move it into this plugin as tabs or sections, leaving no duplicates behind. That includes the claude-badge VPS check, agent-slots resource and swap settings and warnings, the VPS settings/orchestrator-only rule plugin (from vps-orchestrator-only-rule-vps-settings-console), Docker/container views, container-access, the Coolify/Hostinger links, VPS terminal shortcuts, ai-keys VPS sync, maintenance cleanup/redundancy scans, the disk alerts, and the running-builds watchdog's resource bits. Old entry points redirect to the new plugin. 2) STATUS tab: live gauges and meters for CPU load (1/5/15 min), RAM, swap, disk per filesystem, plus Docker per-container CPU/RAM and the top processes. Several views (radial, bars, compact strip, history sparklines), switchable and remembered, with adjustable thresholds. 3) BANNER WIDGET: a snappable widget for the banner, toolbars and title bars, with modes icon only, icon plus value, or mini meters. It has its own settings (metrics, mode, thresholds, refresh). 4) ICON-ONLY HEAT COLOUR: each icon's colour follows its level on a smooth scale, white (low) to gray to black to red (high). The stops are editable and the theme can override them. 5) BANNER DROPDOWN: clicking any banner gauge opens a dropdown listing every gauge, one row each: a dot in the same heat colour as that gauge, the name (Load, RAM, Swap, Disk /), the percentage, and the actual values (e.g. 9.4 / 16 GB). Rows update live, the clicked one is highlighted, and the footer has Open VPS plugin and quick cleanup links. 6) CLEANUP tab: docker builder/image/container prune, apt/npm/pip caches, journal vacuum, old build worktrees and logs, /tmp, the Playwright cache, and stale git locks. Each has a size preview and a confirm, shows the space freed and logs to the fix log. Optional auto-cleanup over a threshold (off by default). 7) SETTINGS tab: every VPS setting in one place. Plain code, no AI. Full REST, MCP, CLI and voice control. Desktop and phone screenshots go to UI Review.",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/one-vps-plugin-everything-vps-in-one-place-gauge",
+   "pr": "#443",
+   "priority": "P1",
+   "createdAt": "2026-11-10T02:44:38.021Z",
+   "updatedAt": "2026-11-15T00:42:58.740Z",
+   "builtAt": "2026-11-10T15:10:28.257Z",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T02:44:40.475Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T02:46:47.916Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-one-vps-plugin-everything-vps-in-one-place-gauge--sully.",
+     "at": "2026-11-10T14:51:40.129Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-vps-plugin-everything-vps-in-one-place-gauge--sully, own login copy)",
+     "at": "2026-11-10T14:51:42.208Z"
+    },
+    {
+     "text": "Headless run axf-one-vps-plugin-everything-vps-in-one-place-gauge--sully: brief only · start 12.3K tokens ($0.04) · cost $4.77 · 77 turns · 6 tools, MCP none",
+     "at": "2026-11-10T15:10:22.011Z"
+    },
+    {
+     "text": "Reconciler: PR #443",
+     "at": "2026-11-10T15:10:28.257Z"
+    },
+    {
+     "text": "PR #443 open. UI Review screenshots (desktop + phone) not taken in this session: needed before the PR counts as ready.",
+     "at": "2026-11-10T15:10:09.706Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Is there a plugin that shows the VPS status, like its load and disk space? I need gauges and meter widgets for the VPS: load, RAM usage, swap usage, hard drive space, with different views. Various cleanup options. Put it in maintenance, a server maintenance tab. Add a banner widget. In the banner widget, if it's icon only, I want the colours to represent the load and the space: start with white, go up to gray to black, then all the way up to red, representing low or high. Move all the other VPS stuff over to that plugin. I want it all in one plugin. When you click the banner items, it's a drop-down menu showing all the gauges, each with a dot in the same colour as the gauge, the text, the percentage and what it is.",
+    "at": "2026-11-10T02:44:38.021Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "one-vps-plugin-everything-vps-in-one-place-gauge",
+    "brief": "# Build: one-vps-plugin-everything-vps-in-one-place-gauge\n\n## Brett said (verbatim)\nAt: 2026-11-10T02:44:38.021Z\n> Is there a plugin that shows the VPS status, like its load and disk space? I need gauges and meter widgets for the VPS: load, RAM usage, swap usage, hard drive space, with different views. Various cleanup options. Put it in maintenance, a server maintenance tab. Add a banner widget. In the banner widget, if it's icon only, I want the colours to represent the load and the space: start with white, go up to gray to black, then all the way up to red, representing low or high. Move all the other VPS stuff over to that plugin. I want it all in one plugin. When you click the banner items, it's a drop-down menu showing all the gauges, each with a dot in the same colour as the gauge, the text, the percentage and what it is.\n\n## What to build\nContinue build \"One VPS plugin: everything VPS in one place (gauges, banner widget with heat-colour icons and dropdown, cleanup, settings, status)\" (one-vps-plugin-everything-vps-in-one-place-gauge) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 02:44):\n\"Is there a plugin that shows the VPS status, like its load and disk space? I need gauges and meter widgets for the VPS: load, RAM usage, swap usage, hard drive space, with different views. Various cleanup options. Put it in maintenance, a server maintenance tab. Add a banner widget. In the banner widget, if it's icon only, I want the colours to represent the load and the space: start with white, go up to gray to black, then all the way up to red, representing low or high. Move all the other VPS stuff over to that plugin. I want it all in one plugin. When you click the banner items, it's a drop-down menu showing all the gauges, each with a dot in the same colour as the gauge, the text, the percentage and what it is.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) ONE VPS plugin (e.g. 'VPS'), reachable from Maintenance and its own nav entry. 1) CONSOLIDATE: find every VPS-related feature across the console and move it into this plugin as tabs or sections, leaving no duplicates behind. That includes the claude-badge VPS check, agent-slots resource and swap settings and warnings, the VPS settings/orchestrator-only rule plugin (from vps-orchestrator-only-rule-vps-settings-console), Docker/container views, container-access, the Coolify/Hostinger links, VPS terminal shortcuts, ai-keys VPS sync, maintenance cleanup/redundancy scans, the disk alerts, and the running-builds watchdog's resource bits. Old entry points redirect to the new plugin. 2) STATUS tab: live gauges and meters for CPU load (1/5/15 min), RAM, swap, disk per filesystem, plus Docker per-container CPU/RAM and the top processes. Several views (radial, bars, compact strip, history sparklines), switchable and remembered, with adjustable thresholds. 3) BANNER WIDGET: a snappable widget for the banner, toolbars and title bars, with modes icon only, icon plus value, or mini meters. It has its own settings (metrics, mode, thresholds, refresh). 4) ICON-ONLY HEAT COLOUR: each icon's colour follows its level on a smooth scale, white (low) to gray to black to red (high). The stops are editable and the theme can override them. 5) BANNER DROPDOWN: clicking any banner gauge opens a dropdown listing every gauge, one row each: a dot in the same heat colour as that gauge, the name (Load, RAM, Swap, Disk /), the percentage, and the actual values (e.g. 9.4 / 16 GB). Rows update live, the clicked one is highlighted, and the footer has Open VPS plugin and quick cleanup links. 6) CLEANUP tab: docker builder/image/container prune, apt/npm/pip caches, journal vacuum, old build worktrees and logs, /tmp, the Playwright cache, and stale git locks. Each has a size preview and a confirm, shows the space freed and logs to the fix log. Optional auto-cleanup over a threshold (off by default). 7) SE\n[ ] s2 (~30 min) Is there a plugin that shows the VPS status, like its load and disk space? I need gauges and meter widgets for the VPS: load, RAM usage, swap usage, hard drive space, with different views. Various cleanup options. Put it in maintenance, a server maintenance tab. Add a banner widget. In the banner widget, if it's icon only, I want the colours to represent the load and the space: start with white, go up to gray to black, then all the way up to red, representing low or high. Move all the other VPS stuff over to that plugin. I want it all in one plugin. When you click the banner items, it's a drop-down menu showing all the gauges, each with a dot in the same colour as the gauge, the text, the percentage and what it is.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/one-vps-plugin-everything-vps-in-one-place-gauge.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/one-vps-plugin-everything-vps-in-one-place-gauge.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step one-vps-plugin-everything-vps-in-one-place-gauge <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link one-vps-plugin-everything-vps-in-one-place-gauge --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step one-vps-plugin-everything-vps-in-one-place-gauge <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note one-vps-plugin-everything-vps-in-one-place-gauge \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "ONE VPS plugin (e.g. 'VPS'), reachable from Maintenance and its own nav entry. 1) CONSOLIDATE: find every VPS-related feature across the console and move it into this plugin as tabs or sections, leaving no duplicates behind. That includes the claude-badge VPS check, agent-slots resource and swap settings and warnings, the VPS settings/orchestrator-only rule plugin (from vps-orchestrator-only-rule-vps-settings-console), Docker/container views, container-access, the Coolify/Hostinger links, VPS terminal shortcuts, ai-keys VPS sync, maintenance cleanup/redundancy scans, the disk alerts, and the running-builds watchdog's resource bits. Old entry points redirect to the new plugin. 2) STATUS tab: live gauges and meters for CPU load (1/5/15 min), RAM, swap, disk per filesystem, plus Docker per-container CPU/RAM and the top processes. Several views (radial, bars, compact strip, history sparklines), switchable and remembered, with adjustable thresholds. 3) BANNER WIDGET: a snappable widget for the banner, toolbars and title bars, with modes icon only, icon plus value, or mini meters. It has its own settings (metrics, mode, thresholds, refresh). 4) ICON-ONLY HEAT COLOUR: each icon's colour follows its level on a smooth scale, white (low) to gray to black to red (high). The stops are editable and the theme can override them. 5) BANNER DROPDOWN: clicking any banner gauge opens a dropdown listing every gauge, one row each: a dot in the same heat colour as that gauge, the name (Load, RAM, Swap, Disk /), the percentage, and the actual values (e.g. 9.4 / 16 GB). Rows update live, the clicked one is highlighted, and the footer has Open VPS plugin and quick cleanup links. 6) CLEANUP tab: docker builder/image/container prune, apt/npm/pip caches, journal vacuum, old build worktrees and logs, /tmp, the Playwright cache, and stale git locks. Each has a size preview and a confirm, shows the space freed and logs to the fix log. Optional auto-cleanup over a threshold (off by default). 7) SE",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T15:06:23.167Z",
+     "note": "",
+     "uid": "st-mwa39wto01007l",
+     "createdAt": "2026-11-10T02:46:47.916Z"
+    },
+    {
+     "id": "s2",
+     "text": "Is there a plugin that shows the VPS status, like its load and disk space? I need gauges and meter widgets for the VPS: load, RAM usage, swap usage, hard drive space, with different views. Various cleanup options. Put it in maintenance, a server maintenance tab. Add a banner widget. In the banner widget, if it's icon only, I want the colours to represent the load and the space: start with white, go up to gray to black, then all the way up to red, representing low or high. Move all the other VPS stuff over to that plugin. I want it all in one plugin. When you click the banner items, it's a drop-down menu showing all the gauges, each with a dot in the same colour as the gauge, the text, the percentage and what it is.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T15:08:59.622Z",
+     "note": "",
+     "uid": "st-mwa39wtp02gypd",
+     "createdAt": "2026-11-10T02:46:47.916Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/one-vps-plugin-everything-vps-in-one-place-gauge.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/one-vps-plugin-everything-vps-in-one-place-gauge.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T15:10:08.567Z",
+     "note": "",
+     "uid": "st-mwa39wtp039y3n",
+     "createdAt": "2026-11-10T02:46:47.916Z"
     }
    ]
   },
@@ -111861,124 +111986,6 @@
    ]
   },
   {
-   "id": "conversation-rag-index-every-voice-chat-session",
-   "title": "Conversation RAG: index every voice/chat session with Brett (decisions, rules, requests) into a searchable store every agent reads",
-   "category": "",
-   "detail": "Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.",
-   "status": "landing",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/conversation-rag-index-every-voice-chat-session",
-   "pr": "#461",
-   "priority": "P0",
-   "createdAt": "2026-11-10T16:50:14.626Z",
-   "updatedAt": "2026-11-15T00:39:54.878Z",
-   "builtAt": "2026-11-10T17:46:32.477Z",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-10T16:50:16.796Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T16:51:21.057Z"
-    },
-    {
-     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-conversation-rag-index-every-voice-chat-session--joey.",
-     "at": "2026-11-10T17:33:01.120Z"
-    },
-    {
-     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-conversation-rag-index-every-voice-chat-session--joey, own login copy)",
-     "at": "2026-11-10T17:33:05.345Z"
-    },
-    {
-     "text": "Headless run axf-conversation-rag-index-every-voice-chat-session--joey: brief only · start 10.9K tokens ($0.03) · cost $3.53 · 78 turns · 6 tools, MCP none",
-     "at": "2026-11-10T17:46:32.476Z"
-    },
-    {
-     "text": "Built (PR #461). Still open: UI Review desktop/phone shots of the Conversations page; Playwright isn't installed in the build worktree, so none were taken.",
-     "at": "2026-11-10T17:46:05.057Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "You better make some type of RAG database for this conversation.",
-    "at": "2026-11-10T16:50:14.626Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "conversation-rag-index-every-voice-chat-session",
-    "brief": "# Build: conversation-rag-index-every-voice-chat-session\n\n## Brett said (verbatim)\nAt: 2026-11-10T16:50:14.626Z\n> You better make some type of RAG database for this conversation.\n\n## What to build\nContinue build \"Conversation RAG: index every voice/chat session with Brett (decisions, rules, requests) into a searchable store every agent reads\" (conversation-rag-index-every-voice-chat-session) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 16:50):\n\"You better make some type of RAG database for this conversation.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.\n[ ] s2 (~30 min) You better make some type of RAG database for this conversation.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/conversation-rag-index-every-voice-chat-session.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/conversation-rag-index-every-voice-chat-session.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step conversation-rag-index-every-voice-chat-session <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link conversation-rag-index-every-voice-chat-session --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step conversation-rag-index-every-voice-chat-session <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note conversation-rag-index-every-voice-chat-session \"…\"); the build goes back to Pending for Brett.\n",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-10T17:41:30.419Z",
-     "note": "",
-     "uid": "st-mwaxg0gx01vf4n",
-     "createdAt": "2026-11-10T16:51:21.057Z"
-    },
-    {
-     "id": "s2",
-     "text": "You better make some type of RAG database for this conversation.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-10T17:44:44.372Z",
-     "note": "",
-     "uid": "st-mwaxg0gx02wpg6",
-     "createdAt": "2026-11-10T16:51:21.057Z"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/conversation-rag-index-every-voice-chat-session.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/conversation-rag-index-every-voice-chat-session.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-10T17:46:09.305Z",
-     "note": "",
-     "uid": "st-mwaxg0gx03a4xl",
-     "createdAt": "2026-11-10T16:51:21.057Z"
-    }
-   ]
-  },
-  {
    "id": "amberx-build-notifications-for-every-stage-start",
    "title": "AmberX build notifications for every stage: start, complete, ready to merge, merged, live",
    "category": "",
@@ -112247,6 +112254,124 @@
      "note": "",
      "uid": "st-mwb6ax4v035xp5",
      "createdAt": "2026-11-10T20:59:19.999Z"
+    }
+   ]
+  },
+  {
+   "id": "conversation-rag-index-every-voice-chat-session",
+   "title": "Conversation RAG: index every voice/chat session with Brett (decisions, rules, requests) into a searchable store every agent reads",
+   "category": "",
+   "detail": "Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.",
+   "status": "landing",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/conversation-rag-index-every-voice-chat-session",
+   "pr": "#461",
+   "priority": "P0",
+   "createdAt": "2026-11-10T16:50:14.626Z",
+   "updatedAt": "2026-11-15T00:39:54.878Z",
+   "builtAt": "2026-11-10T17:46:32.477Z",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T16:50:16.796Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T16:51:21.057Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-conversation-rag-index-every-voice-chat-session--joey.",
+     "at": "2026-11-10T17:33:01.120Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-conversation-rag-index-every-voice-chat-session--joey, own login copy)",
+     "at": "2026-11-10T17:33:05.345Z"
+    },
+    {
+     "text": "Headless run axf-conversation-rag-index-every-voice-chat-session--joey: brief only · start 10.9K tokens ($0.03) · cost $3.53 · 78 turns · 6 tools, MCP none",
+     "at": "2026-11-10T17:46:32.476Z"
+    },
+    {
+     "text": "Built (PR #461). Still open: UI Review desktop/phone shots of the Conversations page; Playwright isn't installed in the build worktree, so none were taken.",
+     "at": "2026-11-10T17:46:05.057Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "You better make some type of RAG database for this conversation.",
+    "at": "2026-11-10T16:50:14.626Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "conversation-rag-index-every-voice-chat-session",
+    "brief": "# Build: conversation-rag-index-every-voice-chat-session\n\n## Brett said (verbatim)\nAt: 2026-11-10T16:50:14.626Z\n> You better make some type of RAG database for this conversation.\n\n## What to build\nContinue build \"Conversation RAG: index every voice/chat session with Brett (decisions, rules, requests) into a searchable store every agent reads\" (conversation-rag-index-every-voice-chat-session) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 16:50):\n\"You better make some type of RAG database for this conversation.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.\n[ ] s2 (~30 min) You better make some type of RAG database for this conversation.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/conversation-rag-index-every-voice-chat-session.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/conversation-rag-index-every-voice-chat-session.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step conversation-rag-index-every-voice-chat-session <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link conversation-rag-index-every-voice-chat-session --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step conversation-rag-index-every-voice-chat-session <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note conversation-rag-index-every-voice-chat-session \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T17:41:30.419Z",
+     "note": "",
+     "uid": "st-mwaxg0gx01vf4n",
+     "createdAt": "2026-11-10T16:51:21.057Z"
+    },
+    {
+     "id": "s2",
+     "text": "You better make some type of RAG database for this conversation.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T17:44:44.372Z",
+     "note": "",
+     "uid": "st-mwaxg0gx02wpg6",
+     "createdAt": "2026-11-10T16:51:21.057Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/conversation-rag-index-every-voice-chat-session.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/conversation-rag-index-every-voice-chat-session.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-10T17:46:09.305Z",
+     "note": "",
+     "uid": "st-mwaxg0gx03a4xl",
+     "createdAt": "2026-11-10T16:51:21.057Z"
     }
    ]
   },
@@ -178490,7 +178615,7 @@
    "title": "Toolbar widgets in any banner style",
    "category": "",
    "detail": "Fresh build on current main replacing the stale toolbar-widgets-attach-any-banner-style (about 2,004 behind; archive the old record and close its PR, branch kept). Any widget can be attached to any toolbar, styled like banner widgets (any banner widget style and shape), with snap-not-overlap. Old branch for intent only, don't merge it. Framework controls and tokens, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -178498,8 +178623,8 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:50.833Z",
-   "updatedAt": "2026-11-16T23:01:20.198Z",
-   "builtAt": "2026-11-16T23:01:20.198Z",
+   "updatedAt": "2026-11-27T04:50:17.564Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 19 steps (7 Fable).",
@@ -178508,6 +178633,14 @@
     {
      "text": "Same feature as attach-widgets-to-any-toolbar-banner: built there (branch claude/attach-widgets-to-any-toolbar-banner, design note _claude/builds/reports/attach-widgets-to-any-toolbar-banner.design.md). Marked complete so it is not built twice.",
      "at": "2026-11-16T23:01:17.147Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 10 days: no PR reached GitHub and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T04:50:17.564Z"
+    },
+    {
+     "text": "Watchdog: landing for 10 days: no PR reached GitHub and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T04:50:17.564Z"
     }
    ],
    "approvals": [],
