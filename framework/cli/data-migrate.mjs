@@ -295,6 +295,7 @@ export async function run({ cmd = 'plan', only = [], store = null, env = process
         if (!rep.ok && cmd === 'apply') rep.refused = 'manifests differ after the copy: the namespace stays local (nothing reads axf-data), fix and re-run';
       }
       mkdirSync(repDir, { recursive: true });
+      // axf-data: not data (migration run report for the operator, generated from the manifests)
       writeFileSync(join(repDir, `${p.ns.replace('/', '__')}.json`), `${JSON.stringify(rep, null, 1)}\n`);
       summary.namespaces.push({ ns: p.ns, ok: rep.ok, count: p.m0.count, m1: rep.m1?.count, copy: rep.counts, refused: rep.refused, mismatches: (rep.mismatches || []).slice(0, 20), backup: rep.backup });
       if (!rep.ok) summary.ok = false;

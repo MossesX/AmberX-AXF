@@ -71,6 +71,7 @@ export function writeCopies(settingsDirPath, app, defaults = sharedDefaults(), {
       continue;
     }
     const copy = customCopy(d, app);
+    // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
     if (!dry) { mkdirSync(settingsDirPath, { recursive: true }); writeFileSync(f, JSON.stringify(copy, null, 2) + '\n'); }
     written.push(f);
   }

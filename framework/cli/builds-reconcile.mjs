@@ -42,6 +42,7 @@ import { loadStore, withStore } from './builds-store.mjs';
 import { liveStatus, syncAll, install } from './builds-live.mjs';
 import { createGitHub, githubToken, parseRepo } from './github.mjs';
 import { loadState as slotState, tmuxSessions } from './agent-slots.mjs';
+import * as dataFiles from '../core/data-files.mjs';
 
 export const reportFile = () => {
   const hub = persistRoot();
@@ -280,7 +281,7 @@ export async function reconcile({ apply = false, gh, repo } = {}) {
   if (apply) writeReport(report);
   return report;
 }
-function writeReport(report) { try { mkdirSync(dirname(reportFile()), { recursive: true }); writeFileSync(reportFile(), `${JSON.stringify(report, null, 1)}\n`); } catch { /* report only */ } }
+function writeReport(report) { try { dataFiles.writeJsonSync(reportFile(), report, 1); } catch { /* report only */ } }
 
 /**
  * The report of a run that crashed: the same shape with `error`, so the systems check (which reads the report) shows
@@ -333,7 +334,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const recent = apply && !argv.includes('--force') ? recentReport() : null;
   const release = apply && !recent ? takeRunLock() : () => {};
   if (recent || !release) {
-    const r = recent ?? (() => { try { return JSON.parse(readFileSync(reportFile(), 'utf8')); } catch { return null; } })();
+    const r = recent ?? dataFiles.readJsonSync(reportFile(), null);
     const why = recent ? `reconciled ${Math.round((Date.now() - Date.parse(recent.at)) / 60000)} min ago (runs at most every ${everyMin()} min; --force to run now)` : 'another reconcile is running';
     if (argv.includes('--json')) console.log(JSON.stringify({ ...(r ?? {}), skipped: why }));
     else console.log(r ? `${text(r, argv.includes('--brief'))}\n(skipped: ${why})` : `skipped: ${why}`);

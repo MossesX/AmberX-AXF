@@ -16,6 +16,7 @@
  * /preview/<session>/<app>/ behind its own auth, so previews never get a public port: they listen on
  * AXF_PREVIEW_HOST (default: the Docker network gateway the console reaches the host on, else 127.0.0.1).
  */
+import * as dataFiles from '../core/data-files.mjs';
 import { spawn, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:net';
@@ -67,10 +68,7 @@ export function registryDir(env = process.env) {
 }
 
 const writeJson = (file, value) => {
-  mkdirSync(dirname(file), { recursive: true });
-  const tmp = `${file}.${process.pid}.tmp`;
-  writeFileSync(tmp, JSON.stringify(value, null, 2) + '\n');
-  renameSync(tmp, file);
+  dataFiles.writeJsonSync(file, value);
 };
 
 export function writeEntry(dir, entry) {

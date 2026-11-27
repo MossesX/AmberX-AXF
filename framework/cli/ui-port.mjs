@@ -27,6 +27,7 @@ const ANDROID_DIR = join(FRAMEWORK_DIR, 'android');
 const VENDOR_DIR = join(FRAMEWORK_DIR, 'vendor');
 const FRAMEWORK_VERSION = JSON.parse(readFileSync(join(FRAMEWORK_DIR, 'schemas/asset-types.json'), 'utf8')).frameworkVersion ?? '0.2.0';
 const readJson = (f) => JSON.parse(readFileSync(f, 'utf8'));
+// axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
 const writeJson = (f, o) => { mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, JSON.stringify(o, null, 2) + '\n'); };
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const pascal = (s) => slug(s).split('-').filter(Boolean).map((w) => w[0].toUpperCase() + w.slice(1)).join('');
@@ -271,6 +272,7 @@ export function importUiLibrary({ name, kitId, library, version = '', source, co
     install: { gradle: `implementation("ai.amberx.axf:${moduleName}:$axf")`, module: `${cls}KitModule()`, import: `${pkg}.${cls}KitModule` },
     port: { source, version, covers, ported, report: 'port-report.json' },
   });
+  // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
   writeFileSync(join(moduleDir, 'README.md'), `# ${moduleName}\n\n${name}: AXF UI kit ported from ${library}${version ? ` ${version}` : ''} by the console's import wizard (\`axf import-ui\`). ${ported ? 'Sources refactored to AXF tokens live in `ported/`; tune `tokens.map.json` and rerun to re-map.' : 'Wraps the library as a dependency.'} Install into an app with \`axf install kit-${kitId}\`.\n`);
   writeJson(join(FRAMEWORK_DIR, 'android/assets/ui-kit', `${kitId}.json`), {
     $axf: 'asset@1', type: 'ui-kit', id: kitId, name, version: '0.1.0', description: `Ported from ${library}. Swap this asset in to render with the ${name} kit.`, author: 'AmberX AXF import wizard', tags: ['android', 'ported'],

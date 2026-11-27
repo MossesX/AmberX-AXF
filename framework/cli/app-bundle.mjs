@@ -69,6 +69,7 @@ export async function collect(outDir, { build = null, commit = null, runUrl = nu
     });
   }
   const bundle = { $axf: 'app-bundle@1', builtAt: new Date().toISOString(), build, commit, runUrl, apps };
+  // axf-data: not data (build-time generator: the app bundle shipped in the image, rebuilt from the repo)
   writeFileSync(join(outDir, 'apps.json'), JSON.stringify(bundle, null, 2) + '\n');
   return { bundle, missing };
 }

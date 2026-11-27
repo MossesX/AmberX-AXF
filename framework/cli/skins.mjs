@@ -44,10 +44,11 @@ import { effectiveScheme, isSkinMode, skinModeColor, skinModeProblems, skinModeR
 import { defaultSkinMigration, isDefaultSkin, skinDeleteError, SKIN_CONFIG_GLOBAL } from '../core/engines/skin-config-rules.mjs';
 import * as SC from '../core/engines/skin-config-rules.mjs';
 import { spawnSync } from 'node:child_process';
+import * as dataFiles from '../core/data-files.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const ALIASES = { console: 'axf-console', 'console-web': 'axf-console', axhub: 'axhub-web' };
-const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
+const readJson = (f) => dataFiles.readJsonSync(f, null);
 const ID = /^[a-z0-9][a-z0-9-]*$/;
 
 export const sharedFile = () => process.env.AXF_APPEARANCE_FILE || '/projects/_shared/_data/settings/appearance.json';
@@ -59,7 +60,7 @@ const skinFile = (app) => join(skinsDir(), `${app}.json`);
 /** The apps with a look document: the shared-assets apps, plus any document already on the hub. */
 export function appIds() {
   const listed = (readJson(join(ROOT, 'framework/schemas/shared-assets.json'))?.apps ?? []).map((a) => readJson(join(ROOT, a, 'axf.manifest.json'))?.app?.id).filter(Boolean);
-  const onHub = existsSync(looksDir()) ? readdirSync(looksDir()).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5)) : [];
+  const onHub = dataFiles.listSync(looksDir()).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5));
   return [...new Set([...listed, ...onHub])].sort();
 }
 
@@ -77,11 +78,8 @@ function chownLike(f) {
 }
 
 export function writeLook(doc, by = 'skins-cli') {
-  mkdirSync(looksDir(), { recursive: true });
   const f = lookFile(doc.app);
-  const tmp = `${f}.${process.pid}.tmp`;
-  writeFileSync(tmp, `${JSON.stringify({ ...doc, updatedBy: by, updatedAt: new Date().toISOString() })}\n`);
-  renameSync(tmp, f);
+  dataFiles.writeJsonSync(f, { ...doc, updatedBy: by, updatedAt: new Date().toISOString() }, 0);
   chownLike(f);
 }
 
@@ -115,29 +113,24 @@ export function writeGlobal(skin, by = 'skins-cli', colorTheme) {
   } else delete doc.skin;
   doc.updatedBy = by;
   doc.updatedAt = new Date().toISOString();
-  const tmp = `${f}.${process.pid}.tmp`;
-  writeFileSync(tmp, `${JSON.stringify(doc)}\n`);
-  renameSync(tmp, f);
+  dataFiles.writeJsonSync(f, doc, 0);
   chownLike(f);
   return readGlobal();
 }
 
 function assetsOf(type) {
   const dir = join(ROOT, 'framework/assets', type);
-  return existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => readJson(join(dir, f))).filter(Boolean) : [];
+  return dataFiles.listSync(dir).filter((f) => f.endsWith('.json')).map((f) => readJson(join(dir, f))).filter(Boolean);
 }
 /** The Default skins on the hub (`skins/<app>.json`), the hub-wide one first. */
 export function defaultSkins() {
   if (!existsSync(skinsDir())) return [];
-  return readdirSync(skinsDir()).filter((f) => f.endsWith('.json')).map((f) => readJson(join(skinsDir(), f))).filter(isDefaultSkin).sort((a, b) => (a.app === SKIN_CONFIG_GLOBAL ? -1 : b.app === SKIN_CONFIG_GLOBAL ? 1 : a.app.localeCompare(b.app)));
+  return dataFiles.listSync(skinsDir()).filter((f) => f.endsWith('.json')).map((f) => readJson(join(skinsDir(), f))).filter(isDefaultSkin).sort((a, b) => (a.app === SKIN_CONFIG_GLOBAL ? -1 : b.app === SKIN_CONFIG_GLOBAL ? 1 : a.app.localeCompare(b.app)));
 }
 export const readDefaultSkin = (app) => { const s = readJson(skinFile(app)); return isDefaultSkin(s) && s.app === app ? s : null; };
 export function writeDefaultSkin(skin, by = 'skins-cli') {
-  mkdirSync(skinsDir(), { recursive: true });
   const f = skinFile(skin.app);
-  const tmp = `${f}.${process.pid}.tmp`;
-  writeFileSync(tmp, `${JSON.stringify({ ...skin, updatedBy: by, updatedAt: new Date().toISOString() })}\n`);
-  renameSync(tmp, f);
+  dataFiles.writeJsonSync(f, { ...skin, updatedBy: by, updatedAt: new Date().toISOString() }, 0);
   chownLike(f);
 }
 export const skinRows = () => [
@@ -279,10 +272,7 @@ export function color(app, scopeKey = '') {
 export const modesFile = () => process.env.AXF_SKIN_MODES_FILE || join(dirname(sharedFile()), 'skin-modes.json');
 const readModes = () => readJson(modesFile()) ?? {};
 function writeModes(doc) {
-  mkdirSync(dirname(modesFile()), { recursive: true });
-  const tmp = `${modesFile()}.${process.pid}.tmp`;
-  writeFileSync(tmp, `${JSON.stringify(doc)}\n`);
-  renameSync(tmp, modesFile());
+  dataFiles.writeJsonSync(modesFile(), doc, 0);
   chownLike(modesFile());
 }
 const skinAsset = (id) => assetsOf('skin').find((a) => a.id === id) ?? null;
@@ -372,10 +362,7 @@ const configApp = (name) => (name === SKIN_CONFIG_GLOBAL ? name : appId(name));
 export const readConfig = (app) => SC.normalizeSkinConfig(readJson(configFile(app)), configTree()) ?? SC.newSkinConfig(app);
 
 function writeAtomic(f, doc) {
-  mkdirSync(dirname(f), { recursive: true });
-  const tmp = `${f}.${process.pid}.tmp`;
-  writeFileSync(tmp, `${JSON.stringify(doc)}\n`);
-  renameSync(tmp, f);
+  dataFiles.writeJsonSync(f, doc, 0);
   chownLike(f);
 }
 export function writeConfig(doc, by = 'skins-cli') {
@@ -483,7 +470,7 @@ const firstJson = (text) => { const s = String(text ?? ''); const i = s.indexOf(
 const madeId = (app, at) => `ai-${app}-${at.replace(/[^0-9]/g, '').slice(2, 14)}`.slice(0, 48);
 export function madeJobs(app = '') {
   if (!existsSync(madeDir())) return [];
-  return readdirSync(madeDir()).filter((f) => f.endsWith('.json')).map((f) => readJson(join(madeDir(), f))).filter((j) => j && (!app || j.app === app)).sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  return dataFiles.listSync(madeDir()).filter((f) => f.endsWith('.json')).map((f) => readJson(join(madeDir(), f))).filter((j) => j && (!app || j.app === app)).sort((a, b) => String(b.at).localeCompare(String(a.at)));
 }
 
 /**
@@ -517,7 +504,7 @@ export function make(app, { wish = '', from = '', dry = false, by = 'skins-cli' 
 }
 const str = (v) => (typeof v === 'string' ? v.slice(0, 120) : '');
 /** The skins the maker saved (skin@1 assets, usable like any skin). */
-export const madeSkins = () => (existsSync(join(madeDir(), 'skins')) ? readdirSync(join(madeDir(), 'skins')).filter((f) => f.endsWith('.json')).map((f) => readJson(join(madeDir(), 'skins', f))).filter((a) => a?.type === 'skin') : []);
+export const madeSkins = () => dataFiles.listSync(join(madeDir(), 'skins')).filter((f) => f.endsWith('.json')).map((f) => readJson(join(madeDir(), 'skins', f))).filter((a) => a?.type === 'skin');
 
 /**
  * `skins.mjs config <move> <app>|global …`:

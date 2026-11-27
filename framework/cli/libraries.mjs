@@ -24,6 +24,7 @@ import { requireProject } from './project.mjs';
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ANDROID_DIR = join(FRAMEWORK_DIR, 'android');
 const readJson = (f) => JSON.parse(readFileSync(f, 'utf8'));
+// axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
 const writeJson = (f, o) => writeFileSync(f, JSON.stringify(o, null, 2) + '\n');
 
 export function listLibraries() {

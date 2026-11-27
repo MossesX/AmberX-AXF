@@ -34,6 +34,7 @@ export function loadPending() {
   return core.normalizeState(projectPending(loadStore(), profile()));
 }
 export function savePending(s, change = null, by = 'pending') {
+  // axf-data: not data (test seam: AXF_PENDING_FILE points a test at a scratch file; pending lives in the builds store)
   if (LEGACY) { writeFileSync(LEGACY, JSON.stringify(s, null, 1) + '\n'); return; }
   const p = profile();
   withStore((st) => absorbPending(st, p, s, change), { by, action: `pending:${change?.action ?? 'save'}`, note: change?.id ?? '' });

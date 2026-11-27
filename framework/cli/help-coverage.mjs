@@ -432,6 +432,7 @@ export function writeDrafts(scope) {
   }
   for (const [path, f] of byFile) {
     mkdirSync(dirname(path), { recursive: true });
+    // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
     writeFileSync(path, `${JSON.stringify(f.pack, null, 2)}\n`);
   }
   return { files: [...byFile.keys()].map((p) => relative(ROOT, p)), drafted: seen.size };
@@ -489,6 +490,7 @@ function main(argv) {
       const b = base.scopes?.[k];
       next.scopes[k] = b ? { ...v, percent: Math.max(v.percent, b.percent), covered: Math.max(v.covered, b.covered), written: Math.max(v.written, b.written ?? 0) } : v;
     }
+    // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
     writeFileSync(RATCHET, `${JSON.stringify(next, null, 2)}\n`);
     console.log(`ratchet → ${relative(ROOT, RATCHET)}`);
   }

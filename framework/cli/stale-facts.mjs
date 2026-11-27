@@ -105,6 +105,7 @@ export function readHeads(git) {
 export function readCache(file) { try { const j = JSON.parse(readFileSync(file, 'utf8')); return j && typeof j === 'object' && j.entries ? j : { entries: {} }; } catch { return { entries: {} }; } }
 export function writeCache(file, cache) {
   mkdirSync(dirname(file), { recursive: true });
+  // axf-data: not data (cache of GitHub answers by ETag: rebuilt when missing)
   const tmp = `${file}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(cache)}\n`); renameSync(tmp, file);
 }
 

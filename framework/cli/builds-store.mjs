@@ -513,6 +513,7 @@ function exportAll(store) {
   // a build worktree's data home has no store file once the store is on axf-data, so nothing made its folder yet: without
   // it every store read from a new worktree died here (ENOENT) and no hand build could tick a step
   mkdirSync(dirname(exportsFile()), { recursive: true });
+  // axf-data: not data (per-machine index of the read-only exports generated from the store: paths differ per checkout)
   writeFileSync(exportsFile(), `${JSON.stringify(ex, null, 1)}\n`);
 }
 /**
@@ -970,6 +971,7 @@ export function migrateJournal({ apply = false } = {}) {
   if (missing.length) return { ok: false, parts: report, missing };
   const pointer = journalPointer(h.dir, { storeRev: readStore().rev ?? null });
   const v = verifyJournal(pointer, h.dir); if (!v.ok) return { ok: false, parts: report, missing: v.failed };
+  // axf-data: not data (git-tracked journal pointer generated from the journal: a read-only export)
   writeFileSync(join(REPO_ROOT, JOURNAL_POINTER_REL), `${JSON.stringify(pointer, null, 1)}\n`);
   const tracked = execFileSync('git', ['ls-files', '--', '_claude/builds/journal'], { cwd: REPO_ROOT, encoding: 'utf8' }).split('\n').filter(Boolean);
   if (tracked.length) {
@@ -1237,6 +1239,7 @@ async function main(argv) {
     const apply = rest.includes('--apply');
     const r = migrateDoneNow({ dry: !apply });
     const i = rest.indexOf('--report');
+    // axf-data: not data (operator report export: --report <file>, generated from the store)
     if (i >= 0) { const f = resolve(REPO_ROOT, rest[i + 1]); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, `${JSON.stringify(r.report, null, 1)}\n`); }
     const lines = r.report.moved.map((m) => `${m.id}: ${m.from} → ${m.to} (${m.why})`);
     return out({ ok: true, dry: !apply, already: r.already ?? null, report: r.report }, r.already ? `already migrated at ${r.already.at} (${r.already.moved} moved, ${r.already.unprovable} unprovable); nothing written` : `${apply ? 'migrated' : 'dry run'}: ${r.report.moved.length} moved, ${r.report.unprovable.length} unprovable (kept complete, no PR / branch / merge to check)\n${lines.join('\n')}`);

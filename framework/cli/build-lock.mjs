@@ -125,6 +125,7 @@ export function liveness(id, { dir = '', step = '', useLock = true, env = proces
 
 function writeLock(dir, lock) {
   const f = lockPath(dir); const tmp = `${f}.${process.pid}.tmp`;
+  // axf-data: not data (process lock in the build worktree: pid and heartbeat of the session that holds it)
   writeFileSync(tmp, `${JSON.stringify(lock)}\n`); renameSync(tmp, f);
   return lock;
 }

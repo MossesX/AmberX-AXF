@@ -53,6 +53,7 @@ for (const tab of catalog.tabs) {
   summary[tab.id].coverage = rows.length ? Math.round((rows.filter((r) => r.status === 'built').length / rows.length) * 100) : 0;
 }
 const tracker = { $axf: 'tracker@1', frameworkVersion: catalog.frameworkVersion, generatedAt: new Date().toISOString(), summary, items };
+// axf-data: not data (read-only export generated from the catalog status table)
 writeFileSync(baseDataPath(TRACKER_REL), JSON.stringify(tracker, null, 2) + '\n');
 writeLibrariesIndex();
 buildPlan();

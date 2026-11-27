@@ -27,7 +27,7 @@
  *                                  heartbeat (newest of its log, its meter, its build lock), the exit recorded since --since
  *   … reap [--json]                free orphan slots: entries whose process is gone (no pid, no tmux, or a pane with no claude)
  *   … cancel <id> · up <id>        queue actions (the console's Builds page)
- *   … data status|cutover|local [--apply] [--json]   the state on axf-data's agent_slots table (data-store@1 key mode)
+ *   … data status|cutover [--apply] [--json]   the state on axf-data's agent_slots table (data-store@1 key mode)
  *   … reprioritise <build> <level> a build's priority changed: its waiting entries follow it (Move up still wins)
  *   … settings [--json] · set key=value… | set --json '{…}' · get <key>
  *   … heavy [--label l] -- <cmd…>  run a heavy step under the test/build lock
@@ -216,8 +216,8 @@ export function slotsDir() {
   return join(homedir(), '.axf', 'agent-slots');
 }
 const files = () => { const d = slotsDir(); return { dir: d, settings: join(d, 'settings.json'), state: join(d, 'state.json'), lock: join(d, 'state.lock') }; };
-const readJson = (f, dflt) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return dflt; } };
-function writeJson(f, v) { const tmp = `${f}.${process.pid}.tmp`; writeFileSync(tmp, `${JSON.stringify(v, null, 2)}\n`); renameSync(tmp, f); }
+const readJson = (f, dflt) => dataFiles.readJsonSync(f, dflt);
+function writeJson(f, v) { dataFiles.writeJsonSync(f, v); }
 
 /**
  * Builds at once is one stored key: build-limit.json `maxBuilds` (settings-sources@1 `builds.atOnce`). The cap this
@@ -295,10 +295,12 @@ export function saveSettings(patch) {
 }
 /**
  * data-store@1 (s4.1 of urgent-all-data-to-postgres-builds-store): the state is the key `console/agent-slots/state.json`
- * and follows its mode. local = the file under the mkdir lock, as before; shadow = the file, then the same document on
- * axf-data (a failure is a drift line); cutover = axf-data's `agent_slots` table only: read with its etag, change, put
- * if it is still that etag, else read again (the rev check replaces the mkdir lock; up to 8 tries); rollback = writes
- * refused. The cut: `agent-slots.mjs data cutover --apply` (copy and verify under the lock, then flip the key).
+ * and follows its mode. cutover = axf-data's `agent_slots` table only: read with its etag, change, put if it is still
+ * that etag, else read again (the rev check replaces the mkdir lock; up to 8 tries); rollback = writes refused. A store
+ * that is not on axf-data (a scratch AXF_SLOTS_DIR, a machine without it) keeps the document under the mkdir lock.
+ * Every read and write of the slots folder (settings, run status, the limit's documents) goes through data-files; this
+ * module keeps no copy of its own. The cut: `agent-slots.mjs data cutover --apply` (copy and verify under the lock,
+ * then flip the key); it is one way.
  */
 const stateKey = () => dataFiles.keyFor(files().state);
 export const stateMode = () => { const k = stateKey(); return k ? dataFiles.modeOf(k) : 'local'; };
@@ -317,12 +319,6 @@ function withRemoteState(fn) {
     catch (e) { if (!['conflict', 'exists'].includes(e.code) || i >= 7) throw e; sleepSync(20 + Math.floor(Math.random() * 80)); }
   }
 }
-function shadowState(st) {
-  const key = stateKey(); if (!key || stateMode() !== 'shadow') return;
-  try { const cur = dataFiles.callSync({ op: 'get', key }); dataFiles.callSync({ op: 'put', key, data: st, ...(cur ? { ifMatch: cur.etag } : { create: true }) }); }
-  catch (e) { dataFiles.logDrift('write', key, 'write-failed', null, null, `${e.code || 'error'}: ${e.message}`); }
-}
-
 const sleepSync = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
 /** One writer at a time across the host and the container (mkdir is atomic on the shared folder); stale after 15 s. */
 export function withState(fn) {
@@ -346,16 +342,14 @@ function withStateLock(fn, { write = true } = {}) {
     if (!write) return out;
     st.updatedAt = new Date().toISOString();
     writeJson(f.state, st);
-    shadowState(st);
     return out;
   } finally { rmSync(f.lock, { recursive: true, force: true }); }
 }
 
 /**
- * The cut (`data status | cutover [--apply] | local [--apply]`): under the mkdir lock (no local writer meanwhile) the
+ * The cut (`data status | cutover [--apply]`): under the mkdir lock (no local writer meanwhile) the
  * file is put on axf-data, read back and compared (canonical document, entries per list), then the key flips to cutover.
- * `local --apply` writes axf-data's document back to the file and flips the key to local. Both publish the mode
- * document. Safe to flip only once every writer of the slots (host CLI, console container, cron) runs this code.
+ * The flip publishes the mode document. There is no way back to the file. Safe to flip only once every writer of the slots (host CLI, console container, cron) runs this code.
  */
 export async function dataCut(cmd, { apply = false, by = 'svc:cli' } = {}) {
   const key = stateKey(); if (!key) throw new Error(`the slots folder ${files().dir} is not a data-store@1 path (AXF_SLOTS_DIR?)`);
@@ -381,15 +375,7 @@ export async function dataCut(cmd, { apply = false, by = 'svc:cli' } = {}) {
       state = dm.readState();
       const r = MODE.transitionKey(state, { ns, path, to: 'cutover', at: new Date().toISOString(), by, verified: { at: new Date().toISOString(), how: 'agent-slots data cutover: document equal, entries per list equal', counts: report.local } });
       state = r.state; changes = r.changes; dm.writeState(state);
-    } else if (cmd === 'local') {
-      if (!remote) { report.problems.push('no slots state on axf-data'); return; }
-      if (apply) writeJson(files().state, normState(remote.data));
-      report.ok = true;
-      if (!apply) return;
-      state = dm.readState();
-      const r = MODE.transitionKey(state, { ns, path, to: 'local', at: new Date().toISOString(), by });
-      state = r.state; changes = r.changes; dm.writeState(state);
-    }
+    } else report.problems.push(`unknown data command "${cmd}": the state moves to axf-data one way (status | cutover)`);
   }, { write: false });
   report.flipped = changes.map((c) => `${c.ns}/${c.key}: ${c.from} → ${c.to}`);
   if (changes.length) { try { await dm.publish(dataFiles.remoteStore(), state, changes, by); report.published = true; } catch (e) { report.publishError = `${e.code || 'error'}: ${e.message}`; } }
@@ -755,7 +741,7 @@ async function cli(argv) {
       return console.log(`slots ${s.used}/${s.cap} · ${Math.max(0, s.cap - s.used)} free · no build pipeline installed: no fill plan`);
     }
     case 'data': {
-      const sub = ['status', 'cutover', 'local'].includes(rest[0]) ? rest[0] : 'status';
+      const sub = ['status', 'cutover'].includes(rest[0]) ? rest[0] : 'status';
       const r = await dataCut(sub, { apply: !!f.apply, by: typeof f.by === 'string' ? f.by : 'svc:cli' });
       if (f.json) json(r);
       else {

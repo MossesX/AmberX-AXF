@@ -23,6 +23,7 @@ const ROOT = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const PLUGINS = join(ROOT, 'apps/console-web/plugins');
 const posix = (p) => p.split(sep).join('/');
 const readJson = (f) => JSON.parse(readFileSync(f, 'utf8'));
+// axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
 const writeJson = (f, v) => { mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, `${JSON.stringify(v, null, 2)}\n`); };
 const SKIP_DIRS = new Set(['node_modules', 'dist', 'dist-single', '.git', 'sessions', 'changes', '_claude']);
 

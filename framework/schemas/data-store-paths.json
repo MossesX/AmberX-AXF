@@ -1,6 +1,6 @@
 {
   "$axf": "data-store-paths@1",
-  "note": "Where each file the console writes today lives in data-store@1 (framework/spec/DATA-STORE.md → Migration; the same map as framework/spec/fixtures/data-store-migration.json, as rules a client can run). Roots are tried in this order; inside a root the first rule whose regex matches the path relative to the root wins; `{1}`, `{2}` are its groups; `to: null` keeps the file local (rebuilt, not copied). A path no rule maps, or whose key is not a valid data-store key, stays local. Read by framework/core/data-store-paths.mjs and apps/console-web/server/data_store.py.",
+  "note": "Where each file the console, the framework CLIs and the deploy scripts write lives in data-store@1 (framework/spec/DATA-STORE.md → Migration; the same map as framework/spec/fixtures/data-store-migration.json, as rules a client can run). Roots are tried in this order; inside a root the first rule whose regex matches the path relative to the root wins; `{1}`, `{2}` are its groups. A mapped path is a key on axf-data's Postgres tables and nothing else (see `store`); `to: null` is for what is not data (see `local`). A path no rule maps, or whose key is not a valid data-store key, is not data either. Read by framework/core/data-files.mjs and apps/console-web/server/data_store.py.",
   "roots": {
     "plugins": "<repo>/.axf-console/plugins: plugin-lifecycle@1 dataDir root (AXF_PLUGINS_DATA_DIR)",
     "data": "<repo>/.axf-console: the console's own state (dirname of AXF_STATE)",
@@ -13,6 +13,25 @@
     "repo",
     "projects"
   ],
+  "store": {
+    "mode": "cutover",
+    "note": "Postgres is the one store (Brett, Nov 25 2026): every mapped namespace is served from its axf-data table only. No file fallback, no shadow or dual-write mode, no JSON backup. framework/cli/migrate-json-leftovers.mjs moves what is still in a file onto its key, verifies it, puts the namespace in this mode and deletes the file; it refuses to leave a namespace in local or shadow."
+  },
+  "local": {
+    "note": "Every `to: null` rule and why the file is not data. A rule missing here fails framework/cli/migrate-json-leftovers.mjs --check.",
+    "rules": {
+      "data:^data-store/.*$": "the data layer's own mode switch and drift log: read before every call, must not depend on axf-data",
+      "data:^build-hooks/events\\.jsonl.*$": "delivery spool of build-hook events: derived from builds store changes, rotated and dropped once delivered",
+      "data:^lander/gh-cache\\.json$": "cache of GitHub's answers: rebuilt when missing",
+      "repo:^_claude/builds/store\\.json\\.live-outbox\\.jsonl.*$": "publish spool: journal lines waiting for the next push to main; the builds journal has them",
+      "projects:^_shared/_data/(app-catalog|plugin-catalog)/.*$": "release artifacts (APKs, plugin packs): files served for download, not records",
+      "projects:^amberx-axf/_data/changes/README\\.md$": "a README, not data",
+      "projects:^amberx-axf/_data/tracker\\.json$": "read-only export generated from the catalog status table (framework/cli/tracker.mjs)",
+      "projects:^amberx-axf/_data/.*$": "anything else in the hub folder is not listed data: the pipeline folder is owned by build pipeline-fixes-drop-7-mb-status-file",
+      "repo:^_claude/builds/store\\.json\\.exports\\.json$": "per-machine index of the read-only exports generated from the builds store: paths differ per checkout",
+      "projects:^amberx-axf/_data/builds/worktrees/.*$": "build worktrees parked by the reconciler: checkouts, not data"
+    }
+  },
   "rules": {
     "plugins": [
       {
@@ -44,6 +63,22 @@
       {
         "re": "^data-store/.*$",
         "to": null
+      },
+      {
+        "re": "^build-hooks/events\\.jsonl.*$",
+        "to": null
+      },
+      {
+        "re": "^lander/gh-cache\\.json$",
+        "to": null
+      },
+      {
+        "re": "^(build-hooks|build-live|build-progress|lander|main-gate)/(.+\\.json)$",
+        "to": "console/host/{1}/{2}"
+      },
+      {
+        "re": "^(nightly|host-check|update-status|alerts|alerts-run|alerts-seen|project-wizard)\\.json$",
+        "to": "console/host/{1}.json"
       }
     ],
     "repo": [
@@ -53,7 +88,11 @@
       },
       {
         "re": "^_claude/builds/store\\.json\\.exports\\.json$",
-        "to": "builds/store.exports.json"
+        "to": null
+      },
+      {
+        "re": "^_claude/builds/store\\.json\\.live-outbox\\.jsonl.*$",
+        "to": null
       },
       {
         "re": "^_claude/builds/(.+)$",
@@ -64,6 +103,10 @@
       {
         "re": "^amberx-axf/_data/pipeline/(.+)$",
         "to": "builds/pipeline/{1}"
+      },
+      {
+        "re": "^amberx-axf/_data/builds/worktrees/.*$",
+        "to": null
       },
       {
         "re": "^amberx-axf/_data/builds/(.+)$",
@@ -134,7 +177,7 @@
         "to": "changes/{1}"
       },
       {
-        "re": "^amberx-axf/_data/(home-cards|agents|agent-slots|agent-swarm|listeners|amberx-notes|token-log|companion|walkthrough|framework|chat-viewer|control)/(.+)$",
+        "re": "^amberx-axf/_data/(home-cards|agents|agent-slots|agent-swarm|listeners|amberx-notes|token-log|companion|walkthrough|framework|chat-viewer|control|auto-lander|build-rules|host-services|model-triage)/(.+)$",
         "to": "console/{1}/{2}"
       },
       {
@@ -168,7 +211,7 @@
     "data:data-store/mode.json": null,
     "repo:_claude/builds/store.json": "builds/store.json",
     "repo:_claude/builds/journal/2026-11.jsonl": "builds/journal/2026-11",
-    "repo:_claude/builds/store.json.exports.json": "builds/store.exports.json",
+    "repo:_claude/builds/store.json.exports.json": null,
     "repo:_claude/builds/shipped/b1.json": "builds/shipped/b1.json",
     "repo:framework/core/data-store.mjs": null,
     "projects:_shared/_claude/notes/handoffs/2026-11-14.md": "notes/handoffs/2026-11-14.md",
@@ -189,7 +232,24 @@
     "projects:amberx-axf/_data/pipeline/run 1.json": null,
     "repo:_claude/builds/reports/10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less.md": "builds/reports/10-minute-steps-the-splitter-cuts-every-build-into-steps-of--cb101e72623838cc.md",
     "projects:amberx-axf/_data/changes/README.md": null,
-    "projects:amberx-axf/_data/plan-studio/history/approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc.json": "planner/history/approvals-no-window-spam-on-approve-veto-only-for-vps-wri--6d3ac999cb491573.json"
+    "projects:amberx-axf/_data/plan-studio/history/approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc.json": "planner/history/approvals-no-window-spam-on-approve-veto-only-for-vps-wri--6d3ac999cb491573.json",
+    "data:build-hooks/cursors.json": "console/host/build-hooks/cursors.json",
+    "data:build-hooks/events.jsonl": null,
+    "data:lander/config.json": "console/host/lander/config.json",
+    "data:lander/gh-cache.json": null,
+    "data:nightly.json": "console/host/nightly.json",
+    "data:secrets.env": null,
+    "repo:_claude/builds/store.json.live.json": "builds/store.json.live.json",
+    "repo:_claude/builds/store.json.live-outbox.jsonl": null,
+    "projects:amberx-axf/_data/agent-slots/state.json": "console/agent-slots/state.json",
+    "projects:amberx-axf/_data/agent-slots/build-limit.json": "console/agent-slots/build-limit.json",
+    "projects:amberx-axf/_data/agent-slots/runs/b1.json": "console/agent-slots/runs/b1.json",
+    "projects:amberx-axf/_data/auto-lander/state.json": "console/auto-lander/state.json",
+    "projects:amberx-axf/_data/build-rules/store.json": "console/build-rules/store.json",
+    "projects:amberx-axf/_data/host-services/states.json": "console/host-services/states.json",
+    "projects:amberx-axf/_data/model-triage/rules.json": "console/model-triage/rules.json",
+    "projects:amberx-axf/_data/builds/worktrees/b1/_claude/builds/store.json": null,
+    "projects:amberx-axf/_data/builds/report.json": "builds/reconcile/report.json"
   },
   "longSegments": "A mapped key segment over 80 characters (long build ids) becomes its first characters + '--' + the first 16 hex of the SHA-256 of the whole segment + its extension (up to 8 characters after the last dot, kept so the kind stays the same), 80 characters in all: a valid, stable key, the same on every client."
 }

@@ -145,6 +145,7 @@ function cli() {
     const [owner, repoName] = (flag('repo') ?? '').split('/');
     const m = draftManifest({ name: flag('name') ?? basename(dir), displayName: flag('display'), kind: flag('kind'), relation: flag('relation'), owner: owner || undefined, repoName: repoName || undefined, exists: bool('exists'), visibility: flag('visibility'), path: flag('path') });
     mkdirSync(dir, { recursive: true });
+    // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
     writeFileSync(file, JSON.stringify(m, null, 2) + '\n');
     const v = validateProjectManifest(m, loadRules(), { exists: (p) => existsSync(join(dir, p)) });
     console.log(`Wrote ${file}${v.ok ? '' : `\n${formatProjectValidation(v)}`}`);
@@ -167,6 +168,7 @@ function cli() {
   if (cmd === 'schema') {
     const out = resolve(rest[0] ?? join(REPO_ROOT, 'framework/schemas/json/project-manifest.schema.json'));
     mkdirSync(dirname(out), { recursive: true });
+    // axf-data: not data (build-time generator: writes a repo source file that is committed, not runtime data)
     writeFileSync(out, JSON.stringify(jsonSchema(), null, 2) + '\n');
     return console.log(`Wrote ${out}`);
   }

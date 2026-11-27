@@ -87,8 +87,10 @@ export function planRun({ brief = '', out = '', session = 'run', cwd = process.c
   if (out) {
     mkdirSync(out, { recursive: true, mode: 0o700 });
     const base = join(out, session.replace(/[^A-Za-z0-9._-]/g, '-'));
+    // axf-data: not data (per-run config handed to the claude CLI, removed with the run)
     if (plan.briefOnly) { files.settings = `${base}.settings.json`; writeFileSync(files.settings, `${JSON.stringify(lean.settings, null, 1)}\n`, { mode: 0o600 }); }
     if (rules.text) { files.rules = `${base}.rules.md`; writeFileSync(files.rules, `${rules.text}\n`, { mode: 0o600 }); }
+    // axf-data: not data (per-run config handed to the claude CLI, removed with the run)
     if (plan.mcp.length) { files.mcp = `${base}.mcp.json`; writeFileSync(files.mcp, `${JSON.stringify(mcpConfig(plan.mcp, env))}\n`, { mode: 0o600 }); }
   }
   plan.args = plan.args.map((a) => (a === '{SETTINGS}' ? files.settings || '{}' : a === '{MCP}' ? files.mcp : a));

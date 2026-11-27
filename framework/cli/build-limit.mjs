@@ -49,6 +49,7 @@ import { cpus, homedir, hostname, totalmem } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import * as dataFiles from '../core/data-files.mjs';
 
 // Standalone on purpose (node built-ins only): deploy/install-build-limit.sh copies this file to /usr/local/lib/axf so
 // the VPS enforces the limit even from a checkout that doesn't have it yet. The two helpers below mirror agent-slots.mjs.
@@ -227,10 +228,10 @@ export function dockerArgs(image, l, { slice = true } = {}) {
 /* ---------------- store ---------------- */
 
 const files = () => { const d = slotsDir(); return { dir: d, config: join(d, 'build-limit.json'), res: join(d, 'build-limit-res.json'), emergency: join(d, 'build-limit-emergency.json'), live: join(d, 'build-limit-live.json'), host: join(d, 'build-limit-host.json'), journal: join(d, 'build-limit.log.jsonl'), lock: join(d, 'build-limit.lock') }; };
-const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-function writeJson(f, v) { const tmp = `${f}.${process.pid}.tmp`; writeFileSync(tmp, `${JSON.stringify(v, null, 2)}\n`); renameSync(tmp, f); }
+const readJson = (f, d) => dataFiles.readJsonSync(f, d);
+function writeJson(f, v) { dataFiles.writeJsonSync(f, v); }
 /** One line in build-limit.log.jsonl (limit changes, emergency grants). Best effort: a failed write never blocks the change. */
-export const journal = (line) => { try { appendFileSync(files().journal, `${JSON.stringify(line)}\n`); } catch { /* journal is best effort */ } };
+export const journal = (line) => { try { dataFiles.appendJsonlSync(files().journal, line); } catch { /* journal is best effort */ } };
 
 /** Read fresh on every call (the console's change applies to the next launch). */
 export const loadLimit = () => normLimit(readJson(files().config, {}));
