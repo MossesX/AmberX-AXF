@@ -46,6 +46,8 @@ import plugin_services
 from . import core as C
 from . import rules as R
 
+import data_store
+
 router = APIRouter()
 FOLDER = "notify-control"
 HERE = Path(__file__).resolve().parents[1]
@@ -78,10 +80,8 @@ def _timezone() -> str:
 # ---------------------------------------------------------------------- config
 
 def load_config() -> dict[str, Any]:
-    try:
-        c = json.loads((_data() / "config.json").read_text())
-    except (OSError, ValueError):
-        c = {}
+    c = data_store.read_json(_data() / "config.json", {})
+    c = c if isinstance(c, dict) else {}
     return {"master": c.get("master", True) is not False, "apps": c.get("apps") if isinstance(c.get("apps"), dict) else {},
             "types": c.get("types") if isinstance(c.get("types"), dict) else {},
             "quiet": c.get("quiet") if isinstance(c.get("quiet"), dict) else {},
@@ -90,12 +90,7 @@ def load_config() -> dict[str, Any]:
 
 
 def save_config(c: dict[str, Any]) -> None:
-    d = _data()
-    d.mkdir(parents=True, exist_ok=True)
-    tmp = d / "config.json.tmp"
-    tmp.write_text(json.dumps(c, indent=2))
-    os.chmod(tmp, 0o600)
-    os.replace(tmp, d / "config.json")
+    data_store.write_json(_data() / "config.json", c, indent=2)
     cx.alerts_changed()  # open consoles and the next phone read get the new answers
 
 

@@ -36,7 +36,9 @@ from fastapi import APIRouter, Body, HTTPException
 
 import console_context as cx
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import github, storage
+from axf_server import github
+
+import data_store
 
 router = APIRouter()
 
@@ -96,12 +98,12 @@ def app_names(root: Path) -> dict[str, dict[str, str]]:
     apps = root / "apps"
     for d in sorted(apps.iterdir()) if apps.is_dir() else []:
         if d.is_dir():
-            m = storage.read_json(d / "project.manifest.json", {})
+            m = data_store.read_json(d / "project.manifest.json", {})
             out[f"app:{d.name}"] = {"label": APP_LABELS.get(d.name) or _text((m or {}).get("displayName") or (m or {}).get("title") or d.name, 60)}
     plugins = apps / "console-web" / "plugins"
     for d in sorted(plugins.iterdir()) if plugins.is_dir() else []:
         if d.is_dir() and not d.name.startswith("_"):
-            m = storage.read_json(d / "plugin.json", {})
+            m = data_store.read_json(d / "plugin.json", {})
             out[f"plugin:{d.name}"] = {"label": _text((m or {}).get("name") or d.name, 60)}
     return out
 
@@ -301,7 +303,7 @@ class Sources:
     def report(self, name: str) -> str:
         if not re.fullmatch(r"[A-Za-z0-9._-]{1,120}", name or ""):
             return ""
-        return storage.read_text(self.root() / "_claude" / "builds" / "reports" / f"{name}.md", "")[:200_000]
+        return data_store.read_text(self.root() / "_claude" / "builds" / "reports" / f"{name}.md", "")[:200_000]
 
     def changes_dir(self) -> Path | None:
         exact = os.environ.get("AXF_CHANGES_DIR")
@@ -322,7 +324,7 @@ class Sources:
         folders = sorted((p for y in d.iterdir() if y.is_dir() and y.name.isdigit() for p in y.iterdir() if p.is_dir()), reverse=True)[:months]
         for folder in folders:
             for f in folder.glob("chg-*.json"):
-                e = storage.read_json(f, {})
+                e = data_store.read_json(f, {})
                 if not isinstance(e, dict):
                     continue
                 res = e.get("result") if isinstance(e.get("result"), dict) else {}
@@ -476,7 +478,7 @@ class Feed:
         self.error = ""
 
     def config(self) -> dict[str, Any]:
-        c = storage.read_json(data_dir() / "config.json", {})
+        c = data_store.read_json(data_dir() / "config.json", {})
         try:
             return check_config({k: v for k, v in (c if isinstance(c, dict) else {}).items() if k in DEFAULT_CONFIG})
         except HTTPException:
@@ -484,14 +486,14 @@ class Feed:
 
     def save_config(self, body: Any) -> dict[str, Any]:
         cfg = check_config(body)
-        storage.write_json(data_dir() / "config.json", {"$axf": "whats-shipped-config@1", **cfg})
+        data_store.write_json(data_dir() / "config.json", {"$axf": "whats-shipped-config@1", **cfg})
         with self._lock:
             self._key = ""  # deploy workflows may have changed
         return self.config()
 
     def _pr_files(self, prs: list[dict[str, Any]], use_github: bool) -> None:
         f = data_dir() / "pr-files.json"
-        cache = storage.read_json(f, {})
+        cache = data_store.read_json(f, {})
         cache = cache if isinstance(cache, dict) else {}
         fetched = 0
         for pr in prs:
@@ -509,7 +511,7 @@ class Feed:
                 pr["files"] = None
         if fetched:
             keep = {str(p["number"]) for p in prs}
-            storage.write_json(f, {k: v for k, v in cache.items() if k in keep}, indent=None)
+            data_store.write_json(f, {k: v for k, v in cache.items() if k in keep}, indent=None)
 
     def _rebuild(self, cfg: dict[str, Any]) -> dict[str, Any]:
         self.error = ""
@@ -549,13 +551,13 @@ class Feed:
         now = self.clock()
         with self._lock:
             if self._feed is None and not force:  # first answer after a restart: the cached file, if built from the same facts
-                cached = storage.read_json(data_dir() / "feed.json", None)
+                cached = data_store.read_json(data_dir() / "feed.json", None)
                 if isinstance(cached, dict) and cached.get("$axf") == FORMAT:
                     self._feed, self._key, self._checked = cached, str(cached.get("key") or ""), now
             key = self._merge_key(cfg)  # git: the head of main; GitHub: '' (the merge list is re-read every CHECK_S)
             if force or self._feed is None or key != self._key or (self.src.github_on() and now - self._checked >= CHECK_S):
                 self._feed = {**self._rebuild(cfg), "key": key}
-                storage.write_json(data_dir() / "feed.json", self._feed, indent=None)
+                data_store.write_json(data_dir() / "feed.json", self._feed, indent=None)
                 self._key, self._checked = key, now
             feed = self._feed
         out = filter_feed({k: v for k, v in feed.items() if k != "key"}, cfg, now)

@@ -26,6 +26,7 @@
  *   … fix <buildId> <stepId> [--dry-run] hand a merge conflict to the merge fixer
  *   --json on any command prints JSON (the console server uses this).
  */
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { existsSync, statSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -47,10 +48,10 @@ export const trackerFile = () => process.env.AXF_ORCH_FILE || orchestratorPath()
 export const repoRoot = () => process.env.AXF_SWARM_REPO || ROOT;
 export const dataDir = () => process.env.AXF_SWARM_DIR || join(ROOT, '.axf-console/plugins/agent-swarm');
 
-export function readJson(f, fallback) { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return fallback; } }
+/** One record through data-store@1 (framework/core/data-files.mjs): a row on axf-data, a plain file only for a path the layer doesn't map. */
+export function readJson(f, fallback) { try { return dataFiles.readJsonSync(f, null) ?? fallback; } catch { return fallback; } }
 export function writeJson(f, data) {
-  mkdirSync(dirname(f), { recursive: true });
-  const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(data, null, 1)}\n`); renameSync(tmp, f);
+  dataFiles.writeJsonSync(f, data, 1);
 }
 
 /** The roster file plus agents hired from the Breakroom (one-tap hires for job types, kept in the swarm state). */
@@ -68,7 +69,8 @@ export function loadSkills() {
   for (const [k, v] of Object.entries(hs)) if (!files[k] && typeof v?.body === 'string') files[k] = { id: k, title: String(v.title ?? k), schema: 'agent-skill@1', body: v.body.slice(0, core.SKILL_MAX_CHARS), lines: v.body.split('\n').length, chars: Math.min(v.body.length, core.SKILL_MAX_CHARS) };
   return files;
 }
-export function loadTracker() { const f = trackerFile(); return existsSync(f) ? readJson(f, { builds: [] }) : { builds: [] }; }
+// The pipeline status file is read as it always was: build pipeline-fixes-drop-7-mb-status-file owns it and its readers.
+export function loadTracker() { const f = trackerFile(); try { return existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : { builds: [] }; } catch { return { builds: [] }; } }
 export function findBuilds(ids) {
   const t = loadTracker();
   return ids.map((id) => { const b = (t.builds ?? []).find((x) => x.id === id); if (!b) throw new Error(`no build "${id}" in ${trackerFile()}`); return b; });

@@ -49,6 +49,8 @@ from fastapi.responses import StreamingResponse
 
 import plugin_services
 
+import data_store
+
 router = APIRouter()
 FOLDER = "follow-amber"
 FRAME = "follow-amber@1"
@@ -82,20 +84,15 @@ def _text(v: Any, cap: int = TEXT_MAX) -> str:
 
 def load_state() -> dict[str, Any]:
     """{on, by, at}. Off unless someone switched it on (new options default off)."""
-    try:
-        s = json.loads((_data() / "state.json").read_text())
-        return {"on": s.get("on") is True, "by": _text(s.get("by"), 80), "at": _text(s.get("at"), 40)}
-    except (OSError, ValueError):
+    s = data_store.read_json(_data() / "state.json", None)
+    if not isinstance(s, dict):
         return {"on": False, "by": "", "at": ""}
+    return {"on": s.get("on") is True, "by": _text(s.get("by"), 80), "at": _text(s.get("at"), 40)}
 
 
 def save_state(on: bool, by: str) -> dict[str, Any]:
     s = {"on": bool(on), "by": _text(by, 80) or "console", "at": _now_iso()}
-    d = _data()
-    d.mkdir(parents=True, exist_ok=True)
-    tmp = d / f"state.json.tmp-{os.getpid()}"
-    tmp.write_text(json.dumps(s, indent=1) + "\n")
-    tmp.replace(d / "state.json")
+    data_store.write_json(_data() / "state.json", s, indent=1, trailing_newline=True, mode=0o644)
     broadcast({"type": "state", "on": s["on"], "by": s["by"], "at": s["at"]})
     return s
 

@@ -11,6 +11,7 @@
  * AXF_GATE_LANDER_CLI (the lander's CLI; else land/land.mjs in the provider's folder), AXF_GATE_NOW (tests: a fixed
  * clock). Plain Node built-ins only.
  */
+import * as files from '../../../../framework/core/data-files.mjs';
 import { spawnSync } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from 'node:fs';
@@ -25,9 +26,10 @@ const env = (k) => (process.env[k] === undefined || process.env[k] === '' ? '' :
 const CONFIRM_TTL_MS = 5 * 60 * 1000;
 const HISTORY_FILE = 'history.jsonl';
 
-export const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-export function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}-${Date.now()}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
-const readLines = (f) => { try { return readFileSync(f, 'utf8').split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean); } catch { return []; } };
+// data-store@1: the gate's records and history lines go through framework/core/data-files.mjs (rows on axf-data).
+export const readJson = (f, d) => { try { return files.readJsonSync(f, null) ?? d; } catch { return d; } };
+export function writeJson(f, v) { files.writeJsonSync(f, v, 1); }
+const readLines = (f) => { try { return (files.readTextSync(f, '') ?? '').split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean); } catch { return []; } };
 
 /** The console plugin that provides the merge queue (by capability, never by folder name): { dir, dataDir } or null. */
 export function landerProvider(root = REPO) {
@@ -125,9 +127,9 @@ export function createStore(opts = {}) {
 
     // ---------------------------------------------------------------- history (append-only JSONL)
     historyFile: f(HISTORY_FILE),
-    appendHistory(entry) { mkdirSync(dataDir, { recursive: true }); appendFileSync(f(HISTORY_FILE), `${JSON.stringify(entry)}\n`); return entry; },
+    appendHistory(entry) { files.appendJsonlSync(f(HISTORY_FILE), entry); return entry; },
     readHistory() { return readLines(f(HISTORY_FILE)); },
-    writeHistory(entries) { mkdirSync(dataDir, { recursive: true }); const t = `${f(HISTORY_FILE)}.tmp-${process.pid}`; writeFileSync(t, entries.map((e) => `${JSON.stringify(e)}\n`).join('')); renameSync(t, f(HISTORY_FILE)); },
+    writeHistory(entries) { files.writeTextSync(f(HISTORY_FILE), entries.map((e) => `${JSON.stringify(e)}\n`).join('')); },
 
     // ---------------------------------------------------------------- the plugin's own settings
     settings() { return readJson(f('settings.json'), {}) || {}; },

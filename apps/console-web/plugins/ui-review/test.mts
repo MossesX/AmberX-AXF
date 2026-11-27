@@ -374,7 +374,7 @@ t('migration: older queue items + screenshots → ui-review-item@1 (dry run firs
   assert.equal(dry.status, 0, dry.stderr); assert.match(dry.stdout, /dry run/); assert.match(readFileSync(join(dir, 'report.md'), 'utf8'), /\| queue \| `r-20261030-abc12` \| Level bar \|/);
   assert.deepEqual(JSON.parse(readFileSync(join(dir, 'items.json'), 'utf8')), items, 'the dry run writes nothing');
   const ap = JSON.parse(rev('migrate', '--apply', '--json').stdout);
-  assert.ok(ap.applied); assert.equal(ap.backups.length, 2); assert.deepEqual(ap.errors, []);
+  assert.ok(ap.applied); assert.equal(ap.backups.length, 0, 'no JSON backup copies'); assert.deepEqual(ap.errors, []);
   assert.match(rev('check').stdout, /all ui-review-item@1/);
   const mi = JSON.parse(readFileSync(join(dir, 'items.json'), 'utf8')); const ms = JSON.parse(readFileSync(join(dir, 'screenshots', 'index.json'), 'utf8'));
   const q = mi.items[0];

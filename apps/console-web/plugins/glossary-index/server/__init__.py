@@ -20,6 +20,7 @@ import os
 import re
 import subprocess
 import threading
+import time
 from pathlib import Path
 from typing import Any
 
@@ -27,6 +28,8 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse, Response
 
 import plugin_services
+
+import data_store
 
 router = APIRouter()
 HERE = Path(__file__).resolve().parents[1]
@@ -83,6 +86,7 @@ def _tmp_json(value: Any) -> Path:
     d = data_dir() / "tmp"
     d.mkdir(parents=True, exist_ok=True)
     f = d / f"in-{os.getpid()}-{threading.get_ident()}.json"
+    # axf-data: not data (a temp input file for one Node tool call, removed after it)
     f.write_text(json.dumps(value))
     return f
 
@@ -108,6 +112,17 @@ def _load() -> tuple[dict[str, Any], bytes]:
     """The saved catalog (cached by modification time), built first when it doesn't exist yet."""
     f = data_dir() / "catalog.json"
     with _lock:
+        if data_store.remote_mode(f):  # a record on axf-data: no file to stat, so the copy is kept for half a minute
+            now = time.monotonic()
+            if _cache["value"] is None or now - float(_cache.get("at") or 0) > 30:
+                raw = data_store.read_bytes(f)
+                if raw is None:
+                    rebuild("first read")
+                    raw = data_store.read_bytes(f)
+                if raw is None:
+                    raise HTTPException(503, "the glossary hasn't been built yet")
+                _cache.update(mtime=0.0, at=now, raw=raw, value=json.loads(raw))
+            return _cache["value"], _cache["raw"]
         if not f.exists():
             rebuild("first read")
         if not f.exists():
@@ -179,11 +194,8 @@ def get_entry(id: str) -> dict[str, Any]:  # noqa: A002 - the query parameter is
 
 @router.get("/changes")
 def get_changes() -> list[dict[str, Any]]:
-    f = data_dir() / "changes.json"
-    try:
-        return json.loads(f.read_text()) if f.exists() else []
-    except (OSError, json.JSONDecodeError):
-        return []
+    log = data_store.read_json(data_dir() / "changes.json", [])
+    return log if isinstance(log, list) else []
 
 
 @router.post("/rebuild")

@@ -14,6 +14,7 @@
  * The registry (ids, labels, defaults) is `framework/libs/listeners/registry.json`; the normalising rules here mirror
  * core.ts (framework/spec/check-listeners.mts compares them).
  */
+import * as files from '../../../../framework/core/data-files.mjs';
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -30,7 +31,8 @@ export class ListenersError extends Error {
   constructor(code, message) { super(message); this.code = code; }
 }
 
-const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
+// data-store@1: every record this plugin keeps is read and written through framework/core/data-files.mjs (a row on axf-data).
+const readJson = (f) => { try { return files.readJsonSync(f, null); } catch { return null; } };
 
 /* ------------------------------------------------------------------ where things are */
 
@@ -83,10 +85,7 @@ export function readSettings() {
 
 function writeSettings(doc) {
   const f = settingsFile();
-  mkdirSync(dirname(f), { recursive: true });
-  const tmp = `${f}.tmp-${process.pid}`;
-  writeFileSync(tmp, `${JSON.stringify(doc, null, 2)}\n`);
-  renameSync(tmp, f);
+  files.writeJsonSync(f, doc);
 }
 
 /** A listener's policy from the hub's settings values. */

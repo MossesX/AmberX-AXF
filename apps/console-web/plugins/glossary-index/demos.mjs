@@ -21,6 +21,7 @@
  *
  * Env: AXF_GLOSSARY_DIR (the plugin's data folder; catalog.mjs shares it), AXF_REPO_ROOT. No model, no network.
  */
+import * as files from '../../../../framework/core/data-files.mjs';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
@@ -32,7 +33,8 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 export const TYPES = R.DEMO_TYPES;
 export const STORE_DIR = DATA_DIR;
 const ID = /^[a-z0-9][a-z0-9-]{1,47}$/;
-const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
+// data-store@1: one row per saved asset (framework/core/data-files.mjs); the framework's starters are repo files.
+const readJson = (p) => { const t = files.readTextSync(p, null); if (t === null) throw Object.assign(new Error(`no record ${p}`), { code: 'ENOENT' }); return JSON.parse(t); };
 const dirOf = (type) => join(STORE_DIR, type);
 const fileOf = (type, id) => join(dirOf(type), `${id}.json`);
 const assertType = (type) => { if (!TYPES.includes(type)) throw new Error(`unknown type "${type}" (one of ${TYPES.join(', ')})`); };
@@ -45,8 +47,7 @@ export function list(type) {
   const out = [];
   for (const t of types) {
     assertType(t);
-    if (!existsSync(dirOf(t))) continue;
-    for (const f of readdirSync(dirOf(t)).filter((n) => n.endsWith('.json')).sort()) {
+    for (const f of files.listSync(dirOf(t)).filter((n) => n.endsWith('.json')).sort()) {
       try { const a = readJson(join(dirOf(t), f)); if (a?.$axf === 'asset@1' && a.type === t && a.id) out.push(a); } catch { /* a half-written file is skipped */ }
     }
   }
@@ -56,7 +57,7 @@ export function list(type) {
 export function get(type, id) {
   assertType(type); assertId(id);
   const f = fileOf(type, id);
-  if (existsSync(f)) return readJson(f);
+  if (files.existsAnySync(f)) return readJson(f);
   // the framework's starters count too (read-only: saving one writes a copy into the store)
   const starter = join(ROOT, 'framework/assets', type, `${id}.json`);
   return existsSync(starter) ? readJson(starter) : null;
@@ -89,8 +90,7 @@ export function save(type, raw, { reason = 'saved' } = {}) {
   if (raw.type && raw.type !== type) throw new Error(`the file says type "${raw.type}", not ${type}`);
   const a = envelope(type, { id: raw.id, name: raw.name, description: raw.description, data: raw.data, tags: raw.tags ?? [], author: raw.author ?? 'Dev Console', version: raw.version ?? '1.0.0' });
   a.updatedAt = new Date().toISOString();
-  mkdirSync(dirOf(type), { recursive: true });
-  writeFileSync(fileOf(type, a.id), `${JSON.stringify(a, null, 1)}\n`);
+  files.writeJsonSync(fileOf(type, a.id), a, 1);
   try { writeCatalog({ reason: `${type} ${reason}` }); } catch { /* the glossary rebuilds on its next read */ }
   return a;
 }
@@ -98,8 +98,8 @@ export function save(type, raw, { reason = 'saved' } = {}) {
 export function remove(type, id) {
   assertType(type); assertId(id);
   const f = fileOf(type, id);
-  if (!existsSync(f)) return false;
-  rmSync(f);
+  if (!files.existsAnySync(f)) return false;
+  files.removeSync(f);
   try { writeCatalog({ reason: `${type} removed` }); } catch { /* next read */ }
   return true;
 }
@@ -203,9 +203,8 @@ export function recordBook(id, { dryRun = false } = {}) {
   if (!a) throw new Error(`no book ${id}`);
   const w = walkthroughOf('book', id);
   const dir = join(STORE_DIR, 'video');
-  mkdirSync(dir, { recursive: true });
   const file = join(dir, `${id}.walkthrough.json`);
-  writeFileSync(file, `${JSON.stringify({ ...w, book: id, plan: R.normalizeBook(a.data).plan, chapters: R.bookMinutes(a.data).chapters }, null, 1)}\n`);
+  files.writeJsonSync(file, { ...w, book: id, plan: R.normalizeBook(a.data).plan, chapters: R.bookMinutes(a.data).chapters }, 1);
   const flow = R.normalizeBook(a.data).chapters.map((c) => c.title).join(', ');
   const args = [join(ROOT, 'framework/cli/agent-job.mjs'), 'amberx-walkthrough', '--input', 'app=console', '--input', `flow=${flow}`, '--input', `reason=Book "${a.name}" (book/${id}); walkthrough@1 at ${file}`, '--json'];
   if (dryRun) args.push('--dry-run');

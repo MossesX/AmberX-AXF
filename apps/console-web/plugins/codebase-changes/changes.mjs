@@ -535,6 +535,7 @@ function saveSettings(file, data) {
   mkdirSync(dirname(file), { recursive: true });
   if (existsSync(file)) copyFileSync(file, `${file}.bak`);
   const tmp = `${file}.${process.pid}.tmp`;
+  // axf-data: not data (Claude Code's own ~/.claude/settings.json on this machine)
   writeFileSync(tmp, `${JSON.stringify(data, null, 2)}\n`);
   renameSync(tmp, file);
 }

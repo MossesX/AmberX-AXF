@@ -23,6 +23,8 @@ from typing import Any
 import plugin_services
 from fastapi import APIRouter, HTTPException
 
+import data_store
+
 router = APIRouter()
 ROOT = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[5])).resolve()
 DATA = Path(os.environ.get("AXF_MOLLY_GUIDE_DIR", ROOT / ".axf-console" / "plugins" / "molly-guide"))
@@ -74,21 +76,15 @@ def _file() -> Path:
 
 
 def _read() -> list[dict[str, Any]]:
-    try:
-        cur = json.loads(_file().read_text())
-        return [x for x in cur if isinstance(x, dict)] if isinstance(cur, list) else []
-    except Exception:  # noqa: BLE001
-        return []
+    cur = data_store.read_json(_file(), [])
+    return [x for x in cur if isinstance(x, dict)] if isinstance(cur, list) else []
 
 
 def save_walkthrough(wt: dict[str, Any], source: str) -> dict[str, Any]:
     with _lock:
         cur = _read()
         rec = {**wt, "at": int(time.time() * 1000), "source": source[:40], "seq": max((int(x.get("seq", 0)) for x in cur), default=0) + 1}
-        DATA.mkdir(parents=True, exist_ok=True)
-        tmp = _file().with_suffix(".tmp")
-        tmp.write_text(json.dumps(([rec] + cur)[:WALK_KEEP], indent=1))
-        tmp.replace(_file())
+        data_store.write_json(_file(), ([rec] + cur)[:WALK_KEEP], indent=1, mode=0o644)
         return rec
 
 

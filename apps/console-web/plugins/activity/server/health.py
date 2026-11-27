@@ -22,6 +22,8 @@ import plugin_services
 
 from .feed import _ms
 
+import data_store
+
 CAPABILITY = "axf.health@1"
 OWNER = "activity"
 EVENTS = ("UserPromptSubmit", "PreToolUse", "PostToolUse", "Notification", "Stop", "SessionEnd")
@@ -38,13 +40,12 @@ def fix_command() -> str:
 def read_hooks(data_dir: Path) -> list[dict[str, Any]]:
     out = []
     d = data_dir / "hooks"
-    if not d.is_dir():
-        return out
-    for p in sorted(d.glob("*.json"))[:40]:
+    for p in [d / n for n in data_store.list_files(d) if "/" not in n and n.endswith(".json")][:40]:
         try:
-            if p.is_symlink() or p.stat().st_size > 16_000:
+            raw = None if p.is_symlink() else data_store.read_bytes(p)
+            if raw is None or len(raw) > 16_000:
                 continue
-            j = json.loads(p.read_text("utf-8"))
+            j = json.loads(raw)
         except (OSError, ValueError):
             continue
         if isinstance(j, dict) and isinstance(j.get("user"), str):

@@ -29,8 +29,9 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 os.environ["AXF_CONTAINER_ACCESS_DIR"] = tempfile.mkdtemp(prefix="axf-ca-test-")
-os.environ["AXF_ROOT"] = tempfile.mkdtemp(prefix="axf-ca-root-")  # data of any other plugin loaded below
 sys.path.insert(0, str(HERE.parent.parent / "server"))
+import data_store  # noqa: E402,F401 — the data layer reads its registry from the real checkout, before AXF_ROOT is the scratch root
+os.environ["AXF_ROOT"] = tempfile.mkdtemp(prefix="axf-ca-root-")  # data of any other plugin loaded below
 import plugin_services  # noqa: E402
 
 sys.modules.setdefault("axf_console_plugins", types.ModuleType("axf_console_plugins")).__path__ = []

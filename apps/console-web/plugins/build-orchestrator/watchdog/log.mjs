@@ -9,6 +9,7 @@
  *
  * AXF_WATCHDOG_CHANGES=off skips the Codebase changes line (tests).
  */
+import * as DF from '../../../../../framework/core/data-files.mjs';
 import { spawnSync } from 'node:child_process';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync } from 'node:fs';
 import { join } from 'node:path';
@@ -17,7 +18,8 @@ import { consoleRoot, entryOf, providerOf } from './providers.mjs';
 
 export const LOG = 'log.jsonl';
 const month = (iso) => String(iso ?? '').slice(0, 7);
-const readLines = (f) => { try { return readFileSync(f, 'utf8').split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean); } catch { return []; } };
+// data-store@1: the cleanup log is rows on axf-data (framework/core/data-files.mjs), one per record.
+const readLines = (f) => { try { return (DF.readTextSync(f, '') ?? '').split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean); } catch { return []; } };
 
 /** Rotate log.jsonl to log-<YYYY-MM>.jsonl when its first record is from an earlier month than `now`. */
 export function rotate(dir, now = new Date().toISOString()) {
@@ -46,16 +48,15 @@ export function recordsOf(results, { at, by = 'watchdog', dry = false } = {}) {
 /** Append records to the cleanup log (rotating first). Returns how many were written. */
 export function appendLog(dir, records, now = new Date().toISOString()) {
   if (!records.length) return 0;
-  mkdirSync(dir, { recursive: true });
-  rotate(dir, now);
-  appendFileSync(join(dir, LOG), records.map((r) => JSON.stringify(r)).join('\n') + '\n');
+  rotate(dir, now); // only a log that is still a local file has months to rotate
+  for (const r of records) DF.appendJsonlSync(join(dir, LOG), r);
   return records.length;
 }
 
 /** The newest records first, across the current file and the monthly archives. filter: { kind, action, build, dry }. */
 export function readLog({ dir, limit = 50, kind = '', action = '', build = '' } = {}) {
   const base = dir ?? logDir();
-  const files = [LOG, ...(existsSync(base) ? readdirSync(base).filter((f) => /^log-\d{4}-\d{2}(-\d+)?\.jsonl$/.test(f)).sort().reverse() : [])];
+  const files = [LOG, ...DF.listSync(base).filter((f) => /^log-\d{4}-\d{2}(-\d+)?\.jsonl$/.test(f)).sort().reverse()];
   const out = [];
   for (const f of files) {
     const recs = readLines(join(base, f)).reverse();

@@ -2,6 +2,7 @@
  * session-checkin — shared logic for checkin.mjs (the hook), install.mjs (the installer) and the console plugin.
  * Node 22, no dependencies. Spec: .claude/SESSION-CHECKIN.md.
  */
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { homedir, hostname } from 'node:os';
 import { basename, dirname, join, relative, resolve } from 'node:path';
@@ -72,12 +73,10 @@ export function normaliseConfig(c = {}) {
   };
 }
 
-export const readJson = (f, def = null) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return def; } };
+// data-store@1: the plugin's records go through framework/core/data-files.mjs (rows on axf-data); repo files stay files.
+export const readJson = (f, def = null) => { try { return dataFiles.readJsonSync(f, null) ?? def; } catch { return def; } };
 export function writeJsonAtomic(f, data) {
-  mkdirSync(dirname(f), { recursive: true });
-  const tmp = `${f}.tmp-${process.pid}`;
-  writeFileSync(tmp, JSON.stringify(data, null, 2) + '\n');
-  renameSync(tmp, f);
+  dataFiles.writeJsonSync(f, data);
 }
 
 export function loadConfig(path) {

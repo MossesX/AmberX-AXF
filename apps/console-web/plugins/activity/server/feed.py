@@ -36,7 +36,9 @@ from pathlib import Path
 from typing import Any, Callable
 
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import github, storage
+from axf_server import github
+
+import data_store
 
 from . import complete
 
@@ -185,6 +187,14 @@ def _gh_state(status: str, conclusion: str | None) -> str:
     return _GH_STATES.get(s, s)
 
 
+def _load(p: Path) -> Any:
+    """One record through data-store@1; ValueError when there is none (the callers' "not there yet" path)."""
+    v = data_store.read_json(p, None)
+    if v is None:
+        raise ValueError(f"no record {p.name}")
+    return v
+
+
 class Feed:
     def __init__(self, data_dir: Path, root: Path, default_repos: list[str] | None = None,
                  github_token: Callable[[], str] = lambda: os.environ.get("GITHUB_TOKEN", ""),
@@ -223,7 +233,7 @@ class Feed:
 
     def config(self) -> dict[str, Any]:
         try:
-            c = json.loads((self.dir / "config.json").read_text())
+            c = _load(self.dir / "config.json")
         except Exception:  # noqa: BLE001
             c = {}
         src = c.get("sources") if isinstance(c.get("sources"), dict) else {}
@@ -255,7 +265,7 @@ class Feed:
                 except (TypeError, ValueError):
                     raise ValueError(f"{k} must be a number of seconds") from None
         self.dir.mkdir(parents=True, exist_ok=True)
-        storage.write_json(self.dir / "config.json", c, dir_mode=None)  # atomic, 0600 (axf_server.storage)
+        data_store.write_json(self.dir / "config.json", c, dir_mode=None)  # atomic, 0600 (data-store@1: one row)
         self._gh_cache = None
         return c
 
@@ -303,12 +313,13 @@ class Feed:
         if not it:
             raise ValueError("an item needs an id (letters, digits, . : @ / + - _) and a title")
         it["origin"] = redact(origin, 60)
-        self.reports_dir.mkdir(parents=True, exist_ok=True)
-        files = list(self.reports_dir.glob("*.json"))
+        files = self._report_files()
         p = self._report_path(it["id"])
-        if not p.exists() and len(files) >= MAX_REPORTS:
+        if not data_store.remote_mode(p):
+            self.reports_dir.mkdir(parents=True, exist_ok=True)
+        if p not in files and len(files) >= MAX_REPORTS:
             raise ValueError("too many reported items; finish some first")
-        storage.write_json(p, it, indent=None, dir_mode=None)  # atomic, 0600 (axf_server.storage)
+        data_store.write_json(p, it, indent=None, dir_mode=None)  # atomic, 0600 (data-store@1: one row)
         return it
 
     def finish(self, iid: str, state: str = "done", detail: str | None = None) -> dict[str, Any] | None:
@@ -324,7 +335,7 @@ class Feed:
 
     def _dismissed(self, now: int) -> dict[str, int]:
         try:
-            raw = json.loads((self.dir / "dismissed.json").read_text("utf-8"))
+            raw = _load(self.dir / "dismissed.json")
         except (OSError, ValueError):
             return {}
         if not isinstance(raw, dict):
@@ -339,8 +350,7 @@ class Feed:
         p = self._report_path(iid)
         if p.is_symlink():
             return False  # never touched through a link
-        if p.is_file():
-            p.unlink()  # a reporter that reports again later shows again: it's alive
+        if data_store.remove(p):  # a reporter that reports again later shows again: it's alive
             return True
         now = int(self.now() * 1000)
         with self._lock:
@@ -348,25 +358,30 @@ class Feed:
             d[iid] = now
             if len(d) > self.MAX_DISMISSED:
                 d = dict(sorted(d.items(), key=lambda kv: kv[1])[-self.MAX_DISMISSED:])
-            storage.write_json(self.dir / "dismissed.json", d, indent=None, dir_mode=None)
+            data_store.write_json(self.dir / "dismissed.json", d, indent=None, dir_mode=None)
         return True
+
+    def _report_files(self) -> list[Path]:
+        """The reported items, one row each (data-store@1), by name."""
+        return [self.reports_dir / n for n in data_store.list_files(self.reports_dir) if "/" not in n and n.endswith(".json")]
 
     @staticmethod
     def _read_report(p: Path) -> dict[str, Any] | None:
         try:
-            if p.is_symlink() or not p.is_file() or p.stat().st_size > 64_000:
+            if p.is_symlink():
                 return None
-            d = json.loads(p.read_text())
+            raw = data_store.read_bytes(p)
+            if raw is None or len(raw) > 64_000:
+                return None
+            d = json.loads(raw)
             return d if isinstance(d, dict) else None
         except Exception:  # noqa: BLE001
             return None
 
     def _reports(self, cfg: dict[str, Any], now: int) -> list[dict[str, Any]]:
         out = []
-        if not self.reports_dir.is_dir():
-            return out
         loaded = []
-        for p in sorted(self.reports_dir.glob("*.json"))[: MAX_REPORTS * 2]:
+        for p in self._report_files()[: MAX_REPORTS * 2]:
             raw = self._read_report(p)
             it = norm(raw, "reports", now) if raw else None
             if it:
@@ -376,7 +391,7 @@ class Feed:
             m = CLAUDE_RE.match(it["id"])
             if m and m.group(2) and self._child_gone(it, sessions.get(m.group(1)), cfg, now):
                 try:
-                    p.unlink()  # a command line whose session ended, or that went quiet: a ghost, not stuck work
+                    data_store.remove(p)  # a command line whose session ended, or that went quiet: a ghost, not stuck work
                 except OSError:
                     pass
                 continue
@@ -386,7 +401,7 @@ class Feed:
                 it["detail"] = (it["detail"] + "\n" if it["detail"] else "") + "No word from it for a while: it may have stopped without saying so."
             if self.expired(it["state"], it.get("finishedAt", it["updatedAt"]), cfg, now):
                 try:
-                    p.unlink()
+                    data_store.remove(p)
                 except OSError:
                     pass
                 continue
@@ -412,7 +427,7 @@ class Feed:
         if not self.holds_file:
             return []
         try:
-            raw = json.loads(self.holds_file.read_text("utf-8"))
+            raw = _load(self.holds_file)
         except (OSError, ValueError):
             return []
         items = raw.get("holds") if isinstance(raw, dict) else None
@@ -420,7 +435,7 @@ class Feed:
 
     def _continued(self) -> dict[str, int]:
         try:
-            raw = json.loads((self.dir / "continued.json").read_text("utf-8"))
+            raw = _load(self.dir / "continued.json")
         except (OSError, ValueError):
             return {}
         return {k: v for k, v in raw.items() if isinstance(k, str) and len(k) <= 200 and isinstance(v, int)} if isinstance(raw, dict) else {}
@@ -462,7 +477,7 @@ class Feed:
                     c[iid] = now
                     c = {k: v for k, v in c.items() if now - v < self.CONTINUED_KEEP_MS}
                     self.dir.mkdir(parents=True, exist_ok=True)
-                    storage.write_json(self.dir / "continued.json", c, indent=None, dir_mode=None)
+                    data_store.write_json(self.dir / "continued.json", c, indent=None, dir_mode=None)
                 return {"id": iid, "action": acts[0]["action"] if acts else None, "by": redact(by, 60)}
         prev = self._read_report(self._report_path(iid))
         if prev and prev.get("state") == "held":
@@ -478,7 +493,7 @@ class Feed:
             if iid not in c:
                 return False
             c.pop(iid)
-            storage.write_json(self.dir / "continued.json", c, indent=None, dir_mode=None)
+            data_store.write_json(self.dir / "continued.json", c, indent=None, dir_mode=None)
         return True
 
     # ---------------- GitHub Actions
@@ -616,9 +631,10 @@ class Feed:
     def _update(self, cfg: dict[str, Any], now: int) -> list[dict[str, Any]]:
         p = self.root / ".axf-console" / "update-status.json"
         try:
-            if p.is_symlink() or p.stat().st_size > 16_000:
+            raw = None if p.is_symlink() else data_store.read_bytes(p)
+            if raw is None or len(raw) > 16_000:
                 return []
-            d = json.loads(p.read_text())
+            d = json.loads(raw)
         except Exception:  # noqa: BLE001
             return []
         state = {"building": "running", "pulling": "running", "done": "done", "failed": "failed"}.get(str(d.get("state")), "")

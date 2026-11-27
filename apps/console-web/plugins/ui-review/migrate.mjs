@@ -5,17 +5,17 @@
  *   screenshots/index.json ui-screenshot@1 shots → ui-review-item@1 (kind screenshot); shot-group@1 groups → ui-review-group@1
  * Names come from titles (else the screen, else the picture's file name), timestamps from submittedAt / takenAt (else
  * the picture's file time), groups stay where they are (screenshots) or are made by build / branch and day (queue).
- * Dry run by default: returns the report and writes nothing. apply: backs both files up (<file>.pre-schema-<time>)
- * and writes them. Idempotent: a folder already on the schema reports "nothing to change".
+ * Dry run by default: returns the report and writes nothing. apply: writes both records (no backup copy is made). Idempotent: a folder already on the schema reports "nothing to change".
  * Used by `review.mjs migrate [--apply]` and by the server on start (server/conform.py runs it through node).
  */
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { copyFileSync, existsSync, readFileSync, renameSync, statSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import * as S from '../../../../framework/core/ui-review-schema.mjs';
 import * as gc from './web/groups-core.mjs';
 
-const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-const writeJson = (f, v) => { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp`; writeFileSync(t, JSON.stringify(v, null, 1)); renameSync(t, f); };
+const readJson = (f, d) => { try { return dataFiles.readJsonSync(f, null) ?? d; } catch { return d; } };
+const writeJson = (f, v) => dataFiles.writeJsonSync(f, v, 1); // data-store@1 (framework/core/data-files.mjs)
 const mtime = (f) => { try { return statSync(f).mtime.toISOString(); } catch { return ''; } };
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 
@@ -107,17 +107,15 @@ export function report(plan, { dir, apply }) {
   return L.join('\n');
 }
 
-/** Dry run (default) or apply. Returns { ok, applied, changed, rows, errors, report, backups }. */
+/** Dry run (default) or apply. Returns { ok, applied, changed, rows, errors, report, backups } (backups is always empty: no JSON copies are made). */
 export function migrateAll(dir, { apply = false, now = new Date().toISOString() } = {}) {
   const plan = planFolder(dir, { now });
   const backups = [];
   const ok = !plan.errors.length;
   if (apply && ok) {
-    const tag = now.replace(/[:.]/g, '-');
     for (const p of [plan.items, plan.shots]) {
       if (!changed(p)) continue;
-      if (existsSync(p.file)) { const b = `${p.file}.pre-schema-${tag}`; copyFileSync(p.file, b); backups.push(b); }
-      writeJson(p.file, p.after);
+      writeJson(p.file, p.after); // the record is rewritten in the data store: no JSON backup beside it
     }
   }
   return { ok, applied: apply && ok, changed: plan.rows.length, rows: plan.rows, errors: plan.errors, backups, report: report(plan, { dir, apply: apply && ok }) };

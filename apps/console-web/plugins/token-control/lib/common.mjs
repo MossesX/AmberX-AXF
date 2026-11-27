@@ -1,4 +1,5 @@
 /** Shared by the runner's parts: where the repo and the plugin's data folder are, the error a part throws, the audit log. */
+import * as dataFiles from '../../../../../framework/core/data-files.mjs';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { dirname, join, resolve } from 'node:path';
@@ -32,14 +33,12 @@ export function confirmSalt() {
 /** One line per write in the data folder's audit log (who, why, what; never values over 2 KB). */
 export function audit(entry) {
   try {
-    mkdirSync(DATA_DIR, { recursive: true });
-    const line = JSON.stringify({ at: new Date().toISOString(), ...entry });
-    appendFileSync(join(DATA_DIR, 'audit.jsonl'), `${line.length > 4000 ? JSON.stringify({ ...entry, value: '[large]', at: new Date().toISOString() }) : line}\n`);
+    const row = { at: new Date().toISOString(), ...entry };
+    dataFiles.appendJsonlSync(join(DATA_DIR, 'audit.jsonl'), JSON.stringify(row).length > 4000 ? { ...entry, value: '[large]', at: row.at } : row); // data-store@1: one row per write
   } catch { /* the audit log never blocks a change */ }
 }
 
 export function readAudit(limit = 50) {
   const f = join(DATA_DIR, 'audit.jsonl');
-  if (!existsSync(f)) return [];
-  return readFileSync(f, 'utf8').trim().split('\n').filter(Boolean).slice(-limit).reverse().map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+  return (dataFiles.readTextSync(f, '') ?? '').trim().split('\n').filter(Boolean).slice(-limit).reverse().map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
 }

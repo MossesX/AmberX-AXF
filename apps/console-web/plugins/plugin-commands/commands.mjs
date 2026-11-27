@@ -23,6 +23,7 @@
  * the console (AXF_CONSOLE_URL, default https://console.amberxai.com; AXF_TOKEN) as one control@1 command.
  * Exit codes: 0 ok · 1 failed · 2 usage · 3 confirmation_required.
  */
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync, appendFileSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { dirname, join, relative, resolve, sep } from 'node:path';
@@ -76,16 +77,14 @@ export function confirmSalt() {
 
 export function audit(entry) {
   try {
-    mkdirSync(DATA_DIR, { recursive: true });
-    const line = JSON.stringify({ at: new Date().toISOString(), ...entry });
-    appendFileSync(join(DATA_DIR, 'audit.jsonl'), `${line.length > 4000 ? JSON.stringify({ ...entry, input: '[large]', at: new Date().toISOString() }) : line}\n`);
+    const row = { at: new Date().toISOString(), ...entry };
+    dataFiles.appendJsonlSync(join(DATA_DIR, 'audit.jsonl'), JSON.stringify(row).length > 4000 ? { ...entry, input: '[large]', at: row.at } : row); // data-store@1: one row per call
   } catch { /* never blocks a command */ }
 }
 
 export function readAudit(limit = 50) {
   const f = join(DATA_DIR, 'audit.jsonl');
-  if (!existsSync(f)) return [];
-  return read(f).trim().split('\n').filter(Boolean).slice(-limit).reverse().map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+  return (dataFiles.readTextSync(f, '') ?? '').trim().split('\n').filter(Boolean).slice(-limit).reverse().map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
 }
 
 /* ------------------------------------------------------------------ the local reads */

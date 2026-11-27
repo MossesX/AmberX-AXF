@@ -8,8 +8,9 @@
  * the shared secret). A command body can never say it was approved.
  * Secret: AXF_PASS_SECRET, else AXF_WALL_SECRET (the console's copy of the hub's wall secret, already on both sides).
  */
+import * as dataFiles from '../../../../../framework/core/data-files.mjs';
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
-import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { appendFileSync, chmodSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   PASS_APPROVED_VIA, PASS_FRAME, PASS_MAX_MINUTES, PASS_REQUEST_TTL_MS, PASS_SCOPES, PASS_SCOPE_IDS, passActive, passCommandChange, passCovering,
@@ -30,30 +31,27 @@ const PROOF_TTL_MS = 5 * 60 * 1000;
 /** { maxMinutes, timeZone }: the console's setting (Settings → Plugins → Token control), else env, else defaults. */
 export function passSettings() {
   let s = {};
-  try { s = JSON.parse(readFileSync(SETTINGS(), 'utf8')) ?? {}; } catch { /* defaults */ }
+  try { s = dataFiles.readJsonSync(SETTINGS(), null) ?? {}; } catch { /* defaults */ }
   const max = Number(s.maxMinutes ?? process.env.AXF_PASS_MAX_MINUTES ?? PASS_MAX_MINUTES);
   return { maxMinutes: Math.max(1, Math.min(PASS_MAX_MINUTES, Math.floor(max) || PASS_MAX_MINUTES)), timeZone: typeof s.timeZone === 'string' && s.timeZone ? s.timeZone : process.env.AXF_TIMEZONE || 'America/New_York' };
 }
 export function savePassSettings(patch) {
   const next = { ...passSettings(), ...(patch && typeof patch === 'object' ? patch : {}) };
   next.maxMinutes = Math.max(1, Math.min(PASS_MAX_MINUTES, Math.floor(Number(next.maxMinutes)) || PASS_MAX_MINUTES));
-  mkdirSync(DATA_DIR, { recursive: true });
-  writeFileSync(SETTINGS(), `${JSON.stringify(next, null, 2)}\n`);
+  dataFiles.writeJsonSync(SETTINGS(), next);
   return next;
 }
 
 function readStore() {
-  try { const d = JSON.parse(readFileSync(FILE(), 'utf8')); if (d && d.$axf === PASS_FRAME && Array.isArray(d.passes)) return d; } catch { /* first run */ }
+  try { const d = dataFiles.readJsonSync(FILE(), null); if (d && d.$axf === PASS_FRAME && Array.isArray(d.passes)) return d; } catch { /* first run */ }
   return { $axf: PASS_FRAME, passes: [] };
 }
 function writeStore(d) {
   const ended = d.passes.filter((p) => p.state !== 'active' && p.state !== 'pending');
   const live = d.passes.filter((p) => p.state === 'active' || p.state === 'pending');
   const out = { $axf: PASS_FRAME, updatedAt: new Date().toISOString(), passes: [...live, ...ended.slice(0, KEEP_ENDED)] };
-  mkdirSync(DATA_DIR, { recursive: true });
-  const tmp = `${FILE()}.tmp-${process.pid}`;
-  writeFileSync(tmp, `${JSON.stringify(out, null, 1)}\n`, { mode: 0o600 });
-  renameSync(tmp, FILE());
+  dataFiles.writeJsonSync(FILE(), out, 1);
+  try { chmodSync(FILE(), 0o600); } catch { /* the row is on axf-data: no local file */ }
   return out;
 }
 

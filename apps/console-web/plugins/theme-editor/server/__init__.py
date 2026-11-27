@@ -17,7 +17,8 @@ from fastapi import APIRouter, Body, HTTPException
 
 import console_context as cx
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import storage
+
+import data_store
 
 router = APIRouter()
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,59}$")
@@ -101,7 +102,7 @@ def save_theme(body: dict = Body(...)):
             raise HTTPException(409, f"{a['id']} is already saved; pick another name or overwrite it")
         if not p.exists() and len(themes()) >= MAX_THEMES:
             raise HTTPException(409, f"at most {MAX_THEMES} saved themes; delete some first")
-        storage.write_json(p, a)  # atomic, 0600, folder 0700
+        data_store.write_json(p, a)  # atomic, 0600, folder 0700
     return {"asset": a}
 
 

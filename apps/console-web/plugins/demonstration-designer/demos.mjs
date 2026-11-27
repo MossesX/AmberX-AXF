@@ -21,6 +21,7 @@
  *
  * Env: AXF_DEMO_DESIGNER_DIR (the data folder), AXF_REPO_ROOT, AXF_FFMPEG (an ffmpeg binary). No model, no network.
  */
+import * as files from '../../../../framework/core/data-files.mjs';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { homedir } from 'node:os';
@@ -34,8 +35,10 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = process.env.AXF_REPO_ROOT || join(HERE, '../../../..');
 export const DATA_DIR = process.env.AXF_DEMO_DESIGNER_DIR || join(ROOT, '.axf-console/plugins/demonstration-designer');
 const ID = /^[a-z0-9][a-z0-9-]{1,47}$/;
-const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
-const writeJson = (p, v) => { mkdirSync(dirname(p), { recursive: true }); writeFileSync(p, `${JSON.stringify(v, null, 1)}\n`); };
+// data-store@1: one row per demonstration, pitch, clip and the settings (framework/core/data-files.mjs); media files stay files.
+const readJson = (p) => { const t = files.readTextSync(p, null); if (t === null) throw Object.assign(new Error(`no record ${p}`), { code: 'ENOENT' }); return JSON.parse(t); };
+const has = (p) => files.existsAnySync(p);
+const writeJson = (p, v) => files.writeJsonSync(p, v, 1);
 const dirOf = (kind) => join(DATA_DIR, kind);
 const fileOf = (kind, id) => join(dirOf(kind), `${id}.json`);
 const assertId = (id) => { if (!ID.test(id ?? '')) throw new Error(`"${id}" is not a demo id (lowercase letters, digits and dashes, 2 to 48)`); };
@@ -44,7 +47,7 @@ const assertId = (id) => { if (!ID.test(id ?? '')) throw new Error(`"${id}" is n
 
 export function settings() {
   const f = join(DATA_DIR, 'settings.json');
-  try { return E.normalizeSettings(existsSync(f) ? readJson(f) : {}); } catch { return E.normalizeSettings({}); }
+  try { return E.normalizeSettings(has(f) ? readJson(f) : {}); } catch { return E.normalizeSettings({}); }
 }
 export function saveSettings(patch) {
   const next = E.mergeSettings(settings(), patch);
@@ -56,13 +59,12 @@ export function saveSettings(patch) {
 
 function listKind(kind) {
   const out = [];
-  if (!existsSync(dirOf(kind))) return out;
-  for (const f of readdirSync(dirOf(kind)).filter((n) => n.endsWith('.json')).sort()) {
+  for (const f of files.listSync(dirOf(kind)).filter((n) => n.endsWith('.json')).sort()) {
     try { const a = readJson(join(dirOf(kind), f)); if (a?.$axf === 'asset@1' && a.id) out.push(a); } catch { /* a half-written file is skipped */ }
   }
   return out;
 }
-const pitchOf = (id) => { const f = fileOf('pitch', id); try { return existsSync(f) ? readJson(f) : null; } catch { return null; } };
+const pitchOf = (id) => { const f = fileOf('pitch', id); try { return has(f) ? readJson(f) : null; } catch { return null; } };
 
 /** One row per demo (what the list shows). */
 export function summarize(a) {
@@ -77,7 +79,7 @@ export const list = () => listKind('demonstration').map(summarize).sort((a, b) =
 export function get(id) {
   assertId(id);
   const f = fileOf('demonstration', id);
-  if (!existsSync(f)) return null;
+  if (!has(f)) return null;
   const a = readJson(f);
   return { ...a, pitch: pitchOf(id) ?? undefined };
 }
@@ -99,7 +101,7 @@ export function save(raw, { reason = 'saved' } = {}) {
 export function remove(id) {
   assertId(id);
   let removed = false;
-  for (const kind of ['demonstration', 'pitch']) { const f = fileOf(kind, id); if (existsSync(f)) { rmSync(f); removed = true; } }
+  for (const kind of ['demonstration', 'pitch']) { const f = fileOf(kind, id); if (has(f)) { files.removeSync(f); removed = true; } }
   return removed;
 }
 
@@ -185,7 +187,7 @@ export function pruneMedia(keep) {
   const clips = listKind('clip').sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
   for (const c of clips.slice(Math.max(1, keep))) {
     for (const k of ['video', 'poster']) { const p = c.data?.media?.[k]; if (p && !/^https:/.test(p) && existsSync(join(DATA_DIR, p))) rmSync(join(DATA_DIR, p)); }
-    rmSync(fileOf('clip', c.id));
+    files.removeSync(fileOf('clip', c.id));
   }
 }
 
@@ -195,7 +197,7 @@ export const listMedia = () => listKind('clip').map((c) => ({ id: c.id, name: c.
 export function exportMp4(clipId) {
   assertId(clipId);
   const f = fileOf('clip', clipId);
-  if (!existsSync(f)) throw new Error(`no clip ${clipId}`);
+  if (!has(f)) throw new Error(`no clip ${clipId}`);
   const c = readJson(f);
   const src = c.data?.media?.video ?? '';
   if (!src || /^https:/.test(src)) throw new Error('this clip has no recording file');

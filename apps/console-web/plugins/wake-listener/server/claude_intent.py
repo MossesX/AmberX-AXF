@@ -33,6 +33,8 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeout
 from pathlib import Path
 from typing import Any, Callable
 
+import data_store
+
 try:
     from . import claude_tools as ct
 except ImportError:  # loaded on its own (test.py)
@@ -92,22 +94,18 @@ class Status:
         self.clock = clock
         self.lock = threading.Lock()
         self.data: dict[str, Any] = {"connected": None, "model": "", "checkedAt": 0, "failedAt": 0, "error": "", "lastMode": "", "lastFallbackReason": "", "lastAt": 0}
-        if path and path.exists():
+        if path:
             try:
-                self.data.update(json.loads(path.read_text()))
-            except (OSError, ValueError):
+                self.data.update(data_store.read_json(path, {}) or {})
+            except (OSError, ValueError, TypeError, data_store.DataStoreError):
                 pass
 
     def _save(self) -> None:
         if not self.path:
             return
         try:
-            self.path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-            tmp = self.path.with_suffix(".tmp")
-            tmp.write_text(json.dumps(self.data))
-            tmp.chmod(0o600)
-            tmp.replace(self.path)
-        except OSError:
+            data_store.write_json(self.path, self.data, indent=None)
+        except (OSError, data_store.DataStoreError):
             pass
 
     def cooling(self) -> bool:

@@ -8,6 +8,7 @@
  * /projects the plugin's data folder keeps a local copy. Written the way HubTable.write does (inline under 64 KB, else
  * chunks), so the app reads our rows like its own.
  */
+import * as dataFiles from '../../../../../framework/core/data-files.mjs';
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import * as core from './amberx-core.gen.mjs';
@@ -24,8 +25,9 @@ export function notesDir() {
   return join(DATA_DIR, core.DATA_FOLDER);
 }
 
-const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
-function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, JSON.stringify(v)); renameSync(tmp, f); }
+// data-store@1: the hub tables this plugin edits are records on axf-data (framework/core/data-files.mjs).
+const readJson = (f) => { try { return dataFiles.readJsonSync(f, null); } catch { return null; } };
+function writeJson(f, v) { dataFiles.writeJsonSync(f, v, 0); }
 
 function readTable(name) {
   const dir = join(notesDir(), name);

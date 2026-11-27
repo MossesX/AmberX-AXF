@@ -25,6 +25,8 @@ from importlib.util import find_spec
 from pathlib import Path
 from typing import Any, Callable
 
+import data_store
+
 DEFAULT_PROJECT = "amberx-recordings"
 FORMAT = "audio-transcript@1"
 PART_FORMAT = "audio-part@1"
@@ -60,23 +62,19 @@ def memory_free_mb() -> int:
 
 
 def read_json(p: Path) -> dict[str, Any] | None:
-    try:
-        d = json.loads(p.read_text())
-        return d if isinstance(d, dict) else None
-    except (OSError, ValueError):
-        return None
+    """One record through data-store@1 (a recording, a part, a transcript, the retry state): its row, or None."""
+    d = data_store.read_json(p, None)
+    return d if isinstance(d, dict) else None
 
 
 def pending(base: Path, failed: dict[str, Any]) -> list[dict[str, Any]]:
     """Recordings still to transcribe, newest first (the session Brett just had comes before an old backlog)."""
     out = []
-    try:
-        names = sorted(p for p in (base / "recordings").iterdir() if p.suffix == ".json")
-    except OSError:
-        return []
+    names = sorted(base / "recordings" / n for n in data_store.list_files(base / "recordings") if "/" not in n and n.endswith(".json"))
+    done = set(data_store.list_files(base / "transcripts"))
     for p in names:
         rid = p.stem
-        if not ID.match(rid) or (base / "transcripts" / f"{rid}.json").exists() or int((failed.get(rid) or {}).get("tries", 0)) >= MAX_TRIES:
+        if not ID.match(rid) or f"{rid}.json" in done or int((failed.get(rid) or {}).get("tries", 0)) >= MAX_TRIES:
             continue
         r = read_json(p)
         if r and not r.get("deleted"):
@@ -133,10 +131,7 @@ def document(rec: dict[str, Any], out: dict[str, Any], model: str, now: str) -> 
 
 
 def write_doc(p: Path, doc: dict[str, Any]) -> None:
-    p.parent.mkdir(parents=True, exist_ok=True)
-    tmp = p.with_suffix(".tmp")
-    tmp.write_text(json.dumps(doc, ensure_ascii=False))
-    os.replace(tmp, p)
+    data_store.write_json(p, doc, indent=None, ensure_ascii=False, mode=0o644)  # one row per transcript
 
 
 def run_once(base: Path, state: dict[str, Any], models: Path, job: Callable[[Path, Path], dict[str, Any]] = run_job,

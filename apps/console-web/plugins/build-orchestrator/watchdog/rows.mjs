@@ -26,6 +26,7 @@
  * AXF_WATCHDOG_DIR overrides): settings.json, state.json (last run), runs.jsonl (every run), log.jsonl
  * (the cleanup log; log-YYYY-MM.jsonl after the month turns), github-etags.json (the facts gatherer's cache), run.lock.
  */
+import * as DF from '../../../../../framework/core/data-files.mjs';
 import { appendFileSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -47,9 +48,10 @@ const RUNS_KEPT = 200;
 
 export const dataDir = () => process.env.AXF_WATCHDOG_DIR || join(consoleRoot(), '.axf-console', 'plugins', 'build-orchestrator', 'watchdog');
 const file = (n) => join(dataDir(), n);
-const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
-const readLines = (f) => { try { return readFileSync(f, 'utf8').split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean); } catch { return []; } };
+// data-store@1: the watchdog's settings, state and run lines are rows on axf-data (framework/core/data-files.mjs).
+const readJson = (f, d) => { try { return DF.readJsonSync(f, null) ?? d; } catch { return d; } };
+function writeJson(f, v) { DF.writeJsonSync(f, v, 1); }
+const readLines = (f) => { try { return (DF.readTextSync(f, '') ?? '').split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean); } catch { return []; } };
 
 // ------------------------------------------------------------------ settings
 
@@ -200,10 +202,10 @@ export async function run(opts = {}) {
 
 export function saveRun(rec) {
   writeJson(file('state.json'), { $axf: 'watchdog-state@1', last: rec, lastOk: rec.ok ? rec.at : readJson(file('state.json'), {})?.lastOk ?? '' });
-  const f = file('runs.jsonl'); mkdirSync(dirname(f), { recursive: true });
-  appendFileSync(f, `${JSON.stringify(rec)}\n`);
-  const lines = readFileSync(f, 'utf8').split('\n').filter(Boolean);
-  if (lines.length > RUNS_KEPT * 2) writeFileSync(f, `${lines.slice(-RUNS_KEPT).join('\n')}\n`);
+  const f = file('runs.jsonl');
+  DF.appendJsonlSync(f, rec);
+  const lines = (DF.readTextSync(f, '') ?? '').split('\n').filter(Boolean);
+  if (lines.length > RUNS_KEPT * 2) DF.writeTextSync(f, `${lines.slice(-RUNS_KEPT).join('\n')}\n`);
 }
 
 export const lastRuns = (n = 20) => readLines(file('runs.jsonl')).slice(-n).reverse();

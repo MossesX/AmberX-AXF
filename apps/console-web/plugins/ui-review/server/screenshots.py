@@ -48,6 +48,8 @@ from fastapi.responses import FileResponse
 from . import conform as cf
 from .schema import _eastern, local_time as _schema_local_time  # noqa: F401 — _eastern re-exported for the tests
 
+import data_store
+
 SCHEMA = "ui-screenshot@1"
 GROUP_SCHEMA = "ui-review-group@1"  # was shot-group@1 (same fields)
 DEFAULT_TZ = "America/New_York"
@@ -269,16 +271,10 @@ class Store:
         """Refuses (SchemaError) to write anything that isn't ui-review-item@1 / ui-review-group@1."""
         out, errors = self.stored(doc)
         cf.refuse(errors)
-        self.root.mkdir(parents=True, exist_ok=True)
-        tmp = self.root / "index.json.tmp"
-        tmp.write_text(json.dumps(out, indent=1))
-        tmp.replace(self.root / "index.json")
+        data_store.write_json(self.root / "index.json", out, indent=1, mode=0o644)
 
     def doc(self) -> dict:
-        try:
-            d = json.loads((self.root / "index.json").read_text())
-        except (FileNotFoundError, json.JSONDecodeError):
-            d = None
+        d = data_store.read_json(self.root / "index.json", None)
         if not isinstance(d, dict) or not isinstance(d.get("shots"), list):
             d = {"$axf": "ui-screenshots@1", "shots": []}
         if not isinstance(d.get("groups"), list):
@@ -514,14 +510,10 @@ class Store:
         for x in moved:
             shutil.rmtree(item_shots / x, ignore_errors=True)
         if moved:
-            self.root.mkdir(parents=True, exist_ok=True)
             log = self.root / "migrated.json"
-            try:
-                past = json.loads(log.read_text())
-            except (FileNotFoundError, json.JSONDecodeError):
-                past = []
+            past = data_store.read_json(log, [])
             past = past if isinstance(past, list) else []
-            log.write_text(json.dumps([*past, {"at": _now(), "items": moved, "shots": added}], indent=1))
+            data_store.write_json(log, [*past, {"at": _now(), "items": moved, "shots": added}], indent=1, mode=0o644)
         groups = self.repair()  # the moved shots land in '<title prefix> - <their date time>' groups
         return {"moved": moved, "shots": added, "groups": groups}
 

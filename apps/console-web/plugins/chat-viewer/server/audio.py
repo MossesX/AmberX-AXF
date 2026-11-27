@@ -26,6 +26,8 @@ from typing import Any, Callable
 
 from . import schema as S
 
+import data_store
+
 WORKER = Path(__file__).resolve().parent / "tts_worker.py"
 HF = "https://huggingface.co/rhasspy/piper-voices/resolve/main"
 # Piper voices offered in the viewer (an open list: any rhasspy/piper-voices id works in settings).
@@ -148,6 +150,7 @@ class Audio:
         p = self._data() / "tts-keys.json"
         p.parent.mkdir(parents=True, exist_ok=True)
         tmp = p.with_suffix(".tmp")
+        # axf-data: not data (provider API keys: an owner-only secret file on this machine, never a database row)
         tmp.write_text(json.dumps(k))
         tmp.chmod(0o600)
         tmp.replace(p)
@@ -244,6 +247,7 @@ class Audio:
                 job_file = self._data() / "tmp" / f"{j['id']}.json"
                 try:
                     job_file.parent.mkdir(parents=True, exist_ok=True)
+                    # axf-data: not data (the renderer's input for this one job: a temp file, deleted when it ends)
                     job_file.write_text(json.dumps({"engine": engine, "voices": voices, "turns": [{"role": t["role"], "text": t["text"]} for t in turns],
                                                     "pauseMs": int(opts.get("pauseMs") or 450), "out": str(out_dir / name), "format": opts.get("format") or "mp3",
                                                     "model": opts.get("model") or ""}))
@@ -270,7 +274,7 @@ class Audio:
                     f = Path(result["file"])
                     meta = {**meta_base, "file": f.name, "format": result["format"], "duration": round(result["duration"], 2),
                             "chapters": chapters(turns, result["offsets"]), "bytes": f.stat().st_size}
-                    f.with_suffix(".json").write_text(json.dumps(meta, indent=1))
+                    data_store.write_json(f.with_suffix(".json"), meta, indent=1, mode=0o644)  # one row per export
                     j["state"], j["result"] = "done", meta
                 except Exception as e:  # noqa: BLE001
                     j["state"], j["error"] = "failed", str(e)[:600]
@@ -284,13 +288,12 @@ class Audio:
 
     def exports(self, session_id: str = "") -> list[dict[str, Any]]:
         d = self._out()
-        if not d.is_dir():
-            return []
         out = []
-        for p in d.glob("*.json"):
-            try:
-                m = json.loads(p.read_text())
-            except (OSError, ValueError):
+        for name in data_store.list_files(d):
+            if "/" in name or not name.endswith(".json"):
+                continue
+            m = data_store.read_json(d / name, None)
+            if not isinstance(m, dict):
                 continue
             if m.get("$axf") == "chat-audio@1" and (not session_id or m.get("sessionId") == session_id) and (d / m.get("file", "")).is_file():
                 out.append(m)
@@ -307,7 +310,7 @@ class Audio:
         if not p or p.suffix == ".json":
             return False
         p.unlink()
-        p.with_suffix(".json").unlink(missing_ok=True)
+        data_store.remove(p.with_suffix(".json"))
         return True
 
 

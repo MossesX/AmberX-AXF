@@ -18,7 +18,8 @@ from fastapi import APIRouter, Body, HTTPException
 
 import console_context as cx
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import storage
+
+import data_store
 
 router = APIRouter()
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,47}$")
@@ -45,13 +46,13 @@ def _file() -> Path:
 
 
 def load() -> dict[str, dict[str, Any]]:
-    raw = storage.read_json(_file(), {})
+    raw = data_store.read_json(_file(), {})
     items = raw.get("designs") if isinstance(raw, dict) else None
     return {k: v for k, v in (items or {}).items() if isinstance(v, dict) and ID_RE.match(k)}
 
 
 def _save(designs: dict[str, dict[str, Any]]) -> None:
-    storage.write_json(_file(), {"$axf": "context-menu-designs@1", "designs": designs})
+    data_store.write_json(_file(), {"$axf": "context-menu-designs@1", "designs": designs})
 
 
 def _s(v: Any, n: int) -> str:

@@ -40,7 +40,8 @@ import build_defaults
 import console_context as cx
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import http as axf_http
-from axf_server import storage
+
+import data_store
 
 router = APIRouter()
 FOLDER = "plugins-menu"
@@ -118,7 +119,7 @@ def _load() -> dict[str, Any]:
 
 
 def _save(db: dict[str, Any]) -> None:
-    storage.write_json(data_dir() / "archives.json", db, indent=None)  # atomic, 0600, folder 0700
+    data_store.write_json(data_dir() / "archives.json", db, indent=None)  # atomic, 0600, folder 0700
 
 
 def _config() -> dict[str, Any]:
@@ -619,5 +620,5 @@ def get_config() -> dict[str, Any]:
 def put_config(body: dict[str, Any]) -> dict[str, Any]:
     cfg = clean_config({**_config(), **(body if isinstance(body, dict) else {})})
     with _lock:
-        storage.write_json(data_dir() / "config.json", cfg, indent=None)
+        data_store.write_json(data_dir() / "config.json", cfg, indent=None)
     return {"config": cfg}

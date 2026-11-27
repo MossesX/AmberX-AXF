@@ -32,6 +32,8 @@ from fastapi.responses import JSONResponse
 import console_context as cx
 import plugin_services
 
+import data_store
+
 FOLDER = "plugin-commands"
 RUNNER = Path(__file__).resolve().parents[1] / "commands.mjs"
 ROOT = RUNNER.parents[4]
@@ -466,10 +468,8 @@ SETTINGS = {"mcpTools": True, "perPluginTools": True}
 
 def _settings() -> dict[str, Any]:
     """The plugin's two switches (Settings → Plugins → Plugin commands): MCP tools at all, and one tool per command."""
-    try:
-        saved = json.loads((DATA_DIR / "settings.json").read_text())
-    except (OSError, ValueError):
-        saved = {}
+    saved = data_store.read_json(DATA_DIR / "settings.json", {})
+    saved = saved if isinstance(saved, dict) else {}
     return {k: saved.get(k, v) if isinstance(saved.get(k, v), bool) else v for k, v in SETTINGS.items()}
 
 
@@ -526,8 +526,7 @@ async def put_settings(request: Request) -> dict[str, Any]:
     for k in SETTINGS:
         if isinstance((body or {}).get(k), bool):
             cur[k] = body[k]
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    (DATA_DIR / "settings.json").write_text(json.dumps(cur, indent=1) + "\n")
+    data_store.write_json(DATA_DIR / "settings.json", cur, indent=1, trailing_newline=True, mode=0o644)
     from fastapi.concurrency import run_in_threadpool
     return {**cur, "tools": await run_in_threadpool(sync_mcp, True)}
 
