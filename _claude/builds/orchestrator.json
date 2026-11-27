@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T05:10:38.606Z",
+ "updatedAt": "2026-11-27T05:11:17.072Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -15650,7 +15650,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s4",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T05:10:01.791Z",
+   "updatedAt": "2026-11-27T05:10:48.596Z",
    "builtAt": "",
    "notes": [
     {
@@ -15951,18 +15951,19 @@
     },
     {
      "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-27T05:09:29.725Z",
-     "by": "watchdog"
+     "at": "2026-11-27T05:09:29.725Z"
     },
     {
      "text": "Watchdog: step s4 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-27T05:09:29.725Z",
-     "by": "watchdog"
+     "at": "2026-11-27T05:09:29.725Z"
     },
     {
      "text": "Watchdog: step s5 failed at building, attempt 2: tmux session axf-emergency-check-can-these-plugins---s5--gina is gone while the step was building.",
-     "at": "2026-11-27T05:09:29.725Z",
-     "by": "watchdog"
+     "at": "2026-11-27T05:09:29.725Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s6--earl, shared account login)",
+     "at": "2026-11-27T05:10:48.596Z"
     }
    ],
    "approvals": [],
@@ -20359,7 +20360,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T05:09:57.712Z",
+   "updatedAt": "2026-11-27T05:11:09.414Z",
    "builtAt": "",
    "notes": [
     {
@@ -20704,8 +20705,11 @@
     },
     {
      "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-27T05:09:29.725Z",
-     "by": "watchdog"
+     "at": "2026-11-27T05:09:29.725Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s5--lenny, shared account login)",
+     "at": "2026-11-27T05:10:48.099Z"
     }
    ],
    "approvals": [],
@@ -20716,8 +20720,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "emergency-rip-out-the-7-mb-status---s5",
-    "brief": "# EMERGENCY: rip out the 7 MB status file: step s5\n\nBuild emergency-rip-out-the-7-mb-status- (Pipeline 2.0), step s5 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-rip-out-the-7-mb-status---s5 (already cut from main) · branch claude/emergency-rip-out-the-7-mb-status---s5.\n\n## Your step\nBuild-orchestrator server routes: no status file. In apps/console-web/plugins/build-orchestrator/server/, find every route that reads, serves or writes the pipeline status JSON file (orchestrator tabs data, fill status, pipeline lists). Change them to query the Postgres builds store by status/project with limit/offset paging and to write status as per-build row updates through the existing data_store API. Responses carry a page of rows plus totals, never the whole set. Keep route paths and the response fields the UI reads, adding only paging fields (limit, offset, total). Touch only files under server/. Commit.\n\nFiles: apps/console-web/plugins/build-orchestrator/server/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "emergency-rip-out-the-7-mb-status---s6",
+    "brief": "# EMERGENCY: rip out the 7 MB status file: step s6\n\nBuild emergency-rip-out-the-7-mb-status- (Pipeline 2.0), step s6 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-rip-out-the-7-mb-status---s6 (already cut from main) · branch claude/emergency-rip-out-the-7-mb-status---s6.\n\n## Your step\nBuild-orchestrator UI: paged status reads. In the plugin's web UI (apps/console-web/plugins/build-orchestrator/ui/ or its .tsx views; not server/, not pipeline.mjs), update the orchestrator tabs and the fill-status view to request status by tab/status/project with limit/offset and load more on scroll or page. They must tolerate both the current response and one carrying limit/offset/total, and never fetch or hold the whole status document. Remove any client code that reads a status file URL. Use framework controls and tokens only. Run the console typecheck, then commit.\n\nFiles: apps/console-web/plugins/build-orchestrator/ui/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []

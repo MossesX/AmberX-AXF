@@ -845,8 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-26 22:41 UTC · `app-voice-commands` added (6 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `apps-control-surface` added (5 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `jump-menu-asset` added (5 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `settings-placement-everywhere` added (6 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `live-sessions-plugin` added (6 steps) (all) · foreign-write
@@ -1245,6 +1243,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 05:09 UTC · `emergency-check-can-these-plugins-` s5 undone, note (all) · watchdog
 - 2026-11-27 05:09 UTC · `emergency-remove-every-leftover-js` s3 undone, note (all) · watchdog
 - 2026-11-27 05:10 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:10 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:10 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 
 ## Token passes (log)
 
