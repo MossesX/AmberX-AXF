@@ -25,9 +25,10 @@ from typing import Any
 
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf.contracts import agents as contract  # framework/python
-from axf_server import storage
 
 from . import llm, store
+
+import data_store
 
 _lock = threading.RLock()
 TYPES = contract.MEMORY_TYPES
@@ -58,7 +59,7 @@ def load(scope: str) -> dict[str, Any]:
 def save(scope: str, mem: dict[str, Any]) -> None:
     with _lock:
         p = _path(scope)
-        storage.write_json(p, mem, indent=None, ensure_ascii=False)  # atomic, 0600 (axf_server.storage)
+        data_store.write_json(p, mem, indent=None, ensure_ascii=False)  # data-store@1: one record
 
 
 tokens = contract.tokens

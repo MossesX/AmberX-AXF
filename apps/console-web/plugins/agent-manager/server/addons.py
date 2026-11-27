@@ -17,6 +17,8 @@ from axf.contracts import agents as contract  # framework/python (sys.path set b
 
 from . import memory, store, toolkit, training
 
+import data_store
+
 BUNDLED = store.PLUGIN_DIR / "addons"
 IMPORTED = store.DATA / "addons"
 SECTIONS = contract.ADDON_SECTIONS
@@ -31,16 +33,21 @@ def _valid(b: Any) -> dict[str, Any]:
 
 def bundles() -> dict[str, tuple[dict[str, Any], str]]:
     out: dict[str, tuple[dict[str, Any], str]] = {}
-    for base, origin in ((BUNDLED, "bundled"), (IMPORTED, "imported")):
-        if not base.exists():
-            continue
-        files = sorted(base.glob("*/addon.json")) + sorted(base.glob("*.json"))
-        for f in files:
+    if BUNDLED.exists():  # shipped with the plugin: files in its folder, not data
+        for f in sorted(BUNDLED.glob("*/addon.json")) + sorted(BUNDLED.glob("*.json")):
             try:
                 b = _valid(json.loads(f.read_text()))
-                out.setdefault(b["id"], (b, origin))
+                out.setdefault(b["id"], (b, "bundled"))
             except (OSError, ValueError):
                 continue
+    for name in data_store.list_files(IMPORTED):  # one row per imported add-on (data-store@1)
+        if not (name.endswith(".json") and "/" not in name) and not name.endswith("/addon.json"):
+            continue
+        try:
+            b = _valid(data_store.read_json(IMPORTED / name, None))
+            out.setdefault(b["id"], (b, "imported"))
+        except (OSError, ValueError, TypeError, AttributeError):
+            continue
     return out
 
 
@@ -164,16 +171,14 @@ def import_bundle(data: dict[str, Any] | None = None, url: str | None = None, tr
     warnings = risky(b)
     if warnings and not trust:
         b = contract.strip_addon_risks(b)  # imported bundles don't get your secrets or private network unless you say so
-    IMPORTED.mkdir(parents=True, exist_ok=True, mode=0o700)
-    (IMPORTED / f"{b['id']}.json").write_text(json.dumps(b, indent=2))
+    data_store.write_json(IMPORTED / f"{b['id']}.json", b, indent=2, mode=0o644)
     return {"imported": b["id"], "name": b.get("name"), "warnings": warnings, "stripped": bool(warnings and not trust)}
 
 
 def remove_imported(aid: str) -> None:
     p = IMPORTED / f"{aid}.json"
-    if not p.exists():
+    if not data_store.remove(p):
         raise KeyError(aid)
-    p.unlink()
 
 
 def export_agent(agent_id: str) -> dict[str, Any]:
