@@ -1,0 +1,92 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-hub-runs-approved",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:11Z",
+ "build": {
+  "id": "hub-runs-approved",
+  "title": "axHub runs approved calls itself: hold the call, run on Approve, drop on Reject; sessions send once and never wait",
+  "profile": "all",
+  "category": "axHub",
+  "priority": "",
+  "repo": "axhub"
+ },
+ "said": {
+  "text": "send the command to axHub; axHub waits for approval and runs it or not; the session does not wait. Today a confirm call returns confirmation_required and drops the call, so the session must re-send it with the confirmation_id after approval, which is why sessions poll (each check re-reads the whole chat). Change: axHub stores the full call on create; Approve = the hub runs it itself and keeps the result; Reject/expire = dropped. The session gets an approval id at once and moves on; it reads the result once later only if needed. Replaces the polling rule (15 s x10 then 1 min). HELD: queued in Refactor; Brett says go.",
+  "verbatim": false,
+  "at": "2026-10-28T00:00:00Z",
+  "source": "chat",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "axHub: confirm calls are stored whole (tool, args, reason, caller) when created; Approve runs them in the hub as a job and keeps the result; Reject/expire drops them; old re-send-with-confirmation_id path keeps working",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-28T19:13:46.881Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "axHub: result lookup by approval id (pending/ran/failed/rejected/expired + output); MCP call returns {approval_id, state: pending} at once; AmberX push unchanged",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-28T19:13:46.881Z",
+   "doneAt": "2026-10-28T19:13:46.949Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Shared rule: send once, never poll; read the result once only when needed (replaces the 15 s / 1 min retry rule); THREADS; tests; PR (axHub) + merge approval",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-28T19:13:46.949Z",
+   "doneAt": "2026-10-28T19:13:47.023Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/hub-runs-approved (axHub)",
+ "pr": {
+  "repo": "axhub",
+  "number": 14,
+  "url": "https://github.com/MossesX/axHub/pull/14"
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "",
+ "landedAt": "",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

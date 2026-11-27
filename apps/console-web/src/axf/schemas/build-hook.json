@@ -11,17 +11,22 @@
     "pr-merged",
     "addendum",
     "cancelled",
-    "restored"
+    "restored",
+    "shipped"
   ],
   "buildStatuses": [
     "pending",
     "queued",
     "running",
     "waiting",
+    "fixing",
     "blocked",
     "failed",
     "built",
+    "landing",
+    "landed",
     "complete",
+    "escalated",
     "archived"
   ],
   "repos": [

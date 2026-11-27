@@ -1,0 +1,342 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-ui-review-predicted",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:38Z",
+ "build": {
+  "id": "ui-review-predicted",
+  "title": "UI Review shows predicted pictures before a build runs",
+  "profile": "all",
+  "category": "Console",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "UI Review must show PREDICTED pictures - what a build will probably look like - BEFORE it's built, so he can approve the look before an agent spends money. Assigned agent: **Snap Sully** (book on his card; he's also on ui-review-shots - run after it or build on its storage fix; if the all-rounder router is on main and he's busy, whoever is free - record who). Register in Urgent (id `ui-review-predicted`) + banner entry. Mark the predicted-shots part of pending item `batch-manager` as moved here (pending_change note).",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "# Build: ui-review-predicted (Urgent profile)\n\nBrett, Nov 3 2026 (voice): UI Review must show PREDICTED pictures - what a build will probably look like - BEFORE it's built, so he can approve the look before an agent spends money. Assigned agent: **Snap Sully** (book on his card; he's also on ui-review-shots - run after it or build on its storage fix; if the all-rounder router is on main and he's busy, whoever is free - record who). Register in Urgent (id `ui-review-predicted`) + banner entry. Mark the predicted-shots part of pending item `batch-manager` as moved here (pending_change note).\n\n## Build\n- s1 Predicted mockups: when a build is launched (or added to the orchestrator/pending list), generate a mockup per screen it will touch from the brief + step list (+ diff so far while running): render real framework components with the current theme/assets and demo data in a headless browser (reuse rebuild-shots / ui-screenshots capture tooling; do NOT build a new capture system). Phone + desktop. If an LLM is needed to turn the brief into a mockup spec, do it ONCE per build at launch with the cheapest capable model and cache it; record the cost on the item.\n- s2 UI Review item created at launch with status 'Predicted - approve the look', badge 'Predicted', before = current real screen (from main), after = predicted mockup. Brett can Approve look / Ask changes (comment goes to the build as an addendum before it starts or at the next step) / Reject (build is held, not started).\n- s3 Setting (Claude settings / UI Review settings): 'Wait for my look approval before UI builds start' (default OFF; when ON, UI-touching builds queue until the predicted look is approved).\n- s4 While running, the predicted shot refreshes as the diff grows; when the build finishes, the real after-shot replaces it live (badge 'Real'), with a toggle to compare predicted vs real.\n- s5 Backfill: create predicted items now for every queued/running build that touches UI (toolbar-tap-confirm, crew-live, follow-amber, claude-settings, agent-pick, home-cards-live, smart-menus).\n- s6 Commands declared once -> REST + MCP + CLI (predict, list predicted, approve look). Tests, screenshots, report `_claude/builds/reports/ui-review-predicted.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-ui-review-predicted",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T19:52:30.864Z",
+   "endedAt": "2026-11-03T21:59:20.515Z",
+   "exit": 0,
+   "costUsd": 15.1639
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "s1 Predicted mockups: a mockup spec per screen from the brief + steps (+ diff), rendered with real framework components and the current theme through the existing capture tooling, phone + desktop, cached per build",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T19:52:30.864Z",
+   "doneAt": "2026-11-03T20:18:52.868Z",
+   "actualMin": 26,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "s2 UI Review item at launch: status Predicted - approve the look, badge Predicted, before = current screen, after = mockup; Approve look / Ask changes (addendum) / Reject (held)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T20:18:52.868Z",
+   "doneAt": "2026-11-03T20:18:55.356Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "s3 Setting: Wait for my look approval before UI builds start (default off); UI builds queue until the look is approved",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T20:18:55.356Z",
+   "doneAt": "2026-11-03T20:18:57.587Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "s4 Refresh while running; real after-shot replaces it at the end (badge Real) with a predicted vs real toggle",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T20:18:57.587Z",
+   "doneAt": "2026-11-03T20:21:13.847Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "s5 Backfill predicted items for queued/running UI builds (toolbar-tap-confirm, crew-live, follow-amber, claude-settings, agent-pick, home-cards-live, smart-menus)",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-03T20:21:13.847Z",
+   "doneAt": "2026-11-03T21:58:22.280Z",
+   "actualMin": 97,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "s6 Commands declared once -> REST + MCP + CLI (predict, list predicted, approve look); tests, screenshots, report, THREADS, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T21:58:22.280Z",
+   "doneAt": "2026-11-03T21:58:23.579Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/ui-review-predicted",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 285,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/285"
+ },
+ "landedCommit": "ee9b7b6639fed528240e26bf2e3c81dc61daefe4",
+ "commits": [
+  "2d7d743d33e3206eb434e6a4e0580b7455839766",
+  "b93d50f833e04bfac2c9803d51fc19839d39bdf7",
+  "35c5fe3c0061601f0a4e5700705d21320e958dc6",
+  "f9d9c480977ebc65414d3ddd014e3648ecefae61",
+  "c3d51acc912c09788114cbba0379b80caf7b8128",
+  "4549049ffbd6667219aea327f83fea37fe4a3c42",
+  "bf68e15dca545bedeeb2dbcafa55af8b8d5c15f2",
+  "2989d5bd485ead8a5564e1a55267cd1a46d06e63",
+  "e2b570a80b65bc181cff2f8235132da3540401f2",
+  "39363323d1e0bfd5bb3470e2ef041790b6e8a4e3",
+  "b0341b13d4003135dfe30bdc56dc8297e5a4a346",
+  "cb44ec833807bb02a04180cfec8f24bbe1dae6ad",
+  "12b27600df950a4c5429574d1c5cfe7987e88c7c"
+ ],
+ "mergedAt": "2026-11-04T04:01:29Z",
+ "landedAt": "2026-11-04T04:01:28Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/current/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/ui-review-predicted.md",
+  "_claude/builds/reports/ui-review-predicted/shots/backfill-toolbar-tap-confirm-predicted-desktop.png",
+  "_claude/builds/reports/ui-review-predicted/shots/backfill-toolbar-tap-confirm-predicted-phone.png",
+  "_claude/builds/reports/ui-review-predicted/shots/predicted-ui-review-desktop.png",
+  "_claude/builds/reports/ui-review-predicted/shots/predicted-ui-review-phone.png",
+  "_claude/builds/reports/ui-review-predicted/shots/ui-review-look-setting-desktop.png",
+  "_claude/builds/reports/ui-review-predicted/shots/ui-review-look-setting-phone.png",
+  "_claude/builds/reports/ui-review-predicted/shots/ui-review-predicted-item-desktop.png",
+  "_claude/builds/reports/ui-review-predicted/shots/ui-review-predicted-item-phone.png",
+  "_claude/builds/store.json",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/ui-review/README.md",
+  "apps/console-web/plugins/ui-review/help.json",
+  "apps/console-web/plugins/ui-review/plugin.json",
+  "apps/console-web/plugins/ui-review/server/__init__.py",
+  "apps/console-web/plugins/ui-review/server/predicted.py",
+  "apps/console-web/plugins/ui-review/server/schema.py",
+  "apps/console-web/plugins/ui-review/test.py",
+  "apps/console-web/plugins/ui-review/web/index.tsx",
+  "apps/console-web/plugins/ui-review/web/keys.ts",
+  "apps/console-web/plugins/ui-review/web/look-settings.tsx",
+  "apps/console-web/plugins/ui-review/web/mockup.tsx",
+  "apps/console-web/plugins/ui-review/web/review-core.mjs",
+  "apps/console-web/plugins/ui-review/web/ui-review.css",
+  "apps/console-web/plugins/ui-review/web/ui.tsx",
+  "apps/console-web/src/axf/core/ui-predict.d.mts",
+  "apps/console-web/src/axf/core/ui-predict.mjs",
+  "apps/console-web/src/axf/core/ui-review-schema.mjs",
+  "apps/console-web/src/axf/schemas/json/ui-review-item.schema.json",
+  "apps/console-web/src/axf/schemas/ui-review.json",
+  "deploy/claude-headless.sh",
+  "framework/cli/ui-predict.mjs",
+  "framework/core/ui-predict.d.mts",
+  "framework/core/ui-predict.mjs",
+  "framework/core/ui-review-schema.mjs",
+  "framework/plan/profiles/current/framework/catalog/status.json",
+  "framework/plan/profiles/current/framework/plan/build-queue.json",
+  "framework/plan/profiles/current/framework/plan/pending.json",
+  "framework/plan/profiles/current/framework/plan/plan.json",
+  "framework/plan/profiles/current/tracker.json",
+  "framework/plan/profiles/urgent/framework/catalog/status.json",
+  "framework/plan/profiles/urgent/framework/plan/plan.json",
+  "framework/plan/profiles/urgent/tracker.json",
+  "framework/schemas/json/ui-review-item.schema.json",
+  "framework/schemas/ui-review.json",
+  "framework/spec/check-ui-predict.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/current/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/ui-review-predicted.md",
+    "_claude/builds/reports/ui-review-predicted/shots/backfill-toolbar-tap-confirm-predicted-desktop.png",
+    "_claude/builds/reports/ui-review-predicted/shots/backfill-toolbar-tap-confirm-predicted-phone.png",
+    "_claude/builds/reports/ui-review-predicted/shots/predicted-ui-review-desktop.png",
+    "_claude/builds/reports/ui-review-predicted/shots/predicted-ui-review-phone.png",
+    "_claude/builds/reports/ui-review-predicted/shots/ui-review-look-setting-desktop.png",
+    "_claude/builds/reports/ui-review-predicted/shots/ui-review-look-setting-phone.png",
+    "_claude/builds/reports/ui-review-predicted/shots/ui-review-predicted-item-desktop.png",
+    "_claude/builds/reports/ui-review-predicted/shots/ui-review-predicted-item-phone.png",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ui-review",
+   "files": [
+    "apps/console-web/plugins/ui-review/README.md",
+    "apps/console-web/plugins/ui-review/help.json",
+    "apps/console-web/plugins/ui-review/plugin.json",
+    "apps/console-web/plugins/ui-review/server/__init__.py",
+    "apps/console-web/plugins/ui-review/server/predicted.py",
+    "apps/console-web/plugins/ui-review/server/schema.py",
+    "apps/console-web/plugins/ui-review/test.py",
+    "apps/console-web/plugins/ui-review/web/index.tsx",
+    "apps/console-web/plugins/ui-review/web/keys.ts",
+    "apps/console-web/plugins/ui-review/web/look-settings.tsx",
+    "apps/console-web/plugins/ui-review/web/mockup.tsx",
+    "apps/console-web/plugins/ui-review/web/review-core.mjs",
+    "apps/console-web/plugins/ui-review/web/ui-review.css",
+    "apps/console-web/plugins/ui-review/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/profiles/current/framework/catalog/status.json",
+    "framework/plan/profiles/current/framework/plan/build-queue.json",
+    "framework/plan/profiles/current/framework/plan/pending.json",
+    "framework/plan/profiles/current/framework/plan/plan.json",
+    "framework/plan/profiles/current/tracker.json",
+    "framework/plan/profiles/urgent/framework/catalog/status.json",
+    "framework/plan/profiles/urgent/framework/plan/plan.json",
+    "framework/plan/profiles/urgent/tracker.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/core/ui-predict.d.mts",
+    "apps/console-web/src/axf/core/ui-predict.mjs",
+    "apps/console-web/src/axf/core/ui-review-schema.mjs",
+    "apps/console-web/src/axf/schemas/json/ui-review-item.schema.json",
+    "apps/console-web/src/axf/schemas/ui-review.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/ui-predict.d.mts",
+    "framework/core/ui-predict.mjs",
+    "framework/core/ui-review-schema.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/json/ui-review-item.schema.json",
+    "framework/schemas/ui-review.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/ui-predict.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-ui-predict.mjs"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-c9a82c5e",
+   "name": "Predicted looks in UI Review",
+   "status": "approved",
+   "group": "g-20261103-0eb42d50",
+   "url": "/review/r-20261103-c9a82c5e"
+  }
+ ],
+ "cost": {
+  "usd": 15.1639,
+  "estimated": false,
+  "tokens": {
+   "input": 406,
+   "output": 2516,
+   "cacheRead": 47492147,
+   "cacheWrite": 345821
+  }
+ },
+ "report": "_claude/builds/reports/ui-review-predicted.md",
+ "open": [
+  "Mockups are rule-based: they show the right controls and labels in the current theme, not the exact layout a build will end up with. An LLM refine pass can slot into `mockupSpec(build, { refine })` later without changing the format.",
+  "\"Before\" shots exist only for console screens the global search reaches; axHub web / AmberX screens get the mockup only.",
+  "Real after-shots at the end need `node_modules` in the build's worktree (skipped with a note otherwise; the build's own UI Review submit still lands as usual).",
+  "Claude settings plugin (#275) is not merged yet, so the setting lives in UI Review's settings only."
+ ]
+}

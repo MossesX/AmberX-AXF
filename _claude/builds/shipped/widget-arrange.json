@@ -1,0 +1,118 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-widget-arrange",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:25Z",
+ "build": {
+  "id": "widget-arrange",
+  "title": "Drag and snap banner and toolbar widgets (no overlaps)",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Widgets attached to banners and toolbars (clock, axHub badge, Claude badge, plugin widgets) overlap. Arrange mode: drag a widget, it snaps between the others on a side; arrangement saved per host as a look setting (axf.widgets.arrange.<host>), hot render. Web only.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Engine: arrangement layer + snap/move helpers in widgets.ts, fixtures",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s2",
+   "text": "Runtime: arrangement setting, move/reset, arrange mode + actions",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s3",
+   "text": "React: drag + snap on banner and toolbar, context menu",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s4",
+   "text": "CSS: no overlap on banner sides; drop marker",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s5",
+   "text": "Tests, PORTING note, docs, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-25T20:59:28.920Z",
+ "landedAt": "2026-10-25T20:59:28.920Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": [
+  "s1: Engine: arrangement layer + snap/move helpers in widgets.ts, fixtures",
+  "s2: Runtime: arrangement setting, move/reset, arrange mode + actions",
+  "s3: React: drag + snap on banner and toolbar, context menu",
+  "s4: CSS: no overlap on banner sides; drop marker",
+  "s5: Tests, PORTING note, docs, PR"
+ ]
+}

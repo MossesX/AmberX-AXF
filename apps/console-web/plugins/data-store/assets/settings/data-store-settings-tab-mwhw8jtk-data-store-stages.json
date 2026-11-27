@@ -1,0 +1,31 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "data-store-settings-tab-mwhw8jtk-data-store-stages",
+  "name": "data-store-settings-tab-mwhw8jtk: Stages: Local → Shadow → On axf-data",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "The move as stages left to right: Local → Shadow → On axf-data, each stage listing the namespaces in it with their counts, so it reads like a pipeline. The actions and the drift log sit under the stages; backups last.",
+  "tags": [
+    "ui-choice",
+    "choice-set:data-store-settings-tab-mwhw8jtk",
+    "choice-option:data-store-stages"
+  ],
+  "data": {
+    "layout": "list",
+    "header": "compact",
+    "levels": true,
+    "defaultLevel": "basic",
+    "view": "stages",
+    "order": [
+      "stages",
+      "mode",
+      "backups"
+    ],
+    "open": [
+      "stages",
+      "mode"
+    ],
+    "builtFor": "plugin:data-store"
+  }
+}

@@ -1,0 +1,317 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-claude-badge-vps",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:34Z",
+ "build": {
+  "id": "claude-badge-vps",
+  "title": "Claude badge: VPS and console connections",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "I need a setting in the Claude badge plugin that has a VPS connection and a console connection, and I need to be able to put them on icons only and select which icons for each one.",
+  "verbatim": true,
+  "at": "2026-11-06T20:18:34.992Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": [
+   {
+    "text": "Add a usage meter for the Claude account signed in on the VPS (used out of total, 5-hour and weekly) to the same badge plugin, same options (show/hide, icon only, icons per state). Reuse the existing usage-meter widget code; don't build a second meter. This covers the 'Banner widget: usage meter of the account signed in on the VPS' step of token-usage-log-accounts-plan-studio-control-small-steps; note it there.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   },
+   {
+    "text": "When we click that widget in the banner, it's gonna do whatever we have it set to do. Like, maybe it can drop down and show a list of all the accounts that are in console. It can show how many credits are left for all the accounts that are configured to connect to the VPS.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   }
+  ]
+ },
+ "brief": "# Build: claude-badge-vps\n\nBrett (voice): \"I need a setting in the Claude badge plugin that has a VPS connection and a console connection, and I need to be able to put them on icons only and select which icons for each one.\"\n\nClaude badge plugin (apps/console-web/plugins/claude-badge):\n1. Two connections, each its own badge/indicator on the banner:\n   - Console connection: the existing test (console AI via axf.llm@1).\n   - VPS connection: the Claude Code login on the VPS (which account, logged in or not, limit hit). Read it with plain code, zero tokens (e.g. the ai-keys/claude-accounts VPS status or a cheap read of /root/.claude.json email + credentials expiry); green = logged in and working, amber = limit hit / out of credits, gray/red = not logged in.\n2. Settings (Settings > Plugins > Claude badge): show/hide each one; Icons only switch per badge; pick the icon for each badge and each state (ok / no credit / error), extending the existing Badge icons picker.\n3. Covers step 18 of pending item token-usage-log-accounts-plan-studio-control (clock badge watches VPS login): note it there, don't build it twice.\n4. Tests, README, screenshots to UI Review, PR to the merge queue. Do NOT land directly.\n\nNothing gets removed. One session for the whole build, read only files you need, no full CLAUDE.md chain. Stay out of notes/tasks/todo and AmberX notification code (other builds).\n## UPDATE from Brett (replaces the scope above)\n\"I need the Claude badge, the axHub badge, the VPS badge and the AmberX badge, all in one plugin, all able to select which icon for which, and fully configurable.\"\n- One plugin holds four badges: Claude (console AI), axHub (connection/health), VPS (Claude login on the VPS), AmberX (phone app connected/last seen). Move the existing ones in; old plugins can be disabled, nothing removed.\n- Per badge: show/hide, icons only or icon + label, label text, icon per state (ok / warn / error / off), order on the banner.\n- All plain-code checks, zero tokens.\n\n## Addendum 2 (Brett, voice)\nAdd a usage meter for the Claude account signed in on the VPS (used out of total, 5-hour and weekly) to the same badge plugin, same options (show/hide, icon only, icons per state). Reuse the existing usage-meter widget code; don't build a second meter. This covers the 'Banner widget: usage meter of the account signed in on the VPS' step of token-usage-log-accounts-plan-studio-control-small-steps; note it there.\n\n## Addendum 3 (Brett, voice)\n\"When we click that widget in the banner, it's gonna do whatever we have it set to do. Like, maybe it can drop down and show a list of all the accounts that are in console. It can show how many credits are left for all the accounts that are configured to connect to the VPS.\"\n- Each badge/widget has a configurable tap action (setting): drop-down, open a screen, run a command, toggle, nothing.\n- Usage meter default tap = drop-down listing every Claude account saved in the console/VPS: name, type, active marker, credits left (5-hour + weekly, reset time), status. Plain code reads, zero tokens; cached with a refresh button.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-1"
+ ],
+ "runs": [
+  {
+   "session": "axf-claude-badge-vps--joey",
+   "account": "account-1",
+   "model": "Opus",
+   "startedAt": "2026-11-06T20:16:17.001Z",
+   "endedAt": "2026-11-06T20:32:29.779Z",
+   "exit": 0,
+   "costUsd": 4.3612
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Server: VPS login status (zero tokens) through the accounts and keys capabilities",
+   "model": "Opus",
+   "estimate": "20m",
+   "estimateMin": 20,
+   "startedAt": "2026-11-06T20:16:17.001Z",
+   "doneAt": "2026-11-06T20:27:06.402Z",
+   "actualMin": 11,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Web: second badge, polling, show/hide, Icons only, icon pickers per badge and state",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "2026-11-06T20:27:06.402Z",
+   "doneAt": "2026-11-06T20:27:07.100Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests + README + help + note on the token-usage build",
+   "model": "Opus",
+   "estimate": "15m",
+   "estimateMin": 15,
+   "startedAt": "2026-11-06T20:27:07.100Z",
+   "doneAt": "2026-11-06T20:27:07.891Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "CI checks, screenshots to UI Review, PR to the merge queue",
+   "model": "Opus",
+   "estimate": "20m",
+   "estimateMin": 20,
+   "startedAt": "2026-11-06T20:27:07.891Z",
+   "doneAt": "2026-11-06T20:31:14.742Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Addendum 1: Add a usage meter for the Claude account signed in on the VPS (used out of total, 5-hour and weekly) to the same badge plugin, same options (show/hide, icon only, icons per state).",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T20:31:14.742Z",
+   "doneAt": "2026-11-07T00:48:03.722Z",
+   "actualMin": 257,
+   "done": true
+  },
+  {
+   "id": "s5-1",
+   "text": "Add a usage meter for the Claude account signed in on the VPS (used out of total, 5-hour and weekly) to the same badge plugin, same options (show/hide, icon only, icons per state).",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T20:27:07.891Z",
+   "doneAt": "2026-11-06T20:31:14.742Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Addendum 2: Each badge/widget has a configurable tap action (setting): drop-down, open a screen, run a command, toggle, nothing. Usage meter default tap = drop-down listing every Claude account saved in the console/VPS: name, type, active marker, credits left (5-hour + weekly, reset time), status. Plain code re",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T20:31:14.742Z",
+   "doneAt": "2026-11-07T00:48:03.722Z",
+   "actualMin": 257,
+   "done": true
+  },
+  {
+   "id": "s6-1",
+   "text": "Each badge/widget has a configurable tap action (setting): drop-down, open a screen, run a command, toggle, nothing.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T20:27:07.891Z",
+   "doneAt": "2026-11-06T20:31:14.742Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s6-2",
+   "text": "Usage meter default tap = drop-down listing every Claude account saved in the console/VPS: name, type, active marker, credits left (5-hour + weekly, reset time), status. Plain code reads, zero tokens; cached with a refresh button.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T20:27:07.891Z",
+   "doneAt": "2026-11-06T20:31:14.742Z",
+   "actualMin": 4,
+   "done": true
+  }
+ ],
+ "branch": "claude/claude-badge-vps",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 366,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/366"
+ },
+ "landedCommit": "5a1128510e67bea4f0020fdc41c68141dadd74c6",
+ "commits": [
+  "eb189d1a6b998867788ed996b05df980a9e925c0",
+  "b0c07df4eb844741471042be15a8fc38097e3019"
+ ],
+ "mergedAt": "2026-11-07T04:24:24Z",
+ "landedAt": "2026-11-06T23:35:20Z",
+ "files": [
+  "_claude/builds/reports/claude-badge-vps.md",
+  "_claude/memory/STATUS.md",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/ai-keys/server/__init__.py",
+  "apps/console-web/plugins/ai-keys/test.py",
+  "apps/console-web/plugins/claude-accounts/server/__init__.py",
+  "apps/console-web/plugins/claude-accounts/test.py",
+  "apps/console-web/plugins/claude-badge/README.md",
+  "apps/console-web/plugins/claude-badge/help.json",
+  "apps/console-web/plugins/claude-badge/plugin.json",
+  "apps/console-web/plugins/claude-badge/server/__init__.py",
+  "apps/console-web/plugins/claude-badge/test.py",
+  "apps/console-web/plugins/claude-badge/web/index.tsx",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/ui/axf.css",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "claude-badge",
+   "files": [
+    "apps/console-web/plugins/claude-badge/README.md",
+    "apps/console-web/plugins/claude-badge/help.json",
+    "apps/console-web/plugins/claude-badge/plugin.json",
+    "apps/console-web/plugins/claude-badge/server/__init__.py",
+    "apps/console-web/plugins/claude-badge/test.py",
+    "apps/console-web/plugins/claude-badge/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/plugins/README.md",
+    "apps/console-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-keys",
+   "files": [
+    "apps/console-web/plugins/ai-keys/server/__init__.py",
+    "apps/console-web/plugins/ai-keys/test.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-accounts",
+   "files": [
+    "apps/console-web/plugins/claude-accounts/server/__init__.py",
+    "apps/console-web/plugins/claude-accounts/test.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/memory/STATUS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/claude-badge-vps.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "claude-badge test.py: 40 checks passing, 14 of them new for the VPS read. ai-keys test.py and claude-accounts test.py extended (133 and 54 passing).",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Browser check against mocked routes: every state, Icons only, picked icon, hide and show, desktop and phone. Not run against the live VPS read: the route ships with the console deploy.",
+   "command": "",
+   "result": "skip",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261106-47e4a96e",
+   "name": "Claude badge: VPS and console connections",
+   "status": "approved",
+   "group": "g-20261106-9dfd4a7d",
+   "url": "/review/r-20261106-47e4a96e"
+  }
+ ],
+ "cost": {
+  "usd": 4.3612,
+  "estimated": false,
+  "tokens": {
+   "input": 98,
+   "output": 397,
+   "cacheRead": 7243134,
+   "cacheWrite": 215520
+  }
+ },
+ "report": "_claude/builds/reports/claude-badge-vps.md",
+ "open": [
+  "Limit detection is only as good as the mark: a hit is recorded when a headless build stops on a limit. A limit hit in an interactive session leaves no mark. There is no zero-token way to ask whether a limit has reset, so the amber state lasts 24 hours (the AI keys window) unless the account changes.",
+  "On a phone the 5-second pop-out still draws over the neighbouring widgets, as it did before this build. Releasing the cap there pushes every widget into the More menu, because the banner's fit logic measures the widget with its pop-out. A real fix belongs in `useBannerOverflow`.",
+  "The console test still costs one tiny request per load while its badge shows."
+ ]
+}

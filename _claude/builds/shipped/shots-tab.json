@@ -1,0 +1,103 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-shots-tab",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:42Z",
+ "build": {
+  "id": "shots-tab",
+  "title": "UI Review → Screenshots tab (`shots-tab`, Nov 1 2026)",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "UI Review → Screenshots tab (`shots-tab`, Nov 1 2026)",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/shots-tab",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "5963aa3eaa4555bd2bbd6b94b9a0533fa68c6f83",
+ "commits": [
+  "1e19315d6365f33c28064d9b83f7f7148d9d9fe2",
+  "b063479522ff0cfeebcdd3cedf479756958906dd"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-01T00:56:32Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/shots-tab.md",
+  "apps/amberx-droid/src/plugins/monitor/web/core.ts",
+  "apps/console-web/plugins/output-recorder/plugin.json",
+  "apps/console-web/plugins/output-recorder/web/core.ts"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "output-recorder",
+   "files": [
+    "apps/console-web/plugins/output-recorder/plugin.json",
+    "apps/console-web/plugins/output-recorder/web/core.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "monitor",
+   "files": [
+    "apps/amberx-droid/src/plugins/monitor/web/core.ts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/shots-tab.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261101-070d03ce",
+   "name": "UI Review → Screenshots tab",
+   "status": "approved",
+   "group": "g-20261101-shots-tab-2026-11-01",
+   "url": "/review/r-20261101-070d03ce"
+  }
+ ],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/shots-tab.md",
+ "open": []
+}

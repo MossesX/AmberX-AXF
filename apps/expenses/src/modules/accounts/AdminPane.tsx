@@ -91,9 +91,9 @@ interface SuiteTab {
 /** Glyph + text, the label shape every tab strip in this module uses. */
 function TabLabel({ glyph, text }: { glyph?: string; text: string }) {
   return (
-    <Stack direction="row" sx={{ alignItems: "center", gap: 1 }}>
+    <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)' }}>
       {glyph ? <Glyph id={glyph} size={14} /> : null}
-      <Typography component="span" sx={{ fontSize: 12.5, textTransform: "none" }}>
+      <Typography component="span" sx={{ fontSize: 'var(--fx-type-root-md)', textTransform: "none" }}>
         {text}
       </Typography>
     </Stack>
@@ -189,7 +189,7 @@ export default function AdminPane({ extraTabs = [] }: AdminPaneProps) {
         scrollButtons="auto"
         slotProps={{ indicator: { sx: { background: token("accent") } } }}
         sx={{
-          borderBottom: `1px solid ${token("edge")}`,
+          borderBottom: `var(--fx-border-w) solid ${token("edge")}`,
           minHeight: 38,
           flexShrink: 0,
           "& .MuiTab-root": { minHeight: 38, py: 0 },

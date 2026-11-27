@@ -778,7 +778,7 @@
    "data.steps[0].wait must be 0 to 30000 ms"
   ],
   "demo-bad-rest": [
-   "data.about must be the glossary entry id this demonstrates (e.g. plugin:build-manager)",
+   "data.about must be the glossary entry id this demonstrates (e.g. plugin:build-orchestrator)",
    "data.surface must be one of live, preview, recorder",
    "data.voice.speed must be 0.5 to 2",
    "data.chain must be up to 20 demonstration ids played after this one",

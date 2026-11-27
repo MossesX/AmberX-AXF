@@ -221,8 +221,8 @@ export function runPass(c, { approver = null, proof = null, now = Date.now(), ru
       writeStore(d);
       logLine(req, `requested ${untilOff ? 'until turned off' : `${minutes} min`}${irr ? ' (irreversible included)' : ''} by ${by}, waiting for Brett${req.reason ? ` — ${req.reason}` : ''}`, { by, action: 'request' });
       return {
-        changed: true, item: view(req), text: view(req).text,
-        approval: { required: true, request: req.id, expiresAt: new Date(now + PASS_REQUEST_TTL_MS).toISOString(), how: ['Brett taps Approve on the console banner (Token pass) or on Token control → Passes', 'or approves the held call in axHub (it signs the approval: framework/spec/CONTROL.md → Veto passes)'] },
+        changed: true, item: view(req), text: untilOff ? view(req).text : passSentence(req, now, timeZone),
+        approval: { required: true, request: req.id, expiresAt: new Date(now + PASS_REQUEST_TTL_MS).toISOString(), how: ['Brett taps Approve on the console banner (Token pass) or in Builds → VPS Configuration → Passes', 'or approves the held call in axHub (it signs the approval: framework/spec/CONTROL.md → Veto passes)'] },
       };
     }
     case 'approve': case 'deny': {

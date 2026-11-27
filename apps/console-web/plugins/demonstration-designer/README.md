@@ -60,6 +60,7 @@ step) and **record by doing** (every screen you open and control you tap becomes
 | tour | Add to tour | `POST chain {id, chain}` | `…_chain` | — |
 | export video | Export video | `POST media?id=&seconds=&mime=` (bytes) · `POST export {clip}` · `GET media` · `GET media/file?name=` | `…_media_upload`, `…_export`, `…_media`, `…_media_file` | `pitch.export:<id>` |
 | list / get / save / delete | saved pitches | `GET demos` · `GET demo?id=` · `POST demo` · `DELETE demo?id=` | `…_demos`, `…_demo`, `…_save`, `…_delete` | — |
+| cloud narrator voices | Voice picker, Default narrator | `GET narrators` · `POST narrate {narrator, text, speed}` (audio/mpeg) | `…_narrators`, `…_narrate` · `axf demonstration-designer narrators` | `pitch.generate` then play; the narrator is `agent:<id>` in `generate {voice}` |
 | settings | Settings → Plugins → Demonstration Designer | `GET settings` · `POST settings {section: {key: value}}` or `{key, value}` | `…_settings`, `…_settings_set` · `axf demonstration-designer settings-set --key music.volume --value 12` | — |
 
 CLI without the console: `node apps/console-web/plugins/demonstration-designer/demos.mjs …` (see its header).
@@ -74,8 +75,10 @@ Playwright's copy); without one, recordings stay WebM and the lifecycle check sa
 
 ## Known limits
 
-- The narrator is the browser's speech synthesis. Tab recording captures the music and the page's own audio; whether
-  the synthesised voice lands in the recording depends on the browser (Chrome does not route speech synthesis into tab
-  capture), so an exported video may carry captions and music but no voice. A server-side voice is the next step.
+- A device voice is the browser's speech synthesis, which Chrome does not route into tab capture: an exported video
+  narrated by a device voice carries captions and music but no voice. Pick a cloud narrator (`agent:<id>`, an agent
+  whose Agent voice profile allows cloud voices, through the optional `axf.speech@1` capability) and the stage plays
+  each line through WebAudio, so the recording carries the voice. Cloud lines cost the provider's credits (cached per
+  line on the server); when the server can't speak a line, that line falls back to the device voice.
 - Export needs a browser with `getDisplayMedia` (Chrome, Edge); the person picks the tab once.
 - Zoom and pan transform the console's React root; the stage itself is a sibling of it, so it stays sharp.

@@ -27,6 +27,10 @@ const reg = loadRegistry();
 ok(reg.settings.length >= 25 && reg.groups.length >= 7, 'registry has the groups and settings');
 for (const k of ['noWait.enabled', 'noWait.includeIrreversible', 'noWait.duration', 'builds.launchWithoutAsking', 'builds.uiReviewGate', 'builds.defaultModel']) ok(reg.settings.find((s) => s.key === k)?.owner === true, `${k} is owner-only`);
 ok(reg.settings.find((s) => s.key === 'builds.alwaysNamedAgent')?.locked === true, 'named agent is locked on');
+{ const g = (k) => reg.settings.find((s) => s.key === k);
+  ok(g('builds.fillSlots')?.default === true && g('builds.fillSlots').owner === 'raise' && g('builds.fillSlots').kind === 'toggle', 'Fill every slot: default on; anyone switches it off, only Brett on');
+  ok(g('builds.autoQueuePending')?.default === false && g('builds.autoQueuePending').owner === true, 'Auto-queue pending builds: owner-only, off by default');
+  ok(g('builds.maxParallelPerBuild')?.default === 3 && g('builds.maxParallelPerBuild').owner === 'raise' && g('builds.maxParallelPerBuild').max === 12, 'Max parallel steps per build: 3, only Brett raises'); }
 { const f = reg.settings.find((s) => s.key === 'builds.fableUpgradeApproval'); ok(f?.owner === true && f.default === false && f.kind === 'toggle', 'Fable upgrades need my approval: owner-only toggle, off by default (Brett, Nov 4 2026)'); }
 ok(reg.settings.find((s) => s.key === 'followAmber.enabled')?.shared === 'Follow Amber', 'Follow Amber is the shared switch');
 const more = loadRegistry({ extra: [{ groups: [{ id: 'x', label: 'Extra' }], settings: [{ key: 'x.flag', group: 'x', label: 'Flag', kind: 'toggle', default: false }, { key: 'bad', kind: 'toggle', default: 'no' }] }] });
@@ -45,7 +49,23 @@ ok(throwsCode(() => setSettings({ 'noWait.enabled': true }, { owner: { via: 'axh
 ok(throwsCode(() => setSettings({ 'noWait.enabled': true }, { owner: { via: 'session', name: 'brett' }, env: CLEAN }), 'denied'), 'a made-up via is not an owner');
 ok(view().values['noWait.enabled'] === false, 'still off after every refusal');
 ok(throwsCode(() => setSettings({ 'builds.alwaysNamedAgent': false }, { owner: BRETT, env: CLEAN }), 'denied'), 'locked: not even the owner');
+ok(view().values['builds.budgetDailyUsd'] === 0 && view().values['builds.budgetPerBuildUsd'] === 0, 'no budget cap until a number is saved (0 = no cap)');
+{ // build-budget@1 enforces these two: the screen must show the default the engine uses, and 0 (no cap) is the owner's
+  const B = await import('../../../../framework/core/build-budget.mjs');
+  const one = (key) => reg.settings.find((s) => s.key === key);
+  ok(one(B.KEYS.perBuild)?.default === B.DEFAULTS.perBuildUsd && one(B.KEYS.daily)?.default === B.DEFAULTS.dailyUsd, 'the budget defaults are the budget engine\'s');
+  ok([B.KEYS.perBuild, B.KEYS.daily].every((k) => one(k)?.owner === 'raise' && one(k)?.zeroIsNoCap === true), 'both caps: only the owner raises or removes them');
+}
+ok(setSettings({ 'builds.budgetDailyUsd': 60 }, { owner: null, env: CLEAN }).changed.length === 1, 'a session may set a cap where there is none (that lowers it)');
 ok(throwsCode(() => setSettings({ 'builds.budgetDailyUsd': 500 }, { owner: null, env: CLEAN }), 'denied'), 'a session cannot raise a budget cap');
+ok(throwsCode(() => setSettings({ 'builds.budgetDailyUsd': 0 }, { owner: null, env: CLEAN }), 'denied'), 'nor remove it: 0 = no cap is the highest value');
+ok(throwsCode(() => setSettings({ 'builds.autoQueuePending': true }, { owner: null, env: CLEAN }), 'denied'), 'a session cannot switch on auto-queue');
+ok(throwsCode(() => setSettings({ 'builds.autoQueuePending': true }, { owner: BRETT, env: SESSION }), 'denied'), 'nor with an owner handed over inside a session');
+ok(setSettings({ 'builds.fillSlots': false, 'builds.maxParallelPerBuild': 2 }, { owner: null, env: CLEAN }).changed.length === 2, 'a session may switch Fill every slot off and lower the per-build cap');
+ok(throwsCode(() => setSettings({ 'builds.fillSlots': true }, { owner: null, env: CLEAN }), 'denied'), 'only Brett switches Fill every slot back on');
+ok(throwsCode(() => setSettings({ 'builds.maxParallelPerBuild': 5 }, { owner: null, env: CLEAN }), 'denied'), 'only Brett raises the per-build cap');
+ok(setSettings({ 'builds.fillSlots': true, 'builds.maxParallelPerBuild': 3, 'builds.autoQueuePending': true }, { owner: BRETT, env: CLEAN }).changed.length === 3, "Brett's console click changes all three");
+setSettings({ 'builds.autoQueuePending': false }, { owner: BRETT, env: CLEAN });
 ok(setSettings({ 'builds.budgetDailyUsd': 20 }, { owner: null, env: CLEAN }).changed.length === 1, 'a session may lower a budget cap');
 ok(setSettings({ 'builds.budgetDailyUsd': 80 }, { owner: BRETT, env: CLEAN }).changed[0].to === 80, 'Brett raises it');
 ok(throwsCode(() => setSettings({ 'talking.length': 'huge' }, { env: CLEAN }), 'invalid'), 'a bad choice is refused');
@@ -87,6 +107,94 @@ const t = noWaitTick(nightOn, { active: true, remainingMs: 3e6 }, night);
 ok(t.action === 'off' && t.revoke === true, 'night → off and revoke');
 ok(noWaitTick(nightOn, { active: true, remainingMs: 3e6 }, noon).action === 'none', 'daytime → stays on');
 ok(inWindow(night, '23:00', '07:00') && !inWindow(noon, '23:00', '07:00') && inWindow(noon, '11:00', '13:00') && !inWindow(noon, '12:00', '12:00'), 'night window wraps midnight');
+
+// tabs: every group lands in a tab, a new group is never lost
+const { tabsFor, normView, viewProblem, matches, deviceOk, LABEL_DISPLAY, displayLabel } = await import('./web/view-core.mjs');
+const tv = tabsFor(reg.groups, reg.tabs, reg.settings);
+ok(tv[0].id === 'approvals' && tv[0].always, 'Approvals & veto is the first tab');
+ok(tv.flatMap((x) => x.groups).length === reg.groups.length && tv.reduce((a, x) => a + x.count, 0) === reg.settings.length, 'every group and every setting is in exactly one tab');
+const tvx = tabsFor([...reg.groups, { id: 'new', label: 'New' }], reg.tabs, [...reg.settings, { group: 'new' }]);
+ok(tvx.at(-1).id === 'other' && tvx.at(-1).count === 1, 'a group no tab lists shows under Other');
+ok(tabsFor(reg.groups, reg.tabs, []).map((x) => x.id).join() === 'approvals', 'an empty tab is dropped, Approvals & veto stays');
+
+// views, per device
+ok(normView({ mode: 'x', position: 'left', labels: 'icons' }).mode === 'tabbed' && normView({ position: 'left' }).position === 'left', 'view values normalised');
+ok(viewProblem({ position: 'middle' }).includes('position') && viewProblem({ foo: 1 }).includes('foo') && viewProblem({ mode: 'classic', tab: 'builds' }) === '', 'bad view values named');
+ok(displayLabel(LABEL_DISPLAY.words) === 'words' && displayLabel(LABEL_DISPLAY.icons) === 'icons' && displayLabel(LABEL_DISPLAY.both) === 'both', 'labels map onto tab-group display and back');
+ok(deviceOk('d-1.a') && !deviceOk('') && !deviceOk('../x') && !deviceOk('__proto__/'), 'device ids checked');
+ok(matches({ label: 'Tone level', key: 'talking.tone', description: '' }, 'TONE') && !matches({ label: 'a', key: 'b', description: 'c' }, 'zz'), 'find matches label, key, description');
+ok(core.getView('phone').saved === false, 'an unsaved device gets the default');
+core.setView('phone', { position: 'left', labels: 'icons' }, { by: 't', name: 'S26' });
+core.setView('desk', { mode: 'classic' }, { by: 't' });
+ok(core.getView('phone').position === 'left' && core.getView('desk').position === 'top' && core.getView('desk').mode === 'classic', 'each device keeps its own view');
+ok(core.getView('phone').name === 'S26' && core.setView('phone', { labels: 'words' }).name === 'S26', 'the device name stays');
+ok(throwsCode(() => core.setView('phone', { mode: 'x' }), 'invalid') && throwsCode(() => core.setView('bad id', { mode: 'classic' }), 'invalid') && throwsCode(() => core.getView('__proto__/x'), 'invalid'), 'bad views refused');
+ok(core.getView('constructor').saved === false, 'a device called constructor is just a device');
+
+// policy table
+const P = await import('./web/policy-core.mjs');
+const rules = reg.policyDefaults;
+const T = { services: [
+  { namespace: 'vps', type: 'ssh', enabled: true, defaultPolicy: 'deny', tools: [
+    { name: 'run', annotations: { destructive: true }, explicit: 'veto', policy: 'veto' }, { name: 'logs', annotations: { readOnly: true }, explicit: 'veto', policy: 'veto' },
+    { name: 'check', annotations: { readOnly: true }, explicit: 'allow', policy: 'allow' }, { name: 'build_land', explicit: 'allow', policy: 'allow' }, { name: 'newtool', policy: 'deny' }] },
+  { namespace: 'github', type: 'rest', enabled: true, defaultPolicy: 'allow', policyPreset: 'recommended', tools: [
+    { name: 'repos/get', annotations: { readOnly: true }, policy: 'allow' }, { name: 'pulls/create', policy: 'veto' }, { name: 'repos/delete', annotations: { destructive: true }, policy: 'confirm' }] },
+  { namespace: 'axhub', type: 'builtin', enabled: true, defaultPolicy: 'allow', tools: [{ name: 'pass_grant', annotations: { ownerGrant: true }, policy: 'confirm' }, { name: 'switch_account', policy: 'allow' }] },
+  { namespace: 'axf-console', type: 'mcp', enabled: true, defaultPolicy: 'confirm', policyPreset: 'recommended', tools: [
+    { name: 'control_set', policy: 'veto' }, { name: 'build_orchestrator_pipeline_queue', policy: 'veto' }, { name: 'orchestrator_upgrade_approve', policy: 'veto' },
+    { name: 'control_remove', annotations: { destructive: true }, policy: 'confirm' }] },
+  { namespace: 'amberx', type: 'device', enabled: true, defaultPolicy: 'confirm', tools: [{ name: 'recorder_start', annotations: { explicitApproval: true }, policy: 'confirm' }, { name: 'deny_me', explicit: 'deny', policy: 'deny' }] },
+  { namespace: 'off', type: 'rest', enabled: false, defaultPolicy: 'allow', tools: [{ name: 'x', policy: 'deny' }] },
+] };
+const plan = P.planDefaults(T, rules);
+const planned = (id) => plan.find((c) => `${c.service}.${c.tool}` === id);
+ok(!planned('vps.run'), 'vps.run stays held (destructive keeps the hub rule, and it is on the veto already)');
+ok(planned('vps.logs')?.to === 'allow', 'a read stops holding');
+ok(!planned('vps.newtool'), 'a denied shell tool stays denied: the plan never loosens the SSH default-deny');
+ok(!planned('vps.build_land'), 'fixed build tools already let through stay through (axHub decision 110)');
+ok(P.defaultFor(T.services[0], { name: 'other', policy: 'confirm' }, rules).decision === 'veto', 'any other shell tool holds: it may write to the VPS');
+ok(planned('github.pulls/create')?.to === 'allow', 'a non-VPS write stops holding');
+ok(!planned('github.repos/delete') && !planned('axhub.pass_grant') && !planned('amberx.recorder_start') && !planned('amberx.deny_me') && !planned('off.x'), 'destructive, owner grants, explicit approvals, denied and switched-off tools are left alone');
+ok(!planned('axhub.switch_account'), 'an account switch runs at once (Nov 12: only shell commands hold)');
+ok(planned('axf-console.control_set')?.to === 'allow' && planned('axf-console.build_orchestrator_pipeline_queue')?.to === 'allow', 'console and orchestrator tools run at once');
+ok(planned('axf-console.orchestrator_upgrade_approve')?.to === 'confirm', 'a model upgrade keeps its confirm');
+ok(!planned('axf-console.control_remove'), 'a console delete keeps the hub rule');
+ok(P.defaultFor(T.services[0], { name: 'launch', policy: 'veto' }, rules).decision === 'veto', 'vps.launch holds: it runs a shell');
+ok(P.defaultFor(T.services[0], { name: 'run', policy: 'allow' }, rules).decision === 'veto', 'vps.run holds even if someone let it through');
+{
+  const con = T.services[3];
+  ok(['console_terminal_sessions_run', 'agent_manager_vinny_commands_by_cid_run'].every((n) => P.defaultFor(con, { name: n, policy: 'allow' }, rules).decision === 'veto'), "the console's terminal and Vinny command run hold: they execute a shell");
+  ok(['console_show', 'console_open', 'build_orchestrator_act_step', 'orchestrator_dispatch', 'control_act'].every((n) => P.defaultFor(con, { name: n, policy: 'veto' }, rules).decision === 'allow'), 'other console and orchestrator writes run at once');
+  const held = rules.hold.flatMap((h) => h.tools.map((t) => `${h.service}.${t}`)).sort().join();
+  ok(held === 'axf-console.agent_manager_vinny_commands_by_cid_run,axf-console.console_terminal_sessions_run,vps.launch,vps.run', 'the hold list is shell commands only');
+  ok(rules.holdMatch.length === 0 && rules.confirm.flatMap((h) => h.tools).join() === 'orchestrator_upgrade_approve', 'no pattern holds; the confirm list is the model upgrade only');
+}
+ok(P.planDefaults({ services: [{ namespace: 's', type: 'rest', enabled: true, defaultPolicy: 'deny', tools: [{ name: 'w', policy: 'deny' }] }] }, rules).length === 0, 'a service denied by default is not opened up');
+ok(P.onHoldList('x', 'y', { holdMatch: ['('] }) === '', 'a bad pattern holds nothing and does not throw');
+ok(P.groupDecision(T.services[1]) === 'mixed' && P.groupDecision({ tools: [{ policy: 'veto' }] }) === 'veto', 'a service shows one decision or Mixed');
+ok(P.groupChanges(T.services[1], 'veto').length === 3, 'a group change covers each tool');
+ok(P.counts(T).veto === 6, 'counts');
+ok(P.changesProblem([]) && P.changesProblem([{ service: 'a', tool: 'b', policy: 'maybe' }]) && P.changesProblem([{ service: 'a', tool: 'b', vetoSeconds: 5 }]) && !P.changesProblem([{ service: 'a', tool: 'b', policy: null, vetoSeconds: 60 }]), 'changes checked (decision, hold 10-1800)');
+{
+  const seen = [];
+  const fake = (status, body) => async (url, init) => { seen.push({ url, init }); return { status, ok: status < 300, json: async () => body }; };
+  const r = await P.putPolicy('https://hub', [{ service: 'a', tool: 'b', policy: 'veto' }], 'why', { fetch: fake(200, { rev: 2 }) });
+  ok(r.ok && seen[0].url === 'https://hub/auth/api/policy' && seen[0].init.method === 'PUT' && seen[0].init.credentials === 'include' && !seen[0].init.headers.Authorization, 'a write goes on the session cookie, never a token');
+  ok((await P.putPolicy('https://hub', [{ service: 'a', tool: 'b' }], 'w', { fetch: fake(404, {}) })).code === 'not_available', 'no policy API yet: said plainly');
+  ok((await P.putPolicy('https://hub', [{ service: 'a', tool: 'b' }], 'w', { fetch: fake(401, {}) })).code === 'unauthenticated', 'not signed in: said plainly');
+  ok((await P.putPolicy('https://hub', [], 'w', { fetch: fake(200, {}) })).ok === false, 'an empty change list never reaches the hub');
+  ok((await P.putPolicy('https://hub', [{ service: 'a', tool: 'b' }], 'w', { fetch: async () => { throw new Error('x'); } })).ok === false, 'a dead hub is an answer, not a crash');
+}
+{
+  const env = { AXHUB_TOKEN: 'tok', AXHUB_URL: 'https://hub.test/mcp' };
+  let auth = ''; let url = '';
+  const r = await core.readPolicy({ env, fetch: async (u, i) => { url = u; auth = i.headers.Authorization; return { status: 200, ok: true, json: async () => T }; } });
+  ok(r.available && url === 'https://hub.test/auth/api/policy' && auth === 'Bearer tok', 'the live table is read with the hub token, /mcp dropped from the address');
+  ok(!(await core.readPolicy({ env, fetch: async () => ({ status: 404, ok: false }) })).available, 'no route on the hub: not available, no stale copy');
+  ok(!(await core.readPolicy({ env, fetch: async () => { throw new Error('down'); } })).available, 'hub down: not available');
+  ok(!(await core.readPolicy({ env: { HOME: '/nonexistent' } })).available, 'no token: not available');
+}
 
 console.log(failed ? `✗ claude-settings core — ${failed}/${n} failed` : `✓ claude-settings core — ${n} checks`);
 process.exit(failed ? 1 : 0);

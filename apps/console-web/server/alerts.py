@@ -135,6 +135,41 @@ def delivery_targets(alert: dict[str, Any], event: str, rules: dict[str, Any] = 
     return out
 
 
+# Alerts raised within this window reach a push channel together (one poll pass raises its alerts within a second).
+BURST_WINDOW_S = 2.0
+DIGEST_LINES = 12
+
+
+def digest_alert(alerts: list[dict[str, Any]]) -> dict[str, Any]:
+    """Several alerts as one push: the worst one's severity and type, a line per alert. The bell keeps each alert."""
+    worst = max(alerts, key=lambda a: rank(a.get("severity", "info")))
+    sources = {a.get("source") for a in alerts}
+    links = {a.get("link") or "" for a in alerts}
+    lines = [f"- {a.get('title') or a['key']}"[:200] for a in alerts[:DIGEST_LINES]]
+    if len(alerts) > DIGEST_LINES:
+        lines.append(f"… and {len(alerts) - DIGEST_LINES} more")
+    out = {"id": f"digest:{worst['key']}"[:KEY_MAX], "key": f"digest:{worst['key']}"[:KEY_MAX],
+           "source": sources.pop() if len(sources) == 1 else "console", "severity": worst.get("severity", "info"),
+           "title": f"{len(alerts)} new console alerts"[:TITLE_MAX], "body": "\n".join(lines)[:BODY_MAX],
+           "link": links.pop() if len(links) == 1 else "", "meta": {"digest": [a["key"] for a in alerts]}}
+    if worst.get("notifyType"):
+        out["notifyType"] = worst["notifyType"]
+    return out
+
+
+def plan_deliveries(batch: list[tuple[dict[str, Any], list[str]]]) -> list[tuple[dict[str, Any], list[str]]]:
+    """What a burst of raised alerts sends: per push channel, the alert itself when it is the only one, else one digest.
+
+    Nov 23 2026: one systems check pass raised eight alerts and the phone rang eight times, a second apart. An alert
+    raised again inside the burst counts once."""
+    per: dict[str, list[dict[str, Any]]] = {}
+    for alert, channels in batch:
+        for ch in channels:
+            rows = per.setdefault(ch, [])
+            rows[:] = [a for a in rows if a["key"] != alert["key"]] + [alert]
+    return [(rows[0] if len(rows) == 1 else digest_alert(rows), [ch]) for ch, rows in per.items()]
+
+
 def ntfy_priority(severity: str) -> int:
     return {"info": 2, "success": 2, "warning": 3, "error": 4, "critical": 5}.get(severity, 3)
 
@@ -379,6 +414,12 @@ class AlertHub:
             on = verdict["channels"]
             targets = [t for t in targets if on.get("banner" if t == "bell" else "webpush")]
         pushes = [t for t in targets if t != "bell"]
+        # Phone Connect (axf.phone@1): what may buzz the phone (the notify registry's phone push channel, warnings and
+        # worse unless the type is promoted) goes to the paired phone. With no phone paired, AmberX still reads it.
+        if verdict and verdict.get("allow") is not False and (verdict.get("channels") or {}).get("amberx") and event in ("new", "reopened", "escalated") \
+                and (rank(alert["severity"]) >= rank("warning") or verdict.get("promote")):
+            pushes.append("phone")
+            alert = {**alert, "notifyType": verdict.get("type", "")}
         if deliver and pushes:
             try:
                 self._outbox.put_nowait((alert, pushes))
@@ -412,12 +453,23 @@ class AlertHub:
     def _deliver(self, alert: dict[str, Any], channels: list[str]) -> None:
         for ch in channels:
             try:
-                ok, detail = (self.send_ntfy(alert) if ch == "ntfy" else self.send_webpush(alert) if ch == "webpush" else (False, "unknown channel"))
+                ok, detail = (self.send_ntfy(alert) if ch == "ntfy" else self.send_webpush(alert) if ch == "webpush" else self.send_phone(alert) if ch == "phone" else (False, "unknown channel"))
             except Exception as e:  # noqa: BLE001 — a dead channel must not stop the others
                 ok, detail = False, str(e)[:200]
             self.delivery_log = (self.delivery_log + [{"at": _now(), "channel": ch, "key": alert["key"], "ok": ok, "detail": detail}])[-50:]
             if not ok:
                 self.log("alerts", f"{ch}: {detail}", "warn")
+
+    def send_phone(self, alert: dict[str, Any]) -> tuple[bool, str]:
+        """One alert to the paired phone through axf.phone@1 (Phone Connect); AmberX reads it when no phone is paired."""
+        phone = plugin_services.get("axf.phone@1")
+        if phone is None or not phone.status().get("paired"):
+            return False, "no phone paired (AmberX reads it while it exists)"
+        try:
+            r = phone.push_alert(alert, str(alert.get("notifyType") or ""), self._click_url(alert))
+        except Exception as e:  # noqa: BLE001 — the phone's wire error (offline, unpaired …) or a bug: logged, never raised
+            return False, str(getattr(e, "err", {}).get("code") or e)[:200]
+        return bool(r.get("ok")), str(r.get("id", ""))
 
     def _click_url(self, alert: dict[str, Any]) -> str:
         if re.match(r"^https?://", alert.get("link") or ""):
@@ -684,11 +736,25 @@ class AlertHub:
             _write_private(self.f_run, {**run, "clean": True, "stoppedAt": _now()})
 
     def _worker(self) -> None:
+        """Delivers what was raised, a burst at a time: alerts raised within BURST_WINDOW_S go out as one push per channel."""
         while not self._stop.is_set():
             item = self._outbox.get()
             if item is None:
                 break
-            self._deliver(*item)
+            batch, until, last = [item], time.monotonic() + BURST_WINDOW_S, False
+            while not last and (left := until - time.monotonic()) > 0:
+                try:
+                    more = self._outbox.get(timeout=left)
+                except queue.Empty:
+                    break
+                if more is None:
+                    last = True
+                else:
+                    batch.append(more)
+            for alert, channels in plan_deliveries(batch):
+                self._deliver(alert, channels)
+            if last:
+                break
 
     def _poller(self) -> None:
         if self._stop.wait(5):  # let the API come up first

@@ -1,0 +1,59 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-chat-viewer-labels",
+  "name": "Chats: Icons + text",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Icon and name on every button, overflow only when the bar runs out of room (ships as the default).",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-chat-viewer",
+    "choice-option:labels"
+  ],
+  "data": {
+    "scope": "view:chat-viewer",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "chats",
+        "label": "Chats",
+        "items": [
+          {
+            "id": "sync",
+            "icon": "refresh",
+            "label": "Sync chats",
+            "action": "handler:chat-viewer.sync",
+            "badge": "state:unseen",
+            "enabledWhen": "!syncing",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "search",
+            "icon": "search",
+            "label": "Search",
+            "action": "handler:chat-viewer.search",
+            "checked": "state:searching",
+            "priority": 260
+          },
+          {
+            "id": "export",
+            "icon": "download",
+            "label": "Export",
+            "action": "handler:chat-viewer.export",
+            "enabledWhen": "open.id",
+            "priority": 200
+          }
+        ]
+      }
+    ]
+  }
+}

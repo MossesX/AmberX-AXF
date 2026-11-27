@@ -29,6 +29,28 @@ Saved logins stay in `/root/.claude-accounts/` on the host. The active one is co
   copy of the login (`deploy/claude-login.mjs`, `CLAUDE_CONFIG_DIR`), so a logout, switch or new login here never
   touches a running build. The launcher only reads the saved logins; it never runs save or use.
 
+## One account
+
+Brett picks the single Claude account the console and every VPS build use (build one-account-picker, Nov 13 2026).
+While one is picked, every other account (workers, API keys) is off for builds, no routing rule applies and no
+account takes over when it hits its limit: the run stops and says so on the build.
+
+- **Where:** the dropdown *One Claude account* at the top of the banner chip's dialog (the chip reads
+  `Claude: <name> · only`), Settings → Plugins → Claude accounts → One account, and the Claude accounts page.
+  Deep link: action `claude-accounts.one-account` (opens the dialog) or `settings.open:claude-accounts`.
+- **REST:** `GET /api/plugins/claude-accounts/build-account` (the pick, whether the console is on it, the options),
+  `POST …/build-account {name}` (`off` or empty = the normal routing).
+- **MCP / voice:** `claude_accounts_build_account`, `claude_accounts_set_build_account` ("use account 2 for everything").
+- **CLI:** `axf claude-accounts build-account` · `axf claude-accounts set-build-account --name <n|off>`;
+  host: `node deploy/claude-workers.mjs build-account [<name>|off]`.
+- **Capability:** `axf.claude-accounts@1` `build_account()`, `set_build_account(name, by)`.
+- **How:** it is `buildAccount` in workers.json (claude-workers@1). The pick is saved at once and read for every new
+  job, so it takes effect for the next build; running builds keep theirs. `deploy/worker-routing.mjs` routes every
+  job to it, `deploy/claude-headless.sh` runs an explicit `--account` for another login on it, and the dispatcher
+  (`pipeline-core.mjs` `accountViews`) reads it from the claude-workers rows (`buildPick`). When the console is on
+  another account, picking asks the usual held switch; switching the console moves the pick with it.
+- **Only subscription logins** can be picked: an API key bills per token.
+
 ## Worker accounts
 
 The console stays on the active account. An account marked as a worker is never made active. It only runs headless jobs,

@@ -1,0 +1,268 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-framework-walkthrough-video-builder-qocfr1",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:29Z",
+ "build": {
+  "id": "framework-walkthrough-video-builder-qocfr1",
+  "title": "framework-walkthrough-video-builder-qocfr1",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "framework-walkthrough-video-builder-qocfr1",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/framework-walkthrough-video-builder-qocfr1",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "ea20acab690880c86462f03f01091020a68e37a0",
+ "commits": [
+  "7fca09e1da829f29f4221b1b4e31f799294dbf8a",
+  "4c689ec8ddeb0639b304a3de0e90e624e959269c",
+  "4cf2e865b37868279fb40be3f854101e57966182"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-23T01:40:06Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "apps/console-web/plugins/app-tabs/plugin.json",
+  "apps/console-web/plugins/app-tabs/web/apps.ts",
+  "apps/console-web/plugins/systems-check/server/checks.py",
+  "apps/console-web/plugins/systems-check/server/hostfix.py",
+  "apps/console-web/project.manifest.json",
+  "apps/console-web/src/axf/core/catalog.ts",
+  "apps/console-web/src/axf/core/library.ts",
+  "apps/console-web/src/axf/libs/README.md",
+  "apps/console-web/src/axf/libs/apps/apps.css",
+  "apps/console-web/src/axf/libs/apps/apps.ts",
+  "apps/console-web/src/axf/libs/apps/directory.json",
+  "apps/console-web/src/axf/libs/apps/external.json",
+  "apps/console-web/src/axf/libs/apps/index.tsx",
+  "apps/console-web/src/axf/libs/apps/library.json",
+  "apps/demo/project.manifest.json",
+  "apps/patches-web/axf.lock.json",
+  "apps/patches-web/axf.manifest.json",
+  "apps/patches-web/project.manifest.json",
+  "apps/patches-web/server/main.py",
+  "apps/patches-web/server/test_server.py",
+  "apps/patches-web/src/App.tsx",
+  "apps/patches-web/src/assets/app-menu/patches.json",
+  "apps/patches-web/src/axf/core/catalog.ts",
+  "apps/patches-web/src/axf/core/library.ts",
+  "apps/patches-web/src/axf/libs/README.md",
+  "apps/patches-web/src/axf/libs/apps/apps.css",
+  "apps/patches-web/src/axf/libs/apps/apps.ts",
+  "apps/patches-web/src/axf/libs/apps/directory.json",
+  "apps/patches-web/src/axf/libs/apps/external.json",
+  "apps/patches-web/src/axf/libs/apps/index.tsx",
+  "apps/patches-web/src/axf/libs/apps/library.json",
+  "apps/patches-web/src/main.tsx",
+  "apps/patches-web/src/patches.css",
+  "apps/patches-web/src/patches.ts",
+  "apps/patches-web/src/patchesLibrary.tsx",
+  "apps/patches-web/src/views/index.tsx",
+  "apps/walkthrough-studio/.dockerignore",
+  "apps/walkthrough-studio/Dockerfile",
+  "apps/walkthrough-studio/deploy/install.sh",
+  "apps/walkthrough-studio/deploy/nginx.conf",
+  "apps/walkthrough-studio/project.manifest.json",
+  "deploy/console-doctor.sh",
+  "framework/catalog/libraries.json",
+  "framework/cli/app-directory.mjs",
+  "framework/libs/README.md",
+  "framework/libs/apps/apps.css",
+  "framework/libs/apps/apps.ts",
+  "framework/libs/apps/directory.json",
+  "framework/libs/apps/external.json",
+  "framework/libs/apps/index.tsx",
+  "framework/libs/apps/library.json",
+  "framework/plan/pending.json",
+  "framework/python/axf/assistant_host/providers.py",
+  "framework/python/axf/assistant_host/test.py",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-apps.mts"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "patches-web",
+   "files": [
+    "apps/patches-web/axf.lock.json",
+    "apps/patches-web/axf.manifest.json",
+    "apps/patches-web/project.manifest.json",
+    "apps/patches-web/server/main.py",
+    "apps/patches-web/server/test_server.py",
+    "apps/patches-web/src/App.tsx",
+    "apps/patches-web/src/assets/app-menu/patches.json",
+    "apps/patches-web/src/axf/core/catalog.ts",
+    "apps/patches-web/src/axf/core/library.ts",
+    "apps/patches-web/src/axf/libs/README.md",
+    "apps/patches-web/src/axf/libs/apps/apps.css",
+    "apps/patches-web/src/axf/libs/apps/apps.ts",
+    "apps/patches-web/src/axf/libs/apps/directory.json",
+    "apps/patches-web/src/axf/libs/apps/external.json",
+    "apps/patches-web/src/axf/libs/apps/index.tsx",
+    "apps/patches-web/src/axf/libs/apps/library.json",
+    "apps/patches-web/src/main.tsx",
+    "apps/patches-web/src/patches.css",
+    "apps/patches-web/src/patches.ts",
+    "apps/patches-web/src/patchesLibrary.tsx",
+    "apps/patches-web/src/views/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/project.manifest.json",
+    "apps/console-web/src/axf/core/catalog.ts",
+    "apps/console-web/src/axf/core/library.ts",
+    "apps/console-web/src/axf/libs/README.md",
+    "apps/console-web/src/axf/libs/apps/apps.css",
+    "apps/console-web/src/axf/libs/apps/apps.ts",
+    "apps/console-web/src/axf/libs/apps/directory.json",
+    "apps/console-web/src/axf/libs/apps/external.json",
+    "apps/console-web/src/axf/libs/apps/index.tsx",
+    "apps/console-web/src/axf/libs/apps/library.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/README.md",
+    "framework/libs/apps/apps.css",
+    "framework/libs/apps/apps.ts",
+    "framework/libs/apps/directory.json",
+    "framework/libs/apps/external.json",
+    "framework/libs/apps/index.tsx",
+    "framework/libs/apps/library.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/.dockerignore",
+    "apps/walkthrough-studio/Dockerfile",
+    "apps/walkthrough-studio/deploy/install.sh",
+    "apps/walkthrough-studio/deploy/nginx.conf",
+    "apps/walkthrough-studio/project.manifest.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "app-tabs",
+   "files": [
+    "apps/console-web/plugins/app-tabs/plugin.json",
+    "apps/console-web/plugins/app-tabs/web/apps.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/server/checks.py",
+    "apps/console-web/plugins/systems-check/server/hostfix.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "python",
+   "files": [
+    "framework/python/axf/assistant_host/providers.py",
+    "framework/python/axf/assistant_host/test.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-apps.mts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "demo",
+   "files": [
+    "apps/demo/project.manifest.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/libraries.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/app-directory.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/console-doctor.sh"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

@@ -1,0 +1,256 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-window-resize-fix",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:35Z",
+ "build": {
+  "id": "window-resize-fix",
+  "title": "Window resize fix + Terminal settings dialog placement (urgent)",
+  "profile": "all",
+  "category": "Bug fix",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "\"Why can't I resize terminal? All floating windows need to be resizable. And also, I selected dialog for the terminal settings in its settings, but it doesn't open.\"\n\nAssigned agent: whoever is free (router if on main; else **Landin' Lenny**; record who). Register in the `current` profile (id `window-resize-fix`) + banner entry. Fix right away, tell after.",
+  "verbatim": true,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": [
+   {
+    "text": "Brett's explicit order for THIS build only: when tests pass, merge the PR into main yourself right away (do NOT wait for UI Review; still submit the UI Review item for the record, marked 'merged on Brett's order'), then make sure the console (axf-console), axHub web, AmberX web and Molly redeploy with it (CI deploy on main / Coolify redeploy), and confirm the live console has the fix. Keep it small and fast: fix the two bugs, no extras.",
+    "at": "2026-11-03T00:00:00Z",
+    "source": "",
+    "verbatim": true
+   }
+  ]
+ },
+ "brief": "# Build: window-resize-fix (Current profile) - URGENT bug fix\n\n## Brett said (verbatim, Nov 3 2026, voice)\n\"Why can't I resize terminal? All floating windows need to be resizable. And also, I selected dialog for the terminal settings in its settings, but it doesn't open.\"\n\nAssigned agent: whoever is free (router if on main; else **Landin' Lenny**; record who). Register in the `current` profile (id `window-resize-fix`) + banner entry. Fix right away, tell after.\n\n## Bug 1: floating windows can't be resized (phone at least)\n- The window engine got resize from all 8 edges/corners in windows-terminal s6 (refactor-all s17-s23, report `_claude/memory/docs/rebuilds/windows-terminal-fable.md`). Brett can't resize the Terminal floating window now. Find why on the live console (console.amberxai.com, his phone + desktop): handles missing/too small for touch, pointer events not wired for touch (need pointer events + touch-action none on handles), a later change (one-look, xlayout/dock engine #245/#252, compact frame, Molly chrome) overriding the window host, or the Terminal opening in a non-window host.\n- Fix in the framework window host so EVERY floating window in every app is resizable: 8 edges + corners, big enough touch targets on phones (invisible hit area ~16-24 px, visible grip in the corner), min/max size from tokens, remembers size per window, double-tap title = maximize/restore. CI test: every floating window exposes resize handles.\n\n## Bug 2: Terminal settings placement 'dialog' does nothing\n- Terminal's own setting for where its settings open: Brett picked 'dialog' and tapping the gear no longer opens anything (before, it opened the main settings page). Fix so 'dialog' opens the Terminal settings in a pop-up dialog and the main-page option still works. Check every plugin that has this option for the same bug. Coordinate with the queued `plugin-settings-placement` build only via its contract; this is the quick fix for the existing option.\n\n## Done\nTests (resize via pointer + touch, dialog placement), phone + desktop before/after screenshots, UI Review item, report `_claude/builds/reports/window-resize-fix.md`, THREADS, PR, steps through the store. Commits clean and professional.\n## Addendum 1 (Brett, Nov 3 2026, voice): \"Run that right here, right now, and merge it, deploy it.\"\nBrett's explicit order for THIS build only: when tests pass, merge the PR into main yourself right away (do NOT wait for UI Review; still submit the UI Review item for the record, marked 'merged on Brett's order'), then make sure the console (axf-console), axHub web, AmberX web and Molly redeploy with it (CI deploy on main / Coolify redeploy), and confirm the live console has the fix. Keep it small and fast: fix the two bugs, no extras.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-window-resize-fix",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T19:30:31.773Z",
+   "endedAt": "2026-11-03T20:13:41.936Z",
+   "exit": 0,
+   "costUsd": 12.6715
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Find why floating windows cannot be resized; fix window host (8 edges, touch targets, double-tap title)",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T19:30:31.773Z",
+   "doneAt": "2026-11-03T19:47:23.937Z",
+   "actualMin": 17,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Fix settings placement dialog for Terminal and every plugin with the option",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T19:47:23.937Z",
+   "doneAt": "2026-11-03T19:59:32.298Z",
+   "actualMin": 12,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests, screenshots, UI Review, report, PR, merge, deploy",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T19:59:32.298Z",
+   "doneAt": "2026-11-03T20:12:35.030Z",
+   "actualMin": 13,
+   "done": true
+  }
+ ],
+ "branch": "claude/window-resize-fix",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 278,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/278"
+ },
+ "landedCommit": "836a290d2408344236dbda02da5a0181eea35a13",
+ "commits": [
+  "f5f9ffa9f8c061034bc7a379336e75d2b092f81e"
+ ],
+ "mergedAt": "2026-11-03T20:06:05Z",
+ "landedAt": "2026-11-03T20:06:05Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/window-resize-fix.md",
+  "_claude/builds/reports/window-resize-fix/terminal-resize-after-desktop.png",
+  "_claude/builds/reports/window-resize-fix/terminal-resize-after-phone.png",
+  "_claude/builds/reports/window-resize-fix/terminal-resize-before-desktop.png",
+  "_claude/builds/reports/window-resize-fix/terminal-resize-before-phone.png",
+  "_claude/builds/reports/window-resize-fix/terminal-settings-dialog-after-desktop.png",
+  "_claude/builds/reports/window-resize-fix/terminal-settings-dialog-after-phone.png",
+  "_claude/builds/reports/window-resize-fix/terminal-settings-dialog-before-desktop.png",
+  "_claude/builds/reports/window-resize-fix/terminal-settings-dialog-before-phone.png",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/libs/settings/index.tsx",
+  "apps/amberx-droid/src/axf/react/windows/WindowHost.tsx",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/libs/settings/index.tsx",
+  "apps/axhub-web/src/axf/react/windows/WindowHost.tsx",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/console-terminal/web/open.ts",
+  "apps/console-web/scripts/window-handles-check.mts",
+  "apps/console-web/src/axf/libs/settings/index.tsx",
+  "apps/console-web/src/axf/react/windows/WindowHost.tsx",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/libs/settings/index.tsx",
+  "apps/molly/src/axf/react/windows/WindowHost.tsx",
+  "apps/molly/src/axf/ui/axf.css",
+  "framework/libs/settings/index.tsx",
+  "framework/react/windows/WindowHost.tsx",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/window-resize-fix.md",
+    "_claude/builds/reports/window-resize-fix/terminal-resize-after-desktop.png",
+    "_claude/builds/reports/window-resize-fix/terminal-resize-after-phone.png",
+    "_claude/builds/reports/window-resize-fix/terminal-resize-before-desktop.png",
+    "_claude/builds/reports/window-resize-fix/terminal-resize-before-phone.png",
+    "_claude/builds/reports/window-resize-fix/terminal-settings-dialog-after-desktop.png",
+    "_claude/builds/reports/window-resize-fix/terminal-settings-dialog-after-phone.png",
+    "_claude/builds/reports/window-resize-fix/terminal-settings-dialog-before-desktop.png",
+    "_claude/builds/reports/window-resize-fix/terminal-settings-dialog-before-phone.png"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/scripts/window-handles-check.mts",
+    "apps/console-web/src/axf/libs/settings/index.tsx",
+    "apps/console-web/src/axf/react/windows/WindowHost.tsx",
+    "apps/console-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/libs/settings/index.tsx",
+    "apps/amberx-droid/src/axf/react/windows/WindowHost.tsx",
+    "apps/amberx-droid/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx",
+    "apps/axhub-web/src/axf/react/windows/WindowHost.tsx",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/libs/settings/index.tsx",
+    "apps/molly/src/axf/react/windows/WindowHost.tsx",
+    "apps/molly/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-terminal",
+   "files": [
+    "apps/console-web/plugins/console-terminal/web/open.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/settings/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/windows/WindowHost.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-35553277",
+   "name": "Floating window resize + Terminal settings dialog (merged on Brett's order)",
+   "status": "approved",
+   "group": "g-20261103-484e172e",
+   "url": "/review/r-20261103-35553277"
+  }
+ ],
+ "cost": {
+  "usd": 12.6715,
+  "estimated": false,
+  "tokens": {
+   "input": 262,
+   "output": 1550,
+   "cacheRead": 19338487,
+   "cacheWrite": 211838
+  }
+ },
+ "report": "_claude/builds/reports/window-resize-fix.md",
+ "open": [
+  "Window size is not remembered across reopen (the engine remembers position only, in memory). Engine change = a Fable step; worth a follow-up.",
+  "Min / max window size as tokens (still per-window `minWidth` / `minHeight` in px).",
+  "The \"Opens in\" description still reads \"Where Open a tab opens\" for the Terminal; it now also decides where its settings open. The queued plugin-settings-placement work should give settings their own choice.",
+  "Android twin: none needed (web host only; the engine contract is unchanged)."
+ ]
+}

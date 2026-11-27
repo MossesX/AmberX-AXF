@@ -11,7 +11,7 @@ import { useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
 import { musicPlan, wordCount } from '../engine.mjs';
 import type { MusicPlan, PitchStep, Settings } from '../engine.mjs';
-import { PLUGIN_ID } from './model';
+import { PLUGIN_ID, isCloudNarrator, narrate } from './model';
 
 export type StageStatus = 'idle' | 'intro' | 'playing' | 'paused' | 'outro';
 export interface StageState { status: StageStatus; at: number; total: number; title: string; id: string; recording: boolean; error: string; caption: string }
@@ -168,8 +168,9 @@ function resolveVoice(name: string): SpeechSynthesisVoice | null {
 }
 /** Say the words; resolves when done (or after the time the words take when there is no voice / captions only). */
 function say(text: string, s: Settings, narrator: string, speed: number): Promise<void> {
-  const silent = narrator === 'silent' || !globalThis.speechSynthesis || !text;
   const ms = ((wordCount(text) / s.script.wpm) * 60000) / (speed || 1);
+  if (text && isCloudNarrator(narrator)) return sayCloud(text, narrator, speed, ms).catch(() => say(text, s, '', speed));
+  const silent = narrator === 'silent' || !globalThis.speechSynthesis || !text;
   if (silent) return wait(Math.max(600, ms));
   return new Promise((done) => {
     const synth = globalThis.speechSynthesis;
@@ -185,7 +186,26 @@ function say(text: string, s: Settings, narrator: string, speed: number): Promis
     setTimeout(finish, ms * 1.8 + 2500);
   });
 }
-const hush = () => { try { globalThis.speechSynthesis?.cancel(); } catch { /* fine */ } };
+/** A cloud narrator (agent:<id>, axf.speech@1 on the server): the line is fetched as audio and played through WebAudio,
+ *  so it reaches the speakers and the export mix (browser speech never reaches tab capture). Throws when the server
+ *  can't speak it; the caller then falls back to the device voice. */
+let line: AudioBufferSourceNode | null = null;
+async function sayCloud(text: string, narrator: string, speed: number, ms: number): Promise<void> {
+  const bytes = await narrate(narrator, text, speed);
+  const c = audio(); if (c.state === 'suspended') await c.resume();
+  const buf = await c.decodeAudioData(bytes);
+  return new Promise((done) => {
+    const src = c.createBufferSource(); src.buffer = buf;
+    src.connect(c.destination); if (mixDest) src.connect(mixDest);
+    let finished = false;
+    const finish = () => { if (finished) return; finished = true; if (line === src) line = null; duck(false); done(); };
+    src.onended = finish; line = src;
+    duck(true);
+    try { src.start(); } catch { finish(); }
+    setTimeout(finish, Math.max(buf.duration * 1000, ms) * 1.5 + 2500);
+  });
+}
+const hush = () => { try { globalThis.speechSynthesis?.cancel(); } catch { /* fine */ } try { line?.stop(); } catch { /* ended */ } line = null; };
 
 /* ---------------- music (WebAudio, synthesised: no files) ---------------- */
 

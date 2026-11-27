@@ -68,11 +68,27 @@
             "queued",
             "running",
             "waiting",
+            "fixing",
             "blocked",
             "failed",
             "built",
+            "landing",
+            "landed",
             "complete",
-            "archived"
+            "escalated",
+            "archived",
+            "splitting",
+            "split",
+            "pulling-main",
+            "assigning-models",
+            "ready",
+            "sending",
+            "building",
+            "build-complete",
+            "merging-pr",
+            "pr-pulling-main",
+            "running-ci",
+            "merging-main"
           ]
         },
         "branch": {

@@ -270,6 +270,13 @@
         "text": "The “Project” column. Tap its header to sort the list by it.",
         "kind": "column",
         "draft": true
+      },
+      {
+        "target": "view:chat-viewer",
+        "title": "Chat viewer",
+        "text": "Every session we have, stored as transcripts (session@1) in one searchable store: claude.ai text and voice chats (from the data export Brett uploads, or the hub drop folder claude.ai sessions write to when he says \"sync my chats\"), Claude Code sessions (~/.claude/projects, synced incrementally on a",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

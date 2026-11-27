@@ -35,9 +35,10 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 
 import console_context as cx
+import data_store
 import plugin_services
 
 from . import conform as cf
@@ -79,18 +80,15 @@ def _now() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
 
+# data-store@1: items, kinds, picks and screenshots follow the ui-review namespace onto axf-data (server/data_store.py:
+# local = these files as before, shadow = mirrored, cutover = on axf-data only).
 def _write(path: Path, doc: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_name(path.name + ".tmp")
-    tmp.write_text(json.dumps(doc, indent=1))
-    tmp.replace(path)
+    data_store.write_json(path, doc, indent=1, mode=0o644, dir_mode=None)
 
 
 def _read(path: Path, default: Any) -> Any:
-    try:
-        return json.loads(path.read_text())
-    except (FileNotFoundError, json.JSONDecodeError):
-        return default
+    return data_store.read_json(path, default)
 
 
 def migrate() -> dict:
@@ -222,7 +220,7 @@ def decide(item: dict, decision: str, comment: str = "", by: str = "brett", at: 
 
 def review_state(items: list[dict], branch: str = "", pr: int | None = None) -> dict:
     # a predicted look is approved for the look, not for merging: only real screens count for a branch / PR
-    mine = [it for it in items if ((branch and it.get("branch") == branch) or (pr and it.get("pr") == pr)) and (predicted_mod.prediction_of(it) or {}).get("state") != "predicted"]
+    mine = [it for it in items if ((branch and it.get("branch") == branch) or (pr and it.get("pr") == pr)) and (predicted_mod.prediction_of(it) or {}).get("state") != "predicted" and not it.get("landed")]
     c = {k: 0 for k in STATUSES}
     for it in mine:
         if it.get("status") in c:
@@ -284,7 +282,7 @@ def submit(fields: dict, shots: list[tuple[str, str, bytes]] | None = None) -> d
             doc["groups"].append(g)
         for fn, _, raw in names:
             folder.mkdir(parents=True, exist_ok=True)
-            (folder / fn).write_bytes(raw)
+            data_store.write_bytes(folder / fn, raw, mode=0o644, dir_mode=None)
         doc["items"].append(item)
         _save_items(doc)
         snapshot = {"items": list(doc["items"]), "groups": list(doc["groups"])}
@@ -683,8 +681,14 @@ async def shot(path: str = ""):
         base = data_dir() / "shots"
         f = base / m.group(1) / m.group(2)
     f = f.resolve()
-    if base.resolve() not in f.parents or not f.is_file():
+    if base.resolve() not in f.parents:
         raise HTTPException(404, "no such screenshot")
+    if not f.is_file():
+        # cutover: the screenshot lives on axf-data only
+        raw = data_store.read_bytes(f) if data_store.key_for(f) else None
+        if raw is None:
+            raise HTTPException(404, "no such screenshot")
+        return Response(raw, media_type=TYPES.get(f.suffix[1:].lower(), "application/octet-stream"), headers={"Cache-Control": "private, max-age=86400"})
     return FileResponse(f, media_type=TYPES[f.suffix[1:].lower()], headers={"Cache-Control": "private, max-age=86400"})
 
 

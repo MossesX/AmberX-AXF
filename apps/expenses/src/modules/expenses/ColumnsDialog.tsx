@@ -33,11 +33,11 @@ const FIXED = [
 export default function ColumnsDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const prefs = useExpensesSettings();
   const hidden = React.useMemo(() => hiddenSet(prefs.hiddenColumns), [prefs.hiddenColumns]);
-  const label = { "& .MuiFormControlLabel-label": { fontSize: 13 } } as const;
+  const label = { "& .MuiFormControlLabel-label": { fontSize: 'var(--fx-type-root-md)' } } as const;
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth data-axf-expenses-columns-dialog="">
-      <DialogTitle sx={{ fontSize: 15, pb: 0.5 }}>Columns</DialogTitle>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)', pb: 0.5 }}>Columns</DialogTitle>
       <DialogContent sx={{ display: "flex", flexDirection: "column", py: 0.5 }}>
         {FIXED.map((c) => (
           <FormControlLabel

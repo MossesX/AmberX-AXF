@@ -1,0 +1,166 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-k6ckjv",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:40Z",
+ "build": {
+  "id": "project-thread-k6ckjv",
+  "title": "project-thread-k6ckjv",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-k6ckjv",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-k6ckjv",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "6a22c9735dde57064dd8e38bdae9d0d1e4482d1e",
+ "commits": [
+  "0fce21922ee140f9bf6b8171ed0cd9aa84a6f24f"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-25T18:21:06Z",
+ "files": [
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/core/engines/appearance.ts",
+  "apps/amberx-droid/src/axf/core/runtime.ts",
+  "apps/amberx-droid/src/axf/react/hubAppearance.ts",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/core/engines/appearance.ts",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/react/hubAppearance.ts",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/src/axf/core/engines/appearance.ts",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/react/hubAppearance.ts",
+  "apps/patches-web/axf.lock.json",
+  "apps/patches-web/src/axf/core/engines/appearance.ts",
+  "apps/patches-web/src/axf/core/runtime.ts",
+  "apps/patches-web/src/axf/react/hubAppearance.ts",
+  "apps/walkthrough-studio/axf.lock.json",
+  "apps/walkthrough-studio/src/axf/core/engines/appearance.ts",
+  "apps/walkthrough-studio/src/axf/core/runtime.ts",
+  "apps/walkthrough-studio/src/axf/react/hubAppearance.ts",
+  "framework/core/engines/appearance.ts",
+  "framework/core/runtime.ts",
+  "framework/plan/pending.json",
+  "framework/react/hubAppearance.ts",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-appearance.mts"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/core/engines/appearance.ts",
+    "apps/amberx-droid/src/axf/core/runtime.ts",
+    "apps/amberx-droid/src/axf/react/hubAppearance.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/core/engines/appearance.ts",
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/react/hubAppearance.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/core/engines/appearance.ts",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/react/hubAppearance.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "patches-web",
+   "files": [
+    "apps/patches-web/axf.lock.json",
+    "apps/patches-web/src/axf/core/engines/appearance.ts",
+    "apps/patches-web/src/axf/core/runtime.ts",
+    "apps/patches-web/src/axf/react/hubAppearance.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/axf.lock.json",
+    "apps/walkthrough-studio/src/axf/core/engines/appearance.ts",
+    "apps/walkthrough-studio/src/axf/core/runtime.ts",
+    "apps/walkthrough-studio/src/axf/react/hubAppearance.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/appearance.ts",
+    "framework/core/runtime.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-appearance.mts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/hubAppearance.ts"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

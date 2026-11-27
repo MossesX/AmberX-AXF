@@ -1,0 +1,286 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-claude-settings",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:29Z",
+ "build": {
+  "id": "claude-settings",
+  "title": "Claude plugin: Claude settings on axHub (No wait, builds, talking, notifications), read by every session",
+  "profile": "all",
+  "category": "Claude",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "I need a plugin called Claude. Claude settings. A setting to enable your no-wait in that. A whole bunch of settings that are for Claude, that you check on axHub and then act accordingly.",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "# Build: claude-settings (Urgent profile)\n\nBrett, Nov 3 2026 (voice): \"I need a plugin called Claude. Claude settings. A setting to enable your no-wait in that. A whole bunch of settings that are for Claude, that you check on axHub and then act accordingly.\" Assigned agent: **Janitor Joey** (book on his card; AXF_AGENT=janitor-joey if supported). Register in Urgent (id `claude-settings`) + banner entry.\n\n## Plugin\nConsole plugin **Claude** (plugin@1, lifecycle install/uninstall, page + Settings > Plugins > Claude, context-menu hook 'Claude settings' everywhere). Settings are stored on axHub (shared `_data/claude/settings.json` or a hub settings namespace) so every Claude session (voice, chat, Claude Code, headless agents) reads the same values.\n\n## Settings (grouped, framework settings renderer with the level toolbar)\n- **No wait** (owner-only): when ON, Amber's held calls run immediately instead of the 90 s veto / approval. Implement as a standing axHub pass that the console creates on Brett's signed-in click (reuse pass-all / `axhub.pass_grant` machinery, scope all, `include_irreversible` false by default with its own separate switch 'Include irreversible' also owner-only). Options: duration (1 h / 4 h / until I turn it off), auto-off at night. Banner chip while on. Turning it off revokes the pass instantly.\n- **Follow Amber** (link to / share state with the follow-amber build's switch; don't duplicate it - read the same setting).\n- **Builds:** default model (Opus/Fable/split), launch builds without asking (on/off), max parallel builds, per-build budget cap and daily budget cap (stop + notify when hit), always assign a named agent (locked on), UI Review gate (on).\n- **Verification:** trust live store by default, verify only on conflict (current rule) vs always verify.\n- **Talking:** persona on/off, tone level, address terms, swearing level, response length (short/normal/detailed), say costs out loud, read build reports aloud vs summary.\n- **Notifications:** push on build done / blocked / approval waiting, quiet hours.\n- **Memory/notes:** save session notes to Notes Vault automatically, handoff note at end of session.\n- Open registry so new Claude settings can be added as data without code changes.\n\n## Claude reads them\n- MCP tools via axf-console (and axHub builtin if simpler): `claude_settings_get` (policy ALLOW, read-only) returning all values with plain descriptions; `claude_settings_set` for NON-owner settings only (veto policy). Owner-only settings (No wait, Include irreversible, approvals, budget caps raising) can ONLY be changed by Brett's signed-in console click - agents/sessions can never change them (test enforces).\n- Rule in shared RULES.md + CLAUDE.md (top): 'At session start and before acting, read Claude settings (claude_settings_get) and follow them.'\n- Commands declared once -> REST + MCP + CLI.\n\n## Done\nTests (owner-only enforcement, pass created/revoked by the switch, read tool), phone + desktop screenshots, UI Review item, report `_claude/builds/reports/claude-settings.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-claude-settings",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T18:58:47.458Z",
+   "endedAt": "2026-11-03T19:52:26.034Z",
+   "exit": 0,
+   "costUsd": 9.9224
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "claude-settings@1 registry + core: open registry (data), hub store (/projects/_shared/_data/claude/settings.json), owner-only rules, validation",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T18:58:47.458Z",
+   "doneAt": "2026-11-03T19:06:08.978Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "CLI + server routes: get/set, owner-gated writes (signed-in session only), No wait = all-scope pass via control@1 owner method, renewal + night auto-off loop",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T19:06:08.978Z",
+   "doneAt": "2026-11-03T19:07:31.241Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "MCP tools claude_settings_get / claude_settings_set (owner-only refused) + plugin commands (REST + MCP + CLI)",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T19:07:31.241Z",
+   "doneAt": "2026-11-03T19:07:32.451Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Web: Claude page + Settings > Plugins > Claude panels, context-menu 'Claude settings', No wait banner chip",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T19:07:32.451Z",
+   "doneAt": "2026-11-03T19:12:27.586Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Tests: owner-only enforcement, pass created/revoked by the switch, read tool, lifecycle install/uninstall",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T19:12:27.586Z",
+   "doneAt": "2026-11-03T19:12:28.427Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Rule in shared RULES.md + CLAUDE.md, docs, report _claude/builds/reports/claude-settings.md, THREADS",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T19:12:28.427Z",
+   "doneAt": "2026-11-03T19:48:11.419Z",
+   "actualMin": 36,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Phone + desktop screenshots, UI Review item, PR",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T19:48:11.419Z",
+   "doneAt": "2026-11-03T19:50:24.731Z",
+   "actualMin": 2,
+   "done": true
+  }
+ ],
+ "branch": "claude/claude-settings",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 275,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/275"
+ },
+ "landedCommit": "70cdd0ba667361d09de7be8dd4b8d62c9902db7c",
+ "commits": [
+  "3ba5c0957543f327b403966f0c17b8ce9c4ebcdf",
+  "cc1ee9af9df4acd962639d628b12f3e0c7713360",
+  "780b42d92c63c5d04fe20ea289c8138d8d8e3871",
+  "69edd31a4d98a1c7bb4ffe05381ab6aef7f13980",
+  "52818232b3dad2e4d0546275d38d32c59370106b",
+  "94e51fe92acc5cdc1d6a3000465f0d867aa1d36a"
+ ],
+ "mergedAt": "2026-11-04T04:52:23Z",
+ "landedAt": "2026-11-04T04:13:49Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/claude-settings.md",
+  "_claude/builds/reports/claude-settings/shots/after/claude-builds-talking-desktop.png",
+  "_claude/builds/reports/claude-settings/shots/after/claude-builds-talking-phone.png",
+  "_claude/builds/reports/claude-settings/shots/after/claude-owner-only-refused-desktop.png",
+  "_claude/builds/reports/claude-settings/shots/after/claude-owner-only-refused-phone.png",
+  "_claude/builds/reports/claude-settings/shots/after/claude-settings-tab-desktop.png",
+  "_claude/builds/reports/claude-settings/shots/after/claude-settings-tab-phone.png",
+  "_claude/builds/reports/claude-settings/shots/shots.json",
+  "_claude/memory/STATUS.md",
+  "_claude/memory/decisions.md",
+  "_claude/shared/rules/RULES.md",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/claude-handoff/handoff-core.mjs",
+  "apps/console-web/plugins/claude-handoff/web/installer-core.ts",
+  "apps/console-web/plugins/claude-settings/claude-settings.mjs",
+  "apps/console-web/plugins/claude-settings/core.mjs",
+  "apps/console-web/plugins/claude-settings/help.json",
+  "apps/console-web/plugins/claude-settings/hooks.mjs",
+  "apps/console-web/plugins/claude-settings/install.mjs",
+  "apps/console-web/plugins/claude-settings/plugin.json",
+  "apps/console-web/plugins/claude-settings/registry.json",
+  "apps/console-web/plugins/claude-settings/server/__init__.py",
+  "apps/console-web/plugins/claude-settings/test.mjs",
+  "apps/console-web/plugins/claude-settings/test.py",
+  "apps/console-web/plugins/claude-settings/uninstall.mjs",
+  "apps/console-web/plugins/claude-settings/web/claude-settings.css",
+  "apps/console-web/plugins/claude-settings/web/index.tsx",
+  "apps/console-web/plugins/claude-settings/web/menu.ts",
+  "apps/console-web/plugins/token-control/server/__init__.py",
+  "apps/console-web/server/mcp_server.py",
+  "apps/console-web/server/test_mcp_tools.py"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "claude-settings",
+   "files": [
+    "apps/console-web/plugins/claude-settings/claude-settings.mjs",
+    "apps/console-web/plugins/claude-settings/core.mjs",
+    "apps/console-web/plugins/claude-settings/help.json",
+    "apps/console-web/plugins/claude-settings/hooks.mjs",
+    "apps/console-web/plugins/claude-settings/install.mjs",
+    "apps/console-web/plugins/claude-settings/plugin.json",
+    "apps/console-web/plugins/claude-settings/registry.json",
+    "apps/console-web/plugins/claude-settings/server/__init__.py",
+    "apps/console-web/plugins/claude-settings/test.mjs",
+    "apps/console-web/plugins/claude-settings/test.py",
+    "apps/console-web/plugins/claude-settings/uninstall.mjs",
+    "apps/console-web/plugins/claude-settings/web/claude-settings.css",
+    "apps/console-web/plugins/claude-settings/web/index.tsx",
+    "apps/console-web/plugins/claude-settings/web/menu.ts"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/claude-settings.md",
+    "_claude/builds/reports/claude-settings/shots/after/claude-builds-talking-desktop.png",
+    "_claude/builds/reports/claude-settings/shots/after/claude-builds-talking-phone.png",
+    "_claude/builds/reports/claude-settings/shots/after/claude-owner-only-refused-desktop.png",
+    "_claude/builds/reports/claude-settings/shots/after/claude-owner-only-refused-phone.png",
+    "_claude/builds/reports/claude-settings/shots/after/claude-settings-tab-desktop.png",
+    "_claude/builds/reports/claude-settings/shots/after/claude-settings-tab-phone.png",
+    "_claude/builds/reports/claude-settings/shots/shots.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/memory/decisions.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/plugins/README.md",
+    "apps/console-web/server/mcp_server.py",
+    "apps/console-web/server/test_mcp_tools.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-handoff",
+   "files": [
+    "apps/console-web/plugins/claude-handoff/handoff-core.mjs",
+    "apps/console-web/plugins/claude-handoff/web/installer-core.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "token-control",
+   "files": [
+    "apps/console-web/plugins/token-control/server/__init__.py"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-5bd8390c",
+   "name": "Claude plugin: Claude settings (No wait, builds, talking)",
+   "status": "approved",
+   "group": "g-20261103-c28890ca",
+   "url": "/review/r-20261103-5bd8390c"
+  },
+  {
+   "id": "r-20261103-2554c6f3",
+   "name": "Predicted look: Claude plugin: Claude settings on axHub (No wait, builds, talking, notifications), read by every session",
+   "status": "approved",
+   "group": "g-20261103-d8c5e30e",
+   "url": "/review/r-20261103-2554c6f3"
+  }
+ ],
+ "cost": {
+  "usd": 9.9224,
+  "estimated": false,
+  "tokens": {
+   "input": 316,
+   "output": 1877,
+   "cacheRead": 28592659,
+   "cacheWrite": 261455
+  }
+ },
+ "report": "_claude/builds/reports/claude-settings.md",
+ "open": [
+  "Follow Amber: the follow-amber build (running in another session, Urgent) has no switch on main yet. This plugin owns the shared key `followAmber.enabled`; follow-amber should read it (`claude_settings_get` / `axf.claude-settings@1`) instead of adding its own.",
+  "Acting on the settings is up to each session (the rule says read and follow). Nothing yet enforces the budget caps or max parallel automatically in the launcher/orchestrator; that would be a follow-up build wiring `deploy/claude-headless.sh` and agent-slots to these values.",
+  "axHub policy: `claude_settings_get` is annotated read-only (axHub's default runs reads without a veto) and `claude_settings_set` is a write (veto). No axHub-side change was made.",
+  "Direct file writes to the hub document (a shell on the VPS) bypass the transports; the No wait power itself still needs a pass, which only Brett's session or his signed axHub approval creates.",
+  "Shared `RULES.md` is held by claude-sync (changed on both sides); the repo copy has the new rule. Brett picks which copy to keep (`claude-sync resolve shared:rules/RULES.md --keep local|hub`)."
+ ]
+}

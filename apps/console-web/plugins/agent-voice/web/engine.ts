@@ -1,8 +1,7 @@
 /**
  * Agent voice — the speech engines and the speaker (s3).
  *
- *  - device: AmberX's native text-to-speech when the page runs in the AmberX app (Capacitor plugin `AmberxNative`,
- *    reached through globalThis so this console plugin never imports AmberX code), else the browser's Web Speech.
+ *  - device: the browser's Web Speech voice.
  *  - cloud: the server's /tts (OpenAI or ElevenLabs), played as audio; falls back to the device voice when allowed.
  *
  * The speaker owns one queue for the whole page: replies are narrated chunk by chunk (core.narrate), with the pauses,
@@ -11,7 +10,7 @@
  * title bar and the console all read.
  */
 import { pluginFetch } from '@console/plugins';
-import { estimateMs, narrate, type Chunk, type Pronunciation, type VoiceProfile } from './core';
+import { narrate, type Chunk, type Pronunciation, type VoiceProfile } from './core';
 
 export const FOLDER = 'agent-voice';
 
@@ -44,36 +43,11 @@ export function setSpeaker(patch: Partial<SpeakerState>): void {
   subs.forEach((f) => { try { f(state); } catch { /* a listener's problem */ } });
 }
 
-/* ---------------------------------------------------------------- the AmberX bridge */
-
-interface NativeVoice { id: string; name: string; lang: string; quality?: number; network?: boolean }
-interface NativeTts {
-  speak(o: { text: string; lang: string; voice?: string; rate?: number; pitch?: number; volume?: number; id?: string; holdMic?: boolean; queue?: boolean }): Promise<void>;
-  stopSpeaking?(): Promise<void>;
-  ttsVoices?(): Promise<{ voices: NativeVoice[] }>;
-  addListener?(event: 'spoken', fn: (e: { id: string; done: boolean; error?: string }) => void): Promise<{ remove: () => Promise<void> }>;
-  micPermission?(): Promise<{ state: 'granted' | 'denied' | 'prompt' }>;
-}
-
-/** AmberX's native plugin when this page runs inside the AmberX app, else null. */
-export function amberxNative(): NativeTts | null {
-  const cap = (globalThis as unknown as { Capacitor?: { isNativePlatform?: () => boolean; Plugins?: Record<string, unknown> } }).Capacitor;
-  if (!cap?.isNativePlatform?.()) return null;
-  const p = cap.Plugins?.AmberxNative as NativeTts | undefined;
-  return p && typeof p.speak === 'function' ? p : null;
-}
-
-export const isAmberX = (): boolean => amberxNative() !== null;
-
 /* ---------------------------------------------------------------- voices */
 
 export interface DeviceVoice { id: string; name: string; lang: string; local: boolean }
 
 export async function deviceVoices(): Promise<DeviceVoice[]> {
-  const nat = amberxNative();
-  if (nat?.ttsVoices) {
-    try { return (await nat.ttsVoices()).voices.map((v) => ({ id: v.id, name: v.name || v.id, lang: v.lang, local: !v.network })); } catch { /* older AmberX: no list */ }
-  }
   const synth = globalThis.speechSynthesis;
   if (!synth) return [];
   const read = () => synth.getVoices().map((v) => ({ id: v.voiceURI, name: v.name, lang: v.lang, local: v.localService }));
@@ -89,13 +63,6 @@ export async function deviceVoices(): Promise<DeviceVoice[]> {
 
 interface Playing { stop(): void; pause?(): void; resume?(): void }
 let playing: Playing | null = null;
-let nativeListener: Promise<{ remove: () => Promise<void> }> | null = null;
-const nativeWaits = new Map<string, () => void>();
-
-function ensureNativeListener(nat: NativeTts) {
-  if (nativeListener || !nat.addListener) return;
-  nativeListener = nat.addListener('spoken', (e) => { const f = nativeWaits.get(e.id); if (f) { nativeWaits.delete(e.id); f(); } });
-}
 
 const sleep = (ms: number, signal: { stopped: boolean }) => new Promise<void>((done) => {
   if (ms <= 0 || signal.stopped) { done(); return; }
@@ -104,24 +71,8 @@ const sleep = (ms: number, signal: { stopped: boolean }) => new Promise<void>((d
   setTimeout(() => clearInterval(check), ms + 10);
 });
 
-let seq = 0;
-
-async function speakDevice(chunk: Chunk, p: VoiceProfile, holdMic: boolean, signal: { stopped: boolean }): Promise<void> {
+async function speakDevice(chunk: Chunk, p: VoiceProfile): Promise<void> {
   const rate = Math.max(0.3, Math.min(3, p.rate * chunk.rateMul));
-  const nat = amberxNative();
-  if (nat) {
-    ensureNativeListener(nat);
-    const id = `av-${++seq}`;
-    const done = new Promise<void>((res) => {
-      nativeWaits.set(id, res);
-      // Older AmberX builds don't send `spoken`: fall back to the estimate (+ slack).
-      setTimeout(() => { if (nativeWaits.delete(id)) res(); }, estimateMs([chunk], rate) + (nat.addListener ? 8000 : 400));
-    });
-    playing = { stop: () => { void nat.stopSpeaking?.(); const f = nativeWaits.get(id); nativeWaits.delete(id); f?.(); } };
-    await nat.speak({ text: chunk.text, lang: p.device.lang, voice: p.device.voice || undefined, rate, pitch: p.pitch, volume: p.volume, id, holdMic, queue: false });
-    if (!signal.stopped) await done;
-    return;
-  }
   const synth = globalThis.speechSynthesis;
   if (!synth || typeof SpeechSynthesisUtterance === 'undefined') throw new Error('This browser has no speech voice.');
   const u = new SpeechSynthesisUtterance(chunk.text);
@@ -178,7 +129,7 @@ export async function chime(volume = 0.4): Promise<void> {
 
 /* ---------------------------------------------------------------- the speaker */
 
-export interface SpeakJob { profile: VoiceProfile; agentName: string; text: string; global?: Pronunciation[]; holdMic?: boolean; onDone?: () => void }
+export interface SpeakJob { profile: VoiceProfile; agentName: string; text: string; global?: Pronunciation[]; onDone?: () => void }
 const queue: SpeakJob[] = [];
 let current: { signal: { stopped: boolean; skip: boolean }; job: SpeakJob } | null = null;
 let resumeWait: (() => void) | null = null;
@@ -241,7 +192,7 @@ async function run(): Promise<void> {
       signal.skip = false;
       try {
         if (engine === 'cloud') await speakCloud(c, job.profile);
-        else await speakDevice(c, job.profile, job.holdMic !== false, signal);
+        else await speakDevice(c, job.profile);
       } catch (e) {
         if (engine === 'cloud' && job.profile.fallback) {
           engine = 'device';

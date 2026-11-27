@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "plan-studio-2-home",
+  "name": "Plan Studio 2.0",
+  "version": "1.0.0",
+  "description": "Plan Studio 2.0 on Home: The whole tree.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Plan Studio 2.0",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "plan-studio-2",
+      "command": "state"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

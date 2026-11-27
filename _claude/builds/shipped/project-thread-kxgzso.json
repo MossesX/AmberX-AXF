@@ -1,0 +1,69 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-kxgzso",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:22Z",
+ "build": {
+  "id": "project-thread-kxgzso",
+  "title": "project-thread-kxgzso",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-kxgzso",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-kxgzso",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "414363f2418f31df39f0212aea9b8d90edee805e",
+ "commits": [
+  "4cf14b8c72b9ebf51860c5d0a2320ef13977b8ac",
+  "904d1eaf333b45250b9b27da5c5019cd18ebfd9a"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-26T10:40:00Z",
+ "files": [
+  "apps/console-web/plugins/codebase-changes/web/ui.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "codebase-changes",
+   "files": [
+    "apps/console-web/plugins/codebase-changes/web/ui.tsx"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

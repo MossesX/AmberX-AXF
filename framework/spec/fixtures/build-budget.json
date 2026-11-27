@@ -1,0 +1,464 @@
+{
+ "$axf": "build-budget-fixture@1",
+ "schema": "build-budget@1",
+ "keys": {
+  "perBuild": "builds.budgetPerBuildUsd",
+  "daily": "builds.budgetDailyUsd"
+ },
+ "defaults": {
+  "perBuildUsd": 0,
+  "dailyUsd": 0
+ },
+ "caps": [
+  {
+   "values": {},
+   "caps": {
+    "perBuildUsd": 0,
+    "dailyUsd": 0,
+    "stored": {
+     "perBuild": false,
+     "daily": false
+    }
+   }
+  },
+  {
+   "values": {
+    "builds.budgetPerBuildUsd": 30
+   },
+   "caps": {
+    "perBuildUsd": 30,
+    "dailyUsd": 0,
+    "stored": {
+     "perBuild": true,
+     "daily": false
+    }
+   }
+  },
+  {
+   "values": {
+    "builds.budgetDailyUsd": 60
+   },
+   "caps": {
+    "perBuildUsd": 0,
+    "dailyUsd": 60,
+    "stored": {
+     "perBuild": false,
+     "daily": true
+    }
+   }
+  },
+  {
+   "values": {
+    "builds.budgetPerBuildUsd": 30,
+    "builds.budgetDailyUsd": 60
+   },
+   "caps": {
+    "perBuildUsd": 30,
+    "dailyUsd": 60,
+    "stored": {
+     "perBuild": true,
+     "daily": true
+    }
+   }
+  },
+  {
+   "values": {
+    "builds.budgetPerBuildUsd": 0,
+    "builds.budgetDailyUsd": 0
+   },
+   "caps": {
+    "perBuildUsd": 0,
+    "dailyUsd": 0,
+    "stored": {
+     "perBuild": true,
+     "daily": true
+    }
+   }
+  },
+  {
+   "values": {
+    "builds.budgetPerBuildUsd": "x",
+    "builds.budgetDailyUsd": -1
+   },
+   "caps": {
+    "perBuildUsd": 0,
+    "dailyUsd": 0,
+    "stored": {
+     "perBuild": false,
+     "daily": false
+    }
+   }
+  }
+ ],
+ "sessions": [
+  {
+   "name": "axf-alpha--s1--earl",
+   "build": "alpha"
+  },
+  {
+   "name": "alpha--s2",
+   "build": "alpha"
+  },
+  {
+   "name": "axf-alpha-two--s1--earl",
+   "build": "alpha-two"
+  },
+  {
+   "name": "lander-fix-alpha",
+   "build": "alpha"
+  },
+  {
+   "name": "axf-hand-one--paulie",
+   "build": "hand-one"
+  },
+  {
+   "name": "axf-alphabet--earl",
+   "build": ""
+  },
+  {
+   "name": "axf-chat--sully",
+   "build": ""
+  },
+  {
+   "name": "",
+   "build": ""
+  }
+ ],
+ "spend": {
+  "meters": [
+   {
+    "session": "axf-alpha--s1--earl",
+    "name": "alpha--s1",
+    "costUsd": 20,
+    "startedAt": "2026-11-23T08:00:00.000Z"
+   },
+   {
+    "session": "axf-alpha--s2--gina",
+    "name": "alpha--s2",
+    "costUsd": 12.5,
+    "startedAt": "2026-11-22T23:00:00.000Z"
+   },
+   {
+    "session": "axf-lander-fix-pr12-1--joey",
+    "name": "lander-fix-pr12-1",
+    "cwd": "/root/axf-builds/lander-fix-alpha",
+    "costUsd": 3,
+    "startedAt": "2026-11-23T09:00:00.000Z"
+   },
+   {
+    "session": "axf-alpha-two--s1--earl",
+    "name": "alpha-two--s1",
+    "costUsd": 7,
+    "startedAt": "2026-11-23T10:00:00.000Z"
+   },
+   {
+    "session": "axf-hand-one--paulie",
+    "name": "hand-one",
+    "costUsd": 40,
+    "startedAt": "2026-11-23T11:00:00.000Z"
+   },
+   {
+    "session": "axf-chat--sully",
+    "name": "chat",
+    "costUsd": 5,
+    "startedAt": "2026-11-23T12:00:00.000Z"
+   },
+   {
+    "session": "axf-beta--s1--earl",
+    "name": "beta--s1",
+    "build": "beta",
+    "costUsd": 0,
+    "startedAt": "2026-11-23T12:00:00.000Z"
+   }
+  ],
+  "ids": [
+   "alpha",
+   "alpha-two",
+   "beta",
+   "hand-one"
+  ],
+  "dayStart": 1795392000000,
+  "byBuild": {
+   "alpha": 35.5,
+   "alpha-two": 7,
+   "hand-one": 40
+  },
+  "dayUsd": 75,
+  "sessions": 6
+ },
+ "decisions": [
+  {
+   "values": {},
+   "stops": [],
+   "clears": [],
+   "daily": {
+    "reached": false,
+    "spentUsd": 75,
+    "capUsd": 0
+   },
+   "perBuildUsd": 0
+  },
+  {
+   "values": {
+    "builds.budgetPerBuildUsd": 30
+   },
+   "stops": [
+    {
+     "id": "alpha",
+     "kind": "build",
+     "spentUsd": 35.5,
+     "capUsd": 30
+    },
+    {
+     "id": "hand-one",
+     "kind": "build",
+     "spentUsd": 40,
+     "capUsd": 30
+    }
+   ],
+   "clears": [],
+   "daily": {
+    "reached": false,
+    "spentUsd": 75,
+    "capUsd": 0
+   },
+   "perBuildUsd": 30
+  },
+  {
+   "values": {
+    "builds.budgetDailyUsd": 60
+   },
+   "stops": [
+    {
+     "id": "alpha",
+     "kind": "daily",
+     "spentUsd": 75,
+     "capUsd": 60
+    },
+    {
+     "id": "alpha-two",
+     "kind": "daily",
+     "spentUsd": 75,
+     "capUsd": 60
+    },
+    {
+     "id": "hand-one",
+     "kind": "daily",
+     "spentUsd": 75,
+     "capUsd": 60
+    }
+   ],
+   "clears": [],
+   "daily": {
+    "reached": true,
+    "spentUsd": 75,
+    "capUsd": 60
+   },
+   "perBuildUsd": 0
+  },
+  {
+   "values": {
+    "builds.budgetPerBuildUsd": 30,
+    "builds.budgetDailyUsd": 60
+   },
+   "stops": [
+    {
+     "id": "alpha",
+     "kind": "build",
+     "spentUsd": 35.5,
+     "capUsd": 30
+    },
+    {
+     "id": "alpha-two",
+     "kind": "daily",
+     "spentUsd": 75,
+     "capUsd": 60
+    },
+    {
+     "id": "hand-one",
+     "kind": "build",
+     "spentUsd": 40,
+     "capUsd": 30
+    }
+   ],
+   "clears": [],
+   "daily": {
+    "reached": true,
+    "spentUsd": 75,
+    "capUsd": 60
+   },
+   "perBuildUsd": 30
+  },
+  {
+   "values": {
+    "builds.budgetPerBuildUsd": 0,
+    "builds.budgetDailyUsd": 0
+   },
+   "stops": [],
+   "clears": [],
+   "daily": {
+    "reached": false,
+    "spentUsd": 75,
+    "capUsd": 0
+   },
+   "perBuildUsd": 0
+  },
+  {
+   "values": {
+    "builds.budgetPerBuildUsd": "x",
+    "builds.budgetDailyUsd": -1
+   },
+   "stops": [],
+   "clears": [],
+   "daily": {
+    "reached": false,
+    "spentUsd": 75,
+    "capUsd": 0
+   },
+   "perBuildUsd": 0
+  }
+ ],
+ "releases": [
+  {
+   "values": {},
+   "clears": [
+    {
+     "id": "alpha",
+     "kind": "build"
+    },
+    {
+     "id": "hand-one",
+     "kind": "daily"
+    }
+   ]
+  },
+  {
+   "values": {
+    "builds.budgetPerBuildUsd": 30
+   },
+   "clears": [
+    {
+     "id": "hand-one",
+     "kind": "daily"
+    }
+   ]
+  },
+  {
+   "values": {
+    "builds.budgetDailyUsd": 60
+   },
+   "clears": [
+    {
+     "id": "alpha",
+     "kind": "build"
+    }
+   ]
+  },
+  {
+   "values": {
+    "builds.budgetPerBuildUsd": 30,
+    "builds.budgetDailyUsd": 60
+   },
+   "clears": []
+  },
+  {
+   "values": {
+    "builds.budgetPerBuildUsd": 0,
+    "builds.budgetDailyUsd": 0
+   },
+   "clears": [
+    {
+     "id": "alpha",
+     "kind": "build"
+    },
+    {
+     "id": "hand-one",
+     "kind": "daily"
+    }
+   ]
+  },
+  {
+   "values": {
+    "builds.budgetPerBuildUsd": "x",
+    "builds.budgetDailyUsd": -1
+   },
+   "clears": [
+    {
+     "id": "alpha",
+     "kind": "build"
+    },
+    {
+     "id": "hand-one",
+     "kind": "daily"
+    }
+   ]
+  }
+ ],
+ "sessionOut": [
+  {
+   "id": "alpha",
+   "status": "building",
+   "out": true
+  },
+  {
+   "id": "alpha-two",
+   "status": "building",
+   "out": true
+  },
+  {
+   "id": "hand-one",
+   "status": "building",
+   "out": true
+  },
+  {
+   "id": "beta",
+   "status": "split",
+   "out": false
+  },
+  {
+   "id": "alpha",
+   "status": "building",
+   "out": false
+  },
+  {
+   "id": "hand-one",
+   "status": "failed",
+   "out": false
+  },
+  {
+   "id": "r",
+   "status": "running",
+   "out": true
+  },
+  {
+   "id": "a",
+   "status": "archived",
+   "out": false
+  },
+  {
+   "id": "d",
+   "status": "building",
+   "out": false
+  }
+ ],
+ "lines": [
+  {
+   "stop": {
+    "id": "alpha",
+    "kind": "build",
+    "spentUsd": 35.5,
+    "capUsd": 30
+   },
+   "line": "alpha (A title) reached its budget: $35.50 of $30.00 per build. Its sessions were stopped; the work so far is in its worktree. To let it go on, raise \"Budget per build (USD)\" in Settings → Claude settings → Builds (only Brett raises it; 0 = no cap), or cancel the build."
+  },
+  {
+   "stop": {
+    "id": "hand-one",
+    "kind": "daily",
+    "spentUsd": 75,
+    "capUsd": 60
+   },
+   "line": "hand-one (A title) was stopped: the day's builds reached the daily budget, $75.00 of $60.00. Nothing new starts until tomorrow, or until \"Daily budget (USD)\" is raised in Settings → Claude settings → Builds (only Brett raises it; 0 = no cap)."
+  }
+ ]
+}

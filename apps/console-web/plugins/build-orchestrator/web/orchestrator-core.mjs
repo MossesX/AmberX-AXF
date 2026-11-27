@@ -2,7 +2,7 @@
  * Build orchestrator core (orchestrator@1). Pure: no fs, no DOM. Shared by the console page, the CLI
  * (../orchestrator.mjs), the server part and the tests.
  *
- * A build is a list of small steps (≤ 30 min), each pinned to Fable or Opus. Consecutive steps on the same model
+ * A build is a list of small steps (≤ 10 min, Brett, Nov 13 2026; was 30), each pinned to Fable or Opus. Consecutive steps on the same model
  * form a phase. A phase whose model differs from the phase before it is a model switch (framework/core/model-switch.mjs,
  * Brett, Nov 3 2026): a downgrade (Fable → Opus) passes by itself and is recorded; an UPGRADE (Opus → Fable) opens
  * behind Brett's approval (his signed-in console click or an axHub approval), which no session, agent, headless build
@@ -11,6 +11,8 @@
  */
 
 import { normOrigin, originText } from '../../../../../framework/core/build-origin.mjs';
+import { STEP_MAX_MINUTES } from '../../../../../framework/core/pipeline-status.mjs';
+import { isBuildId, namesOf, shortBuildId, slugWords, uniqueBuildId } from '../../../../../framework/core/build-id.mjs';
 import { AUTO_UPGRADE_NOTE, normApproval, normRequest, phaseApproved, setUpgradePolicy, switchKind, switchRule, upgradeLine, upgradeNeedsApproval, upgradePolicy, modelRank } from '../../../../../framework/core/model-switch.mjs';
 
 export const SCHEMA = 'orchestrator@1';
@@ -19,14 +21,36 @@ export const MODELS = ['Fable', 'Opus'];
  * `built` = every step done but the build's PR is not merged yet; `complete` once it merged (or it has no PR).
  * `queued` (Nov 8 2026) = in the Queue: Brett moved it from Pending, the dispatcher starts it when a slot is free.
  */
-export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
-export const STATUS_LABEL = { pending: 'Pending', queued: 'Queued', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', built: 'Built · awaiting merge', complete: 'Complete', archived: 'Archived' };
-/** Finished work: no steps left (built waits only on its PR). */
-export const isFinished = (status) => status === 'built' || status === 'complete';
+export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived'];
+export const STATUS_LABEL = { pending: 'Pending', queued: 'Queued', running: 'Building', waiting: 'Needs approval', fixing: 'Fixing', blocked: 'Blocked', failed: 'Failed', built: 'Landed (legacy)', landing: 'Landing', landed: 'Landed · merged, CI green', complete: 'Complete · verified', escalated: 'Failed · every option used up', archived: 'Archived' };
+/** Finished work: no steps left (landing waits only on its PR; done-means-merged@1). */
+export const isFinished = (status) => status === 'built' || status === 'landing' || status === 'landed' || status === 'complete';
 export const SORTS = ['status', 'added', 'built', 'left', 'next', 'category', 'title'];
 export const SORT_LABEL = { status: 'Status', added: 'Date added', built: 'Date built', left: 'Time left', next: 'Next model', category: 'Category', title: 'Title' };
 export const UNCATEGORISED = 'Uncategorised';
-export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 30 };
+export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: STEP_MAX_MINUTES };
+/**
+ * Step size: the one step cap, STEP_MAX_MINUTES of the Pipeline 2.0 status contract (15 minutes; Nov 13 2026 it was 10
+ * here and 30 there). It is a ceiling: the Largest step rule can lower it, never raise it (a stored 30 reads as the
+ * cap). Steps are checkpoints inside ONE session (CHECKPOINT_RULE), so a smaller step costs no extra prompt or launch.
+ * Steps written before Nov 14 2026 (createdAt before TEN_MINUTE_STEPS_AT) keep the old 30-minute limit, so the queue
+ * is not flagged "needs split" all at once; a re-split brings them under the cap.
+ */
+export const STEP_MINUTES = STEP_MAX_MINUTES;
+export const LEGACY_STEP_MINUTES = 30;
+export const TEN_MINUTE_STEPS_AT = '2026-11-14T00:00:00.000Z';
+/** The largest step the rules allow: the rule, capped at STEP_MINUTES. */
+export const maxStep = (rules) => Math.max(1, Math.min(STEP_MINUTES, Number(rules?.maxStepMinutes) || STEP_MINUTES));
+/** The limit one step is held to: maxStep, or the old 30 for a step written before the change. */
+export const stepLimit = (step, rules) => {
+  const c = typeof step?.createdAt === 'string' ? step.createdAt : '';
+  return c && c < TEN_MINUTE_STEPS_AT ? Math.max(maxStep(rules), LEGACY_STEP_MINUTES) : maxStep(rules);
+};
+/**
+ * Steps are checkpoints, not launches (Brett, Nov 13 2026): one session works through every step of its phase, ticks
+ * each one done and commits + pushes as it goes, so nothing is lost if it dies, and no step gets its own prompt or relaunch.
+ */
+export const CHECKPOINT_RULE = 'Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.';
 /** When Fable is worth its price (shown on the page; the session picks a step's model from it). */
 export const MODEL_GUIDE = {
   Fable: 'Cross-port contracts, kernel/engine internals, schema + migration design, heavy refactors, anything that changes how GUIs work across apps.',
@@ -49,7 +73,8 @@ const now = () => new Date().toISOString();
 const str = (v, max = 4000) => (typeof v === 'string' ? v.slice(0, max) : '');
 /** A step still to do: not done and not skipped by the build's feature matrix. */
 const open = (s) => !s.done && !s.skip;
-const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
+/** A new build's id (build-id@1: at most 40 characters); the title is kept whole as the display name. */
+const slug = (t) => shortBuildId(str(t, 300));
 
 /** "45 min", "2 h", "1.5 d", "90" → minutes (a day = 8 working hours), null when unreadable. */
 export function estimateMinutes(e) {
@@ -85,6 +110,10 @@ function normStep(s, i) {
     done: o.done === true,
     doneAt: o.done === true ? str(o.doneAt, 40) : '',
     note: str(o.note, 1000),
+    ...(str(o.createdAt, 40) ? { createdAt: str(o.createdAt, 40) } : {}), // which step-size limit the step is held to (stepLimit)
+    // step dependencies (build-pipeline@1, Nov 13 2026): carried through as the store wrote them, only when present
+    ...(Array.isArray(o.after) ? { after: o.after.map((x) => str(x, 40)).filter(Boolean).slice(0, 20) } : {}),
+    ...(o.claim && typeof o.claim === 'object' && str(o.claim.runId) && o.done !== true ? { claim: { ...o.claim } } : {}),
   };
 }
 
@@ -98,7 +127,9 @@ function normBuild(b) {
     title: str(o.title, 300) || 'Untitled build',
     category: str(o.category, 60),
     detail: str(o.detail, 8000),
-    status: STATUSES.includes(o.status) ? o.status : 'pending',
+    // a Pipeline 2.0 build keeps its flow's status as it is (building, build-complete…): never read as builds@1
+    status: o.flow === 'pipeline-2' && /^[a-z-]{1,40}$/.test(str(o.status)) ? o.status : STATUSES.includes(o.status) ? o.status : 'pending',
+    ...(o.flow === 'pipeline-2' ? { flow: 'pipeline-2' } : {}),
     hidden: o.hidden === true,
     source: str(o.source, 40) || 'console',
     pendingId: str(o.pendingId, 80),
@@ -186,7 +217,7 @@ export function splitCheck(build, rules = DEFAULT_RULES) {
   build.steps.forEach((s, i) => {
     const m = estimateMinutes(s.estimate);
     if (m == null) reasons.push(`step ${i + 1} has no estimate`);
-    else if (m > (rules.maxStepMinutes || 30)) reasons.push(`step ${i + 1} is ${formatMinutes(m)}`);
+    else if (m > stepLimit(s, rules)) reasons.push(`step ${i + 1} is ${formatMinutes(m)} (limit ${formatMinutes(stepLimit(s, rules))})`);
   });
   if (!build.steps.length) reasons.push('no steps yet');
   // skipped steps (feature matrix) still have to be small: they may come back
@@ -195,11 +226,14 @@ export function splitCheck(build, rules = DEFAULT_RULES) {
 
 /** Status the build should show, from its steps (explicit blocked/failed/archived stay). */
 export function derivedStatus(build, rules) {
-  if (['blocked', 'failed', 'archived'].includes(build.status)) return build.status;
+  // Pipeline 2.0 (pipeline-2@1): the flow owns the status (building, then build-complete when every step's session has
+  // ended). A ticked step never derives a builds@1 status: `act step` tried `running` and the store refused it.
+  if (build.flow === 'pipeline-2') return build.status;
+  if (['blocked', 'failed', 'archived', 'fixing', 'escalated', 'landed', 'complete'].includes(build.status)) return build.status; // done-means-merged@1: set with their records, never from the steps
   if (!build.steps.length) return build.status; // nothing to derive from (e.g. a Pending item built before it had steps)
-  if (isFinished(build.status) && !build.steps.some((s) => s.done)) return build.pr && !build.mergedAt ? 'built' : 'complete'; // built without ticking its steps
+  if (isFinished(build.status) && !build.steps.some((s) => s.done)) return build.mergedAt ? 'landed' : 'landing'; // built without ticking its steps
   const n = nextUp(build, rules);
-  if (n.done) return build.pr && !build.mergedAt ? 'built' : 'complete';
+  if (n.done) return build.mergedAt ? 'landed' : 'landing';
   if (n.needsApproval) return 'waiting';
   if (build.status === 'queued') return build.steps.some((s) => s.done) ? 'running' : 'queued'; // the Queue holds until a session ticks a step
   return build.steps.some((s) => s.done) || build.status === 'running' ? 'running' : 'pending';
@@ -207,7 +241,7 @@ export function derivedStatus(build, rules) {
 
 export function counts(builds) {
   const c = Object.fromEntries(STATUSES.map((s) => [s, 0]));
-  for (const b of builds) c[b.status] += 1;
+  for (const b of builds) if (b.status in c) c[b.status] += 1; // a Pipeline 2.0 status is not a builds@1 count
   return c;
 }
 
@@ -223,7 +257,32 @@ export function sortBuilds(list, sort = 'status', dir = 'asc', rules) {
  * Brief for the next session: only the current phase (fewest tokens), the token rules, what to read first and how
  * to report. Paste it as the first message, or `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief <id>`.
  */
-export function brief(build, rules = DEFAULT_RULES) {
+/** A phase with more steps than this lists only its done count and the next this-many open steps (brief size cap). */
+export const BRIEF_STEPS = 40;
+
+/**
+ * The phase's step lines for a brief. Up to `limit` steps: every step, as always. More: the done ones as one count
+ * line, the next `limit` open ones, and how many more are in the store (a 2,000-step phase made a brief no exec takes).
+ */
+export function briefStepLines(p, limit = BRIEF_STEPS) {
+  const line = (s, prev) => `${s.group && s.group !== prev?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`;
+  if (p.steps.length <= limit) return p.steps.map((s, i) => line(s, p.steps[i - 1]));
+  const done = p.steps.filter((s) => s.done || s.skip); const left = p.steps.filter((s) => !s.done && !s.skip);
+  const shown = left.slice(0, Math.max(1, limit));
+  return [
+    ...(done.length ? [`[x] ${done.length} step${done.length === 1 ? '' : 's'} done or skipped (not listed)`] : []),
+    ...shown.map((s, i) => line(s, shown[i - 1])),
+    ...(left.length > shown.length ? [`… ${left.length - shown.length} more step${left.length - shown.length === 1 ? '' : 's'} in the store (\`orchestrator.mjs next <build>\` after each tick).`] : []),
+  ];
+}
+
+export function brief(build, rules = DEFAULT_RULES, { blocks = null, stepLimit = BRIEF_STEPS } = {}) {
+  // blocks = brief-blocks@1 from the build rules store (the dispatcher and `orchestrator.mjs brief` pass it): its
+  // Checkpoints / Look / API lines are the only ones, so the Build rules tab decides what a session is told. The brief
+  // carries no rule text of its own; without blocks it has none of those lines.
+  const bl = blocks && blocks.blocks ? blocks.blocks : { checkpoints: '', look: '', api: '' };
+  // the store's phase-brief-scope rule says the default scope line; the line here stays only when the settings differ
+  const scopeInStore = Array.isArray(blocks?.picked) && blocks.picked.includes('phase-brief-scope') && rules.sameSession && !rules.subAgents;
   const n = nextUp(build, rules);
   if (n.done) return `Build "${build.title}" (${build.id}) is complete.`;
   const p = n.phase;
@@ -236,15 +295,16 @@ export function brief(build, rules = DEFAULT_RULES) {
     p.gate && p.kind === 'downgrade' ? `This phase downgrades ${p.from} → ${p.model}: fine, no approval needed (it is recorded when you tick its first step).` : '',
     p.upgrade && !n.needsApproval && !build.approvals.some((a) => a.phase === p.index && a.to === p.model) ? `This phase upgrades ${p.from} → ${p.model}: no approval needed (Fable upgrades need my approval is off); it is recorded when you tick its first step.` : '',
     switchRule(),
-    `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${rules.maxStepMinutes} min; read only the files listed; stop at the end of this phase.`,
-    `Look: ${ASSET_RULE}`,
-    `API: ${API_RULE}`,
+    scopeInStore ? `Steps ≤ ${maxStep(rules)} min.` : `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${maxStep(rules)} min; read only the files listed; stop at the end of this phase.`,
+    bl.checkpoints,
+    bl.look,
+    bl.api,
     build.branch ? `Branch: ${build.branch}${build.pr ? ` · PR ${build.pr}` : ''}` : '',
     `Steps in this phase (${p.steps.filter(open).length} left, ~${formatMinutes(p.minutesLeft) || '?'}):`,
-    ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),
+    ...briefStepLines(p, stepLimit),
     files.length ? `Read first: ${files.join(', ')}` : '',
     checks.length ? `Checks: ${checks.join(' · ')}` : '',
-    `Tick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link ${build.id} --branch <b> --pr <n>.`,
+    `Tick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).`,
     'Watch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "…"` so the live preview follows you.',
     'Screenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name "…" --app … --screen … --group "<build name>" (UI Review → Screenshots; ui-review-item@1), never the review queue.',
   ];
@@ -277,20 +337,28 @@ export function apply(state, change) {
   const s = normalizeState(state);
   const c = change && typeof change === 'object' ? change : {};
   const log = [];
-  const find = () => { const b = s.builds.find((x) => x.id === c.id); if (!b) throw new Error(`no build "${c.id}"`); return b; };
+  const find = () => { const b = s.builds.find((x) => x.id === c.id) ?? s.builds.find((x) => namesOf(x).includes(c.id)); if (!b) throw new Error(`no build "${c.id}"`); return b; };
   const stepOf = (b) => { const st = b.steps.find((x) => x.id === c.step) ?? b.steps[Number(c.index)]; if (!st) throw new Error(`no step "${c.step ?? c.index}" in ${b.id}`); return st; };
   let b = null;
   switch (c.action) {
     case 'add': {
-      const id = slug(c.id || c.title); if (!str(c.title).trim()) throw new Error('a title is needed');
-      if (s.builds.some((x) => x.id === id)) throw new Error(`"${id}" is already on the list`);
+      if (!str(c.title).trim()) throw new Error('a title is needed');
+      const taken = new Set(s.builds.flatMap(namesOf));
+      // the same id or title again is refused; two titles that only meet once shortened get a suffix
+      const asked = slugWords(c.id || str(c.title, 300));
+      if (taken.has(asked)) throw new Error(`"${asked}" is already on the list`);
+      const id = c.id && isBuildId(asked) ? asked : uniqueBuildId(asked, taken);
       // origin = what Brett said that started it (build-origin@1); `said` is the shortcut for his verbatim words
       const origin = c.said !== undefined ? { ...(c.origin ?? {}), said: c.said, at: c.origin?.at || now() } : c.origin;
       b = normBuild({ ...c, id, origin, status: 'pending', createdAt: now() }); s.builds.push(b); log.push(`added ${id} (${b.steps.length} steps)${b.origin?.said ? ', with what Brett said' : ''}`); break;
     }
     case 'import': { // from a pending@1 item: its sub prompts become steps on the item's model
-      const it = c.item ?? {}; const id = slug(c.id || it.id || it.title);
-      if (s.builds.some((x) => x.id === id)) throw new Error(`"${id}" is already on the list`);
+      const it = c.item ?? {};
+      // already imported: the same pending item, or a build made before ids were capped (its full-length slug)
+      const was = s.builds.find((x) => (it.id && x.pendingId === it.id) || x.id === slugWords(c.id || it.id || it.title));
+      if (was) throw new Error(`"${was.id}" is already on the list`);
+      const taken = new Set(s.builds.flatMap(namesOf));
+      const id = c.id && isBuildId(c.id) && !taken.has(c.id) ? c.id : uniqueBuildId(c.id || it.id || it.title, taken);
       const model = MODELS.includes(it.model) ? it.model : 'Opus';
       b = normBuild({ id, title: it.title, detail: it.detail, source: 'pending', pendingId: it.id, steps: (it.subPrompts ?? []).map((p) => ({ text: p.text, estimate: p.estimate, model, done: p.done, doneAt: p.doneAt })) });
       s.builds.push(b); log.push(`imported pending ${it.id} as ${id}`); break;
@@ -332,7 +400,7 @@ export function apply(state, change) {
     case 'deny-upgrade': { b = find(); const who = needApprover(c, 'answering an upgrade request', false);
       const req = b.upgradeRequests.find((r) => r.phase === Number(c.phase) && r.state === 'open'); if (!req) throw new Error('no open upgrade request on that phase');
       req.state = 'denied'; log.push(`${b.id}: upgrade request ${req.id} denied by ${who.by}`); break; }
-    case 'rules': { for (const k of Object.keys(DEFAULT_RULES)) if (k in (c.rules ?? {})) s.rules[k] = typeof DEFAULT_RULES[k] === 'number' ? Math.max(5, Math.min(240, Number(c.rules[k]) || 30)) : c.rules[k] === true; log.push('rules saved'); break; }
+    case 'rules': { for (const k of Object.keys(DEFAULT_RULES)) if (k in (c.rules ?? {})) s.rules[k] = typeof DEFAULT_RULES[k] === 'number' ? (k === 'maxStepMinutes' ? Math.max(1, Math.min(STEP_MINUTES, Math.round(Number(c.rules[k])) || STEP_MINUTES)) : Math.max(1, Number(c.rules[k]) || DEFAULT_RULES[k])) : c.rules[k] === true; log.push('rules saved'); break; }
     default: throw new Error(`unknown action ${c.action}`);
   }
   if (b && s.builds.includes(b)) { b.updatedAt = now(); const st = derivedStatus(b, s.rules); if (st !== b.status && !(c.action === 'status')) { if (isFinished(st) && !b.builtAt) b.builtAt = now(); b.status = st; } }

@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "phone-connect-settings-s-mwl9dru5-tabs",
+  "name": "phone-connect-settings-s-mwl9dru5: Tabs",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Pair, Phones, Features and Activity as four tabs (the framework TabGroup). Shortest on a phone; one thing at a time.",
+  "tags": [
+    "ui-choice",
+    "choice-set:phone-connect-settings-s-mwl9dru5",
+    "choice-option:tabs"
+  ],
+  "data": {
+    "view": "tabs",
+    "settingKey": "phone-connect.layout",
+    "appliesTo": [
+      "phone-connect"
+    ],
+    "builtFor": "plugin:phone-connect"
+  }
+}

@@ -12,6 +12,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as L from '../../../../../framework/core/feature-ledger.mjs';
 import { normManifest } from '../../../../../framework/core/shipped-manifest.mjs';
+import { sqliteHydrate, sqliteUpload } from '../../../../../framework/core/data-files.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '../../../../..');
@@ -29,11 +30,13 @@ export const MIGRATIONS = readdirSync(join(HERE, 'migrations')).filter((f) => /^
 export const SCHEMA_VERSION = MIGRATIONS.at(-1)?.version ?? 0;
 
 const cache = new Map();
+const files = new WeakMap(); // db → its file, for the axf-data upload after a write
 /** Open (and migrate) the ledger. `file` = ':memory:' for tests. */
 export function openDb(file = dbFile()) {
   if (cache.has(file)) return cache.get(file);
-  if (file !== ':memory:') mkdirSync(dirname(file), { recursive: true });
+  if (file !== ':memory:') { mkdirSync(dirname(file), { recursive: true }); sqliteHydrate(file); }  // data-store@1: newest copy from axf-data in cutover
   const db = new DatabaseSync(file);
+  if (file !== ':memory:') files.set(db, file);
   db.exec('PRAGMA journal_mode = WAL; PRAGMA busy_timeout = 5000; PRAGMA foreign_keys = ON;');
   migrateDb(db);
   cache.set(file, db);
@@ -56,7 +59,11 @@ export function migrateDb(db) {
 
 export function tx(db, fn) {
   db.exec('BEGIN IMMEDIATE');
-  try { const r = fn(); db.exec('COMMIT'); return r; } catch (e) { try { db.exec('ROLLBACK'); } catch { /* already gone */ } throw e; }
+  let r;
+  try { r = fn(); db.exec('COMMIT'); } catch (e) { try { db.exec('ROLLBACK'); } catch { /* already gone */ } throw e; }
+  // data-store@1: in shadow / cutover the committed ledger goes to axf-data as one blob (blob-sqlite)
+  if (files.has(db)) sqliteUpload(files.get(db), db);
+  return r;
 }
 export const getMeta = (db, key) => db.prepare('SELECT value FROM meta WHERE key = ?').get(key)?.value ?? '';
 export const setMeta = (db, key, value) => db.prepare('INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value').run(key, String(value));

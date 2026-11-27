@@ -1,0 +1,236 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-y6pzy7",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:43Z",
+ "build": {
+  "id": "project-thread-y6pzy7",
+  "title": "project-thread-y6pzy7",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-y6pzy7",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-y6pzy7",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "ec18715926277bc3edbd5f0872a2365f887b0c1d",
+ "commits": [
+  "036a3dc1c78c1b8708c6832262a393d31e373b82",
+  "2afc6ca849a8c7115cba609c06784e6c65e8802b",
+  "cb5b6aa1a1a026a4e946306609c2b5637473b803"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-25T18:20:50Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/axf.manifest.json",
+  "apps/console-web/plugins/agent-manager/test.py",
+  "apps/console-web/src/assets/app-menu/console.json",
+  "apps/console-web/src/assets/appearance-package/amberx.json",
+  "apps/console-web/src/assets/context-menu/amber.json",
+  "apps/console-web/src/axf/core/engines/appearancepackage.ts",
+  "apps/console-web/src/axf/core/index.ts",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/core/settings.ts",
+  "apps/console-web/src/axf/core/types.ts",
+  "apps/console-web/src/axf/core/validate.ts",
+  "apps/console-web/src/axf/react/components/MenuList.tsx",
+  "apps/console-web/src/axf/react/components/Overlays.tsx",
+  "apps/console-web/src/axf/schemas/asset-types.json",
+  "apps/console-web/src/axf/schemas/json/appearance-package.schema.json",
+  "apps/console-web/src/axf/schemas/json/settings.schema.json",
+  "apps/console-web/src/axf/schemas/json/tab-group.schema.json",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/console-web/src/hubAppearance.tsx",
+  "apps/console-web/src/menu.ts",
+  "apps/console-web/src/menuLibrary.tsx",
+  "framework/assets/appearance-package/amberx.json",
+  "framework/catalog/libraries.json",
+  "framework/cli/build-engine.mjs",
+  "framework/core/engines/appearancepackage.ts",
+  "framework/core/index.ts",
+  "framework/core/runtime.ts",
+  "framework/core/settings.ts",
+  "framework/core/types.ts",
+  "framework/core/validate.ts",
+  "framework/plan/plan.json",
+  "framework/react/components/MenuList.tsx",
+  "framework/react/components/Overlays.tsx",
+  "framework/schemas/asset-types.json",
+  "framework/schemas/json/appearance-package.schema.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-appearance-package.mts",
+  "framework/spec/fixtures/app-menu.json",
+  "framework/spec/fixtures/appearance.json",
+  "framework/spec/fixtures/roll.json",
+  "framework/ui/axf.css",
+  "tracker.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/axf.manifest.json",
+    "apps/console-web/src/assets/app-menu/console.json",
+    "apps/console-web/src/assets/appearance-package/amberx.json",
+    "apps/console-web/src/assets/context-menu/amber.json",
+    "apps/console-web/src/axf/core/engines/appearancepackage.ts",
+    "apps/console-web/src/axf/core/index.ts",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/core/settings.ts",
+    "apps/console-web/src/axf/core/types.ts",
+    "apps/console-web/src/axf/core/validate.ts",
+    "apps/console-web/src/axf/react/components/MenuList.tsx",
+    "apps/console-web/src/axf/react/components/Overlays.tsx",
+    "apps/console-web/src/axf/schemas/asset-types.json",
+    "apps/console-web/src/axf/schemas/json/appearance-package.schema.json",
+    "apps/console-web/src/axf/schemas/json/settings.schema.json",
+    "apps/console-web/src/axf/schemas/json/tab-group.schema.json",
+    "apps/console-web/src/axf/ui/axf.css",
+    "apps/console-web/src/hubAppearance.tsx",
+    "apps/console-web/src/menu.ts",
+    "apps/console-web/src/menuLibrary.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/appearancepackage.ts",
+    "framework/core/index.ts",
+    "framework/core/runtime.ts",
+    "framework/core/settings.ts",
+    "framework/core/types.ts",
+    "framework/core/validate.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-appearance-package.mts",
+    "framework/spec/fixtures/app-menu.json",
+    "framework/spec/fixtures/appearance.json",
+    "framework/spec/fixtures/roll.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/MenuList.tsx",
+    "framework/react/components/Overlays.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/asset-types.json",
+    "framework/schemas/json/appearance-package.schema.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-manager",
+   "files": [
+    "apps/console-web/plugins/agent-manager/test.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/appearance-package/amberx.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/libraries.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-engine.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/plan.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "tracker.json",
+   "files": [
+    "tracker.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

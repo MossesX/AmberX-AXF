@@ -33,8 +33,10 @@ interface State {
   /** what `?axf-demo=` or a `pitch.open` action asked for; the page takes it */
   wanted: { id: string; play: boolean } | null;
   recording: boolean; events: RecordEvent[];
+  /** cloud narrator voices (axf.speech@1 through GET narrators); why = the reason there are none */
+  narrators: Narrator[]; narratorsLoaded: boolean; narratorsWhy: string;
 }
-let st: State = { topics: [], registry: [], topicsLoaded: false, demos: [], demosLoaded: false, settings: E.normalizeSettings({}), settingsLoaded: false, error: '', wanted: null, recording: false, events: [] };
+let st: State = { topics: [], registry: [], topicsLoaded: false, demos: [], demosLoaded: false, settings: E.normalizeSettings({}), settingsLoaded: false, error: '', wanted: null, recording: false, events: [], narrators: [], narratorsLoaded: false, narratorsWhy: '' };
 const subs = new Set<() => void>();
 const set = (p: Partial<State>) => { st = { ...st, ...p }; subs.forEach((f) => f()); };
 export const useModel = () => useSyncExternalStore((f) => { subs.add(f); return () => { subs.delete(f); }; }, () => st);
@@ -131,6 +133,34 @@ export function startRecording(rt: AxfRuntime) {
 }
 export function stopRecording(): RecordEvent[] { stopRecord?.(); return st.events; }
 export const clearRecording = () => set({ events: [] });
+
+/* ---------------- cloud narrators (agent voices on the server) ---------------- */
+
+export interface Narrator { value: string; label: string; agentId?: string; provider?: string; voice?: string }
+/** A narrator value that speaks through the server (agent:<id>): the audio is mixed into an exported video. */
+export const isCloudNarrator = (v: string) => /^agent:/.test(v);
+export async function loadNarrators(force = false) {
+  if (st.narratorsLoaded && !force) return;
+  try {
+    const r = await api.call<{ available: boolean; items: Narrator[]; why?: string }>('narrators');
+    set({ narrators: r.items ?? [], narratorsLoaded: true, narratorsWhy: r.available ? '' : (r.why ?? '') });
+  } catch (e) { set({ narrators: [], narratorsLoaded: true, narratorsWhy: (e as Error).message }); }
+}
+/** The narrator picker's options: default and captions only, the cloud voices, then this device's voices; the current
+ *  value stays listed even when it isn't here. Shared by the page and the settings. */
+export function narratorOptions(current: string, device: { value: string; label: string }[], cloud: Narrator[]): { value: string; label: string }[] {
+  const out = E.NARRATORS.map((n) => ({ value: n.value, label: n.label }));
+  const seen = new Set(out.map((o) => o.value));
+  for (const v of [...cloud.map((c) => ({ value: c.value, label: c.label })), ...device]) if (!seen.has(v.value)) { seen.add(v.value); out.push(v); }
+  if (current && !seen.has(current)) out.push({ value: current, label: isCloudNarrator(current) ? `${current.slice(6)} (cloud voice not set up)` : `${current} (not on this device)` });
+  return out;
+}
+/** One line in a cloud narrator voice, as mp3 bytes. */
+export async function narrate(narrator: string, text: string, speed: number): Promise<ArrayBuffer> {
+  const r = await api.fetch('narrate', { method: 'POST', body: JSON.stringify({ narrator, text, speed }), headers: { 'Content-Type': 'application/json' } });
+  if (!r.ok) { let why = `${r.status}`; try { const j = await r.json() as { detail?: string }; if (j.detail) why = j.detail; } catch { /* not json */ } throw new Error(why); }
+  return r.arrayBuffer();
+}
 
 /* ---------------- narrator voices this browser has ---------------- */
 

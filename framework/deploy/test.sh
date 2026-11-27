@@ -136,16 +136,29 @@ if command -v git >/dev/null; then
   # deploy-log@1: a failed update appends a failed record when AXF_UPDATE_DEPLOY is set
   echo 4 > "$R/app"; git -C "$R" add -A; git -C "$R" -c user.email=t@t -c user.name=t commit -q -m four
   AXF_UPDATE_DEPLOY="$T/deploys.jsonl console" axf_update_script "$U" "$T/clone" main "$T/log" "false" "$T/st.json"
-  ! bash "$U"; grep -q '"target":"console".*"state":"failed"' "$T/deploys.jsonl" && ok || fail "failed update: failed deploy record"
+  bash "$U" && fail "the failing update script exited 0"; grep -q '"target":"console".*"state":"failed"' "$T/deploys.jsonl" && ok || fail "failed update: failed deploy record"
   grep -q 'export AXF_DEPLOY_WHO=update' "$U" && ok || fail "update script says who deploys"
 fi
 
 # ---- deploy log (deploy-log@1)
-axf_deploy_log "$T/d/log.jsonl" console 0123456789abcdef0123456789abcdef01234567 update done abcdef1 1.2.3
+axf_deploy_log "$T/d/log.jsonl" console 0123456789abcdef0123456789abcdef01234567 update "done" abcdef1 1.2.3
 grep -q '^{"$axf":"deploy@1","id":"d-console-[0-9]*-0123456","target":"console","sha":"0123456789abcdef0123456789abcdef01234567","from":"abcdef1","at":"20[0-9-]*T[0-9:]*Z","who":"update",' "$T/d/log.jsonl" && ok || fail "deploy log record"
 axf_deploy_log "$T/d/log.jsonl" apk:amberx abc1234; grep -q '"id":"d-apk-amberx-[0-9]*-abc1234","target":"apk:amberx"' "$T/d/log.jsonl" && ok || fail "apk target id"
 axf_deploy_log "$T/d/log.jsonl" 'Bad Target' abc1234 2>/dev/null; axf_deploy_log "$T/d/log.jsonl" console 'not-a-sha' 2>/dev/null
 eq "$(wc -l < "$T/d/log.jsonl" | tr -d ' ')" 2 "deploy log refuses a bad target or sha"
 node -e 'const D=require("fs").readFileSync(process.argv[1],"utf8");import("'"$HERE"'/../core/deploy-log.mjs").then(m=>{const r=m.parseLog(D);process.exit(r.records.length===2&&r.skipped===0&&r.records.every(x=>m.validateDeploy(x).ok)?0:1)})' "$T/d/log.jsonl" && ok || fail "deploy log lines parse as deploy-log@1"
+
+# ---- systemd units + the lander installer (dry run: no root, no systemctl, no network)
+ROOT="$(cd "$HERE/../.." && pwd)"
+SD="$T/systemd"
+printf '{"$axf":"builds@1","rev":1,"builds":[]}' > "$T/store.json"
+eq "$(AXF_SYSTEMD_DIR="$SD" axf_systemd_unit "$ROOT/deploy/systemd/axf-lander.timer" /opt/axf)" "$SD/axf-lander.timer" "unit installed path"
+OUT="$(AXF_SYSTEMD_DIR="$SD" AXF_LANDER_DIR="$T/lander" AXF_BUILDS_STORE="$T/store.json" AXF_BUILDS_LIVE=0 AXF_LANDER_ONLY=none-such axf_lander_install "$ROOT" --dry-run)"
+grep -q "systemctl enable --now axf-lander.timer" <<<"$OUT" && ok || fail "lander dry run prints the enable"
+grep -q "systemctl disable --now axf-auto-lander.timer" <<<"$OUT" && ok || fail "the retired auto-lander timer is stopped"
+grep -q "^ExecStart=/usr/bin/env node $ROOT/deploy/lander/run.mjs tick$" "$SD/axf-lander.service" && ok || fail "service ExecStart points at the checkout"
+! grep -q "@DIR@" "$SD/axf-lander.service" "$SD/axf-lander.timer" && ok || fail "no @DIR@ left in the units"
+grep -q "^Restart=on-failure" "$SD/axf-lander.service" && grep -q "^OnUnitActiveSec=60s" "$SD/axf-lander.timer" && ok || fail "restart on failure, every minute"
+command -v systemd-analyze >/dev/null && { systemd-analyze verify "$SD/axf-lander.timer" >/dev/null 2>&1 || true; ok; } || ok
 
 echo "axf-deploy self-test: $pass checks passed"

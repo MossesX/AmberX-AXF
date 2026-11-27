@@ -52,10 +52,12 @@ export const CORE_PLUGINS: Record<string, Exclude<LazyMode, 'off'>> = {
  * shape is known. `scripts/lazy-loader-check.mts` fails when a plugin paints the banner and is missing here.
  */
 export const KNOWN_BANNERS: readonly string[] = [
-  'activity', 'agent-voice', 'ai-assistant', 'approvals-banner', 'build-manager', 'build-profiles', 'builds-page',
-  'claude-accounts', 'claude-badge', 'claude-handoff', 'claude-settings', 'codebase-changes', 'follow-amber', 'plan-studio', 'plugins-menu',
-  'push-banner', 'systems-check', 'token-control', 'alerts-bell', 'main-build-status', 'whats-shipped', 'console-terminal',
+  'activity', 'agent-voice', 'ai-assistant', 'approvals-banner', 'build-profiles', 'builds-page',
+  'claude-accounts', 'claude-badge', 'claude-handoff', 'claude-settings', 'codebase-changes', 'follow-amber', 'plugins-menu',
+  'project-switcher', 'skin-gallery', 'systems-check', 'token-control', 'alerts-bell', 'main-build-status', 'whats-shipped', 'shipped-features', 'console-terminal',
+  'wake-listener',
   'notify-control', // no chip, but its register() plays sound and pop-ups and answers the browser senders
+  'status-styles', // no chip, but its register() puts the status stylesheet on every page
 ];
 
 const clampInt = (v: unknown, lo: number, hi: number, d: number) => {
@@ -146,6 +148,38 @@ export function startupList(opts: {
   const rank = (f: string) => { const i = cfg.order.indexOf(f); return i < 0 ? cfg.order.length : i; };
   const chosen = out.slice(0, head).map((x, i) => ({ x, i })).sort((a, b) => rank(a.x.folder) - rank(b.x.folder) || a.i - b.i).map((y) => y.x);
   return [...chosen, ...out.slice(head)];
+}
+
+/**
+ * How startup loads are spread (audit F3, Nov 2026: a refresh fired every banner plugin and its first API calls at once,
+ * and the banner waited on the slowest of ~25 plugins). Nothing starts before the first paint; banners land in small
+ * waves, most visible first, so the banner row fills as they arrive; the rest follow in waves; plugins loaded only to
+ * learn their shape wait for idle time. The gap between waves lets the page paint and the server answer the previous
+ * wave's first calls before the next wave fires its own.
+ */
+export const STARTUP_WAVES = { banners: 4, rest: 6, learn: 6, gapMs: 150 } as const;
+
+/** Split a list into consecutive waves of at most `size` (size below 1 counts as 1). */
+export function waves<T>(items: readonly T[], size: number): T[][] {
+  const n = Math.max(1, Math.floor(size) || 1);
+  const out: T[][] = [];
+  for (let i = 0; i < items.length; i += n) out.push(items.slice(i, i + n));
+  return out;
+}
+
+/**
+ * Run `run` over the waves one after another: every item of a wave starts together, the next wave starts once all of
+ * them settled (a failure never stops the rest) and `between` resolved. `go()` false stops before the next wave (a
+ * newer boot took over).
+ */
+export async function inWaves<T>(items: readonly T[], size: number, run: (wave: T[]) => Promise<unknown>, opts: { between?: () => Promise<unknown>; go?: () => boolean } = {}): Promise<boolean> {
+  const list = waves(items, size);
+  for (const [i, wave] of list.entries()) {
+    if (opts.go && !opts.go()) return false;
+    try { await run(wave); } catch { /* one wave failing doesn't stop the next */ }
+    if (i < list.length - 1 && opts.between) await opts.between();
+  }
+  return !opts.go || opts.go();
 }
 
 /** What to load in the background when the app is quiet: the next most-used plugins that load on open. */

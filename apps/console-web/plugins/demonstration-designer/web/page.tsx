@@ -5,18 +5,21 @@
  * demos into a tour. Advanced work (the step timeline, record by doing) is folded away at the bottom.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Container, Icon, Note, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, Note, PageToolbar, Segmented, SelectField, TextField, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as E from '../engine.mjs';
 import type { PitchStep, Topic } from '../engine.mjs';
 import stacked from '../assets/settings/demonstration-designer-page-stacked.json';
 import threeUp from '../assets/settings/demonstration-designer-page-three-up.json';
 import wide from '../assets/settings/demonstration-designer-page-wide.json';
-import { type DemoRecord, type Summary, PAGE_VIEW_KEY, applyScript, deleteDemo, deviceVoices, fmtSeconds, generate, getDemo, loadDemos, loadSettings, loadTopics, saveDemo, setChain, shareOf, startRecording, stopRecording, takeWanted, uploadMedia, useModel, clearRecording } from './model';
+import { type DemoRecord, type Summary, PAGE_VIEW_KEY, VIEW, applyScript, deleteDemo, deviceVoices, fmtSeconds, generate, getDemo, loadDemos, loadNarrators, loadSettings, loadTopics, narratorOptions, saveDemo, setChain, shareOf, startRecording, stopRecording, takeWanted, uploadMedia, useModel, clearRecording } from './model';
 import { play, stop, useStage } from './stage';
 
 /** The page layout (a `settings` asset picked in UI Review): stacked, three-up or wide. */
 export const PAGE_ASSETS = [stacked, threeUp, wide] as const;
+/** The Advanced panel's own toolbar page (record + timeline); the pitch and saved-pitches toolbars are on VIEW. */
+const ADVANCED = 'demonstration-designer-advanced';
+
 function usePageView(): 'stacked' | 'three-up' | 'wide' {
   const rt = useRuntime();
   const id = useSyncExternalStore((fn) => rt.settings.subscribe(fn), () => String(rt.settings.get(PAGE_VIEW_KEY) ?? ''), () => '');
@@ -110,6 +113,14 @@ function Result({ demo, onChanged, onDeleted }: { demo: DemoRecord; onChanged: (
     });
   };
   const share = () => void run('Share link', async () => { const s = await shareOf(demo.id); const url = s.url || `${location.origin}${s.path}`; await navigator.clipboard?.writeText(url); setMsg({ text: `Share link copied: ${url}` }); });
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/demonstration-designer.json)
+  usePublishPageState(VIEW, { playing, busy });
+  useToolbarHandlers(VIEW, {
+    'demonstration-designer.play': async () => { if (playing) { await stop(); return { playing: false }; } preview(); return { playing: demo.id }; },
+    'demonstration-designer.export': () => { exportVideo(); return { exporting: demo.id }; },
+    'demonstration-designer.share': () => { share(); return { sharing: demo.id }; },
+    'demonstration-designer.delete': () => run('Delete', async () => { await deleteDemo(demo.id); onDeleted(); }),
+  });
   const others = demos.filter((d) => d.id !== demo.id && !demo.data.chain.includes(d.id));
   return (
     <section className="fx-card fx-stack axp-demonstration-designer__result" aria-label={`Pitch: ${demo.name}`}>
@@ -118,12 +129,7 @@ function Result({ demo, onChanged, onDeleted }: { demo: DemoRecord; onChanged: (
           <p className="fx-eyebrow">Your pitch · {demo.data.steps.length} steps · about {fmtSeconds(seconds)}{plan?.screens.length ? ` · ${plan.screens.join(', ')}` : ''}</p>
           <h2>{demo.name}</h2>
         </div>
-        <div role="toolbar" aria-label="Pitch actions" className="axp-demonstration-designer__tools">
-          {playing ? <Button tone="danger" icon="x" onClick={() => void stop()}>Stop</Button> : <Button tone="primary" icon="play" onClick={preview}>Play</Button>}
-          <Button icon="monitor" disabled={playing} onClick={exportVideo}>Export video</Button>
-          <Button icon="link" busy={busy} onClick={share}>Copy share link</Button>
-          <Button tone="danger" icon="trash" confirm={`Delete the pitch "${demo.name}"?`} onClick={() => void run('Delete', async () => { await deleteDemo(demo.id); onDeleted(); })}>Delete</Button>
-        </div>
+        <PageToolbar view="demonstration-designer" label="Pitch actions" className="axp-demonstration-designer__tools" />
       </header>
       {playing && <p className="fx-muted" role="status"><Icon name="play" size={12} /> {stage.status === 'intro' ? 'Logo intro' : stage.status === 'outro' ? 'Logo outro' : stage.status === 'paused' ? 'Paused' : `Step ${stage.at + 1} of ${stage.total}`}{stage.recording ? ' · recording' : ''}{stage.caption ? ` · ${stage.caption}` : ''}</p>}
       {short && <Note tone="info">There is about {fmtSeconds(seconds)} of material for a {demo.pitch?.minutes}-minute pitch: pick a bigger topic, chain another demo after it, or add words below.</Note>}
@@ -197,27 +203,30 @@ function Advanced({ demo, onChanged, onCreated }: { demo: DemoRecord | null; onC
       : { $axf: 'asset@1', type: 'demonstration', id: E.slugify(`recorded-${new Date().toISOString().slice(0, 16)}`, 'recorded'), name: `Recorded walk ${new Date().toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}`, version: '1.0.0', description: 'Recorded by doing it in the console.', tags: ['pitch', 'recorded'], data: { about: '', entries: [], app: 'console', surface: 'live', steps, voice: { narrator: settings.narration.voice, speed: settings.narration.speed }, chain: [], keywords: [], generated: { from: 'recorder', at: new Date().toISOString(), build: '' }, editable: true }, pitch: { minutes: Math.max(1, Math.round(E.stepsSeconds(steps) / 60)), wpm: settings.script.wpm, speed: settings.narration.speed, logoIntro: settings.stage.logoIntro, logoOutro: settings.stage.logoOutro, logoSeconds: settings.stage.logoSeconds, product: settings.script.product, cta: settings.script.cta, topic: 'recorded', topicLabel: 'Recorded walk', kind: 'screen' } };
     saveDemo(record).then((d) => { clearRecording(); (demo ? onChanged : onCreated)(d); setMsg(`${steps.length} steps added from the recording.`); }, (e: Error) => setMsg(e.message)).finally(() => setBusy(false));
   };
+  // the shared framework toolbars (page-toolbar@1, assets/toolbar/demonstration-designer-record.json and -timeline.json)
+  usePublishPageState(ADVANCED, { recording, canMake: !recording && !busy && events.length > 0, demo: !!demo, dirty: dirty && !busy });
+  useToolbarHandlers(ADVANCED, {
+    'demonstration-designer.record': () => { if (recording) { stopRecording(); return { recording: false, moves: events.length }; } startRecording(rt); return { recording: true }; },
+    'demonstration-designer.make-steps': () => { makeSteps(); return { moves: events.length }; },
+    'demonstration-designer.add-step': () => { setDraft((l) => [...l, { say: 'Say what this step shows.', do: '', target: '' }]); return { steps: draft.length + 1 }; },
+    'demonstration-designer.save-timeline': () => { save(); return { steps: draft.length }; },
+    'demonstration-designer.revert': () => { if (demo) setDraft(demo.data.steps); return { reverted: true }; },
+  });
   return (
     <Container title="Advanced" icon="settings" collapsible defaultOpen={false} className="axp-demonstration-designer__advanced">
       <div className="fx-stack fx-stack--lg">
         <section className="fx-stack" aria-label="Record by doing">
           <p className="fx-eyebrow">Record by doing</p>
           <p className="fx-muted">Start, then use the console as you would show it: every screen you open and every control you tap becomes a step with draft words. Stop and make the steps; tweak the words above.</p>
-          <div role="toolbar" aria-label="Record by doing" className="axp-demonstration-designer__tools">
-            {recording ? <Button tone="danger" icon="x" onClick={() => stopRecording()}>Stop recording</Button> : <Button tone="primary" icon="monitor" onClick={() => startRecording(rt)}>Start recording</Button>}
-            <Button icon="plus" disabled={recording || !events.length} busy={busy} onClick={makeSteps}>{demo ? 'Add steps to this pitch' : 'Make a pitch from it'}</Button>
+          <PageToolbar view="demonstration-designer-advanced" label="Record by doing" className="axp-demonstration-designer__tools">
             <span className="fx-muted">{recording ? `Recording: ${events.length} moves so far.` : events.length ? `${events.length} moves recorded.` : ''}</span>
-          </div>
+          </PageToolbar>
         </section>
         <section className="fx-stack" aria-label="Timeline">
           <div className="axp-demonstration-designer__head">
             <p className="fx-eyebrow">Timeline{demo ? ` · ${draft.length} steps` : ''}</p>
             {demo && (
-              <div role="toolbar" aria-label="Timeline actions" className="axp-demonstration-designer__tools">
-                <Button size="sm" icon="plus" onClick={() => setDraft((l) => [...l, { say: 'Say what this step shows.', do: '', target: '' }])}>Add step</Button>
-                <Button size="sm" tone="primary" icon="save" disabled={!dirty} busy={busy} onClick={save}>Save timeline</Button>
-                <Button size="sm" icon="undo" disabled={!dirty} onClick={() => setDraft(demo.data.steps)}>Revert</Button>
-              </div>
+              <PageToolbar view="demonstration-designer-advanced" slot="timeline" label="Timeline actions" className="axp-demonstration-designer__tools" />
             )}
           </div>
           {!demo ? <p className="fx-muted">Generate or open a pitch to edit its steps one by one.</p> : (
@@ -235,6 +244,7 @@ function Advanced({ demo, onChanged, onCreated }: { demo: DemoRecord | null; onC
 /* ---------------- the page ---------------- */
 
 export function DesignerPage() {
+  useToolbarHandlers(VIEW, { 'demonstration-designer.refresh': async () => { await loadDemos(true); return { refreshed: true }; } });
   const rt = useRuntime();
   const m = useModel();
   const stage = useStage();
@@ -246,7 +256,7 @@ export function DesignerPage() {
   const [demo, setDemo] = useState<DemoRecord | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
-  useEffect(() => { void loadTopics(rt); void loadDemos(); void loadSettings(); }, [rt]);
+  useEffect(() => { void loadTopics(rt); void loadDemos(); void loadSettings(); void loadNarrators(); }, [rt]);
   useEffect(() => {
     const synth = globalThis.speechSynthesis;
     if (!synth) return;
@@ -266,7 +276,7 @@ export function DesignerPage() {
   const mins = minutes || String(m.settings.script.minutes);
   const voice = narrator ?? m.settings.narration.voice;
   const spd = speed ?? String(m.settings.narration.speed);
-  const narrators = useMemo(() => { const base = E.NARRATORS.map((n) => ({ value: n.value, label: n.label })); const seen = new Set(base.map((b) => b.value)); for (const v of voices) if (!seen.has(v.value)) { seen.add(v.value); base.push(v); } if (voice && !seen.has(voice)) base.push({ value: voice, label: `${voice} (not on this device)` }); return base; }, [voices, voice]);
+  const narrators = useMemo(() => narratorOptions(voice, voices, m.narrators), [voices, voice, m.narrators]);
   const go = () => {
     if (!topic) return;
     setBusy(true); setMsg('');
@@ -312,7 +322,7 @@ export function DesignerPage() {
       <section className="fx-stack" aria-label="Saved pitches">
         <div className="axp-demonstration-designer__head">
           <p className="fx-eyebrow">Saved pitches</p>
-          <div role="toolbar" aria-label="Saved pitches tools" className="axp-demonstration-designer__tools"><Button size="sm" icon="refresh" onClick={() => void loadDemos(true)}>Refresh</Button></div>
+          <PageToolbar view="demonstration-designer" slot="saved" label="Saved pitches tools" className="axp-demonstration-designer__tools" />
         </div>
         {!m.demosLoaded ? <LoadingSkeleton rows={3} label="Loading pitches" /> : !rows.length ? <EmptyState compact icon="play">No pitches yet. Pick something above and press Generate.</EmptyState> : (
           <ul className="axp-demonstration-designer__rows" aria-label="Saved pitches">

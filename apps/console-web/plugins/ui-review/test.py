@@ -478,7 +478,8 @@ ci = r.json()["item"]
 sets = ci["choices"]
 check(sets["multi"] is True and [o["id"] for o in sets["options"]] == ["a", "b", "c"] and sets["chosen"] == [], "the set is stored, nothing picked")
 check(sum("opt-a--" in s["src"] or "opt-a--" in s.get("file", "") for s in ci["files"]["after"]) == 1 or "opt-a--" in json.dumps(ci["files"]), "an option's picture joins the item")
-got = c.get("/p/choices/assets?type=toolbar").json()["assets"]
+# only this item's set: the repo carries real ui-choice assets of other builds too
+got = [a for a in c.get("/p/choices/assets?type=toolbar").json()["assets"] if a["set"] == sets["set"]]
 check(len(got) == 3 and not any(a["picked"] for a in got) and "ui-choice" in got[0]["tags"] and got[0]["data"] == {"density": "a"}, f"every option is an asset ({len(got)})")
 check(c.get(f"/p/state?branch=claude/c").json()["holds"] is True, "the build waits on the pick like any hold")
 d = c.get(f"/p/choices/decision?id={ci['id']}").json()
@@ -489,7 +490,7 @@ check(r.status_code == 200 and r.json()["default"] == "c" and r.json()["status"]
 d = c.get(f"/p/choices/decision?id={ci['id']}").json()
 check(d["chosen"] == ["c", "a"] and d["default"] == "c", "the decision reads back in order")
 check(c.get("/p/state?branch=claude/c").json()["holds"] is False, "the hold lifts")
-got = {a["option"]: a["picked"] for a in c.get("/p/choices/assets").json()["assets"]}
+got = {a["option"]: a["picked"] for a in c.get("/p/choices/assets").json()["assets"] if a["set"] == sets["set"]}
 check(got == {"a": True, "b": False, "c": True}, f"picked or not, all three stay ({got})")
 r = c.post("/p/submit", json={**BUILD, "kind": "settings", "choices": {**CH, "assetType": "settings"}})
 one = r.json()["item"]

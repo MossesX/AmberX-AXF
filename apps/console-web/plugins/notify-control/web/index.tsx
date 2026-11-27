@@ -5,7 +5,7 @@
  * in the browser (veto notices, Terminal bell, Activity chime); it stays yes for anything it doesn't know.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Container, Icon, Note, SelectField, Switch, TextField } from '@console/axf/react';
+import { Button, Chip, Container, Icon, Note, PageToolbar, SelectField, Switch, TextField, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { alertsOf } from '@console/axf/libs/alerts';
@@ -63,6 +63,8 @@ function publish(s: State): State {
   for (const l of listeners) l(s);
   return s;
 }
+/** When the person last marked the sent and blocked list read (this browser). */
+const SEEN_KEY = 'axf.notify-control.seenAt';
 const load = () => api.call<State>('state').then(publish);
 const post = (path: string, body: unknown) => api.post<State>(path, body).then(publish);
 
@@ -134,16 +136,29 @@ function Panel() {
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
   useEffect(() => { if (s) { setStart(s.quiet.start); setEnd(s.quiet.end); } }, [s?.quiet.start, s?.quiet.end]); // eslint-disable-line react-hooks/exhaustive-deps
+  // the Notifications toolbar (page-toolbar@1, assets/toolbar/notify-control.json)
+  const rt = useRuntime();
+  const [plugin, setPlugin] = useState('');
+  const [seenAt, setSeenAt] = useState(() => { try { return Number(localStorage.getItem(SEEN_KEY) ?? 0) || 0; } catch { return 0; } });
+  const plugins = useMemo(() => [...new Set((s?.types ?? []).map((t) => t.source).filter(Boolean))].sort(), [s]);
+  const unread = (s?.recent ?? []).filter((r) => new Date(r.at).getTime() > seenAt).length;
+  usePublishPageState('notify-control', { unread, plugin, plugins: plugins.length });
+  useToolbarHandlers('notify-control', {
+    'notify-control.mark-read': () => { const now = Date.now(); setSeenAt(now); try { localStorage.setItem(SEEN_KEY, String(now)); } catch { /* storage blocked */ } return { read: unread }; },
+    'notify-control.filter-plugin': () => { const i = plugins.indexOf(plugin); const next = i + 1 < plugins.length ? plugins[i + 1] ?? '' : ''; setPlugin(next); return { plugin: next }; },
+    'notify-control.settings': () => { rt.dispatch('settings.open:notify-control'); return { opened: 'notify-control' }; },
+  });
   const groups = useMemo(() => {
     if (!s) return [];
     const needle = q.trim().toLowerCase();
-    const hit = (t: TypeRow) => !needle || `${t.label} ${t.id} ${t.source} ${t.description}`.toLowerCase().includes(needle);
+    const hit = (t: TypeRow) => (!plugin || t.source === plugin) && (!needle || `${t.label} ${t.id} ${t.source} ${t.description}`.toLowerCase().includes(needle));
     return s.groups.map((g) => ({ ...g, rows: s.types.filter((t) => t.group === g.id && hit(t)) })).filter((g) => g.rows.length);
-  }, [s, q]);
+  }, [s, q, plugin]);
   if (error && !s) return <Note tone="danger">Notifications panel unavailable: {error}</Note>;
   if (!s) return <p className={`${P}__muted`}>Loading notifications…</p>;
   return (
     <div className="fx-stack">
+      <PageToolbar view="notify-control" />
       {error && <Note tone="danger">{error}</Note>}
       {!s.master && <Note tone="warning" icon="bell">Everything is off except approvals and veto.</Note>}
       {s.quiet.now && <Note tone="info" icon="moon">Quiet hours now: only the banner and urgent ones get through; held alerts reach the phone when they end.</Note>}
@@ -248,7 +263,7 @@ export const plugin: AxfWebLibrary = {
     startDelivery(rt);
   },
   views: { [VIEW]: { title: 'Notifications', icon: 'bell', render: () => <Page /> } },
-  nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Notifications', icon: 'bell', view: VIEW }] },
+  nav: { label: 'System', items: [{ id: VIEW, label: 'Notifications', icon: 'bell', view: VIEW }] },
   settingsTabs: [{ id: VIEW, label: 'Notifications', icon: 'bell', order: 13, parent: 'plugins', description: 'Every notification: on or off, channels, priority, quiet hours, test send, groups, triggers and commands.' }],
   settingsPanels: [
     { id: 'notify-control.panel', tab: VIEW, title: 'Notifications', icon: 'bell', order: 1, render: () => <Panel /> },

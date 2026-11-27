@@ -40,7 +40,7 @@ import { onVetoHost, setVetoHost, vetoHost, VETO_ACTIONS, type VetoAction, type 
 import { ALARM_KEYS, START_AT, TONES, VIBRATIONS, ALARM_DEFAULTS, NOTICE_DEFAULTS } from './alarm';
 import { act, actResult, AlarmPanel, syncNativeAlarm, VetoButtons, VetoScreen, watch, type VetoDeps } from './veto';
 import { approvalsHost, ApprovalDetailsPanel, ApprovalRow, setApprovalsHost } from '@console/axf/libs/approvals/react';
-import { pluginFetch } from '@console/plugins';
+import { pluginFetch, pluginProviding } from '@console/plugins';
 import { relayHosts, type RelayPost } from './relay';
 import { approvalExpandKey, detailsOfItem, fetchApprovals, heldDecisions, registerApprovalsLookup, type ApprovalDecision, type ApprovalItem, type DecideResult } from '@console/axf/libs/approvals';
 import { decidedState, decisionButtons } from '@console/axf/libs/approvals/menu';
@@ -49,6 +49,8 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { WatchLiveFor } from '@console/watchLive';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
+import { nextPopup, POPUP_GONE_CLOSE_MS, vetoGone } from './popup';
+import { EDGES, EXPANDS, IDLE_OPACITY_MIN, migrateOverlay, nativeOverlayConfig, OVERLAY_DEFAULTS, OVERLAY_KEYS, overlayBridge, overlayConfig, overlayItems, overlayUrlAllowed, parseOverlayChange, parseOverlayVerb, readsFeed, SHOWS, SIZES, viewTarget, type OverlayBarVerb, type OverlayVerb } from './overlay';
 
 const ID = 'ai.amberx.axf.console.approvals-banner';
 const FOLDER = 'approvals-banner';
@@ -62,14 +64,18 @@ const save = (k: string, v: string) => { try { globalThis.localStorage?.setItem(
 export const autoOpenOn = () => load(AUTO_KEY) !== 'off';
 const opened = new Set<string>((load(OPENED_KEY) ?? '').split(',').filter(Boolean));
 let reviewing: string | null = null;
-/** Open each new request once, in the console, unless switched off or one is already on screen. */
-function autoOpen(pending: { id: string }[]) {
-  if (!runtime || !autoOpenOn() || reviewing) return;
-  const next = pending.find((p) => !opened.has(p.id));
+/**
+ * Open each new request once, in the app, unless switched off or one still waiting is already on screen. `live`: the
+ * ones that may pop up (in order); `allLive`: every call still waiting or held. A call on screen that was decided
+ * elsewhere (the phone's notification, the hub) no longer blocks the next one (popup.ts).
+ */
+function autoOpen(live: { id: string }[], allLive: { id: string }[]) {
+  if (!runtime || !autoOpenOn()) return;
+  const next = nextPopup(opened, reviewing, live.map((p) => p.id), allLive.map((p) => p.id));
   if (!next) return;
-  opened.add(next.id);
+  opened.add(next);
   save(OPENED_KEY, [...opened].slice(-50).join(','));
-  openReview(next.id);
+  openReview(next);
 }
 export function openReview(id: string) {
   // A held call opens the veto screen (Deny / Approve / Shelve), a call waiting for an approval its details here.
@@ -92,7 +98,21 @@ interface State { status: Status; hub: string; count: number; pending: Pending[]
 
 let st: State = { status: 'idle', hub: DEFAULT_HUB, count: 0, pending: [], held: [], items: [], approvalsUrl: approvalsUrl(DEFAULT_HUB), checkedAt: null, hiddenIds: '', error: '' };
 const subs = new Set<() => void>();
-const set = (p: Partial<State>) => { st = { ...st, ...p }; runtime?.setBadge(WAITING, st.status === 'ok' ? st.count + st.held.length : 0); subs.forEach((f) => f()); };
+const set = (p: Partial<State>) => { st = { ...st, ...p }; runtime?.setBadge(WAITING, st.status === 'ok' ? st.count + st.held.length : 0); toPhone(); subs.forEach((f) => f()); };
+
+/* The Android console app's floating toolbar (overlay@1 `overlayItems`): what waits, one by one, sent when it changes. */
+let lastPhone = '';
+// read loosely: the plugin also runs in apps without the console's axfNative typing
+const phoneHost = () => (typeof window !== 'undefined' ? (window as unknown as { axfNativeHost?: { overlayItems?: (json: string) => string } }).axfNativeHost : undefined);
+const inConsoleApp = (): boolean => !!phoneHost()?.overlayItems;
+function toPhone(): void {
+  const host = phoneHost();
+  if (!host?.overlayItems) return;
+  const json = JSON.stringify(st.status === 'ok' ? overlayItems(st.held, st.pending) : []);
+  if (json === lastPhone) return;
+  lastPhone = json;
+  try { host.overlayItems(json); } catch { /* the shell answers on its own thread; nothing to undo */ }
+}
 const useApprovals = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
 
 /** The hub's address, from the console's own account endpoint (AXF_WALL_HUB on the server); https only. */
@@ -113,6 +133,8 @@ async function hubUrl(): Promise<string> {
  * instead of a button that silently falls back to "open it on axHub".
  */
 const RELAY_TIMEOUT_MS = 25_000;
+/** The capability service that relays overlay verbs to the phone's console (found by what a plugin provides, never by its folder). */
+const OVERLAY_RELAY_SERVICE = 'service:console-commands@1';
 const relayPost: RelayPost = async (body) => {
   const r = await pluginFetch(FOLDER, 'decide', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(RELAY_TIMEOUT_MS) });
   return { status: r.status, json: await r.json().catch(() => null) };
@@ -132,6 +154,36 @@ async function installRelay(): Promise<void> {
   const h = relayHosts(relayPost);
   setVetoHost(h.veto);
   setApprovalsHost(h.approvals);
+}
+
+/**
+ * Runs an overlay verb wherever this console is: inside AmberX's overlay browser (its bridge), in the AmberX app (the
+ * native overlay), or anywhere else through the console server, which asks the phone through axHub (`amberx.open_url`
+ * carrying the verb). → what to tell Brett.
+ */
+async function runOverlay(verb: OverlayVerb | OverlayBarVerb, url?: string): Promise<{ ok: boolean; message: string }> {
+  const bridge = overlayBridge();
+  if (bridge && (verb === 'collapse' || verb === 'open')) {
+    if (verb === 'collapse') bridge.collapse(); else bridge.open(url ?? '');
+    return { ok: true, message: verb === 'collapse' ? 'Overlay collapsed to the toolbar' : 'Opened in the overlay' };
+  }
+  if (bridge && verb === 'expand') return { ok: true, message: 'The overlay is already full screen' };
+  const host = vetoHost().overlayCommand;
+  if (host) {
+    const ok = await host(verb, url);
+    const done: Record<string, string> = { expand: 'Overlay expanded to full screen', collapse: 'Overlay collapsed to the toolbar', open: 'Opened in the overlay', 'bar-open': 'Approval bar opened', 'bar-close': 'Approval bar folded' };
+    return { ok, message: ok ? done[verb]! : 'The overlay is off on this phone (or "Display over other apps" is not allowed).' };
+  }
+  if (verb === 'bar-open' || verb === 'bar-close') return { ok: false, message: 'The approval bar opens on its own on the phone when something waits.' };
+  const relay = pluginProviding(OVERLAY_RELAY_SERVICE);
+  if (!relay) return { ok: false, message: 'The overlay relay is not installed on this console.' };
+  try {
+    const r = await pluginFetch(relay, 'overlay', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ verb, ...(url ? { url } : {}) }), signal: AbortSignal.timeout(RELAY_TIMEOUT_MS) });
+    const j = (await r.json().catch(() => null)) as { ok?: boolean; message?: string; detail?: string } | null;
+    return { ok: r.ok && j?.ok === true, message: j?.message ?? j?.detail ?? `the console answered ${r.status}` };
+  } catch (e) {
+    return { ok: false, message: `couldn't reach the console: ${(e as Error).message}` };
+  }
 }
 
 let inflight = false;
@@ -154,8 +206,8 @@ export async function checkNow(): Promise<void> {
     const status: Status = a.status === 'idle' ? 'unreachable' : a.status;
     set({ hub, status, count: ok ? Math.max(pending.length, a.count - held.length) : 0, pending, held, items, approvalsUrl: a.approvalsUrl, checkedAt: new Date().toISOString(), error: a.error });
     watch.update(held);
-    // Shelved calls wait quietly: they don't pop up again.
-    autoOpen([...held.filter((c) => !c.shelved && !c.approvedNow), ...pending]);
+    // Every held call on its countdown and every request pops up once; shelved calls wait quietly.
+    autoOpen([...held.filter((c) => !c.shelved && !c.approvedNow), ...pending], [...held, ...pending]);
   } finally {
     inflight = false;
   }
@@ -166,7 +218,8 @@ function start() {
   if (started) return;
   started = true;
   void checkNow();
-  setInterval(() => { if (document.visibilityState === 'visible') void checkNow(); }, POLL_MS);
+  // in the console app the page is hidden while another app is in front: it keeps reading there (overlay.ts readsFeed)
+  setInterval(() => { if (readsFeed(document.visibilityState === 'visible', inConsoleApp())) void checkNow(); }, POLL_MS);
   // Notices + alarm follow the local countdown between reads (the alarm also rings with the page in the background).
   setInterval(() => { if (st.status === 'ok') watch.update(st.held); }, 1_000);
   globalThis.addEventListener('focus', () => void checkNow());
@@ -449,7 +502,15 @@ function ReviewDialog({ id }: { id: string }) {
 function VetoDialog({ id }: { id: string }) {
   const s = useApprovals();
   const c = s.held.find((x) => x.id === id) ?? null;
+  const [openedAt] = useState(() => Date.now());
   useEffect(() => { const t = setInterval(() => void checkNow(), 3_000); return () => { clearInterval(t); if (reviewing === id) reviewing = null; }; }, [id]);
+  // Decided elsewhere (the phone's notification, the hub) or ran: say so, then close, so the next held call pops up.
+  const gone = vetoGone({ held: !!c, status: s.status, checkedAt: s.checkedAt, openedAt });
+  useEffect(() => {
+    if (!gone) return;
+    const t = setTimeout(() => { if (reviewing === id) { reviewing = null; runtime?.closeDialog(); } }, POPUP_GONE_CLOSE_MS);
+    return () => clearTimeout(t);
+  }, [gone, id]);
   return <VetoScreen c={c} deps={deps} onClose={() => { if (reviewing === id) reviewing = null; runtime?.closeDialog(); }} />;
 }
 
@@ -493,7 +554,7 @@ function StatusPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Approvals banner',
-  version: '0.6.0',
+  version: '0.6.1',
   appMenu,
   appMenuProviders: {
     [WAITING_LIST]: {
@@ -533,7 +594,20 @@ export const plugin: AxfWebLibrary = {
     }
     // The app's native side (AmberX phone): notification taps open the veto screen; actions taken there refresh.
     let offEvents: (() => void) | undefined;
-    const sync = syncNativeAlarm((k) => rt.settings.get(k));
+    const syncAlarm = syncNativeAlarm((k) => rt.settings.get(k));
+    // The overlay's settings from the float and pages builds move over once, so nothing Brett chose is lost.
+    const moved = migrateOverlay((k) => rt.settings.get(k));
+    if (moved) for (const [k, v] of Object.entries(moved)) rt.settings.set(k, v as string | number | boolean | null);
+    // The phone's overlay follows its settings (Java ApprovalOverlay through the veto host).
+    let sentOverlay = '';
+    const syncOverlay = () => {
+      const cfg = nativeOverlayConfig(overlayConfig((k) => rt.settings.get(k)));
+      const key = JSON.stringify(cfg);
+      if (key === sentOverlay || !vetoHost().overlay) return;
+      sentOverlay = key;
+      vetoHost().overlay?.(cfg);
+    };
+    const sync = () => { syncAlarm(); syncOverlay(); };
     const hook = () => {
       offEvents?.();
       offEvents = vetoHost().onEvent?.((e) => {
@@ -557,13 +631,47 @@ export const plugin: AxfWebLibrary = {
       rt.settings.set(key, on);
       rt.toast(`Veto ${what === 'alarm' ? 'alarm' : `notice ${what}`}: ${on ? 'on' : 'off'}`, 'success', 'Approvals');
     }, { label: 'Veto notice: sound / vibrate / repeat / alarm on or off (approvals.notice:<what>:<on|off>)', params: true });
+    // overlay.expand / overlay.collapse / overlay.open:<url> — the phone's overlay (voice, console actions, MCP, the
+    // CLI): full-screen browser on the last page or the console, back to the toolbar, or one of Brett's pages full
+    // screen. Inside the overlay's own browser these run through its bridge, so Amber driving the console there can
+    // collapse it or move it to another page.
+    const verbAction = (verb: OverlayVerb) => async (args: string[]) => {
+      const raw = args.join(':').trim(); // a page URL carries its own colons
+      if (verb === 'open' && !overlayUrlAllowed(raw)) { rt.toast(`overlay.open takes one of your own pages (https://…amberxai.com)${raw ? `, not "${raw}"` : ''}`, 'warning', 'Overlay'); return; }
+      const r = await runOverlay(verb, verb === 'open' ? raw : undefined);
+      rt.toast(r.message, r.ok ? 'success' : 'info', 'Overlay');
+    };
+    rt.actions.register('overlay.expand', verbAction('expand'), { label: 'Expand the overlay' });
+    rt.actions.register('overlay.collapse', verbAction('collapse'), { label: 'Collapse the overlay' });
+    rt.actions.register('overlay.open', verbAction('open'), { label: 'Open a page in the overlay (overlay.open:<url>)', params: true });
+    // approvals.overlay:<setting>:<value> — the overlay's settings by name (voice: "overlay size large", "overlay off");
+    // approvals.overlay:expand|collapse|open:<url> are the verbs above, approvals.overlay:bar[:off] the approval bar.
+    rt.actions.register('approvals.overlay', async ([what = '', ...rest]) => {
+      const value = rest.join(':');
+      const verb = parseOverlayVerb(what, value);
+      if (verb && 'error' in verb) { rt.toast(verb.error, 'warning', 'Overlay'); return; }
+      if (verb) {
+        const r = await runOverlay(verb.verb, 'url' in verb ? verb.url : undefined);
+        rt.toast(r.message, r.ok ? 'success' : 'info', 'Overlay');
+        return;
+      }
+      const change = parseOverlayChange(what, value);
+      if ('error' in change) { rt.toast(`approvals.overlay:<setting>:<value>: ${change.error}`, 'warning', 'Overlay'); return; }
+      rt.settings.set(change.key, change.value);
+      rt.toast(`Overlay ${change.key.split('.').pop()}: ${String(change.value)}`, 'success', 'Overlay');
+    }, { label: 'Overlay (phone): on/off, edge, top, size, opens, show, opacity, shrink; expand, collapse, open:<url>; bar[:off] (approvals.overlay:<what>:<value>)', params: true });
     rt.actions.register('approvals.check', () => void checkNow(), { label: 'Check axHub approvals' });
     rt.actions.register('approvals.open', () => { globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Open axHub approvals' });
     // approvals.view:<id> — that call in the console (menus, console_show, notification taps); approvals.review is its
     // older name. Only opens: a session may show it to him, the deciding stays his.
-    const view = ([id]: string[]) => {
-      if (id && (st.pending.some((x) => x.id === id) || st.held.some((x) => x.id === id))) openReview(id);
-      else rt.toast('That one is no longer waiting.', 'info', 'Approvals');
+    // Without an id it opens the first one waiting. The list is read again first when the call isn't in it: the
+    // phone overlay may ask for one this page hasn't read yet.
+    const view = async ([id]: string[]) => {
+      const waiting = () => [...st.held.filter((c) => !c.approvedNow).map((c) => c.id), ...st.pending.map((p) => p.id)];
+      let target = viewTarget(id, waiting());
+      if (!target) { await checkNow(); target = viewTarget(id, waiting()); }
+      if (target) openReview(target);
+      else rt.toast(id ? 'That one is no longer waiting.' : 'Nothing is waiting.', 'info', 'Approvals');
     };
     rt.actions.register('approvals.view', view, { label: 'Show an axHub approval', params: true, searchable: false, effect: 'navigate' });
     rt.actions.register('approvals.review', view, { label: 'Review an axHub approval', params: true, searchable: false, effect: 'navigate' });
@@ -588,11 +696,25 @@ export const plugin: AxfWebLibrary = {
         { key: ALARM_KEYS.repeat, label: 'Rings (1 = no repeat)', kind: 'number', default: ALARM_DEFAULTS.repeat, min: 1, max: 10 },
         { key: ALARM_KEYS.repeatGapSeconds, label: 'Quiet between rings (seconds)', kind: 'number', default: ALARM_DEFAULTS.repeatGapSeconds, min: 0, max: 300 },
         { key: ALARM_KEYS.vibration, label: 'Vibration', kind: 'choice', default: ALARM_DEFAULTS.vibration, options: VIBRATIONS.map(({ value, label }) => ({ value, label })) },
-        { key: ALARM_KEYS.throughSilent, label: 'Ring through silent mode (phone)', kind: 'toggle', default: ALARM_DEFAULTS.throughSilent, description: 'AmberX on Android plays it on the alarm channel, which sounds even when the phone is on silent.' },
-        { key: ALARM_KEYS.notices, label: 'Notices (one per held call)', kind: 'toggle', default: true, description: 'One normal notification per held call, with Deny, Approve and Shelve (AmberX on the phone; in a browser while this page is open). It updates at 30 s left and when it runs.' },
+        { key: ALARM_KEYS.throughSilent, label: 'Ring through silent mode (phone)', kind: 'toggle', default: ALARM_DEFAULTS.throughSilent, description: 'The phone app plays it on the alarm channel, which sounds even when the phone is on silent.' },
+        { key: ALARM_KEYS.notices, label: 'Notices (one per held call)', kind: 'toggle', default: true, description: 'One normal notification per held call, with Deny, Approve and Shelve (on the phone; in a browser while this page is open). It updates at 30 s left and when it runs.' },
         { key: ALARM_KEYS.noticeSound, label: 'Notice sound', kind: 'toggle', default: NOTICE_DEFAULTS.sound, description: "The phone's normal notification sound, once." },
         { key: ALARM_KEYS.noticeVibrate, label: 'Notice vibration', kind: 'toggle', default: NOTICE_DEFAULTS.vibrate },
         { key: ALARM_KEYS.noticeRepeat, label: 'Alert again at 30 s left and when it runs', kind: 'toggle', default: NOTICE_DEFAULTS.repeat, description: 'Off: the notice just updates, silently.' },
+      ],
+    },
+    {
+      id: 'approvals-banner.overlay', label: 'Overlay (phone)', icon: 'layers', tab: 'approvals-banner', order: 12,
+      description: 'One overlay on the phone app: a floating toolbar always on screen over every app (drag it anywhere; it remembers where). When something waits for you it spawns the approval bar (what, countdown, Approve / Deny). Tap it, or let Amber open something, and it expands into a full-screen browser signed in like the app, with the toolbar docked top-left; one tap collapses it. Because the toolbar is always visible, the phone can open pages from the background without a notification tap. Needs "Display over other apps".',
+      settings: [
+        { key: OVERLAY_KEYS.on, label: 'Overlay', kind: 'toggle', default: OVERLAY_DEFAULTS.on, description: 'The one switch. Off: no toolbar, and pages Amber opens go to Chrome with a tap-to-open notification.' },
+        { key: OVERLAY_KEYS.expand, label: 'Approval bar opens for', kind: 'choice', default: OVERLAY_DEFAULTS.expand, options: EXPANDS.map(({ value, label }) => ({ value, label })) },
+        { key: OVERLAY_KEYS.show, label: 'Toolbar shows', kind: 'choice', default: OVERLAY_DEFAULTS.show, options: SHOWS.map(({ value, label }) => ({ value, label })) },
+        { key: OVERLAY_KEYS.size, label: 'Size', kind: 'choice', default: OVERLAY_DEFAULTS.size, options: SIZES.map(({ value, label }) => ({ value, label })) },
+        { key: OVERLAY_KEYS.edge, label: 'Side', kind: 'choice', default: OVERLAY_DEFAULTS.edge, options: EDGES.map(({ value, label }) => ({ value, label })), description: 'Dragging the toolbar on the phone sets this.' },
+        { key: OVERLAY_KEYS.top, label: 'Height on screen (% from the top)', kind: 'slider', default: OVERLAY_DEFAULTS.top, min: 0, max: 90, step: 5, description: 'Dragging the toolbar on the phone sets this too.' },
+        { key: OVERLAY_KEYS.idleOpacity, label: 'Opacity when nothing waits (%)', kind: 'slider', default: OVERLAY_DEFAULTS.idleOpacity, min: IDLE_OPACITY_MIN, max: 100, step: 5 },
+        { key: OVERLAY_KEYS.shrinkAfterSec, label: 'Fold the approval bar after (seconds)', kind: 'number', default: OVERLAY_DEFAULTS.shrinkAfterSec, min: 0, max: 60, description: 'After the last approval goes; 0 = at once.' },
       ],
     },
   ],

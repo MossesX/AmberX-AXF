@@ -1,0 +1,249 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-build-profiles",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:49Z",
+ "build": {
+  "id": "build-profiles",
+  "title": "Build profiles + Build profiles console plugin",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "multiple build profiles (plans, build queue, pending builds, tracking, all work data) and a console plugin to select and save one; current one = Main framework, new one = Refactor.",
+  "verbatim": false,
+  "at": "2026-10-27T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Core registry + persist profile layer + orchestrator per profile",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-27T19:30:00Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Python mirror + server routes",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-27T19:30:00Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Console plugin",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-27T19:30:00Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Tests, docs, PR",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "2026-10-27T19:30:00Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/build-profiles",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 127,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/127"
+ },
+ "landedCommit": "aad5970349f7a404fed3eae98207d65a9c37b253",
+ "commits": [
+  "e0e169aeff5d22e27888b73eca944894d2d56fbc",
+  "3112774baa970e533d599d04572cdf6eccbb8721",
+  "7a2b00c89b6c65364ea765a1df93e233c398f379"
+ ],
+ "mergedAt": "2026-10-27T22:12:19Z",
+ "landedAt": "2026-10-27T22:12:18Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/README.md",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/rules/RULES.md",
+  "apps/console-web/plugins/build-manager/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+  "apps/console-web/plugins/build-profiles/hooks.mjs",
+  "apps/console-web/plugins/build-profiles/install.mjs",
+  "apps/console-web/plugins/build-profiles/plugin.json",
+  "apps/console-web/plugins/build-profiles/uninstall.mjs",
+  "apps/console-web/plugins/build-profiles/web/build-profiles.css",
+  "apps/console-web/plugins/build-profiles/web/index.tsx",
+  "apps/console-web/plugins/build-profiles/web/menu.ts",
+  "apps/console-web/server/build_profiles.py",
+  "apps/console-web/server/console_context.py",
+  "apps/console-web/server/main.py",
+  "apps/console-web/server/test_build_profiles.py",
+  "framework/catalog/libraries.json",
+  "framework/cli/persist.mjs",
+  "framework/cli/plan.mjs",
+  "framework/cli/profiles.mjs",
+  "framework/plan/pending.json",
+  "framework/plan/plan.json",
+  "framework/plan/profiles.json",
+  "framework/plan/profiles/refactor/framework/catalog/status.json",
+  "framework/plan/profiles/refactor/framework/plan/build-queue.json",
+  "framework/plan/profiles/refactor/framework/plan/pending.json",
+  "framework/plan/profiles/refactor/framework/plan/plan.json",
+  "framework/plan/profiles/refactor/tracker.json",
+  "project.manifest.json",
+  "tracker.json"
+ ],
+ "areas": [
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json",
+    "framework/plan/plan.json",
+    "framework/plan/profiles.json",
+    "framework/plan/profiles/refactor/framework/catalog/status.json",
+    "framework/plan/profiles/refactor/framework/plan/build-queue.json",
+    "framework/plan/profiles/refactor/framework/plan/pending.json",
+    "framework/plan/profiles/refactor/framework/plan/plan.json",
+    "framework/plan/profiles/refactor/tracker.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-profiles",
+   "files": [
+    "apps/console-web/plugins/build-profiles/hooks.mjs",
+    "apps/console-web/plugins/build-profiles/install.mjs",
+    "apps/console-web/plugins/build-profiles/plugin.json",
+    "apps/console-web/plugins/build-profiles/uninstall.mjs",
+    "apps/console-web/plugins/build-profiles/web/build-profiles.css",
+    "apps/console-web/plugins/build-profiles/web/index.tsx",
+    "apps/console-web/plugins/build-profiles/web/menu.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/server/build_profiles.py",
+    "apps/console-web/server/console_context.py",
+    "apps/console-web/server/main.py",
+    "apps/console-web/server/test_build_profiles.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/persist.mjs",
+    "framework/cli/plan.mjs",
+    "framework/cli/profiles.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/README.md",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/server/__init__.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/orchestrator.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/libraries.json"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "project.manifest.json",
+   "files": [
+    "project.manifest.json"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "tracker.json",
+   "files": [
+    "tracker.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

@@ -1,5 +1,5 @@
 /**
- * walkthrough@1 (Oct 28 2026): what Molly sends when Brett asks to be shown something. Pure (no DOM): the console's
+ * walkthrough@1 (Oct 28 2026): what Gizmo (formerly agent Molly) sends when Brett asks to be shown something. Pure (no DOM): the console's
  * floating window (index.tsx) plays it. Same cleaning as the agent manager's server (`clean_walkthrough`), so a step
  * never runs a script or a link: `do` is a console action spec, `target` a data-axf-id, view id or CSS selector.
  */
@@ -44,6 +44,24 @@ export function targetSelector(target: string): string[] {
   if (!t) return [];
   const esc = t.replace(/["\\]/g, '');
   return [`[data-axf-id="${esc}"]`, `[data-view="${esc}"]`, `[data-tab="${esc}"]`, `#${/^[a-z][\w-]*$/i.test(t) ? t : '__none__'}`, t];
+}
+
+/**
+ * What one poll of the kept walkthroughs does (Nov 13 2026: the guide must never pop up and talk on its own when the
+ * console loads; it opens only when asked). Pure.
+ * - `lastSeq` < 0 (the first read after a load): only learn the newest seq, never open.
+ * - `auto` must be exactly `true` (the setting is off by default): anything else only learns the seq.
+ * - Even with auto on, a walkthrough made before this page loaded (`at` older than `loadedAt` minus `skewMs`) or without
+ *   a time is not opened, so a reload, a second tab or a warm frame never replays an old one.
+ */
+export function pollDecision(list: Walkthrough[], lastSeq: number, auto: unknown, loadedAt: number, skewMs = 30_000): { lastSeq: number; open: Walkthrough | null } {
+  const newer = list.filter((w) => (w.seq ?? 0) > lastSeq).sort((a, b) => (b.seq ?? 0) - (a.seq ?? 0));
+  const newest = newer[0];
+  if (!newest) return { lastSeq, open: null };
+  const seq = Math.max(lastSeq, newest.seq ?? 0);
+  if (lastSeq < 0 || auto !== true) return { lastSeq: seq, open: null };
+  if (typeof newest.at !== 'number' || newest.at < loadedAt - skewMs) return { lastSeq: seq, open: null };
+  return { lastSeq: seq, open: newest };
 }
 
 /** Spoken commands in the window: next, back, repeat, stop. */

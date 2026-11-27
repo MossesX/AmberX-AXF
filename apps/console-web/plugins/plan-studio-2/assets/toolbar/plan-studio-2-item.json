@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "plan-studio-2-item",
+  "name": "Item actions",
+  "version": "1.0.0",
+  "description": "The editor toolbar of the selected Plan Studio 2.0 row: add a child inside it, move it, link it to a build, a feature or a page, send it to a build and delete it (undo brings it back).",
+  "author": "AmberX AXF",
+  "tags": ["page", "plan-studio-2", "plans", "item"],
+  "data": {
+    "scope": "view:plan-studio-2",
+    "slot": "item",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "item",
+        "label": "Item",
+        "items": [
+          { "id": "new-inside", "icon": "plus", "label": "New inside", "action": "handler:plan-studio-2.item-new", "enabledWhen": "selection.id", "priority": 300, "overflow": "never" },
+          { "id": "move", "icon": "move", "label": "Move to", "action": "handler:plan-studio-2.item-move", "enabledWhen": "selection.id", "priority": 240 },
+          { "id": "link", "icon": "external", "label": "Link", "action": "handler:plan-studio-2.item-link", "enabledWhen": "selection.id", "priority": 230 },
+          { "id": "build", "icon": "rocket", "label": "Send to build", "action": "handler:plan-studio-2.item-build", "enabledWhen": "selection.id", "priority": 260 }
+        ]
+      },
+      {
+        "id": "danger",
+        "label": "Delete",
+        "items": [
+          { "id": "delete", "icon": "trash", "label": "Delete", "action": "handler:plan-studio-2.item-delete", "destructive": true, "enabledWhen": "selection.id", "priority": 100 }
+        ]
+      }
+    ]
+  }
+}

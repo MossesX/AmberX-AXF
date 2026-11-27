@@ -1,0 +1,150 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-1nc43b",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:08Z",
+ "build": {
+  "id": "project-thread-1nc43b",
+  "title": "project-thread-1nc43b",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-1nc43b",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-1nc43b",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "ac5d2e76aa958a68631dcd555075b07fc72dc81d",
+ "commits": [
+  "7d58add4bf36ef497179dc27f6cf0e924898f06d"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-24T17:49:16Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/memory/decisions.md",
+  "_claude/rules/RULES.md",
+  "apps/console-web/src/App.tsx",
+  "apps/console-web/src/axf/libs/README.md",
+  "apps/console-web/src/axf/libs/hubstatus/core.ts",
+  "apps/console-web/src/axf/libs/hubstatus/hubstatus.css",
+  "apps/console-web/src/axf/libs/hubstatus/index.tsx",
+  "apps/console-web/src/axf/libs/hubstatus/library.json",
+  "framework/catalog/libraries.json",
+  "framework/libs/README.md",
+  "framework/libs/hubstatus/core.ts",
+  "framework/libs/hubstatus/hubstatus.css",
+  "framework/libs/hubstatus/index.tsx",
+  "framework/libs/hubstatus/library.json",
+  "framework/plan/pending.json",
+  "framework/plan/plan.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-hubstatus.mts",
+  "tracker.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/App.tsx",
+    "apps/console-web/src/axf/libs/README.md",
+    "apps/console-web/src/axf/libs/hubstatus/core.ts",
+    "apps/console-web/src/axf/libs/hubstatus/hubstatus.css",
+    "apps/console-web/src/axf/libs/hubstatus/index.tsx",
+    "apps/console-web/src/axf/libs/hubstatus/library.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/README.md",
+    "framework/libs/hubstatus/core.ts",
+    "framework/libs/hubstatus/hubstatus.css",
+    "framework/libs/hubstatus/index.tsx",
+    "framework/libs/hubstatus/library.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/memory/decisions.md",
+    "_claude/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json",
+    "framework/plan/plan.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-hubstatus.mts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/libraries.json"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "tracker.json",
+   "files": [
+    "tracker.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

@@ -1,0 +1,160 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-pr-only-merge",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:19Z",
+ "build": {
+  "id": "pr-only-merge",
+  "title": "Every change through a PR, pulled up to date with main before it merges (push banner 0.5.0)",
+  "profile": "all",
+  "category": "git",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "I want everything to need a PR and to pull against main before it is merged.",
+  "verbatim": false,
+  "at": "2026-10-30T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Server: autoPr round, merge-branch refused, behind -> pull -> wait -> merge, one merge per round, oldest first",
+   "model": "Opus",
+   "estimate": "30",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-30T18:04:28.053Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Branch protection on main (set when the token can; systems check item with Auto fix otherwise) + web (Open PR instead of Merge, autoPr switch)",
+   "model": "Opus",
+   "estimate": "30",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:04:28.053Z",
+   "doneAt": "2026-10-30T18:04:28.131Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "test.py + checks (tsc, check-theme, check-controls, lifecycle), rules, README, THREADS, PR",
+   "model": "Opus",
+   "estimate": "25",
+   "estimateMin": 25,
+   "startedAt": "2026-10-30T18:04:28.131Z",
+   "doneAt": "2026-10-30T18:04:28.209Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/pr-only-merge",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 183,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/183"
+ },
+ "landedCommit": "23aea3d73b68d85f201b781c88163287f3b922ee",
+ "commits": [
+  "df64dbe7b1aebef5ed6e5ac941bd5436dde52622"
+ ],
+ "mergedAt": "2026-10-31T07:26:36Z",
+ "landedAt": "2026-10-31T07:26:26Z",
+ "files": [
+  ".github/workflows/boilerplate-shots.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/memory/STATUS.md",
+  "_claude/shared/rules/RULES.md",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/push-banner/merge-pr.sh",
+  "apps/console-web/plugins/push-banner/plugin.json",
+  "apps/console-web/plugins/push-banner/server/__init__.py",
+  "apps/console-web/plugins/push-banner/test.py",
+  "apps/console-web/plugins/push-banner/web/index.tsx",
+  "apps/console-web/plugins/push-banner/web/store.ts",
+  "apps/console-web/plugins/push-banner/web/ui.tsx",
+  "apps/console-web/plugins/systems-check/server/derive.py"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/merge-pr.sh",
+    "apps/console-web/plugins/push-banner/plugin.json",
+    "apps/console-web/plugins/push-banner/server/__init__.py",
+    "apps/console-web/plugins/push-banner/test.py",
+    "apps/console-web/plugins/push-banner/web/index.tsx",
+    "apps/console-web/plugins/push-banner/web/store.ts",
+    "apps/console-web/plugins/push-banner/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/server/derive.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/plugins/README.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/boilerplate-shots.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

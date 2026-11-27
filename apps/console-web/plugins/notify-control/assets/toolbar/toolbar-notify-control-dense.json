@@ -1,0 +1,60 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-notify-control-dense",
+  "name": "Notifications: Dense icons",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Icons only: every button on one short bar; the names are in the tooltips and the API.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-notify-control",
+    "choice-option:dense"
+  ],
+  "data": {
+    "scope": "view:notify-control",
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 0,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "notifications",
+        "label": "Notifications",
+        "items": [
+          {
+            "id": "read",
+            "icon": "check",
+            "label": "Mark read",
+            "action": "handler:notify-control.mark-read",
+            "badge": "state:unread",
+            "enabledWhen": "unread>0",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "plugin",
+            "icon": "package",
+            "label": "Filter by plugin",
+            "action": "handler:notify-control.filter-plugin",
+            "checked": "state:plugin",
+            "badge": "state:plugin",
+            "enabledWhen": "plugins>1",
+            "priority": 250
+          },
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Notification settings",
+            "action": "handler:notify-control.settings",
+            "priority": 200
+          }
+        ]
+      }
+    ]
+  }
+}

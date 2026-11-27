@@ -1,0 +1,170 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-android-approval-overlay-a-small-always-on-float",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-13T17:23:06Z",
+ "build": {
+  "id": "android-approval-overlay-a-small-always-on-float",
+  "title": "Android approval overlay: a small always-on floating toolbar (draw-over-other-apps) on Brett's phone that expands into the full approval card (what, why, countdown, Approve/Deny) the moment an approval is sent, then shrinks back; settings for position, size and on/off; full API and voice",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Build me a overlay that expands with the approval every time one's sent. A little overlay, like a little toolbar, but it expands when I need an approval.",
+  "verbatim": true,
+  "at": "2026-11-13T10:41:19.479Z",
+  "source": "",
+  "by": "android-approval-overlay-a-small-always-on-float",
+  "addenda": []
+ },
+ "brief": "# Build: android-approval-overlay-a-small-always-on-float\n\n## Brett said (verbatim)\nAt: 2026-11-13T10:41:19.479Z\n> Build me a overlay that expands with the approval every time one's sent. A little overlay, like a little toolbar, but it expands when I need an approval.\n\n## What to build\nContinue build \"Android approval overlay: a small always-on floating toolbar (draw-over-other-apps) on Brett's phone that expands into the full approval card (what, why, countdown, Approve/Deny) the moment an approval is sent, then shrinks back; settings for position, size and on/off; full API and voice\" (android-approval-overlay-a-small-always-on-float) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 10:41):\n\"Build me a overlay that expands with the approval every time one's sent. A little overlay, like a little toolbar, but it expands when I need an approval.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~30 min):\n[ ] s1 (~10 min) Build me a overlay that expands with the approval every time one's sent.\n[ ] s2 (~10 min) A little overlay, like a little toolbar, but it expands when I need an approval.\n[ ] s3 (~10 min) Tests green, report _claude/builds/reports/android-approval-overlay-a-small-always-on-float.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/android-approval-overlay-a-small-always-on-float.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step android-approval-overlay-a-small-always-on-float <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link android-approval-overlay-a-small-always-on-float --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step android-approval-overlay-a-small-always-on-float <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note android-approval-overlay-a-small-always-on-float \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-android-approval-overlay-a-small-always-on-float--gina",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-13T10:50:24.480Z",
+   "endedAt": "2026-11-13T11:08:45.289Z",
+   "exit": 0,
+   "costUsd": 2.9465
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Build me a overlay that expands with the approval every time one's sent.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T10:50:24.480Z",
+   "doneAt": "2026-11-13T10:57:50.560Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "A little overlay, like a little toolbar, but it expands when I need an approval.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T10:57:50.560Z",
+   "doneAt": "2026-11-13T11:07:35.677Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests green, report _claude/builds/reports/android-approval-overlay-a-small-always-on-float.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T11:07:35.677Z",
+   "doneAt": "2026-11-13T11:08:30.239Z",
+   "actualMin": 1,
+   "done": true
+  }
+ ],
+ "branch": "claude/android-approval-overlay-a-small-always-on-float",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 565,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/565"
+ },
+ "landedCommit": "70e8782d7638ee1248ebc0cea177d39af45a12d5",
+ "commits": [
+  "65491e1871d796d1715ebbfea1213c0005cecd3e",
+  "2fbf16ccc31907117b88460050805f7885c31e05",
+  "3eb1aa6f4ea835b243bf9794731a341517dcbbf6"
+ ],
+ "mergedAt": "2026-11-13T17:20:20Z",
+ "landedAt": "2026-11-13T11:29:46Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/android-approval-overlay-a-small-always-on-float.md",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ApprovalOverlay.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ApprovalOverlayRules.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/HubRules.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+  "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/ApprovalOverlayRulesTest.java",
+  "apps/amberx-droid/src/axf/libs/hub/veto.ts",
+  "apps/amberx-droid/src/native.ts",
+  "apps/console-web/plugins/approvals-banner/plugin.json",
+  "apps/console-web/plugins/approvals-banner/test.mts",
+  "apps/console-web/plugins/approvals-banner/web/index.tsx",
+  "apps/console-web/plugins/approvals-banner/web/overlay.ts",
+  "apps/console-web/src/axf/libs/hub/veto.ts"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ApprovalOverlay.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ApprovalOverlayRules.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/HubRules.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+    "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/ApprovalOverlayRulesTest.java",
+    "apps/amberx-droid/src/axf/libs/hub/veto.ts",
+    "apps/amberx-droid/src/native.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/plugin.json",
+    "apps/console-web/plugins/approvals-banner/test.mts",
+    "apps/console-web/plugins/approvals-banner/web/index.tsx",
+    "apps/console-web/plugins/approvals-banner/web/overlay.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/axf/libs/hub/veto.ts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/android-approval-overlay-a-small-always-on-float.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 2.9465,
+  "estimated": false,
+  "tokens": {
+   "input": 128,
+   "output": 950,
+   "cacheRead": 4894275,
+   "cacheWrite": 121488
+  }
+ },
+ "report": "",
+ "open": []
+}

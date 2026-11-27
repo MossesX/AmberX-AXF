@@ -111,7 +111,7 @@ export function FixHelpDialog({ id, reason }: { id: string; reason?: string }) {
               {h.job.confirmationId && h.job.state === 'waiting' && (
                 <Button tone="primary" icon="external" onClick={() => globalThis.open(APPROVALS + h.job!.confirmationId, '_blank', 'noopener')}>Approve on axHub</Button>
               )}
-              {h.job.state === 'launched' && <Button icon="hammer" onClick={() => rt.dispatch('build-manager.open')}>Follow it in the Build manager</Button>}
+              {h.job.state === 'launched' && <Button icon="hammer" onClick={() => rt.dispatch('build-orchestrator.tab:active')}>Follow it in the Build orchestrator</Button>}
               {h.job.state === 'failed' && <Button tone="primary" icon="sparkles" disabled={busy || !h.mosses.ok} onClick={() => void approveMosses()}>Try again</Button>}
             </div>
           ) : (

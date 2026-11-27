@@ -39,9 +39,9 @@ const build = {
 };
 const found = {
   landedCommit: '661901740ba21f9767d70f7cf3c101c2e2c35a27', landedAt: '2026-11-09T00:06:35Z', commits: ['864ab0549c64cf17f6a64d6d757b4885b5262909', '44862718a364abc2a8b0e43cf83464c4f517de10'],
-  files: ['apps/console-web/plugins/approvals-banner/web/index.tsx', 'apps/console-web/plugins/approvals-banner/test.mts', 'apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/VetoAlarm.java', 'framework/python/axf_server/relay.py', '_claude/builds/reports/urgent-amberx-veto.md'],
+  files: ['apps/console-web/plugins/example-banner/web/index.tsx', 'apps/console-web/plugins/example-banner/test.mts', 'apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/VetoAlarm.java', 'framework/python/axf_server/relay.py', '_claude/builds/reports/urgent-amberx-veto.md'],
   runs: [{ session: 'axf-urgent-amberx-veto--lenny', account: 'account-3', model: 'opus', startedAt: '2026-11-08T22:27:50Z', endedAt: '2026-11-08T23:12:00Z', exit: 0, costUsd: 5.0549 }],
-  tests: [{ name: 'approvals-banner/test.mts: 18 checks', result: 'pass' }, { name: 'amberx-droid test.mjs', command: 'node apps/amberx-droid/test.mjs', result: 'fail', detail: '1 failing' }],
+  tests: [{ name: 'example-banner/test.mts: 18 checks', result: 'pass' }, { name: 'amberx-droid test.mjs', command: 'node apps/amberx-droid/test.mjs', result: 'fail', detail: '1 failing' }],
   uiReview: [{ id: 'r-1', name: 'Veto notice settings', status: 'waiting', group: 'urgent-amberx-veto - Nov 8 10:41 PM' }],
   cost: { usd: 5.0549, tokens: { input: 176, output: 1202, cacheRead: 12464140, cacheWrite: 195524 } }, report: '_claude/builds/reports/urgent-amberx-veto.md', brief: '# Build: urgent-amberx-veto\n…', open: ['The Android channel change needs a new APK'],
 };

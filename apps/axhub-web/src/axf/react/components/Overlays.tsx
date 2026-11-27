@@ -6,6 +6,9 @@ import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
 import { useScopeId } from './InterfaceScope';
 import { MenuList, MenuScroll } from './MenuList';
 import { useMenuFit } from './menuFit';
+import { dialogSurface } from '../../core/engines/settingsopen';
+import { CONTEXT_LEAD_PREFIX, withContextLead, type MenuEntry } from '../../core/engines/windows';
+import { chromeInstanceSlug } from '../../core/engines/chrome-settings-rules.mjs';
 
 export interface DialogDef {
   title: string;
@@ -13,6 +16,10 @@ export interface DialogDef {
   render: (props: Record<string, unknown>, close: () => void) => ReactNode;
   /** false keeps it out of search (dialogs that only make sense with props, e.g. asset-json) */
   searchable?: boolean;
+  /** glass = see-through surface (--fx-opacity-glass + --fx-blur); every settings dialog gets it by default (dialogSurface) */
+  surface?: 'glass';
+  /** wide = room for a settings interface (two thirds of the screen, up to the page width) */
+  size?: 'wide';
 }
 export type DialogMap = Record<string, DialogDef>;
 
@@ -81,7 +88,7 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
   const brandHost = brandHostProps(brand);
   return (
     <div className="fx-backdrop" onPointerDown={(e) => d.closeOnBackdrop && rt.behavior().windows.closeOnBackdrop && e.target === e.currentTarget && close()}>
-      <div className={`fx-dialog ${brandHost.className}`.trim()} role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef} data-fx-brand-mode={brandHost['data-fx-brand-mode']} style={pull ? { transform: `translateY(${pull}px)` } : undefined}>
+      <div className={`fx-dialog ${brandHost.className}`.trim()} data-fx-dialog-surface={dialogSurface(state.dialog.id, def)} data-fx-dialog-size={def.size} role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef} data-fx-brand-mode={brandHost['data-fx-brand-mode']} style={pull ? { transform: `translateY(${pull}px)` } : undefined}>
         <header className="fx-dialog__head" onPointerDown={onHeadDown} onPointerMove={onHeadMove} onPointerUp={onHeadUp} onPointerCancel={onHeadUp}>
           {brand?.svg && <BrandMark slot="dialog" height={16} className="fx-dialog__brand" />}
           {def.icon && <Icon name={def.icon} size={18} />}
@@ -128,7 +135,9 @@ export function ToastHost() {
 export function ContextMenuHost() {
   const rt = useRuntime();
   const state = useAxfState();
-  const cm = useAsset('context-menu').data;
+  // chrome-settings@1: the context menu's settings-dialog overrides (instance `app`) over its asset
+  const cmAsset = useAsset('context-menu').data;
+  const cm = rt.chromeData('context-menu', 'app', cmAsset) ?? cmAsset;
   const ref = useRef<HTMLDivElement>(null);
   const scope = useScopeId();
 
@@ -146,7 +155,7 @@ export function ContextMenuHost() {
       if (own) { rt.openContext(x, y, name, el?.getAttribute('data-fx-ctx-payload') ?? undefined); return; }
       // an implicit target's instance id: its settings id, else its accessible name as a slug
       const label = name === 'toolbar' ? el?.getAttribute('data-axf-toolbar') ?? el?.getAttribute('data-axf-toolbar-asset') ?? el?.getAttribute('aria-label') : name === 'tab-group' ? el?.getAttribute('data-axf-tab-group') ?? el?.getAttribute('aria-label') : name === 'nav' ? el?.getAttribute('data-axf-nav') ?? el?.getAttribute('aria-label') : null;
-      const slug = label ? label.toLowerCase().replace(/[^a-z0-9._:/-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 120) : '';
+      const slug = chromeInstanceSlug(label);
       rt.openContext(x, y, name, slug || undefined);
     };
     const onCtx = (e: MouseEvent) => {
@@ -222,7 +231,11 @@ export function ContextMenuHost() {
   const more = [...extra, ...chromeSep, ...chrome, ...fallback] as unknown as typeof base;
   const sep = base.length && more.length && !base[base.length - 1]?.separator ? [{ id: 'x-sep', separator: true } as unknown as (typeof base)[number]] : [];
   const tail = everywhere.length ? [{ id: 'ctx-everywhere-sep', separator: true }, ...everywhere] : [];
-  const items = [...base, ...sep, ...more, ...(tail as unknown as typeof base)];
+  // context-lead@1: entries every menu starts with (e.g. the console's Console settings), above a separator, on any
+  // target, even one whose asset turns contributions off
+  const lead = [...rt.contextExtras.entries()].filter(([k]) => k.startsWith(CONTEXT_LEAD_PREFIX)).flatMap(([, f]) => f(ctx.target, ctx.payload));
+  const rest = [...base, ...sep, ...more, ...(tail as unknown as typeof base)];
+  const items = withContextLead(lead as unknown as MenuEntry[], rest as unknown as MenuEntry[]) as unknown as typeof base;
   return (
     <div
       ref={ref}

@@ -1,0 +1,68 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-threads-amberx-keep",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:06Z",
+ "build": {
+  "id": "threads-amberx-keep",
+  "title": "threads-amberx-keep",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "threads-amberx-keep",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/threads-amberx-keep",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "e435b930ef94dbd2866bb72d885f47acbd858bf1",
+ "commits": [
+  "4e64eea1836f6b6d47873315c57feee162c269b1"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-27T03:27:53Z",
+ "files": [
+  "_claude/THREADS.md"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

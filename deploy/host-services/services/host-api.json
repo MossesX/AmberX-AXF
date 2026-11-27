@@ -1,0 +1,39 @@
+{
+  "$axf": "host-service@1",
+  "id": "host-api",
+  "title": "Host API",
+  "kind": "daemon",
+  "unit": "axf-host-api.service",
+  "plugin": "console",
+  "runner": "deploy/host-services/axf-hostd.mjs",
+  "socket": "/run/axf-host/api.sock",
+  "description": "Serves /run/axf-host/api.sock and 127.0.0.1:7788: every host service's state, health, actions, settings, logs and mode. Runs as axf-hostd.mjs host-api.",
+  "sudo": [
+    {
+      "cmd": "/usr/bin/systemctl start axf-*",
+      "why": "unit actions: start a service or run a tick now"
+    },
+    {
+      "cmd": "/usr/bin/systemctl stop axf-*",
+      "why": "unit actions: stop a service"
+    },
+    {
+      "cmd": "/usr/bin/systemctl restart axf-*",
+      "why": "unit actions: restart a service (the Auto fix of host-service:<id>)"
+    },
+    {
+      "cmd": "/usr/bin/journalctl -u axf-* -n 500 -o short-iso --no-pager",
+      "why": "the Logs route when the journal group read is refused"
+    }
+  ],
+  "health": {
+    "path": "/health"
+  },
+  "actions": [
+    {
+      "id": "reload",
+      "title": "Reload manifests",
+      "description": "Re-read deploy/host-services/services/*.json without a restart (SIGHUP)."
+    }
+  ]
+}

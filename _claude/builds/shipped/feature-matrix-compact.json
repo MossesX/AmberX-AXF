@@ -1,0 +1,83 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-feature-matrix-compact",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:48Z",
+ "build": {
+  "id": "feature-matrix-compact",
+  "title": "feature-matrix-compact",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "feature-matrix-compact",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/feature-matrix-compact",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "0d69817e022a0ed347f6dd8895ed47fa882c05e0",
+ "commits": [
+  "6f25e16d4081d8a2e29346411f44dc78ca65947c",
+  "f5f3857445231e10d5d992ff9813dd90a8ee7528",
+  "3e1f149ca8a2670244e095214f0b648c6cc4713d",
+  "89cbdbd3804e9ecaf1f854cb8b8f5eb5e6874ba5"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-30T11:35:17Z",
+ "files": [
+  "_claude/THREADS.md",
+  "apps/console-web/plugins/feature-matrix/web/feature-matrix.css",
+  "apps/console-web/plugins/feature-matrix/web/plain.ts",
+  "apps/console-web/plugins/feature-matrix/web/ui.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "feature-matrix",
+   "files": [
+    "apps/console-web/plugins/feature-matrix/web/feature-matrix.css",
+    "apps/console-web/plugins/feature-matrix/web/plain.ts",
+    "apps/console-web/plugins/feature-matrix/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

@@ -1,0 +1,89 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-hotfix-launcher-splitter",
+ "rev": 1,
+ "source": "api",
+ "by": "merge-watch",
+ "shippedAt": "2026-11-16T14:07:54Z",
+ "build": {
+  "id": "hotfix-launcher-splitter",
+  "title": "hotfix-launcher-splitter",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "hotfix-launcher-splitter",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/hotfix-launcher-splitter",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 534,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/534"
+ },
+ "landedCommit": "0f67f0d7f25bf65542d2044560715a744ecb29d2",
+ "commits": [
+  "0f67f0d7f25bf65542d2044560715a744ecb29d2"
+ ],
+ "mergedAt": "2026-11-13T01:09:01Z",
+ "landedAt": "2026-11-13T01:09:01Z",
+ "files": [
+  "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+  "deploy/claude-headless.sh"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "CI: Android framework + console",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43342679820",
+   "result": "fail",
+   "detail": "failure"
+  },
+  {
+   "name": "CI: Build and publish site",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43342679510",
+   "result": "pass",
+   "detail": "success"
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

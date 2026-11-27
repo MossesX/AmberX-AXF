@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { usePlaceTab } from './placeRestore';
 import { Button, Chip, Container, useRuntime } from '../axf/react';
 import { useStore } from '../store';
 import { STATUSES, statusTone, type Status } from '../api';
@@ -7,7 +8,7 @@ import { STATUSES, statusTone, type Status } from '../api';
 export function Tracker() {
   const rt = useRuntime();
   const s = useStore();
-  const [tab, setTab] = useState('foundations');
+  const [tab, setTab] = usePlaceTab<string>('view:tracker/tab:tracker.tabs', 'foundations');
   const [q, setQ] = useState('');
   const [only, setOnly] = useState<Status | 'all'>('all');
   const tabs = s.catalog.tabs;

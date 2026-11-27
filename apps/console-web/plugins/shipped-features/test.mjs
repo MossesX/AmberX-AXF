@@ -103,12 +103,12 @@ const MANIFEST = {
   brief: '# Build: veto', models: ['Opus'], runs: [{ session: 'axf-veto--lenny', account: 'account-3', model: 'Opus', startedAt: '2026-11-08T22:27:50Z' }],
   steps: [{ id: 's1', text: 'One notice per hold', model: 'Opus', estimate: '30 min', startedAt: '2026-11-08T22:27:50Z', doneAt: '2026-11-08T22:40:10Z' }],
   branch: 'claude/veto', pr: { number: 397 }, landedCommit: '661901740ba21f97', commits: ['864ab0549c64cf17'], mergedAt: '2026-11-09T00:06:38Z',
-  files: ['apps/console-web/plugins/approvals-banner/web/index.tsx'], tests: [{ name: 'approvals-banner 18 checks', result: 'pass' }], report: '_claude/builds/reports/veto.md', open: ['APK rebuild'],
+  files: ['apps/console-web/plugins/example-banner/web/index.tsx'], tests: [{ name: 'example-banner 18 checks', result: 'pass' }], report: '_claude/builds/reports/veto.md', open: ['APK rebuild'],
 };
 t('a manifest moves the build’s planned features to Merged with commit, PR, files, model, report and his words', async () => {
   const { applyManifest } = await import('./ledger/manifest.mjs');
   const db = D.openDb(':memory:');
-  const f = D.putFeature(db, { name: 'One notice per hold', plugin: 'approvals-banner', status: 'planned', builds: [{ id: 'veto', profile: 'all', role: 'added' }] });
+  const f = D.putFeature(db, { name: 'One notice per hold', plugin: 'example-banner', status: 'planned', builds: [{ id: 'veto', profile: 'all', role: 'added' }] });
   const r = applyManifest(db, MANIFEST);
   assert.deepEqual(r.features, [f.id]); assert.deepEqual(r.created, []);
   const g = D.getFeature(db, f.id);
@@ -123,7 +123,7 @@ t('a build that planned no feature gets one from its manifest; an older rev neve
   const db = D.openDb(':memory:');
   const r = applyManifest(db, { ...MANIFEST, rev: 2 });
   assert.equal(r.created.length, 1); const f = D.getFeature(db, r.created[0]);
-  assert.equal(f.name, 'Veto notice alarm too loud'); assert.equal(f.plugin, 'approvals-banner'); assert.equal(f.status, 'merged'); assert.ok(f.tags.includes('shipped-manifest'));
+  assert.equal(f.name, 'Veto notice alarm too loud'); assert.equal(f.plugin, 'example-banner'); assert.equal(f.status, 'merged'); assert.ok(f.tags.includes('shipped-manifest'));
   assert.equal(applyManifest(db, { ...MANIFEST, rev: 1, report: 'old.md' }).stale, true); assert.equal(D.getManifest(db, 'sm-veto').rev, 2);
   applyManifest(db, { ...MANIFEST, rev: 3, said: { text: 'something like: the alarm', verbatim: false } });
   assert.equal(D.getPrompt(db, 'p-veto-0').said, MANIFEST.said.text);

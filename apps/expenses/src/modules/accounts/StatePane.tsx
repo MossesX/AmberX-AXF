@@ -53,10 +53,10 @@ function StateCard({ children }: { children: React.ReactNode }) {
     <Stack
       sx={{
         background: token("panel"),
-        border: `1px solid ${token("edge")}`,
+        border: `var(--fx-border-w) solid ${token("edge")}`,
         borderRadius: token("radius"),
         p: 2.5,
-        gap: 1.5,
+        gap: 'var(--fx-dens-gap-2xl)',
       }}
     >
       {children}
@@ -66,10 +66,10 @@ function StateCard({ children }: { children: React.ReactNode }) {
 
 function CardTitle({ glyph, text }: { glyph: string; text: string }) {
   return (
-    <Stack direction="row" sx={{ alignItems: "center", gap: 1.25 }}>
+    <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-2xl)' }}>
       <Glyph id={glyph} size={18} />
       <Typography
-        sx={{ fontFamily: token("mono"), fontSize: 12, fontWeight: 700, letterSpacing: "0.14em" }}
+        sx={{ fontFamily: token("mono"), fontSize: 'var(--fx-type-root-sm)', fontWeight: 700, letterSpacing: "0.14em" }}
       >
         {text}
       </Typography>
@@ -235,14 +235,14 @@ export default function StatePane() {
   /* ── render ──────────────────────────────────────────────────────────────── */
 
   return (
-    <Stack sx={{ p: 2, gap: 2, maxWidth: 720 }}>
+    <Stack sx={{ p: 2, gap: 'var(--fx-dens-gap-3xl)', maxWidth: 720 }}>
       {status && (
-        <Alert severity="success" variant="outlined" sx={{ fontSize: 12 }} onClose={() => setStatus(null)}>
+        <Alert severity="success" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }} onClose={() => setStatus(null)}>
           {status}
         </Alert>
       )}
       {error && (
-        <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }} onClose={() => setError(null)}>
+        <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }} onClose={() => setError(null)}>
           {error}
         </Alert>
       )}
@@ -250,7 +250,7 @@ export default function StatePane() {
       {/* ------------------------------ defaults ------------------------------ */}
       <StateCard>
         <CardTitle glyph="icon-gear" text="DEFAULTS" />
-        <Typography sx={{ fontSize: 12, color: token("dim") }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
           Put this account back to the state every new user gets. Destructive: all module data
           (expenses, Claude conversations and projects, tasks), all per-user settings and all
           appearance (theme, chrome, dashboard layout, pack selection) are deleted. Saved
@@ -274,7 +274,7 @@ export default function StatePane() {
       {/* -------------------------------- save -------------------------------- */}
       <StateCard>
         <CardTitle glyph="icon-eye" text="SAVE" />
-        <Typography sx={{ fontSize: 12, color: token("dim") }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
           Capture the appearance on screen — theme, chrome, packs, dashboard layout — under a
           name. Appearance only; none of your data is in a saved state. Saving under an existing
           name refreshes that state.
@@ -298,27 +298,27 @@ export default function StatePane() {
         {loading ? (
           <CircularProgress size={20} />
         ) : states.length === 0 ? (
-          <Typography sx={{ fontSize: 12, color: token("dim") }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
             No saved states yet — capture one with “Save current state…”.
           </Typography>
         ) : (
-          <Stack sx={{ gap: 0.5 }}>
+          <Stack sx={{ gap: 'var(--fx-dens-gap-md)' }}>
             {states.map((meta) => (
               <Stack
                 key={meta.slug}
                 direction="row"
                 sx={{
                   alignItems: "center",
-                  gap: 1.5,
-                  p: "6px 8px",
-                  borderRadius: 1,
+                  gap: 'var(--fx-dens-gap-2xl)',
+                  p: "var(--fx-dens-gap-lg) var(--fx-dens-gap-xl)",
+                  borderRadius: 'var(--fx-radius-md)',
                   "&:hover": { background: token("page") },
                 }}
               >
                 <Box sx={{ minWidth: 0, flex: 1 }}>
                   <Typography
                     sx={{
-                      fontSize: 12.5,
+                      fontSize: 'var(--fx-type-root-md)',
                       fontWeight: 600,
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -327,7 +327,7 @@ export default function StatePane() {
                   >
                     {meta.name}
                   </Typography>
-                  <Typography sx={{ fontSize: 10.5, color: token("dim"), fontFamily: token("mono") }}>
+                  <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), fontFamily: token("mono") }}>
                     {new Date(meta.savedAt).toLocaleString()}
                   </Typography>
                 </Box>
@@ -357,7 +357,7 @@ export default function StatePane() {
       <Dialog open={resetOpen} onClose={() => busy !== "__reset" && setResetOpen(false)} maxWidth="xs" fullWidth>
         <DialogTitle>Factory reset</DialogTitle>
         <DialogContent>
-          <DialogContentText sx={{ fontSize: 13 }}>
+          <DialogContentText sx={{ fontSize: 'var(--fx-type-root-md)' }}>
             This deletes everything this account has: <b>all module data</b> (expense reports and
             saves, Claude conversations and projects, tasks and browser-held module state),{" "}
             <b>all per-user settings</b>, and <b>all appearance</b> (theme, chrome, dashboard
@@ -374,7 +374,7 @@ export default function StatePane() {
             slotProps={{ htmlInput: { autoCapitalize: "none", autoCorrect: "off" } }}
           />
           {resetError && (
-            <Alert severity="error" variant="outlined" sx={{ mt: 2, fontSize: 12 }}>
+            <Alert severity="error" variant="outlined" sx={{ mt: 2, fontSize: 'var(--fx-type-root-sm)' }}>
               {resetError}
             </Alert>
           )}
@@ -398,7 +398,7 @@ export default function StatePane() {
       <Dialog open={saveOpen} onClose={() => busy !== "__save" && setSaveOpen(false)} maxWidth="xs" fullWidth>
         <DialogTitle>Save current state</DialogTitle>
         <DialogContent>
-          <DialogContentText sx={{ fontSize: 13 }}>
+          <DialogContentText sx={{ fontSize: 'var(--fx-type-root-md)' }}>
             Name this appearance. The snapshot is captured from the live stores on this screen —
             theme, chrome, packs and dashboard layout — and holds no module data.
           </DialogContentText>
@@ -415,7 +415,7 @@ export default function StatePane() {
             }}
           />
           {saveError && (
-            <Alert severity="error" variant="outlined" sx={{ mt: 2, fontSize: 12 }}>
+            <Alert severity="error" variant="outlined" sx={{ mt: 2, fontSize: 'var(--fx-type-root-sm)' }}>
               {saveError}
             </Alert>
           )}

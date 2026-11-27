@@ -65,7 +65,7 @@ function RowControl({ row, value, onChange }: { row: SettingRow; value: SettingV
       return (
         <TextField select size="small" value={String(value)} onChange={(e) => onChange(e.target.value)} sx={{ minWidth: 180 }} slotProps={{ htmlInput: { "aria-label": row.label } }}>
           {(row.options ?? []).map((o) => (
-            <MenuItem key={o.value} value={o.value} sx={{ fontSize: 12.5 }}>
+            <MenuItem key={o.value} value={o.value} sx={{ fontSize: 'var(--fx-type-root-md)' }}>
               {o.label}
             </MenuItem>
           ))}
@@ -90,9 +90,9 @@ export default function ExpensesSettingsDialog({ open, onClose }: { open: boolea
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ fontSize: 15, fontWeight: 700, pb: 0 }}>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)', fontWeight: 700, pb: 0 }}>
         Expense Tracker settings
-        <Typography component="span" sx={{ ml: 1, fontSize: 12, color: token("dim"), fontFamily: token("mono") }}>
+        <Typography component="span" sx={{ ml: 1, fontSize: 'var(--fx-type-root-sm)', color: token("dim"), fontFamily: token("mono") }}>
           expenses
         </Typography>
       </DialogTitle>
@@ -101,7 +101,7 @@ export default function ExpensesSettingsDialog({ open, onClose }: { open: boolea
         onChange={(_, v: string) => setTab(v)}
         variant="scrollable"
         scrollButtons="auto"
-        sx={{ px: 2, borderBottom: `1px solid ${token("edge")}`, minHeight: 36, "& .MuiTab-root": { minHeight: 36, fontSize: 12.5, textTransform: "none", py: 0.5 } }}
+        sx={{ px: 2, borderBottom: `var(--fx-border-w) solid ${token("edge")}`, minHeight: 36, "& .MuiTab-root": { minHeight: 36, fontSize: 'var(--fx-type-root-md)', textTransform: "none", py: 0.5 } }}
       >
         {SECTIONS.map((s) => (
           <Tab key={s.id} value={s.id} label={s.title} />
@@ -113,19 +113,19 @@ export default function ExpensesSettingsDialog({ open, onClose }: { open: boolea
           <ThemeTab />
         ) : section ? (
           <Stack spacing={1.6}>
-            <Typography sx={{ fontSize: 12, color: token("dim") }}>{section.blurb}</Typography>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>{section.blurb}</Typography>
             {section.id === "ai" && <AiSettingsPanel />}
             {section.keys.map((key) => {
               const row = ROWS.get(key);
               if (!row) return null;
               const value = values[key] as SettingValue;
               return (
-                <Box key={key} sx={{ display: "flex", alignItems: "center", gap: 2, justifyContent: "space-between" }}>
+                <Box key={key} sx={{ display: "flex", alignItems: "center", gap: 'var(--fx-dens-gap-3xl)', justifyContent: "space-between" }}>
                   <Box sx={{ minWidth: 0 }}>
-                    <Typography sx={{ fontSize: 13, fontWeight: 600 }}>{row.label}</Typography>
-                    <Typography sx={{ fontSize: 11.5, color: token("dim") }}>{row.hint}</Typography>
+                    <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 600 }}>{row.label}</Typography>
+                    <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>{row.hint}</Typography>
                     {key === "filterColumns" && (
-                      <Typography sx={{ fontSize: 11.5, color: token("dim"), mt: 0.3 }}>
+                      <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), mt: 0.3 }}>
                         Now:{" "}
                         {parseColumns(String(value)).length
                           ? FILTER_COLUMNS.filter((c) => parseColumns(String(value)).includes(c.id)).map((c) => c.label).join(", ")
@@ -133,7 +133,7 @@ export default function ExpensesSettingsDialog({ open, onClose }: { open: boolea
                         {" · "}
                         <Button
                           size="small"
-                          sx={{ p: 0, minWidth: 0, fontSize: 11.5, textTransform: "none", verticalAlign: "baseline" }}
+                          sx={{ p: 0, minWidth: 0, fontSize: 'var(--fx-type-root-sm)', textTransform: "none", verticalAlign: "baseline" }}
                           onClick={() => {
                             onClose();
                             expenseUi.openFilterDialog();

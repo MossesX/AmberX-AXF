@@ -48,3 +48,10 @@ A grant from an agent, MCP or a token is only a **request**. Brett approves it o
 - **Until off on the axHub page** is extended by the page while it is open. The console's until-off is renewed on the server whenever the pass is read, including by the hub.
 - **If nothing reads the console pass store for 4 hours** (no hub, no console open), an until-off pass expires like any pass. The safe direction.
 - **UI Review screenshots:** not taken in this phase (no running preview). See the PR.
+
+## Retry, Nov 27 2026 (attempt 1)
+
+PR #417 was closed unmerged and the branch was gone. This run took its three commits, merged main in and opened a new PR.
+
+- The token-control pass UI moved to Builds → VPS Configuration → Passes (gate plugin) on main. Auto-approve stays on the approvals banner through the `approvals.auto` slot, and token-control still owns that slot. The over-limit hint on a preset now points to VPS Configuration → Passes.
+- axHub Approvals moved into the console as the `axhub-approvals` plugin on Nov 20. The Auto-approve container and the collapsible "Waiting on you" groups are now in that copy too (`apps/console-web/plugins/axhub-approvals/web/Approvals.tsx`, helpers in `apps/console-web/src/hubPages/core.ts`, tests in `src/hubPages/test.mjs`). The `apps/axhub-web` copy keeps the same change.

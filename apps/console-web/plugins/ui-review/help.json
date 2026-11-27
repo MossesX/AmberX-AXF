@@ -98,6 +98,13 @@
         "title": "Show everything",
         "text": "Clears the group a phone notification opened, so the whole queue shows again.",
         "kind": "button"
+      },
+      {
+        "target": "view:ui-review",
+        "title": "UI Review",
+        "text": "Every UI a build makes comes here for Brett's approval, one section per kind (open registry: Design packs, Whole apps / programs, Screens & pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other).",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

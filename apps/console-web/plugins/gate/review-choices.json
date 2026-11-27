@@ -1,0 +1,54 @@
+{
+ "assetType": "settings",
+ "owner": "gate",
+ "options": [
+  {
+   "id": "gate-auto-lander-grid",
+   "label": "Grid, two lines a row",
+   "notes": "Each build with its PR and branch under it, attempts split by kind (merge / fix / land), the last decision under the result. Best on a wide screen.",
+   "shots": [
+    "/tmp/al-shots/auto-lander-grid-desktop.png",
+    "/tmp/al-shots/auto-lander-grid-phone.png"
+   ],
+   "data": {
+    "view": "grid",
+    "settingKey": "gate.view",
+    "appliesTo": [
+     "gate.auto-lander"
+    ]
+   }
+  },
+  {
+   "id": "gate-auto-lander-cards",
+   "label": "Cards",
+   "notes": "One card per build with state, attempts and last result as labels and values; reads best on a phone.",
+   "shots": [
+    "/tmp/al-shots/auto-lander-cards-desktop.png",
+    "/tmp/al-shots/auto-lander-cards-phone.png"
+   ],
+   "data": {
+    "view": "cards",
+    "settingKey": "gate.view",
+    "appliesTo": [
+     "gate.auto-lander"
+    ]
+   }
+  },
+  {
+   "id": "gate-auto-lander-compact",
+   "label": "Compact grid, one line a row",
+   "notes": "One line per build: state, attempt count and the last result; fits the most builds on screen.",
+   "shots": [
+    "/tmp/al-shots/auto-lander-compact-desktop.png",
+    "/tmp/al-shots/auto-lander-compact-phone.png"
+   ],
+   "data": {
+    "view": "compact",
+    "settingKey": "gate.view",
+    "appliesTo": [
+     "gate.auto-lander"
+    ]
+   }
+  }
+ ]
+}

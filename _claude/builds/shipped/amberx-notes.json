@@ -1,0 +1,323 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-amberx-notes",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:52Z",
+ "build": {
+  "id": "amberx-notes",
+  "title": "AmberX voice notes, lists, tasks + AI router",
+  "profile": "all",
+  "category": "AmberX app",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "voice-controlled notes in lists/sub-lists (Plugins root: one list per plugin, made automatically), sort/transcribe/rename/move, task manager + todo, AI parsing with Claude plan/API switch + any LLM through AmberX own server, integrated web component, voice command section from the codebase, tabs. Data shared on axHub with Voice notes/Voice Vault. Sub-agents allowed (Brett).",
+  "verbatim": false,
+  "at": "2026-10-27T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Notes core: lists tree (categories, sub-lists, Inbox, Plugins root auto-filled with a list per plugin), notes/todos/tasks model, move/rename/merge, intent schema + validator, local voice-intent parser",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-28T00:37:06.746Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Notes store on axHub (lib-hubstore tables in amberx-notes/), shared read of the console Voice notes + Voice Vault tables, offline queue",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-28T00:37:06.746Z",
+   "doneAt": "2026-10-28T00:37:06.797Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Notes page: tabs Inbox / Lists / Notes / Pinned / Search; collapsible list tree with Plugins folder; note cards; rename, move to list, merge, tags, pin, star",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-28T00:46:16.982Z",
+   "doneAt": "2026-10-28T00:47:48.682Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Lists manager: create/rename/move/delete lists and sub-lists, drag to reorder, bulk move items between lists",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-28T00:47:48.682Z",
+   "doneAt": "2026-10-28T00:47:48.739Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Tasks + Todo page: status, priority, due, checklist, subtasks; tabs Today / Upcoming / All / Done; grid and tree views",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-28T00:41:50.166Z",
+   "doneAt": "2026-10-28T00:46:16.982Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Dictation: record a note hands-free (start/stop triggers, cut stop words), live transcript, review card, save to the right list",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-28T00:47:48.739Z",
+   "doneAt": "2026-10-28T00:51:02.655Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Voice commands section: predefined commands from the codebase (every registered action + notes/tasks commands) grouped in tabs, switch each on/off, edit phrases, test pad",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-28T00:51:02.655Z",
+   "doneAt": "2026-10-28T00:51:02.741Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Voice note commands wired: new note in X, add todo, move last note, rename list, create list under, mark done, read my tasks",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-28T00:51:02.741Z",
+   "doneAt": "2026-10-28T00:51:02.810Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "AmberX server: FastAPI behind the axHub wall (signed headers), Dockerfile + deploy switch from static nginx",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-28T00:51:02.810Z",
+   "doneAt": "2026-10-28T01:01:20.507Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "LLM router on framework assistant_host providers: Claude plan ↔ Claude API switch, any mainstream LLM, fallback chain, keep-alive health checks, retries, keys server-side only",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-28T01:01:20.507Z",
+   "doneAt": "2026-10-28T01:01:20.574Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "AI connection settings: provider switch, keys (write-only), test, status badge, fallback order",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-28T01:01:20.574Z",
+   "doneAt": "2026-10-28T01:01:20.638Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Real-time parsing: transcript → validated intent JSON (summary, list, sub-list, tasks, due, priority, tags), review then store",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-28T01:01:20.638Z",
+   "doneAt": "2026-10-28T01:01:20.678Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "Summaries, title cleanup, Ask my notes",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-28T01:01:20.678Z",
+   "doneAt": "2026-10-28T01:01:20.720Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Integrated web component: Web tab with address bar, clip page/selection to a note",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-28T00:37:06.797Z",
+   "doneAt": "2026-10-28T00:41:50.166Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "Export (Markdown/JSON), tests, re-check, deploy, docs, THREADS",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-28T01:01:20.720Z",
+   "doneAt": "2026-10-28T02:35:09.742Z",
+   "actualMin": 94,
+   "done": true
+  }
+ ],
+ "branch": "claude/amberx-notes",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 144,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/144"
+ },
+ "landedCommit": "fe52642a75545ab2f83ce6560cea3469096653d1",
+ "commits": [
+  "c31e272545782a24616e9009396ecd0bcd14cb71",
+  "d0a31510deed36d93f77cff97a2a6d6433f8c8b3",
+  "d4d637417c824824c7afc2ccec86f5b917598339",
+  "605f54c7af5e1d977bbb9e4c077534b050c07142",
+  "e74519e644cb3b1547360653d196770dd8ae0f80",
+  "d8ef90fc20a0b2f838c0bb34435d1f5faa846e2e",
+  "82a04aae9482b4e9ab083cd8d66ed43ec41747f2",
+  "59c3aa2cef744b86827c1dba0f2e71d6e1e5ad01"
+ ],
+ "mergedAt": "2026-10-28T02:20:51Z",
+ "landedAt": "2026-10-28T02:20:50Z",
+ "files": [
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/orchestrator.json",
+  "apps/amberx-droid/README.md",
+  "apps/amberx-droid/src/plugins/dictation/web/dictation.css",
+  "apps/amberx-droid/src/plugins/dictation/web/index.tsx",
+  "apps/amberx-droid/src/plugins/notes/web/Export.tsx",
+  "apps/amberx-droid/src/plugins/notes/web/ItemEditor.tsx",
+  "apps/amberx-droid/src/plugins/notes/web/ListsManager.tsx",
+  "apps/amberx-droid/src/plugins/notes/web/NotesView.tsx",
+  "apps/amberx-droid/src/plugins/notes/web/notes.css",
+  "apps/amberx-droid/src/plugins/tasks/web/index.tsx",
+  "apps/amberx-droid/src/plugins/tasks/web/tasks.css",
+  "apps/amberx-droid/src/plugins/voice/web/index.tsx",
+  "apps/amberx-droid/src/plugins/voice/web/voice.css",
+  "apps/amberx-droid/src/plugins/web/plugin.json",
+  "apps/amberx-droid/src/plugins/web/web/core.ts",
+  "apps/amberx-droid/src/plugins/web/web/index.tsx",
+  "apps/amberx-droid/src/plugins/web/web/web.css",
+  "apps/amberx-droid/test.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "notes",
+   "files": [
+    "apps/amberx-droid/src/plugins/notes/web/Export.tsx",
+    "apps/amberx-droid/src/plugins/notes/web/ItemEditor.tsx",
+    "apps/amberx-droid/src/plugins/notes/web/ListsManager.tsx",
+    "apps/amberx-droid/src/plugins/notes/web/NotesView.tsx",
+    "apps/amberx-droid/src/plugins/notes/web/notes.css"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "web",
+   "files": [
+    "apps/amberx-droid/src/plugins/web/plugin.json",
+    "apps/amberx-droid/src/plugins/web/web/core.ts",
+    "apps/amberx-droid/src/plugins/web/web/index.tsx",
+    "apps/amberx-droid/src/plugins/web/web/web.css"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "dictation",
+   "files": [
+    "apps/amberx-droid/src/plugins/dictation/web/dictation.css",
+    "apps/amberx-droid/src/plugins/dictation/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "tasks",
+   "files": [
+    "apps/amberx-droid/src/plugins/tasks/web/index.tsx",
+    "apps/amberx-droid/src/plugins/tasks/web/tasks.css"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "voice",
+   "files": [
+    "apps/amberx-droid/src/plugins/voice/web/index.tsx",
+    "apps/amberx-droid/src/plugins/voice/web/voice.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/README.md",
+    "apps/amberx-droid/test.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/orchestrator.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

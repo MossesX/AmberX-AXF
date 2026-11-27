@@ -5,8 +5,8 @@
  * other apps until you save: Save registers the theme and swaps to it, and the swap goes to the hub look (appearance@1),
  * so every app follows. The token tree is the Theme manager's (capability axf.token-tree@1, model.ts).
  */
-import { useEffect, useMemo, useState, type CSSProperties } from 'react';
-import { Button, Checkbox, Chip, ColorField, Container, Icon, IconButton, Note, Segmented, SelectField, Switch, TextField, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { Button, Checkbox, Chip, ColorField, Container, HubSkinLockArea, Icon, IconButton, Note, PageToolbar, Segmented, SelectField, Switch, TextField, useAxfState, useEditorSync, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { assetTypeSpecs, colorThemeVars, styleThemeVars } from '@console/axf/core';
 import type { ColorThemeData, StyleThemeData } from '@console/axf/core';
 import { call, del, post, type SavedTheme } from './api';
@@ -125,19 +125,26 @@ function Editor({ tt }: { tt: TokenTree }) {
 
   const editor = (tk: Token) => <TokenValue key={tk.id} token={tk} value={value(tk)} onChange={(v) => edit(tk.type, tk.path, v)} />;
 
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/theme-editor.json)
+  const fileRef = useRef<HTMLInputElement>(null);
+  usePublishPageState('theme-editor', { unsaved: dirty.length });
+  useToolbarHandlers('theme-editor', {
+    'theme-editor.copy': () => { copyAsNew(); return { copied: true }; },
+    'theme-editor.revert': () => { revert(); return { reverted: dirty.length }; },
+    'theme-editor.copy-json': async () => { await copyJson(); return { copied: 'json' }; },
+    'theme-editor.paste': async () => { await paste(); return { pasted: true }; },
+    'theme-editor.load-file': () => { fileRef.current?.click(); return { picking: 'file' }; },
+  });
+
   return (
+    <HubSkinLockArea>
     <div className={`${P} fx-stack`}>
-      <div className={`${P}__bar`} role="toolbar" aria-label="Theme editor">
+      <PageToolbar view="theme-editor" className={`${P}__bar`}>
         <Segmented label="View" size="sm" value={view} onChange={setView} options={VIEWS.map((v) => ({ value: v.value, label: v.label, icon: v.icon, title: v.title }))} />
         <input className={`fx-input ${P}__search`} placeholder="Find a token" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Find a token" />
-        <Button size="sm" icon="copy" title="Start a new theme from the one you're editing" onClick={copyAsNew}>Copy</Button>
-        <IconButton icon="code" label="Copy both themes as asset@1 JSON" onClick={() => void copyJson()} />
-        <IconButton icon="paste" label="Load themes from asset@1 JSON on the clipboard" onClick={() => void paste()} />
-        <label className="fx-iconbtn" title="Load an asset@1 theme file"><Icon name="upload" size={13} /><input type="file" accept="application/json" hidden aria-label="Load a theme file" onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void importFile(f); }} /></label>
-        <IconButton icon="undo" label="Back to the active themes" disabled={!dirty.length} onClick={revert} />
-        <span className="fx-grow" />
+        <input ref={fileRef} type="file" accept="application/json" hidden aria-label="Load a theme file" onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void importFile(f); }} />
         {dirty.length > 0 && <Chip tone="warning">unsaved: {dirty.map((t) => SECTIONS.find((s) => s.type === t)!.label.toLowerCase()).join(', ')}</Chip>}
-      </div>
+      </PageToolbar>
 
       <div className={`${P}__load`}>
         {SECTIONS.map((s) => (
@@ -196,6 +203,7 @@ function Editor({ tt }: { tt: TokenTree }) {
         </aside>
       </div>
     </div>
+    </HubSkinLockArea>
   );
 }
 

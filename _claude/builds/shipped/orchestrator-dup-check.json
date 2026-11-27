@@ -1,0 +1,288 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-orchestrator-dup-check",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:52Z",
+ "build": {
+  "id": "orchestrator-dup-check",
+  "title": "Orchestrator: cheap redundancy check at split time",
+  "profile": "all",
+  "category": "Builds > Orchestrator",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Orchestrator: cheap redundancy check at split time (Brett, Nov 7). Every time the orchestrator takes a build request and splits it into steps, it runs a CHEAP redundancy check before registering it. Plain code, zero AI tokens, fast (<2 s).",
+  "verbatim": true,
+  "at": "2026-11-07T14:11:33.802Z",
+  "source": "console",
+  "by": "headless brief",
+  "addenda": []
+ },
+ "brief": "# Orchestrator: cheap redundancy check at split time (Brett, Nov 7)\n\nEvery time the orchestrator takes a build request and splits it into steps, it runs a CHEAP redundancy check before registering it. Plain code, zero AI tokens, fast (<2 s).\n\n1. Check the new build and each of its steps against: builds store/orchestrator (all builds, any status), Plan Studio plans + blueprints, Shipped features/feature-ledger, open branches in /root/axf-builds (names + commit subjects), and the asset registry (ui-registry) for UI steps.\n2. Matching: normalized title/summary similarity, shared keywords/ids, same files/assets touched, superseded rounds (-r2, -fable). Thresholds in orchestrator settings.\n3. On a hit: don't block silently. Attach findings to the build (\"looks like X, Y\") with suggested action (reuse/extend existing, merge into, skip step, proceed). Default: proceed and flag; setting to hold for Brett. Phone alert (AmberX) when a likely duplicate is found, answerable in place.\n4. Results feed the Maintenance redundancy-scan report (shared finding format; coordinate with build maintenance-redundancy-scan if it has landed, else define the shared format here).\n5. Settings in place, from assets, no hard-coded styling. Tests with known duplicates from today's store (e.g. skins r2/r3/r4, shipped-features rounds, handoff-2 copies). Add to Shipped features.\n\nProgress: append `<time> START|DONE <step>` to PROGRESS.md here at each step; don't stop between steps. Commit, don't push.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-orchestrator-dup-check--rhonda",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-07T13:51:45.604Z",
+   "endedAt": "2026-11-07T14:18:06.612Z",
+   "exit": 0,
+   "costUsd": 11.3515
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Shared format redundancy-finding@1 (framework/core) + matcher dupcheck-core.mjs + gatherer/CLI dupcheck.mjs",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T14:17:30.735Z",
+   "doneAt": "2026-11-07T14:17:40.302Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Orchestrator hook on add/import (note, hold), settings in rules.dupCheck, server routes, phone alert, capability axf.redundancy-findings@1",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T14:17:30.735Z",
+   "doneAt": "2026-11-07T14:17:40.302Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Console: Duplicate check strip with answer buttons, settings card in Rules + Settings > Plugins, help entries",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T14:17:30.735Z",
+   "doneAt": "2026-11-07T14:17:40.302Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Tests with today's known duplicates (skins rounds, shipped-features rounds, handoff-2 copies), server routes, notify registry",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "2026-11-07T14:17:30.735Z",
+   "doneAt": "2026-11-07T14:17:40.302Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Docs, Shipped features entry, UI Review options, report, THREADS, commit",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "2026-11-07T13:51:45.604Z",
+   "doneAt": "2026-11-07T14:17:30.735Z",
+   "actualMin": 26,
+   "done": true
+  }
+ ],
+ "branch": "claude/orchestrator-dup-check",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [
+  "69f13dd469ff89ac50a3806b7e7b2e6b62a1ebcd",
+  "51b694d981d02f209e1da9788e3a13cb766d06b0",
+  "b14244abc1f56e9b450dd51330101d78ea1b56bc",
+  "5b94b6234775fda51ef8881025cdacf20d2334cd",
+  "a89661f20d6ae23e457c94d84ed234ce200e582e",
+  "fe5756a3d569ff66e48e1b261af8d002e4e05fb4",
+  "6aae8ba3f8ac3685bb8cee77e37a65967c42f525",
+  "955b7b305bb645b0d4b18bc907ef0437c1b187c3",
+  "76644a0dde0fbe48c5ae227cde213ebc53a8b3c2",
+  "1b907789054cf772d1935cd3b6fdd93f2fb324ee",
+  "3f6ab0ab368ca71fb9a5df0dd71132c8504ff159"
+ ],
+ "mergedAt": "2026-11-07T14:17:30.735Z",
+ "landedAt": "2026-11-07T14:17:30.735Z",
+ "files": [
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/README.md",
+  "_claude/builds/journal/2026-11-p2.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/profiles/all/orchestrator.json",
+  "_claude/builds/reports/amberx-voice-echo-fix.md",
+  "_claude/builds/reports/gizmo-voice.md",
+  "_claude/builds/reports/orchestrator-dup-check.md",
+  "_claude/builds/store.json",
+  "_claude/memory/STATUS.md",
+  "_claude/memory/docs/dup-check.md",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/FocusRules.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/TalkService.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+  "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/FocusRulesTest.java",
+  "apps/amberx-droid/src/plugins/companion/web/core.ts",
+  "apps/amberx-droid/src/plugins/companion/web/talk.ts",
+  "apps/amberx-droid/src/plugins/notes/web/core.ts",
+  "apps/amberx-droid/src/plugins/voice/web/index.tsx",
+  "apps/amberx-droid/src/plugins/voice/web/speechgate.ts",
+  "apps/amberx-droid/test.mjs",
+  "apps/console-web/plugins/build-orchestrator/assets/card/build-orchestrator-dupli-mw6hk1yu-dup-open-count.json",
+  "apps/console-web/plugins/build-orchestrator/assets/card/build-orchestrator-dupli-mw6hk1yu-dup-open-list.json",
+  "apps/console-web/plugins/build-orchestrator/assets/card/build-orchestrator-dupli-mw6hk1yu-dup-recent-feed.json",
+  "apps/console-web/plugins/build-orchestrator/dupcheck-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/dupcheck.mjs",
+  "apps/console-web/plugins/build-orchestrator/help.json",
+  "apps/console-web/plugins/build-orchestrator/hooks.mjs",
+  "apps/console-web/plugins/build-orchestrator/notify.json",
+  "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/server/dupcheck.py",
+  "apps/console-web/plugins/build-orchestrator/test.mjs",
+  "apps/console-web/plugins/build-orchestrator/test.mts",
+  "apps/console-web/plugins/build-orchestrator/test.py",
+  "apps/console-web/plugins/build-orchestrator/web/dupcheck-settings.d.mts",
+  "apps/console-web/plugins/build-orchestrator/web/dupcheck-settings.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/dupcheck.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator.css",
+  "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+  "framework/core/redundancy-finding.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/assets/card/build-orchestrator-dupli-mw6hk1yu-dup-open-count.json",
+    "apps/console-web/plugins/build-orchestrator/assets/card/build-orchestrator-dupli-mw6hk1yu-dup-open-list.json",
+    "apps/console-web/plugins/build-orchestrator/assets/card/build-orchestrator-dupli-mw6hk1yu-dup-recent-feed.json",
+    "apps/console-web/plugins/build-orchestrator/dupcheck-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/dupcheck.mjs",
+    "apps/console-web/plugins/build-orchestrator/help.json",
+    "apps/console-web/plugins/build-orchestrator/hooks.mjs",
+    "apps/console-web/plugins/build-orchestrator/notify.json",
+    "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/server/dupcheck.py",
+    "apps/console-web/plugins/build-orchestrator/test.mjs",
+    "apps/console-web/plugins/build-orchestrator/test.mts",
+    "apps/console-web/plugins/build-orchestrator/test.py",
+    "apps/console-web/plugins/build-orchestrator/web/dupcheck-settings.d.mts",
+    "apps/console-web/plugins/build-orchestrator/web/dupcheck-settings.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/dupcheck.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator.css",
+    "apps/console-web/plugins/build-orchestrator/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/README.md",
+    "_claude/builds/journal/2026-11-p2.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/profiles/all/orchestrator.json",
+    "_claude/builds/reports/amberx-voice-echo-fix.md",
+    "_claude/builds/reports/gizmo-voice.md",
+    "_claude/builds/reports/orchestrator-dup-check.md",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/FocusRules.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/TalkService.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+    "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/FocusRulesTest.java",
+    "apps/amberx-droid/test.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/memory/docs/dup-check.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "companion",
+   "files": [
+    "apps/amberx-droid/src/plugins/companion/web/core.ts",
+    "apps/amberx-droid/src/plugins/companion/web/talk.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "voice",
+   "files": [
+    "apps/amberx-droid/src/plugins/voice/web/index.tsx",
+    "apps/amberx-droid/src/plugins/voice/web/speechgate.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "notes",
+   "files": [
+    "apps/amberx-droid/src/plugins/notes/web/core.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/redundancy-finding.mjs"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261107-0ce89eab",
+   "name": "Build orchestrator: duplicate check (strip + settings)",
+   "status": "approved",
+   "group": "g-20261107-e5f1b3da",
+   "url": "/review/r-20261107-0ce89eab"
+  }
+ ],
+ "cost": {
+  "usd": 11.3515,
+  "estimated": false,
+  "tokens": {
+   "input": 306,
+   "output": 2393,
+   "cacheRead": 31349586,
+   "cacheWrite": 314861
+  }
+ },
+ "report": "",
+ "open": []
+}

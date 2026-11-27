@@ -351,13 +351,35 @@
         "refresh": "navigate",
         "back": "navigate",
         "home": "navigate",
-        "close": "navigate"
+        "close": "navigate",
+        "screenshot": "read"
       },
       "plugins.commands": {
         "run": "write"
       },
       "plugins.reads": {
         "read": "read"
+      },
+      "console.control": {
+        "open": "navigate",
+        "focus": "navigate",
+        "scroll": "navigate",
+        "search": "read",
+        "state": "read",
+        "press": "write",
+        "set": "write",
+        "plugin.enable": "write",
+        "plugin.disable": "write"
+      },
+      "console.pluginsettings": {
+        "open": "navigate",
+        "set": "write",
+        "enable": "write",
+        "disable": "write"
+      },
+      "console.toolbars": {
+        "press": "write",
+        "open": "navigate"
       }
     },
     "permissions": {
@@ -404,7 +426,11 @@
       "pass.scopes",
       "plugins.commands",
       "plugins.reads",
-      "tokens.nav"
+      "tokens.nav",
+      "console.control",
+      "tokens.instances",
+      "console.pluginsettings",
+      "console.toolbars"
     ],
     "targetOps": {
       "tokens.theme": [
@@ -540,6 +566,28 @@
         "get",
         "set",
         "reset"
+      ],
+      "console.control": [
+        "list",
+        "get",
+        "act"
+      ],
+      "tokens.instances": [
+        "list",
+        "get",
+        "set",
+        "reset",
+        "act"
+      ],
+      "console.pluginsettings": [
+        "list",
+        "get",
+        "act"
+      ],
+      "console.toolbars": [
+        "list",
+        "get",
+        "act"
       ]
     }
   },
@@ -586,7 +634,103 @@
       "opacityHover",
       "opacityTint",
       "opacityScrim",
-      "opacityGlass"
+      "opacityGlass",
+      "opacityDialog",
+      "opacitySettings",
+      "opacityPanel",
+      "opacityMenu",
+      "opacityToolbar",
+      "opacityBanner",
+      "grid.headerBg",
+      "grid.tableHeaderBg",
+      "grid.headerText",
+      "grid.headerActiveText",
+      "grid.headerBorder",
+      "grid.headerWeight",
+      "grid.sortArrow",
+      "grid.rowBg",
+      "grid.rowAltBg",
+      "grid.rowText",
+      "grid.hoverBg",
+      "grid.hoverText",
+      "grid.selectedBg",
+      "grid.selectedText",
+      "grid.selectedBorder",
+      "grid.focusRing",
+      "grid.expandedBg",
+      "grid.disabledOpacity",
+      "grid.lineColor",
+      "grid.outerBorder",
+      "grid.cellPadY",
+      "grid.cellPadX",
+      "grid.rowHeight",
+      "grid.radius",
+      "grid.groupHeaderBg",
+      "grid.groupHeaderBgNested",
+      "grid.groupHeaderBgDeep",
+      "grid.groupHeaderText",
+      "grid.groupSummaryText",
+      "grid.stickyShadow",
+      "grid.emptyText",
+      "grid.opacity",
+      "tabs.barBg",
+      "tabs.barBorder",
+      "tabs.gap",
+      "tabs.text",
+      "tabs.bg",
+      "tabs.border",
+      "tabs.hoverText",
+      "tabs.hoverBg",
+      "tabs.hoverBorder",
+      "tabs.activeText",
+      "tabs.activeBg",
+      "tabs.activeBorder",
+      "tabs.activeWeight",
+      "tabs.pressedText",
+      "tabs.pressedBg",
+      "tabs.disabledText",
+      "tabs.disabledOpacity",
+      "tabs.focusRing",
+      "tabs.indicator",
+      "tabs.indicatorSize",
+      "tabs.badgeBg",
+      "tabs.badgeText",
+      "tabs.badgeActiveBg",
+      "tabs.badgeActiveText",
+      "tabs.closeText",
+      "tabs.closeHoverText",
+      "tabs.closeHoverBg",
+      "tabs.foldBg",
+      "tabs.foldText",
+      "tabs.foldBorder",
+      "tabs.foldRadius",
+      "tabs.stickyBg",
+      "tabs.windowBarBg",
+      "tabs.windowActiveBg",
+      "tabs.windowActiveShadow",
+      "tabs.radiusUnderline",
+      "tabs.radiusPills",
+      "tabs.radiusBoxed",
+      "tabs.radiusSegmented",
+      "tabs.radiusPlain",
+      "tabs.radiusChips",
+      "tabs.radiusWindow",
+      "tabs.pillsActiveBg",
+      "tabs.pillsActiveText",
+      "tabs.boxedActiveBg",
+      "tabs.boxedActiveBorder",
+      "tabs.segmentedBg",
+      "tabs.segmentedBorder",
+      "tabs.segmentedRadius",
+      "tabs.segmentedActiveBg",
+      "tabs.segmentedActiveShadow",
+      "tabs.plainActiveText",
+      "tabs.plainActiveWeight",
+      "tabs.chipsBg",
+      "tabs.chipsBorder",
+      "tabs.chipsActiveBg",
+      "tabs.chipsActiveBorder",
+      "tabs.opacity"
     ],
     "tokens.layout": [
       "navWidth",
@@ -752,7 +896,11 @@
       "items.order",
       "items.hidden",
       "items.pinned"
-    ]
+    ],
+    "console.control": null,
+    "tokens.instances": null,
+    "console.pluginsettings": null,
+    "console.toolbars": null
   },
   "normalize": {
     "list-layout": {
@@ -1173,7 +1321,7 @@
       "op must be one of: list, get, set, reset, add, remove, act"
     ],
     "wrong-target": [
-      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads, tokens.nav"
+      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads, tokens.nav, console.control, tokens.instances, console.pluginsettings, console.toolbars"
     ],
     "token-op-on-entity": [
       "amberx.items does not take reset (it takes list, get, set, add, remove, act)"
@@ -1189,7 +1337,7 @@
     ],
     "not-an-object": [
       "op must be one of: list, get, set, reset, add, remove, act",
-      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads, tokens.nav"
+      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads, tokens.nav, console.control, tokens.instances, console.pluginsettings, console.toolbars"
     ],
     "console-open-screen": [],
     "console-open-settings": [],

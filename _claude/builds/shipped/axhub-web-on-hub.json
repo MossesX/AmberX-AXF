@@ -1,0 +1,116 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-axhub-web-on-hub",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:28Z",
+ "build": {
+  "id": "axhub-web-on-hub",
+  "title": "axhub-web-on-hub",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "axhub-web-on-hub",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/axhub-web-on-hub",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "370ebc8ebe8e247c0b5fca28fd3684c339579800",
+ "commits": [
+  "0292a4691541bffe67920a31b846a074bdc79f37",
+  "081779d7b26c69d4c1a747afa7c14947322cc42b",
+  "fe42a1026ad4b166140362c15e262f5e11471eee"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-23T02:19:55Z",
+ "files": [
+  "CLAUDE.md",
+  "_claude/memory/docs/axhub-web.md",
+  "apps/axhub-web/axf.manifest.json",
+  "apps/axhub-web/deploy/install.sh",
+  "apps/axhub-web/src/assets/app-menu/developer.json",
+  "apps/axhub-web/src/assets/app-menu/minimal-picker.json",
+  "apps/axhub-web/src/assets/app-menu/standard-desktop.json",
+  "apps/axhub-web/src/assets/context-menu/roomy-touch.json",
+  "apps/axhub-web/src/assets/layout/focus-top.json",
+  "apps/axhub-web/src/assets/nav-menu/icon-rail.json",
+  "apps/axhub-web/src/assets/nav-menu/pill-tabs.json",
+  "apps/axhub-web/src/assets/nav-menu/sidebar-list.json",
+  "framework/deploy/axf-deploy.sh",
+  "framework/deploy/test.sh",
+  "framework/plan/pending.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.manifest.json",
+    "apps/axhub-web/deploy/install.sh",
+    "apps/axhub-web/src/assets/app-menu/developer.json",
+    "apps/axhub-web/src/assets/app-menu/minimal-picker.json",
+    "apps/axhub-web/src/assets/app-menu/standard-desktop.json",
+    "apps/axhub-web/src/assets/context-menu/roomy-touch.json",
+    "apps/axhub-web/src/assets/layout/focus-top.json",
+    "apps/axhub-web/src/assets/nav-menu/icon-rail.json",
+    "apps/axhub-web/src/assets/nav-menu/pill-tabs.json",
+    "apps/axhub-web/src/assets/nav-menu/sidebar-list.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "deploy",
+   "files": [
+    "framework/deploy/axf-deploy.sh",
+    "framework/deploy/test.sh"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/memory/docs/axhub-web.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

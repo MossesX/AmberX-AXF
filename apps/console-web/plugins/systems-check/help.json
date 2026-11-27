@@ -71,6 +71,26 @@
         "title": "Test the hub route",
         "text": "Checks the console can reach GitHub through axHub.",
         "kind": "button"
+      },
+      {
+        "target": "follow-it-in-the-build-orchestrator",
+        "title": "Follow it in the Build orchestrator",
+        "text": "Shows “Follow it in the Build orchestrator”. Part of Systems check banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "open-the-build-orchestrator",
+        "title": "Open the Build orchestrator",
+        "text": "Opens the Build orchestrator. Part of Systems check banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "save-anyway",
+        "title": "Save anyway",
+        "text": "Saves the key even though the test against the service failed. Use it when the service is down and you know the key is right.",
+        "kind": "button"
       }
     ],
     "intros": []

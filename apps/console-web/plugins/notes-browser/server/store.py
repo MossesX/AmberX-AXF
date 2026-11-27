@@ -19,10 +19,13 @@ import json
 import os
 import re
 import threading
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from urllib.parse import quote
+
+import data_store
 
 PREFIX = "notes/"
 FILE_BYTES = 512 * 1024
@@ -58,9 +61,21 @@ def _title(content: str, fallback: str) -> str:
 
 
 class NotesStore:
-    def __init__(self, root: str | os.PathLike[str] | None = None, by: str = "console:notes-browser"):
+    def __init__(self, root: str | os.PathLike[str] | None = None, by: str = "console:notes-browser", folder: Any = "notes"):
         self.root = Path(root or os.environ.get("AXHUB_PROJECTS_DIR") or "/projects")
         self.by = by
+        # Projects (projects@1): the notes folder under _shared/_claude, a name or a callable read on every call
+        # (AmberX AXF: `notes`; any other project: `project-notes/<id>`, empty at first).
+        self._folder = folder
+
+    @property
+    def folder(self) -> str:
+        f = self._folder() if callable(self._folder) else self._folder
+        return str(f or "notes").strip("/")
+
+    @property
+    def prefix(self) -> str:
+        return self.folder + "/"
 
     # ---- where things are -------------------------------------------------------------------------------------
     @property
@@ -69,7 +84,7 @@ class NotesStore:
 
     @property
     def notes_dir(self) -> Path:
-        return self.claude_dir / "notes"
+        return self.claude_dir.joinpath(*self.folder.split("/"))
 
     @property
     def state_dir(self) -> Path:
@@ -138,18 +153,26 @@ class NotesStore:
             self._chown(m)
 
     def _atomic(self, f: Path, text: str, mode: int = 0o660) -> None:
+        # data-store@1 (server/data_store.py): local and shadow keep this file write (its mode and owner) and shadow
+        # mirrors it to axf-data; in cutover the note lives on axf-data only.
+        if data_store.remote_mode(f):
+            data_store.write_text(f, text)
+            return
         self._mkdir(f.parent)
         tmp = f.with_name(f".{f.name}.tmp-{os.getpid()}-{threading.get_ident()}")
         tmp.write_text(text, encoding="utf-8")
         os.chmod(tmp, mode)
         self._chown(tmp)
         os.replace(tmp, f)
+        data_store.mirror(f, text.encode("utf-8"))
 
     def _read_json(self, f: Path, default: Any) -> Any:
-        try:
-            return json.loads(f.read_text(encoding="utf-8"))
-        except (OSError, ValueError):
-            return default
+        return data_store.read_json(f, default)
+
+    @staticmethod
+    def _text(f: Path) -> str | None:
+        """The note's text (from axf-data in cutover), None when there is none."""
+        return data_store.read_text(f, None) if data_store.remote_mode(f) else (f.read_text(encoding="utf-8", errors="replace") if f.is_file() else None)
 
     def _meta(self) -> dict[str, Any]:
         m = self._read_json(self.state_dir / "meta.json", {})
@@ -159,7 +182,7 @@ class NotesStore:
         self._atomic(self.state_dir / "meta.json", json.dumps(meta, separators=(",", ":")), 0o600)
 
     def _versions_file(self, rel: str) -> Path:
-        return self.state_dir / "versions" / f"{quote(PREFIX + rel, safe='')}.json"
+        return self.state_dir / "versions" / f"{quote(self.prefix + rel, safe='')}.json"
 
     def _keep(self, rel: str, content: str, reason: str, now: str) -> None:
         f = self._versions_file(rel)
@@ -180,14 +203,18 @@ class NotesStore:
 
     # ---- reads ------------------------------------------------------------------------------------------------
     def _info(self, rel: str, f: Path, meta: dict[str, Any], content: str | None = None) -> dict[str, Any]:
-        text = f.read_text(encoding="utf-8", errors="replace") if content is None else content
-        m = meta.get(PREFIX + rel) or {}
-        st = f.stat()
+        text = (self._text(f) or "") if content is None else content
+        m = meta.get(self.prefix + rel) or {}
+        try:
+            st = f.stat()
+            size, mtime = st.st_size, st.st_mtime
+        except OSError:  # cutover: on axf-data only
+            size, mtime = len(text.encode("utf-8")), time.time()
         folder, _, name = rel.rpartition("/")
         return {
             "path": rel, "folder": folder, "name": name, "title": _title(text, name.rsplit(".", 1)[0]),
-            "size": st.st_size, "version": version_of(text),
-            "updatedAt": m.get("updatedAt") or datetime.fromtimestamp(st.st_mtime, timezone.utc).isoformat().replace("+00:00", "Z"),
+            "size": size, "version": version_of(text),
+            "updatedAt": m.get("updatedAt") or datetime.fromtimestamp(mtime, timezone.utc).isoformat().replace("+00:00", "Z"),
             "updatedBy": m.get("updatedBy", ""),
         }
 
@@ -198,7 +225,22 @@ class NotesStore:
         folders: list[str] = []
         notes: list[dict[str, Any]] = []
         words = [w for w in q.lower().split() if w][:8]
-        if self.notes_dir.is_dir():
+        if data_store.remote_mode(self.notes_dir / "x.md"):
+            for rel in data_store.list_files(self.notes_dir):
+                parts = rel.split("/")
+                if len(parts) > 2 or any(p.startswith(".") for p in parts) or not rel.lower().endswith(NOTE_EXT):
+                    continue
+                if len(parts) == 2 and parts[0] not in folders:
+                    folders.append(parts[0])
+                text = self._text(self.notes_dir / rel) or ""
+                info = self._info(rel, self.notes_dir / rel, meta, text)
+                if words:
+                    hay = f"{rel}\n{info['title']}\n{text}".lower()
+                    if not all(w in hay for w in words):
+                        continue
+                    info["snippet"] = _snippet(text, words[0])
+                notes.append(info)
+        elif self.notes_dir.is_dir():
             for entry in sorted(self.notes_dir.iterdir()):
                 if entry.name.startswith(".") or entry.is_symlink():
                     continue
@@ -224,9 +266,9 @@ class NotesStore:
         self._require()
         rel = self.clean(path)
         f = self._file(rel)
-        if not f.is_file():
+        text = self._text(f)
+        if text is None:
             raise NotesError(f'"{rel}" doesn\'t exist.', 404)
-        text = f.read_text(encoding="utf-8", errors="replace")
         return {**self._info(rel, f, self._meta(), text), "content": text}
 
     def history(self, path: Any) -> list[dict[str, Any]]:
@@ -244,7 +286,7 @@ class NotesStore:
             raise NotesError(f"A note can be at most {FILE_BYTES // 1024} KB.", 413)
         with _LOCK:
             f = self._file(rel)
-            cur = f.read_text(encoding="utf-8", errors="replace") if f.is_file() else None
+            cur = self._text(f)
             self._check(cur, if_version, rel)
             if cur == content:
                 return self._info(rel, f, self._meta(), cur)
@@ -253,7 +295,7 @@ class NotesStore:
                 self._keep(rel, cur, "write", now)
             self._atomic(f, content)
             meta = self._meta()
-            meta[PREFIX + rel] = {"updatedAt": now, "updatedBy": self.by}
+            meta[self.prefix + rel] = {"updatedAt": now, "updatedBy": self.by}
             self._save_meta(meta)
             return self._info(rel, f, meta, content)
 
@@ -262,14 +304,14 @@ class NotesStore:
         rel = self.clean(path)
         with _LOCK:
             f = self._file(rel)
-            if not f.is_file():
+            cur = self._text(f)
+            if cur is None:
                 return False
-            cur = f.read_text(encoding="utf-8", errors="replace")
             self._check(cur, if_version, rel)
             self._keep(rel, cur, "delete", _now())
-            f.unlink()
+            data_store.remove(f)
             meta = self._meta()
-            meta.pop(PREFIX + rel, None)
+            meta.pop(self.prefix + rel, None)
             self._save_meta(meta)
             return True
 
@@ -281,9 +323,9 @@ class NotesStore:
             return self.read(a)
         with _LOCK:
             fa = self._file(a)
-            if not fa.is_file():
+            text = self._text(fa)
+            if text is None:
                 raise NotesError(f'"{a}" doesn\'t exist.', 404)
-            text = fa.read_text(encoding="utf-8", errors="replace")
             self._check(text, if_version, a)
             info = self.write(b, text, "")
             self.remove(a)

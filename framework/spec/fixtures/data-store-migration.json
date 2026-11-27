@@ -1,0 +1,731 @@
+{
+  "$axf": "data-store-migration@1",
+  "note": "Every data source the console writes today, its data-store@1 namespace and key, and the count + hash check that gates each namespace. Checked by framework/spec/check-data-store-migration.mjs (via check-data-store.mjs); `example` is generated with --write.",
+  "placeholders": {
+    "<projects>": "AXHUB_PROJECTS_DIR, /projects where axHub's volume is mounted in the console container",
+    "<repo>": "the console's checkout (ROOT)",
+    "<plugins>": "<repo>/.axf-console/plugins, plugin-lifecycle@1 dataDir root",
+    "<data>": "AXF_DATA_DIR, the console's own data volume (state.json, deploys/, env)"
+  },
+  "policies": {
+    "copy": "copied key for key; the namespace manifest after the copy must equal the source manifest",
+    "journal": "copied line for line as journal entries; entries and the journal hash must match",
+    "blob-sqlite": "the SQLite file is one blob; besides the manifest, every table's row count is read from source and target and must match",
+    "rebuild": "not copied: regenerated from its upstream (GitHub CI artifacts, the repo) after the cutover",
+    "skip": "stays where it is: git-tracked, a secret, or process-local (locks, pids)"
+  },
+  "fileKinds": {
+    ".json": "record",
+    ".jsonl": "journal",
+    ".ndjson": "journal",
+    "*": "blob"
+  },
+  "order": [
+    "settings",
+    "changes",
+    "notes",
+    "planner",
+    "ui-review",
+    "sessions",
+    "console",
+    "plugins",
+    "builds"
+  ],
+  "orderWhy": "small and rarely written first; builds last because the orchestrator writes it every minute and the journal is the biggest source (654 MB today)",
+  "sources": [
+    {
+      "id": "builds-store",
+      "ns": "builds",
+      "from": "<repo>/_claude/builds/store.json",
+      "to": "builds/store.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "framework/cli/builds-store.mjs",
+        "build-orchestrator/orchestrator.mjs",
+        "builds-live",
+        "builds-page server (via CLI)"
+      ],
+      "count": "files",
+      "size": "9 MB (large)"
+    },
+    {
+      "id": "builds-journal",
+      "ns": "builds",
+      "from": "<repo>/_claude/builds/journal/<month>.jsonl",
+      "to": "builds/journal/<month>",
+      "kind": "journal",
+      "policy": "journal",
+      "writers": [
+        "framework/cli/builds-store.mjs"
+      ],
+      "count": "lines",
+      "size": "654 MB in 9 files"
+    },
+    {
+      "id": "builds-exports",
+      "ns": "builds",
+      "from": "<repo>/_claude/builds/store.json.exports.json",
+      "to": "builds/store.exports.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "framework/cli/builds-store.mjs"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "builds-orchestrator-projection",
+      "ns": "builds",
+      "from": "<repo>/_claude/builds/orchestrator.json",
+      "to": "builds/orchestrator.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "build-orchestrator/orchestrator.mjs"
+      ],
+      "count": "files",
+      "size": "6.6 MB (large)"
+    },
+    {
+      "id": "builds-origins",
+      "ns": "builds",
+      "from": "<repo>/_claude/builds/origins.json",
+      "to": "builds/origins.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "framework/core/build-origin.mjs callers"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "builds-side-records",
+      "ns": "builds",
+      "from": "<repo>/_claude/builds/{advice,bugs,matrices}.json",
+      "to": "builds/<name>.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "build-orchestrator",
+        "builds-page"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "builds-shipped",
+      "ns": "builds",
+      "from": "<repo>/_claude/builds/shipped/<build>.json",
+      "to": "builds/shipped/<build>.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "framework/core/shipped-manifest.mjs callers"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "builds-reports",
+      "ns": "builds",
+      "from": "<repo>/_claude/builds/reports/**",
+      "to": "builds/reports/<path>",
+      "kind": "blob",
+      "policy": "copy",
+      "writers": [
+        "headless sessions",
+        "build-orchestrator"
+      ],
+      "count": "files",
+      "size": "66 MB"
+    },
+    {
+      "id": "builds-progress-profiles-help",
+      "ns": "builds",
+      "from": "<repo>/_claude/builds/{progress,profiles,help-src}/**",
+      "to": "builds/<folder>/<path>",
+      "kind": "by-file",
+      "policy": "copy",
+      "writers": [
+        "build-profiles",
+        "build-orchestrator"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "builds-pipeline",
+      "ns": "builds",
+      "from": "<projects>/amberx-axf/_data/pipeline/**",
+      "to": "builds/pipeline/<path>",
+      "kind": "by-file",
+      "policy": "copy",
+      "writers": [
+        "build-orchestrator/pipeline.mjs",
+        "deploy/claude-headless.sh"
+      ],
+      "count": "files",
+      "size": "4.9 MB"
+    },
+    {
+      "id": "builds-reconcile",
+      "ns": "builds",
+      "from": "<projects>/amberx-axf/_data/builds/reconcile.json",
+      "to": "builds/reconcile/reconcile.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "build-orchestrator reconciler"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "builds-dup-check",
+      "ns": "builds",
+      "from": "<projects>/amberx-axf/_data/build-orchestrator/**",
+      "to": "builds/dup-check/<path>",
+      "kind": "by-file",
+      "policy": "copy",
+      "writers": [
+        "build-orchestrator"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "notes",
+      "ns": "notes",
+      "from": "<projects>/_shared/_claude/notes/<folder>/<name>.md",
+      "to": "notes/<folder>/<name>.md",
+      "kind": "blob",
+      "policy": "copy",
+      "writers": [
+        "notes-browser (axf.notes@1)",
+        "md-studio",
+        "axhub memory_write"
+      ],
+      "count": "files",
+      "size": "132 KB"
+    },
+    {
+      "id": "notes-history",
+      "ns": "notes",
+      "from": "<projects>/_shared/_claude/notes/**/.history/**",
+      "to": "notes/_history/<folder>/<name>",
+      "kind": "journal",
+      "policy": "journal",
+      "writers": [
+        "notes-browser"
+      ],
+      "count": "lines"
+    },
+    {
+      "id": "claude-shared-files",
+      "ns": "notes",
+      "from": "<projects>/_shared/_claude/{memory,rules,instructions,project-notes}/**",
+      "to": "notes/_claude/<area>/<path>",
+      "kind": "blob",
+      "policy": "copy",
+      "writers": [
+        "axhub memory_write",
+        "claude-handoff",
+        "sessions"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "settings-appearance",
+      "ns": "settings",
+      "from": "<projects>/_shared/_data/settings/appearance.json",
+      "to": "settings/appearance.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "token-control",
+        "theme-manager",
+        "skin-gallery",
+        "axhub-web"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "settings-apps",
+      "ns": "settings",
+      "from": "<projects>/_shared/_data/settings/apps/<app>.json",
+      "to": "settings/apps/<app>.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "lib-hubstore (every app)",
+        "amberx-listeners"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "settings-looks",
+      "ns": "settings",
+      "from": "<projects>/_shared/_data/settings/looks/**",
+      "to": "settings/looks/<path>",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "skin engine (app-look@1)"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "settings-claude",
+      "ns": "settings",
+      "from": "<projects>/_shared/_data/claude/settings.json",
+      "to": "settings/claude/settings.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "claude-settings"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "planner-plans",
+      "ns": "planner",
+      "from": "<projects>/amberx-axf/_data/plan-studio/plans/<id>.json",
+      "to": "planner/plans/<id>.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "plan-studio/plans.mjs",
+        "control@1 planner.plans"
+      ],
+      "count": "files",
+      "size": "7.3 MB whole folder"
+    },
+    {
+      "id": "planner-history",
+      "ns": "planner",
+      "from": "<projects>/amberx-axf/_data/plan-studio/history/<id>.json",
+      "to": "planner/history/<id>.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "plan-studio/plans.mjs"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "planner-side-records",
+      "ns": "planner",
+      "from": "<projects>/amberx-axf/_data/plan-studio/{categories,templates,views,catalog-seen,blueprints,deleted}.json + projects/**",
+      "to": "planner/<same path>",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "plan-studio"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "planner-shipped-log",
+      "ns": "planner",
+      "from": "<projects>/amberx-axf/_data/plan-studio/shipped-log.jsonl",
+      "to": "planner/shipped-log",
+      "kind": "journal",
+      "policy": "journal",
+      "writers": [
+        "plan-studio"
+      ],
+      "count": "lines"
+    },
+    {
+      "id": "ui-review-items",
+      "ns": "ui-review",
+      "from": "<plugins>/ui-review/items.json",
+      "to": "ui-review/items.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "ui-review/review.mjs",
+        "console UI Review server"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "ui-review-kinds",
+      "ns": "ui-review",
+      "from": "<plugins>/ui-review/kinds.json",
+      "to": "ui-review/kinds.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "ui-review"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "ui-review-shots",
+      "ns": "ui-review",
+      "from": "<plugins>/ui-review/shots/**",
+      "to": "ui-review/shots/<file>",
+      "kind": "blob",
+      "policy": "copy",
+      "writers": [
+        "ui-review",
+        "axf shot"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "sessions-archive",
+      "ns": "sessions",
+      "from": "<projects>/amberx-axf/_data/sessions/**",
+      "to": "sessions/<path>",
+      "kind": "by-file",
+      "policy": "copy",
+      "writers": [
+        "session-checkin",
+        "chat-viewer ingest",
+        "claude.ai drop folder"
+      ],
+      "count": "files",
+      "size": "18 MB"
+    },
+    {
+      "id": "changes-log",
+      "ns": "changes",
+      "from": "<projects>/amberx-axf/_data/changes/<yyyy>/<mm>/<id>.json",
+      "to": "changes/<yyyy>/<mm>/<id>.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "codebase-changes server",
+        "changes-grid",
+        "build-orchestrator (shipped)"
+      ],
+      "count": "files",
+      "size": "20 MB"
+    },
+    {
+      "id": "console-home-cards",
+      "ns": "console",
+      "from": "<projects>/amberx-axf/_data/home-cards/<user>.json",
+      "to": "console/home-cards/<user>.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "console server /api/home/layout"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "console-agents",
+      "ns": "console",
+      "from": "<projects>/amberx-axf/_data/{agents,agent-slots,agent-swarm}/**",
+      "to": "console/<folder>/<path>",
+      "kind": "by-file",
+      "policy": "copy",
+      "writers": [
+        "agent-manager",
+        "agent-slots",
+        "agent-swarm"
+      ],
+      "count": "files",
+      "size": "~1 MB"
+    },
+    {
+      "id": "console-listeners",
+      "ns": "console",
+      "from": "<projects>/amberx-axf/_data/listeners/devices/**",
+      "to": "console/listeners/devices/<path>",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "amberx-listeners",
+        "lib-hubsync (phones)"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "console-amberx-notes",
+      "ns": "console",
+      "from": "<projects>/amberx-axf/_data/amberx-notes/<table>/{head,rows-N}.json",
+      "to": "console/amberx-notes/<table>/<file>",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "token-control amberx.mjs",
+        "AmberX (lib-hubstore)"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "console-token-log",
+      "ns": "console",
+      "from": "<projects>/amberx-axf/_data/token-log/**",
+      "to": "console/token-log/<path>",
+      "kind": "by-file",
+      "policy": "copy",
+      "writers": [
+        "token-control"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "console-tracker",
+      "ns": "console",
+      "from": "<projects>/amberx-axf/_data/tracker.json",
+      "to": "console/tracker.json",
+      "kind": "record",
+      "policy": "rebuild",
+      "writers": [
+        "framework/cli/tracker.mjs"
+      ],
+      "count": "none",
+      "notes": "generated from the feature catalog (catalog_features; the tracker view on axf-data): not copied, rebuilt by tracker.mjs"
+    },
+    {
+      "id": "console-misc",
+      "ns": "console",
+      "from": "<projects>/amberx-axf/_data/{companion,walkthrough,framework,chat-viewer}/** + project.manifest.json",
+      "to": "console/<folder>/<path>",
+      "kind": "by-file",
+      "policy": "copy",
+      "writers": [
+        "companion",
+        "walkthrough-studio",
+        "framework catalog sync",
+        "chat-viewer"
+      ],
+      "count": "files",
+      "size": "12 MB"
+    },
+    {
+      "id": "console-shared",
+      "ns": "console",
+      "from": "<projects>/_shared/_data/{handoff,notifications,dns,quick-docs.md}",
+      "to": "console/shared/<path>",
+      "kind": "by-file",
+      "policy": "copy",
+      "writers": [
+        "claude-handoff",
+        "push-banner",
+        "sessions (dns log)"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "console-other-projects",
+      "ns": "console",
+      "from": "<projects>/<project>/_data/** (not amberx-axf, not _shared)",
+      "to": "console/projects/<project>/<path>",
+      "kind": "by-file",
+      "policy": "copy",
+      "writers": [
+        "axhub (project manifests)"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "console-state",
+      "ns": "console",
+      "from": "<data>/state.json (AXF_STATE)",
+      "to": "console/state.json",
+      "kind": "record",
+      "policy": "copy",
+      "writers": [
+        "console server",
+        "plugin-lifecycle"
+      ],
+      "count": "files"
+    },
+    {
+      "id": "console-deploys",
+      "ns": "console",
+      "from": "<data>/deploys/log.jsonl",
+      "to": "console/deploys/log",
+      "kind": "journal",
+      "policy": "journal",
+      "writers": [
+        "deploy scripts (deploy-log@1)"
+      ],
+      "count": "lines"
+    },
+    {
+      "id": "plugin-data",
+      "ns": "plugins",
+      "from": "<plugins>/<folder>/** (every plugin-lifecycle@1 dataDir but ui-review)",
+      "to": "plugins/<folder>/<path>",
+      "kind": "by-file",
+      "policy": "copy",
+      "writers": [
+        "each plugin, only in its own dataDir"
+      ],
+      "count": "files",
+      "size": "2.1 MB here (glossary-index); more on the VPS"
+    },
+    {
+      "id": "plugin-ledger-sqlite",
+      "ns": "plugins",
+      "from": "<plugins>/shipped-features/ledger.sqlite",
+      "to": "plugins/shipped-features/ledger.sqlite",
+      "kind": "blob",
+      "policy": "blob-sqlite",
+      "writers": [
+        "shipped-features/ledger/db.mjs"
+      ],
+      "count": "rows",
+      "tables": [
+        "features",
+        "edits",
+        "events",
+        "manifests"
+      ]
+    },
+    {
+      "id": "plugin-chats-sqlite",
+      "ns": "plugins",
+      "from": "<plugins>/chat-viewer/chats.db",
+      "to": "plugins/chat-viewer/chats.db",
+      "kind": "blob",
+      "policy": "blob-sqlite",
+      "writers": [
+        "chat-viewer/server/store.py"
+      ],
+      "count": "rows",
+      "tables": [
+        "sessions",
+        "messages"
+      ],
+      "notes": "FTS5 index is rebuilt on the first open after the move; its rows are not counted"
+    },
+    {
+      "id": "app-catalog",
+      "ns": "console",
+      "from": "<projects>/_shared/_data/app-catalog/**",
+      "to": "console/app-catalog/<path>",
+      "kind": "blob",
+      "policy": "rebuild",
+      "writers": [
+        "console server app_catalog.py"
+      ],
+      "count": "none",
+      "size": "630 MB",
+      "notes": "a cache of CI APK bundles checked against sha256; re-fetched from GitHub after cutover"
+    },
+    {
+      "id": "plugin-catalog",
+      "ns": "console",
+      "from": "<projects>/_shared/_data/plugin-catalog/**",
+      "to": "console/plugin-catalog/<path>",
+      "kind": "by-file",
+      "policy": "rebuild",
+      "writers": [
+        "CI (plugin-catalog@1)"
+      ],
+      "count": "none",
+      "notes": "CI publishes it; republish after cutover"
+    }
+  ],
+  "excluded": [
+    {
+      "from": "<data>/env, <repo>/.axf-console/env, AXF_TOKEN_FILE, credentials",
+      "policy": "skip",
+      "why": "secrets never enter the store; they stay in the container's env files"
+    },
+    {
+      "from": "<repo>/changes/**, <repo>/tracker.json, <repo>/framework/catalog/status.json, <repo>/_claude/handoff/**, <repo>/sessions/**",
+      "policy": "skip",
+      "why": "git-tracked projections; git is their store, builds-live commits them"
+    },
+    {
+      "from": "**/*.lock, **/*.running, **/*.pid, <projects>/amberx-axf/_data/agent-slots/leases/**",
+      "policy": "skip",
+      "why": "process-local locks and leases; a new process makes its own"
+    },
+    {
+      "from": "<projects>/amberx-axf/_data/changes/README.md",
+      "policy": "skip",
+      "why": "a copy of the repo doc; the changes namespace holds records only"
+    },
+    {
+      "from": "<repo>/_claude/builds/**/*.tmp, **/.history-lock",
+      "policy": "skip",
+      "why": "write temp files"
+    }
+  ],
+  "manifest": {
+    "where": "per namespace, before the copy over the source (M0) and after it over the target (M1); both written to _meta/manifests and to <data>/migration/<ns>.json",
+    "rev": "a fresh target has rev 1 on every key, so M0 is computed with rev 1: a record's etag is etagOf(1, canonical JSON of the parsed file), a blob's etagOf(1, bytes), a journal's journalEtag(parsed lines)",
+    "equal": "count, bytes and hash equal (sameManifest); blob-sqlite sources also need every listed table's row count equal",
+    "unparseable": "a .json file that does not parse is listed in the report and stops the namespace unless the namespace allows blobs, in which case it moves as a blob and is listed as `asBlob`",
+    "large": "a record over 1 MiB is listed as `large` (store.json, orchestrator.json); it moves as one record, under the 32 MiB limit"
+  },
+  "rollback": {
+    "duringCopy": "the namespace is still in `local` mode and nothing reads the target: a mismatch purges the target prefix, keeps the report, leaves the mode at `local`",
+    "inShadow": "local is still the read side: stop mirroring (mode back to `local`), purge the target prefix, keep the drift log for the report",
+    "afterCutover": "replay the axf-data change feed since the cutover cursor onto the read-only local copy, check manifests equal, then flip to `local`; if the feed is older than the retained window (cursor_expired), restore the cutover snapshot tar plus the latest snapshot and list every key changed since as the gap",
+    "never": "a journal is never truncated on either side; a rollback appends what the other side has"
+  },
+  "example": {
+    "sourceFiles": [
+      "plans/p1.json",
+      "plans/p2.json",
+      "categories.json",
+      "shipped-log.jsonl",
+      "README.md"
+    ],
+    "keys": [
+      "planner/plans/p1.json",
+      "planner/plans/p2.json",
+      "planner/categories.json",
+      "planner/shipped-log",
+      "planner/README.md"
+    ],
+    "m0": {
+      "count": 5,
+      "bytes": 188,
+      "hash": "b40e186168591456ada64ba4f1aa72db8141cfbda83eaa82a697f9d68483b963",
+      "journals": {
+        "shipped-log": {
+          "entries": 2,
+          "hash": "b9e48d1b8c826b25"
+        }
+      }
+    },
+    "copied": {
+      "equal": true,
+      "diffs": []
+    },
+    "lostFile": {
+      "equal": false,
+      "diffs": [
+        {
+          "ns": "planner",
+          "a": {
+            "count": 5,
+            "bytes": 188,
+            "hash": "b40e186168591456ada64ba4f1aa72db8141cfbda83eaa82a697f9d68483b963"
+          },
+          "b": {
+            "count": 4,
+            "bytes": 150,
+            "hash": "2f939076467076825c52175c21ce7fb3c2cfaa1fe1ffd84b00cae4807bb6fcb8"
+          }
+        }
+      ]
+    },
+    "extraJournalEntry": {
+      "equal": false,
+      "diffs": [
+        {
+          "ns": "planner",
+          "a": {
+            "count": 5,
+            "bytes": 188,
+            "hash": "b40e186168591456ada64ba4f1aa72db8141cfbda83eaa82a697f9d68483b963"
+          },
+          "b": {
+            "count": 5,
+            "bytes": 188,
+            "hash": "8862ead5958efd82109d8155b8d38121115e0db1cc6e56de46a84d7f7bfc54dc"
+          }
+        }
+      ]
+    }
+  }
+}

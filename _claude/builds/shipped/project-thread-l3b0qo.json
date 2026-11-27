@@ -1,0 +1,136 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-l3b0qo",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:35Z",
+ "build": {
+  "id": "project-thread-l3b0qo",
+  "title": "project-thread-l3b0qo",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-l3b0qo",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-l3b0qo",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "6ae7b93d2671de1be497c7c72f5b3a87bfbfcdff",
+ "commits": [
+  "3fcecd9d871c3de447f15602a3ff50799673cc18",
+  "9a62afc4cc0ec8f1d815fbfd27ce6a03c28f8f37",
+  "6a2f83c7154cff548de337c0c198b71f4b41fad1"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-25T20:49:35Z",
+ "files": [
+  "CLAUDE.md",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/voice-notes/core-check.mts",
+  "apps/console-web/plugins/voice-notes/plugin.json",
+  "apps/console-web/plugins/voice-notes/test.py",
+  "apps/console-web/plugins/voice-notes/web/core.ts",
+  "apps/console-web/plugins/voice-notes/web/index.tsx",
+  "apps/console-web/plugins/voice-notes/web/menu.ts",
+  "apps/console-web/plugins/voice-notes/web/store.ts",
+  "apps/console-web/plugins/voice-notes/web/voice-notes.css",
+  "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/AppModule.kt",
+  "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/MainActivity.kt",
+  "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/background/WakeListener.kt",
+  "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/background/WakeService.kt",
+  "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/sync/HubSync.kt",
+  "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/vault/VaultSession.kt",
+  "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/views/HomeView.kt",
+  "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/views/VoiceActionsView.kt",
+  "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/voice/VoiceActionRules.kt",
+  "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/voice/VoiceControl.kt",
+  "apps/voicevault/app/src/test/kotlin/ai/amberx/axf/voicevault/voice/VoiceActionRulesTest.kt",
+  "framework/plan/pending.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "voicevault",
+   "files": [
+    "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/AppModule.kt",
+    "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/MainActivity.kt",
+    "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/background/WakeListener.kt",
+    "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/background/WakeService.kt",
+    "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/sync/HubSync.kt",
+    "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/vault/VaultSession.kt",
+    "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/views/HomeView.kt",
+    "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/views/VoiceActionsView.kt",
+    "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/voice/VoiceActionRules.kt",
+    "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/voice/VoiceControl.kt",
+    "apps/voicevault/app/src/test/kotlin/ai/amberx/axf/voicevault/voice/VoiceActionRulesTest.kt"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "voice-notes",
+   "files": [
+    "apps/console-web/plugins/voice-notes/core-check.mts",
+    "apps/console-web/plugins/voice-notes/plugin.json",
+    "apps/console-web/plugins/voice-notes/test.py",
+    "apps/console-web/plugins/voice-notes/web/core.ts",
+    "apps/console-web/plugins/voice-notes/web/index.tsx",
+    "apps/console-web/plugins/voice-notes/web/menu.ts",
+    "apps/console-web/plugins/voice-notes/web/store.ts",
+    "apps/console-web/plugins/voice-notes/web/voice-notes.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/plugins/README.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

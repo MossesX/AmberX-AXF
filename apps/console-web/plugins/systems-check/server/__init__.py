@@ -52,7 +52,7 @@ import plugin_services
 import readcache
 from credentials import CREDENTIALS
 
-from . import claudefix, derive, githubsvc, health, healthchecks, hostfix, mosses, probes, routine, store, whatsnew  # noqa: F401 — mosses: every Auto fix goes through him
+from . import claudefix, derive, githubsvc, health, healthchecks, host_health, hostfix, mosses, probes, routine, store, whatsnew  # noqa: F401 — mosses: every Auto fix goes through him
 from .checks import HOST_SCRIPT, SERVICES, SysCheck, _http, github_token_page
 
 router = APIRouter()
@@ -152,8 +152,43 @@ def _recheck(cid: str) -> None:
     SVC.run_one(cid)
 
 
+def crew_say(section: str, event: str, text: str, ref: str = "") -> None:
+    """The section's event in the crew's group chat, as its owner (capability axf.crew-sections@1). Never raises."""
+    svc = plugin_services.get("axf.crew-sections@1")
+    if svc is None:
+        return
+    try:
+        svc.say(section, event, text, ref)
+    except Exception:  # noqa: BLE001 — the chat never breaks the monitor
+        pass
+
+
+def _health_alert(a: dict[str, Any]) -> Any:
+    """A new red item: the console alert (AmberX), and the monitor's owner says it in the group chat."""
+    r = cx.raise_alert(a)
+    first = str(a.get("body") or "").split("\n")[0]
+    crew_say("health-monitor", "failed", f"{str(a.get('title') or 'A check')[:120]}. {first[:160]}", str((a.get("meta") or {}).get("check") or ""))
+    return r
+
+
+def _health_resolve(keys: list[str]) -> Any:
+    r = cx.resolve_alerts(keys)
+    names = ", ".join(k.removeprefix("system:") for k in keys[:6])
+    crew_say("health-monitor", "done", f"Green again: {names}.")
+    return r
+
+
 def _record_fix(f: dict[str, Any]) -> None:
-    """Every auto-fix attempt also goes into the axHub change log (Build manager), as a finished fix entry."""
+    """Every auto-fix attempt also goes into the axHub change log (Build manager), as a finished fix entry, and the
+    monitor's owner says it in the group chat."""
+    what = str(f.get("title") or f.get("check") or "a check")[:120]
+    msg = str(f.get("message") or "")[:160]
+    if f.get("state") == "started":
+        crew_say("health-monitor", "start", f"Auto-fixing {what}: {msg}", str(f.get("check") or ""))
+    elif f.get("state") == "done":
+        crew_say("health-monitor", "done", f"Auto-fix ran for {what}: {msg}", str(f.get("check") or ""))
+    else:
+        crew_say("health-monitor", "failed", f"Auto-fix for {what} failed: {msg}", str(f.get("check") or ""))
     svc = plugin_services.get("axf.changes@1")
     if svc is None or f.get("state") == "started":  # a veto call still counting down is recorded when it's re-checked
         return
@@ -171,12 +206,13 @@ REGISTRY = health.Registry()
 # Plugins' auto-fixes may run one fixed VPS command the same way (veto call through Vinny, else Mosses).
 REGISTRY.vps_run = lambda command: healthchecks.veto_fix(command, _vps_call)
 MONITOR = health.Monitor(REGISTRY, lambda *a, **k: SVC.core.item(*a, **k), lambda: store.data_dir() / "health-state.json",
-                         raise_alert=lambda a: cx.raise_alert(a), resolve=lambda keys: cx.resolve_alerts(keys), log=cx.log,
+                         raise_alert=_health_alert, resolve=_health_resolve, log=cx.log,
                          mode_of=lambda cid: store.settings()["autoFix"].get(cid), recheck=_recheck, record=_record_fix)
 SVC = Service()
 GITHUB = githubsvc.GitHubService(log=cx.log)
 healthchecks.register_builtins(REGISTRY, root=cx.ROOT, repo=cx.GITHUB_REPO, hub_jobs=lambda: [*HOSTFIX.all(), *TASKS.all()],
                                github_svc=GITHUB, vps_call=_vps_call)
+host_health.register(REGISTRY, root=cx.ROOT)  # host-service@1: host-api + one check per host service (HOST-SERVICES.md)
 plugin_services.provide("axf.syscheck@1", SVC, FOLDER)
 plugin_services.provide(health.CAPABILITY, REGISTRY, FOLDER)
 plugin_services.provide(githubsvc.github_hub.CAPABILITY, GITHUB, FOLDER)

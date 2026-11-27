@@ -1,0 +1,8 @@
+{
+  "$comment": "Plugins that draw a handwritten toolbar and ship no page-scoped toolbar asset yet (framework/cli/check-toolbars.mjs rule 5). Only comes down: rebuild one, then --write-baseline.",
+  "plugins": [
+    "console-web/basic-filter",
+    "molly/expenses",
+    "molly/xlayout"
+  ]
+}

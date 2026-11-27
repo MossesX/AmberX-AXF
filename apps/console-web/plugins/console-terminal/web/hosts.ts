@@ -19,6 +19,8 @@ export interface SessionCtl {
   setMouse(on: boolean): void; setMosh(on: boolean): void; /** a step bigger (1) / smaller (-1), or back to the default (textsize.ts) */
   zoom(delta: number | 'reset'): void; search(): void;
   copy(): void; paste(plain: boolean): void; selectAll(): void; clear(): void; restart(): void; focus(): void;
+  /** the selected text (empty when none) and typing text into the session (the page toolbar's Send to Claude) */
+  selection(): string; type(text: string): void;
   menu(x: number, y: number): void;
 }
 

@@ -51,18 +51,18 @@ function ConnRow({ title, hint, has, masked, source, verifiedAt, detail, extra, 
   const state = extra ? "blocked" : !has ? "missing" : verifiedAt ? "connected" : detail ? "failed" : "unverified";
   const color = state === "connected" ? token("ok") : state === "failed" ? token("err") : state === "missing" || state === "blocked" ? token("dim") : token("accent");
   return (
-    <Stack direction="row" spacing={1} sx={{ alignItems: "flex-start", p: 1, border: `1px solid ${token("edge")}`, borderRadius: 1 }}>
+    <Stack direction="row" spacing={1} sx={{ alignItems: "flex-start", p: 1, border: `var(--fx-border-w) solid ${token("edge")}`, borderRadius: 'var(--fx-radius-md)' }}>
       <Box sx={{ width: 10, height: 10, borderRadius: "50%", background: color, mt: 0.6, flexShrink: 0 }} />
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Stack direction="row" spacing={0.6} useFlexGap sx={{ alignItems: "center", flexWrap: "wrap" }}>
-          <Typography sx={{ fontSize: 13, fontWeight: 600 }}>{title}</Typography>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 600 }}>{title}</Typography>
           <Chip size="small" variant="outlined" label={state === "connected" ? "Connected" : state === "unverified" ? "Saved · not verified" : state === "failed" ? "Failed" : state === "blocked" ? "Unavailable" : "Not set"} sx={{ height: 18, color }} />
           {source === "env" && <Chip size="small" variant="outlined" label="from environment" sx={{ height: 18 }} />}
-          {masked && <Typography sx={{ fontSize: 11, color: token("dim"), ...MONO }}>{masked}</Typography>}
+          {masked && <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), ...MONO }}>{masked}</Typography>}
         </Stack>
-        <Typography sx={{ fontSize: 11.5, color: token("dim") }}>{hint}</Typography>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>{hint}</Typography>
         {(extra || detail) && (
-          <Typography sx={{ fontSize: 11.5, color: state === "connected" ? token("ok") : token("dim") }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: state === "connected" ? token("ok") : token("dim") }}>
             {extra || detail}
             {verifiedAt ? ` · verified ${new Date(verifiedAt).toLocaleString()}` : ""}
           </Typography>
@@ -131,12 +131,12 @@ export default function AiSettingsPanel() {
     }
   };
 
-  if (!view) return <Typography sx={{ fontSize: 12.5, color: token("dim") }}>Loading…</Typography>;
+  if (!view) return <Typography sx={{ fontSize: 'var(--fx-type-root-md)', color: token("dim") }}>Loading…</Typography>;
   const s = view.settings;
 
   return (
     <Stack spacing={1.6} data-axf-ai-settings>
-      <Typography sx={{ fontSize: 12, color: token("dim") }}>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
         A built-in Claude assistant that knows this app and its source (snapshot {view.sourceVersion}). It runs on your Claude subscription first and falls back to the API; the image reader uses the same connection.
       </Typography>
       {note && (
@@ -147,7 +147,7 @@ export default function AiSettingsPanel() {
 
       <Box>
         <Stack direction="row" sx={{ alignItems: "center", mb: 0.6 }}>
-          <Typography sx={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: token("dim") }}>Connection</Typography>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', letterSpacing: "0.08em", textTransform: "uppercase", color: token("dim") }}>Connection</Typography>
           <Box sx={{ flex: 1 }} />
           <Button size="small" onClick={() => void verify("both")} disabled={!!busy}>
             {busy === "both" ? "Verifying…" : "Verify both"}
@@ -157,21 +157,21 @@ export default function AiSettingsPanel() {
           <ConnRow title="1 · Claude subscription" hint="Primary. Turns run through Claude Code on your plan; no API charges." has={s.hasSubscriptionToken} masked={s.subscriptionMasked} source={s.sources.subscription} verifiedAt={s.subscriptionVerifiedAt} detail={s.subscriptionVerifiedDetail} extra={!view.cliInstalled ? "Claude Code CLI is missing in this container" : ""} busy={busy === "subscription" || busy === "both"} onVerify={() => void verify("subscription")} />
           <ConnRow title="2 · Backup: Anthropic API" hint="Used when the subscription is missing or fails. Billed per token." has={s.hasApiKey} masked={s.apiKeyMasked} source={s.sources.api} verifiedAt={s.apiVerifiedAt} detail={s.apiVerifiedDetail} busy={busy === "api" || busy === "both"} onVerify={() => void verify("api")} />
         </Stack>
-        <Typography sx={{ fontSize: 11, color: token("dim"), mt: 0.6 }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), mt: 0.6 }}>
           Used so far: {s.usage.subscription} subscription turn{s.usage.subscription === 1 ? "" : "s"}, {s.usage.api} API turn{s.usage.api === 1 ? "" : "s"}
           {s.usage.lastBackend ? ` · last reply via ${s.usage.lastBackend}${s.usage.lastAt ? ` ${new Date(s.usage.lastAt).toLocaleString()}` : ""}` : ""}.
         </Typography>
       </Box>
 
       <Box>
-        <Typography sx={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: token("dim"), mb: 0.6 }}>Credentials</Typography>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', letterSpacing: "0.08em", textTransform: "uppercase", color: token("dim"), mb: 0.6 }}>Credentials</Typography>
         <Stack spacing={1}>
           <TextField size="small" type="password" autoComplete="off" label="Claude subscription token" value={subToken} onChange={(e) => setSubToken(cleanSecret(e.target.value))} placeholder={s.hasSubscriptionToken ? "Paste a new token to replace it" : "sk-ant-oat01-…"} slotProps={{ htmlInput: { "data-axf-ai-sub": "" } }} />
-          <Typography sx={{ fontSize: 11, color: token("dim") }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
             On your own computer: <Box component="code" sx={{ ...MONO }}>npm install -g @anthropic-ai/claude-code</Box>, then <Box component="code" sx={{ ...MONO }}>claude login</Box>, then <Box component="code" sx={{ ...MONO }}>claude setup-token</Box>. Paste the token here. Or set CLAUDE_CODE_OAUTH_TOKEN on the server.
           </Typography>
           <TextField size="small" type="password" autoComplete="off" label="Anthropic API key (backup)" value={apiKey} onChange={(e) => setApiKey(cleanSecret(e.target.value))} placeholder={s.hasApiKey ? "Paste a new key to replace it" : "sk-ant-api03-…"} slotProps={{ htmlInput: { "data-axf-ai-key": "" } }} />
-          <Typography sx={{ fontSize: 11, color: token("dim") }}>From console.anthropic.com → API keys. Or set ANTHROPIC_API_KEY on the server.</Typography>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>From console.anthropic.com → API keys. Or set ANTHROPIC_API_KEY on the server.</Typography>
           <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
             <Button size="small" variant="contained" disabled={!!busy || (!subToken.trim() && !apiKey.trim())} onClick={() => void save({ subscriptionToken: subToken || undefined, apiKey: apiKey || undefined }, "Credentials saved — press Verify")}>
               Save credentials
@@ -191,7 +191,7 @@ export default function AiSettingsPanel() {
       </Box>
 
       <Box>
-        <Typography sx={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: token("dim"), mb: 0.6 }}>Persona</Typography>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', letterSpacing: "0.08em", textTransform: "uppercase", color: token("dim"), mb: 0.6 }}>Persona</Typography>
         <Stack spacing={1}>
           <TextField size="small" label="Assistant name" value={name} onChange={(e) => setName(e.target.value)} sx={{ maxWidth: 240 }} />
           <TextField size="small" label="Extra instructions (added to the system prompt)" multiline minRows={3} value={extra} onChange={(e) => setExtra(e.target.value)} placeholder="House style, things to avoid, how you like changes explained…" />

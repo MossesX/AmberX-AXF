@@ -1,0 +1,390 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-ui-all-assets",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:27Z",
+ "build": {
+  "id": "ui-all-assets",
+  "title": "One place changes everything: typography, density and component-sizing assets that every app and plugin reads",
+  "profile": "all",
+  "category": "Framework",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "three broad asset types instead of one per piece — typography (text sizes, weights, line spacing), density (spacing, padding, row heights, gaps; compact vs roomy is one pick), component sizing (page heads, list rows, chips, count strips, tables). Each app gets one update to read them; after that every change comes live from axHub. Includes moving the Oct 30 compact frame (axf.css compact block, settings compact CSS, console count strips) and the MCP servers pages (framework/libs/mcp) onto them. Profile: Angel. Android twins deferred.",
+  "verbatim": false,
+  "at": "",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Contract: three asset types in asset-types.json — typography, density, component-sizing — with JSON schemas, validators (ts + mjs), fixtures; design-package/style-package accept them as slots; open registries so later pieces add fields, never types",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-31T00:37:05.077Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Engine + live sync: compile the three types to --fx-* tokens (TS reference engine, fixtures, hot-swap), add them to the shared look on axHub so a change reaches every app live; PORTING.md records Kotlin twins as deferred",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-31T00:37:05.077Z",
+   "doneAt": "2026-10-31T00:37:05.128Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Adopt: axf.css (incl. the Oct 30 compact block), settings library, console.css, framework React components and libs (incl. framework/libs/mcp pages) read only the new tokens — no sizes decided in code",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-31T00:37:05.128Z",
+   "doneAt": "2026-10-31T09:07:21.860Z",
+   "actualMin": 510,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Plugins: per-plugin sizes that duplicate a shared piece switch to the new tokens (all plugins); starter assets (compact = Oct 30 look, standard, roomy) for each type; design packages reference them; Settings → Appearance gets the three pickers",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-31T09:07:21.860Z",
+   "doneAt": "2026-10-31T09:07:21.935Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Checks (check-theme flags hard-coded sizes; theme-swap swaps the three types), re-bake every app once (Patches paused), before/after screenshots, report + LOG, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-31T09:07:21.935Z",
+   "doneAt": "2026-10-31T09:07:22.006Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/angel-ui-assets",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 181,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/181"
+ },
+ "landedCommit": "08ca3cda2e7c77ed05122b97243baf1b7f22729b",
+ "commits": [
+  "6c06122b9e96fabd0c621241b2579156301a6399",
+  "22bb4368aa04744fad21789a60748ad08009d8b2"
+ ],
+ "mergedAt": "2026-10-31T07:02:46Z",
+ "landedAt": "2026-10-31T07:01:21Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/memory/docs/ui-all-assets.md",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/core/engines/scale-rules.d.mts",
+  "apps/amberx-droid/src/axf/core/engines/scale-rules.mjs",
+  "apps/amberx-droid/src/axf/core/engines/scale.ts",
+  "apps/amberx-droid/src/axf/core/index.ts",
+  "apps/amberx-droid/src/axf/core/runtime.ts",
+  "apps/amberx-droid/src/axf/core/types.ts",
+  "apps/amberx-droid/src/axf/core/validate.ts",
+  "apps/amberx-droid/src/axf/schemas/asset-types.json",
+  "apps/amberx-droid/src/axf/schemas/json/density.schema.json",
+  "apps/amberx-droid/src/axf/schemas/json/sizing.schema.json",
+  "apps/amberx-droid/src/axf/schemas/json/typography.schema.json",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/core/engines/scale-rules.d.mts",
+  "apps/axhub-web/src/axf/core/engines/scale-rules.mjs",
+  "apps/axhub-web/src/axf/core/engines/scale.ts",
+  "apps/axhub-web/src/axf/core/index.ts",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/core/types.ts",
+  "apps/axhub-web/src/axf/core/validate.ts",
+  "apps/axhub-web/src/axf/schemas/asset-types.json",
+  "apps/axhub-web/src/axf/schemas/json/density.schema.json",
+  "apps/axhub-web/src/axf/schemas/json/sizing.schema.json",
+  "apps/axhub-web/src/axf/schemas/json/typography.schema.json",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/src/axf/core/engines/scale-rules.d.mts",
+  "apps/console-web/src/axf/core/engines/scale-rules.mjs",
+  "apps/console-web/src/axf/core/engines/scale.ts",
+  "apps/console-web/src/axf/core/index.ts",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/core/types.ts",
+  "apps/console-web/src/axf/core/validate.ts",
+  "apps/console-web/src/axf/schemas/asset-types.json",
+  "apps/console-web/src/axf/schemas/json/density.schema.json",
+  "apps/console-web/src/axf/schemas/json/sizing.schema.json",
+  "apps/console-web/src/axf/schemas/json/typography.schema.json",
+  "apps/demo/axf.lock.json",
+  "apps/demo/src/axf/core/engines/scale-rules.d.mts",
+  "apps/demo/src/axf/core/engines/scale-rules.mjs",
+  "apps/demo/src/axf/core/engines/scale.ts",
+  "apps/demo/src/axf/core/index.ts",
+  "apps/demo/src/axf/core/runtime.ts",
+  "apps/demo/src/axf/core/types.ts",
+  "apps/demo/src/axf/core/validate.ts",
+  "apps/demo/src/axf/schemas/asset-types.json",
+  "apps/demo/src/axf/schemas/json/density.schema.json",
+  "apps/demo/src/axf/schemas/json/sizing.schema.json",
+  "apps/demo/src/axf/schemas/json/typography.schema.json",
+  "apps/walkthrough-studio/axf.lock.json",
+  "apps/walkthrough-studio/src/axf/core/engines/scale-rules.d.mts",
+  "apps/walkthrough-studio/src/axf/core/engines/scale-rules.mjs",
+  "apps/walkthrough-studio/src/axf/core/engines/scale.ts",
+  "apps/walkthrough-studio/src/axf/core/index.ts",
+  "apps/walkthrough-studio/src/axf/core/runtime.ts",
+  "apps/walkthrough-studio/src/axf/core/types.ts",
+  "apps/walkthrough-studio/src/axf/core/validate.ts",
+  "apps/walkthrough-studio/src/axf/schemas/asset-types.json",
+  "apps/walkthrough-studio/src/axf/schemas/json/density.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/json/sizing.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/json/typography.schema.json",
+  "framework/assets/density/classic.json",
+  "framework/assets/density/compact.json",
+  "framework/assets/density/dense.json",
+  "framework/assets/density/roomy.json",
+  "framework/assets/sizing/classic.json",
+  "framework/assets/sizing/compact.json",
+  "framework/assets/sizing/touch.json",
+  "framework/assets/typography/classic.json",
+  "framework/assets/typography/compact.json",
+  "framework/assets/typography/reader.json",
+  "framework/cli/build-engine.mjs",
+  "framework/core/engines/scale-rules.d.mts",
+  "framework/core/engines/scale-rules.mjs",
+  "framework/core/engines/scale.ts",
+  "framework/core/index.ts",
+  "framework/core/runtime.ts",
+  "framework/core/types.ts",
+  "framework/core/validate.ts",
+  "framework/defaults.json",
+  "framework/schemas/asset-types.json",
+  "framework/schemas/json/density.schema.json",
+  "framework/schemas/json/sizing.schema.json",
+  "framework/schemas/json/typography.schema.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-scale.mts",
+  "framework/spec/fixtures/appearance.json",
+  "framework/spec/fixtures/roll.json",
+  "framework/spec/fixtures/scale.json",
+  "framework/spec/gen-fixtures.mts"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/core/engines/scale-rules.d.mts",
+    "apps/amberx-droid/src/axf/core/engines/scale-rules.mjs",
+    "apps/amberx-droid/src/axf/core/engines/scale.ts",
+    "apps/amberx-droid/src/axf/core/index.ts",
+    "apps/amberx-droid/src/axf/core/runtime.ts",
+    "apps/amberx-droid/src/axf/core/types.ts",
+    "apps/amberx-droid/src/axf/core/validate.ts",
+    "apps/amberx-droid/src/axf/schemas/asset-types.json",
+    "apps/amberx-droid/src/axf/schemas/json/density.schema.json",
+    "apps/amberx-droid/src/axf/schemas/json/sizing.schema.json",
+    "apps/amberx-droid/src/axf/schemas/json/typography.schema.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/core/engines/scale-rules.d.mts",
+    "apps/axhub-web/src/axf/core/engines/scale-rules.mjs",
+    "apps/axhub-web/src/axf/core/engines/scale.ts",
+    "apps/axhub-web/src/axf/core/index.ts",
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/core/types.ts",
+    "apps/axhub-web/src/axf/core/validate.ts",
+    "apps/axhub-web/src/axf/schemas/asset-types.json",
+    "apps/axhub-web/src/axf/schemas/json/density.schema.json",
+    "apps/axhub-web/src/axf/schemas/json/sizing.schema.json",
+    "apps/axhub-web/src/axf/schemas/json/typography.schema.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/core/engines/scale-rules.d.mts",
+    "apps/console-web/src/axf/core/engines/scale-rules.mjs",
+    "apps/console-web/src/axf/core/engines/scale.ts",
+    "apps/console-web/src/axf/core/index.ts",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/core/types.ts",
+    "apps/console-web/src/axf/core/validate.ts",
+    "apps/console-web/src/axf/schemas/asset-types.json",
+    "apps/console-web/src/axf/schemas/json/density.schema.json",
+    "apps/console-web/src/axf/schemas/json/sizing.schema.json",
+    "apps/console-web/src/axf/schemas/json/typography.schema.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "demo",
+   "files": [
+    "apps/demo/axf.lock.json",
+    "apps/demo/src/axf/core/engines/scale-rules.d.mts",
+    "apps/demo/src/axf/core/engines/scale-rules.mjs",
+    "apps/demo/src/axf/core/engines/scale.ts",
+    "apps/demo/src/axf/core/index.ts",
+    "apps/demo/src/axf/core/runtime.ts",
+    "apps/demo/src/axf/core/types.ts",
+    "apps/demo/src/axf/core/validate.ts",
+    "apps/demo/src/axf/schemas/asset-types.json",
+    "apps/demo/src/axf/schemas/json/density.schema.json",
+    "apps/demo/src/axf/schemas/json/sizing.schema.json",
+    "apps/demo/src/axf/schemas/json/typography.schema.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/axf.lock.json",
+    "apps/walkthrough-studio/src/axf/core/engines/scale-rules.d.mts",
+    "apps/walkthrough-studio/src/axf/core/engines/scale-rules.mjs",
+    "apps/walkthrough-studio/src/axf/core/engines/scale.ts",
+    "apps/walkthrough-studio/src/axf/core/index.ts",
+    "apps/walkthrough-studio/src/axf/core/runtime.ts",
+    "apps/walkthrough-studio/src/axf/core/types.ts",
+    "apps/walkthrough-studio/src/axf/core/validate.ts",
+    "apps/walkthrough-studio/src/axf/schemas/asset-types.json",
+    "apps/walkthrough-studio/src/axf/schemas/json/density.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/json/sizing.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/json/typography.schema.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/density/classic.json",
+    "framework/assets/density/compact.json",
+    "framework/assets/density/dense.json",
+    "framework/assets/density/roomy.json",
+    "framework/assets/sizing/classic.json",
+    "framework/assets/sizing/compact.json",
+    "framework/assets/sizing/touch.json",
+    "framework/assets/typography/classic.json",
+    "framework/assets/typography/compact.json",
+    "framework/assets/typography/reader.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/scale-rules.d.mts",
+    "framework/core/engines/scale-rules.mjs",
+    "framework/core/engines/scale.ts",
+    "framework/core/index.ts",
+    "framework/core/runtime.ts",
+    "framework/core/types.ts",
+    "framework/core/validate.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-scale.mts",
+    "framework/spec/fixtures/appearance.json",
+    "framework/spec/fixtures/roll.json",
+    "framework/spec/fixtures/scale.json",
+    "framework/spec/gen-fixtures.mts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/asset-types.json",
+    "framework/schemas/json/density.schema.json",
+    "framework/schemas/json/sizing.schema.json",
+    "framework/schemas/json/typography.schema.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/docs/ui-all-assets.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-engine.mjs"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/angel/orchestrator.json"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "framework",
+   "files": [
+    "framework/defaults.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

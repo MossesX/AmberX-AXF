@@ -8,8 +8,7 @@
   "author": "Brett",
   "description": "Every session we have, stored as transcripts (session@1) in one searchable store: claude.ai text and voice chats (from the data export Brett uploads, or the hub drop folder claude.ai sessions write to when he says \"sync my chats\"), Claude Code sessions (~/.claude/projects, synced incrementally on a timer and on load) and headless build sessions (build logs). Checks for updates on load (new, continued, changed, unchanged), keeps every version, redacts secrets on ingest, full-text search that jumps to the hit, chat bubbles (Brett vs Amber) with collapsible tool calls, copy / share / export as text or Markdown, and audio export with two voices (free Piper voices on the VPS by default, OpenAI or ElevenLabs when a key is saved), rendered in the background with chapters per hour and stored on the hub. Also in AmberX as Chats.",
   "targets": [
-    "axf-console",
-    "amberx-droid"
+    "axf-console"
   ],
   "provides": [
     "view:chat-viewer",

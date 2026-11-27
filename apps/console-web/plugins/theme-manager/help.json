@@ -60,6 +60,13 @@
         "text": "Shows the “Themes” part of this screen. Part of Theme manager.",
         "kind": "tab",
         "draft": true
+      },
+      {
+        "target": "view:theme-manager",
+        "title": "Theme manager",
+        "text": "Roll colour themes, or every themeable part a skin leaves open (style, layout and behaviour are the skin's sections).",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

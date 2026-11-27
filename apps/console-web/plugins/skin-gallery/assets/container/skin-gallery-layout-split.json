@@ -1,0 +1,24 @@
+{
+ "$axf": "asset@1",
+ "type": "container",
+ "id": "skin-gallery-layout-split",
+ "name": "skin-gallery-layout: Gallery beside the preview",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Cards on the left, desktop and phone previews on the right. Default today. Phone: stacked.",
+ "tags": [
+  "ui-choice",
+  "choice-set:skin-gallery-layout",
+  "choice-option:split"
+ ],
+ "data": {
+  "variant": "card",
+  "header": "divided",
+  "padding": "md",
+  "elevation": 1,
+  "collapsible": false,
+  "gallery": {
+   "layout": "split"
+  }
+ }
+}

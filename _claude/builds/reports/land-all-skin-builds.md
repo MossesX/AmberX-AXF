@@ -1,0 +1,92 @@
+# Land all skin builds
+
+Survey taken 2026-11-14 after `git fetch origin` (main at `1169074ab`). Ahead/behind are counted against `origin/main`.
+
+## Result
+
+All 8 skin builds are on main and live on the console. Order: #647, #648, #590, #618, #641, #652, #657, #654 (merge commits below). They stacked in that order, each merging the previous tip and then origin/main. Two superseded branches are archived. Two (#604, #591, the professional-skins work) stay open because their work never reached main. They need their own Fable build. Deploy: `7de17c4`, logged as deploy@1. Brett was notified on AmberX. Still open: a visual check of the Skins panel in a signed-in browser (see the deploy check).
+
+## Branches to land (in order)
+
+| # | Branch (`claude/…`) | Behind main | Ahead of main | Last commit | Open PR | Builds-store record |
+|---|---|---|---|---|---|---|
+| 1 | skins-plugin-merge-main-and-land | 313 | 27 | 2026-11-14 | #647 | skins-plugin-merge-main-and-land (pending, #647) |
+| 2 | skin-config-panel-merge-main-and-land | 313 | 14 | 2026-11-14 | #648 | skin-config-panel-merge-main-and-land (pending, #648) |
+| 3 | every-skin-ships-light-dark-colour-theme | 1341 | 3 | 2026-11-13 | #590 | every-skin-ships-light-dark-colour-theme (built, #590) |
+| 4 | console-skin-axhub-only | 1008 | 2 | 2026-11-13 | #618 | no record under this id |
+| 5 | skin-axhub-override-switch-greyed-out | 316 | 10 | 2026-11-14 | #641 | skin-axhub-override-switch-greyed-out (pending, #641) |
+| 6 | skin-animations-swatches-skin-switch | 315 | 10 | 2026-11-14 | #652 | skin-animations-swatches-skin-switch (pending, #652) |
+| 7 | token-registry-skin-editor-live-sandbox | 318 | 10 | 2026-11-14 | #657 | token-registry-skin-editor-live-sandbox (pending, #657) |
+| 8 | own-token-sets-for-grids-and-tab-groups | 513 | 1 | 2026-11-13 | #654 | own-token-sets-for-grids-and-tab-groups (pending, #654) |
+
+## Superseded branches (check, then archive)
+
+| Branch (`claude/…`) | Behind main | Ahead of main | Last commit | Open PR | Builds-store record |
+|---|---|---|---|---|---|
+| skins-plugin-own-removable-console | 1581 | 23 | 2026-11-13 | #649 (#613 closed) | skins-plugin-own-removable-console (built, #613) |
+| skin-configuration-panel-before-ai-makes | 1635 | 11 | 2026-11-13 | #612 | skin-configuration-panel-before-ai-makes (built, #612) |
+| professional-skins-rebuild-whole-app | 1597 | 22 | 2026-11-13 | #604 | professional-skins-rebuild-whole-app (built, #604) |
+| fix-merge-conflicts-pr-557-professional | 1335 | 24 | 2026-11-13 | #591 | fix-merge-conflicts-pr-557-professional (built, #591) |
+
+## Log
+- **1. skins-plugin-merge-main-and-land (#647)**: local branch = remote tip (nothing to rebase). Merged origin/main: one conflict, `apps/console-web/plugins/molly-guide/help.json` (Gizmo guide text), took main's. Regenerated tracker, schemas (no change kept: the `behaviorTheme` drop is a pre-existing generator/main mismatch, main's copy stands), help sync, control inventory; baked `framework-drafts.json` into console-web and molly. `rebake apply` refuses on main's own pre-existing drift (libs/settings opacity-panel CSS), so main's baked copy stands (generated-files@1 optional rule). Checks green: check-theme, check-controls, plugin-lifecycle skin-gallery, tracker --check, inventory --check, skin-gallery test.py, check-skin.mts, check-skin-switch.mts. The built-in Appearance panel routes through `axf.skin-switch@1` when the plugin is installed and falls back to the runtime when it is removed. Queued.
+- skins-plugin follow-up: check-console-control was red on the plugin's own skin-chip menu items (raw button, 438 > baseline 437); gave them `data-axf-target="skin:<id>"` and baked the help drafts into axhub-web. Pushed to #647.
+- **2. skin-config-panel-merge-main-and-land (#648)**: merged the skins-plugin tip, then origin/main. Conflicts: `.github/workflows/android.yml` (kept both skin-config@1 checks and the skin-switch@1 check), `framework/spec/PORTING.md` (kept both deferred entries), molly-guide help.json (main's text), control inventory (regenerated). Help packs baked into console-web, molly, axhub-web. Checks green: check-console-control, check-theme, check-controls, check-skin-config, check-skins-config-cli, check-skin.mts, console `tsc --noEmit`. Queued.
+- **3. every-skin-ships-light-dark-colour-theme (#590)**: merged the skin-config tip, then origin/main. Conflicts: `framework/cli/skins.mjs` (kept the skin-modes import and `modes`/`mode` commands plus the skin-config import and `config`/`default`/`migrate`/`delete`; the valued-flag list now holds `--scope --system --wish --from --json-doc`), PORTING.md (both entries), baked help drafts (re-baked). All 6 skins have light + dark (check-skin-modes). `shared-assets.mjs bake --all` (528 assets, 4 apps), fixtures regenerated (windows-dark joins appearance/roll/theme), check-project-fixtures, check-skin.mts, check-skin-coverage (uncovered 0), theme-swap.mjs on a fresh vite build: all green. Queued.
+- **4. console-skin-axhub-only (#618)**: merged the light/dark tip, then origin/main. Conflicts: `framework/core/engines/skin.ts` + `core/runtime.ts` (and console-web's baked copies): kept `hubOnlyLook` alongside the skin-modes import and the skin-switch@1 exports; `apps/console-web/src/assetPicker.tsx`: kept the appearance lock (`disabled={locked}`) and the `settings-slot:<type>` anchor; `framework/catalog/status.json`: both entries; inventory regenerated. The branch had only baked into console-web: its engine/runtime/settings changes were applied 3-way to molly and axhub-web so each keeps main's own drift. Checks green: check-skin.mts (incl. 'skin from axHub only', 395), check-hubstatus.mts (29), console tsc, check-console-control, check-theme, check-controls; fixtures regenerate with no change. Queued. No builds-store record exists under this id, so `builds-live link` had nothing to link.
+- **5. skin-axhub-override-switch-greyed-out (#641)**: merged the axhub-only tip, then origin/main. Conflicts: `framework/catalog/status.json` (kept the branch's hub-only and override entries plus the stack's console-settings entry), inventory regenerated. The Override switch, greyed-out editors and the 'This is locked… Click here to override' note are intact (libs/settings, HubSkinLock). Baked the override and stack changes into molly and axhub-web 3-way. Checks green: check-console-control (437, setting addresses intact), check-skin.mts, check-skin-modes, check-skin-config, check-skins-config-cli, check-skin-switch, check-theme, check-controls, console tsc. Queued.
+- **6. skin-animations-swatches-skin-switch (#652)**: merged the override tip, then origin/main. Conflicts: `framework/core/runtime.ts` (the colour-theme pick runs through `withSkinSwitchFx` and still marks the asset overridden for axHub), `framework/libs/settings/index.tsx` + theme-manager (imports: swatch components and the hub-lock note), help pack / status / molly-guide help unioned by key (3-way JSON union by key), console-web baked copies rebuilt as framework + main's drift. Baked the animation engines, swatches and behaviour themes into molly / axhub-web / amberx-droid. Checks green: check-theme (224 tokens: opacity + motion from both sides), check-controls, check-console-control, check-skin-animations (80), check-skin, check-skin-switch, console tsc, help coverage, theme-swap.mjs on a fresh build. Queued.
+- **7. token-registry-skin-editor-live-sandbox (#657)**: merged the animations tip, then origin/main. Only textual conflict: control inventory (regenerated). Semantic fixes: `token-registry.mjs sync --write` registered the nine `--fx-anim-*` tokens from the animations build (the tool keeps the registry sorted by id; no existing entry changed), `manifest skin-gallery --write` gave the Skins plugin its `tokens` block, and the new Skin editor is wrapped in `HubSkinLockArea` so it greys out under 'Get my skin only from axHub' like every other skin/asset editor. Baked the registry engine and `uiRenderers` into molly / axhub-web (console-web keeps the branch's fuller rebake). Checks green: check-token-registry (232), check-control.mts (389 checks, 24 targets), check-skin.mts, check-skin-coverage, check-project-fixtures, check-console-control, check-theme, check-controls, plugin-lifecycle skin-editor, skin-editor test.mjs + test.py, console tsc. Queued.
+- **8. own-token-sets-for-grids-and-tab-groups (#654)**: merged the token-registry tip, then origin/main. Conflicts: help pack (unioned by target; walkthrough-studio copy re-synced), PORTING.md (both entries), control inventory (regenerated). The branch is its build's step s1 only and had not baked; component-tokens and the DataGrid/TabGroup/theme/axf.css changes are now baked into console-web, molly and axhub-web. `token-registry.mjs sync --write` registered the 90 grid/tab tokens. Checks green: check-tab-group.mts (445), check-chrome-assets, check-toolbars, check-theme (316 tokens), check-skin-coverage, check-skin-config, check-token-registry (322), check-control.mts (396 checks, 25 targets), check-skin.mts, check-console-control, check-controls, check-project-fixtures, tracker --check, console tsc. Queued.
+- Side effect found and undone: `tracker.mjs` writes through `persist.mjs` to the hub's shared data folder unless `AXF_DATA_DIR=off`, so the regen runs on branches 1-7 wrote a branch-built tracker.json to live data. Rewrote it from main's catalog; branch 8 regenerated the repo copy with `AXF_DATA_DIR=off`. Branches 1-7 keep main's repo tracker.json (the generated copy lands with #654).
+
+## Superseded branches (s21: patch-id check against the stack tip, which holds main + all 8)
+
+| Branch | Commits missing | Verdict |
+|---|---|---|
+| skins-plugin-own-removable-console (#649) | 0 | fully included (via skins-plugin-merge-main-and-land): archive |
+| skin-configuration-panel-before-ai-makes (#612) | 0 | fully included (via skin-config-panel-merge-main-and-land): archive |
+| professional-skins-rebuild-whole-app (#604) | 22 of 22 | **real work missing, not archived** |
+| fix-merge-conflicts-pr-557-professional (#591) | 23 of 23 | **real work missing, not archived** |
+
+**Flag:** the professional-skins work (PR #557 lineage) never reached main and none of the 8 builds carries it: skin@2 (behaviour axes per asset type, the table asset type, resolver and migration), the four skins Studio Pro, Executive, Field and Command, the app shell driven by the skin (nav mode/side, menu form, toolbar and banner placement), the skin gallery in Settings → Appearance, API parity and CI coverage: about 16k lines over 213 files against the stack tip. #591 is #604 plus its conflict-fix report (the only commit #591 lacks from #604 is the build rename). Both branches are left open. Landing it needs its own build: merge the stack tip into `fix-merge-conflicts-pr-557-professional`, reconcile skin@2 with skin-modes@1 / skin-switch@1 / skin-config@1 / the token registry, and give the four skins light + dark themes. That is schema and engine work, so Fable.
+
+## Archived (s22)
+
+- `claude/skins-plugin-own-removable-console` → tag `archive/skins-plugin-own-removable-console` (265b99ced), remote branch deleted, PR #649 closed as superseded by #647, build record complete with a superseded note.
+- `claude/skin-configuration-panel-before-ai-makes` → tag `archive/skin-configuration-panel-before-ai-makes` (71a2f361d), remote branch deleted, PR #612 closed as superseded by #648, build record complete with a superseded note.
+- Not archived (real work missing, see the flag above): `professional-skins-rebuild-whole-app` (#604), `fix-merge-conflicts-pr-557-professional` (#591).
+
+## Merge queue (s20)
+
+- Round 1: #641 kicked out (run 43628639101). Causes, each fixed on the branch that introduced it and merged up the stack: `plugins.mjs --check` (#647: the Skins plugin's `banner` field now lists `skin-gallery`) and `help-coverage --check` at 99.4% (#641: help for the lock note's 'Click here to override' button).
+- Then ran the CI Node sweep and the Web Dev Console job's checks on the stack tip, compared each failure with main and fixed every difference: glossary ratchet (#590: the merged skins CLI header passed the 4000 chars the glossary reads; #657: descriptions for the Skin editor's three exported-skin commands), check-plugin-pages (#657: one-sentence descriptions on the Skin editor and Token registry page heads), duplicate Gizmo guide help entry (#657/#654: kept the written one), check-toolbars asset-library drift (#652: the six behaviour themes' animations added to the asset-library seeds). Failures that also fail on main here (agent-slots, claude-login tests, shipped-features/session-checkin tests, tests needing `python`) are environment only.
+- Round 2: #641 was kicked again with a link to #647's run (43632200093), but every job in that run and in #641's own (43632177678) passed. The queue seems to count runs cancelled by a newer push as failures and to link the wrong run; re-added #641 with no code change. Worth a look in push-banner `land/merge-queue-core.mjs`.
+- Merged: #641 2bb2c6a7d (20:15 UTC), which carried #647 0c23f110d, #648 42d28acfe, #590 b7ddb2f23 and #618 c1a92b67b (GitHub marks each merged once its head is on main); #652 aee42bbe8 (20:51, after one "base branch was modified" retry); #657 c0d479286 (21:33).
+- Brett's override (22:15, "get rid of that merge tier and start landing them one at a time") came after round 2 had already started; by the time this step ran, all 8 had merged through the queue and `land.mjs queue list` was empty, so there was nothing to remove and no direct merge was needed.
+
+### Merge commits on main
+
+| # | PR | Branch (`claude/…`) | Merged (UTC) | Merge commit |
+|---|---|---|---|---|
+| 1 | #647 | skins-plugin-merge-main-and-land | 2026-11-14 20:15 | `0c23f110d` |
+| 2 | #648 | skin-config-panel-merge-main-and-land | 2026-11-14 20:15 | `42d28acfe` |
+| 3 | #590 | every-skin-ships-light-dark-colour-theme | 2026-11-14 20:15 | `b7ddb2f23` |
+| 4 | #618 | console-skin-axhub-only | 2026-11-14 20:15 | `c1a92b67b` |
+| 5 | #641 | skin-axhub-override-switch-greyed-out | 2026-11-14 20:15 | `2bb2c6a7d` |
+| 6 | #652 | skin-animations-swatches-skin-switch | 2026-11-14 20:51 | `aee42bbe8` |
+| 7 | #657 | token-registry-skin-editor-live-sandbox | 2026-11-14 21:33 | `c0d479286` |
+| 8 | #654 | own-token-sets-for-grids-and-tab-groups | 2026-11-14 22:33 | `647b79e58` |
+
+All eight merge commits are ancestors of `origin/main`.
+
+## Deploy check (s23)
+
+- `/usr/local/bin/axf-console-update` rebuilt the console (update status `45ac36580` → `2d818e949`; the installer's deploy@1 record `d-console-1794695935-7de17c4` has `7de17c4fa`, a later `_claude`-only commit), which includes all 8 merge commits; state `done`. The deploy before it (21:44) stopped at #657, so #654 went live here.
+- Console API healthy (`/api/health` ok). `skin-gallery` and `skin-editor` plugins load with no errors; `GET /api/plugins/skin-gallery/state` answers through `skin-switch@1` (console skin `arctic-calm`); `/open?skin=default` resolves to `/#/skin-gallery?skin=default`.
+- **Visual check not done:** a headless browser on the VPS can't render the console UI. Since #618 the console takes its look only from axHub, and axHub refuses the VPS origin (CORS) and needs a signed-in session, so the page stays on its "Waiting for axHub" screen by design. The desktop and phone shots in Screenshots, group "land-all-skin-builds - Nov 14 5:44 PM", show that screen. Checking for one banner and one Skins panel needs a signed-in browser on console.amberxai.com. On the branch, check-skin-switch and plugin-lifecycle (s3) cover the swap, where installing hides the built-in panel and uninstalling brings it back.
+
+## Deploy log and notification (s24)
+
+- deploy-log@1: the update wrote its own record, `d-console-1794695935-7de17c4` (target console, who update, state done, 2026-11-14 22:38 UTC). I added no second record, because it would log a deploy that never happened.
+- One notification went out through the console alert hub as registered type `builds.done` (source `builds`, key `built:land-all-skin-builds`, success). It lists the 8 PRs, the two archived branches, the two left open (#604, #591) and the visual check that is still open. It shows in AmberX's phone view (`/api/alerts?view=phone`) with nothing muted.

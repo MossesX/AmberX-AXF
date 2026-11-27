@@ -9,14 +9,14 @@
   "description": "Agents speak: a per-agent voice and narrator console (device voices on the phone or browser, cloud voices from OpenAI or ElevenLabs with keys kept on the server; speed, pitch, volume, presets, read modes, code / link / number / emoji rules, pauses, emphasis, intro and outro, chime, pronunciations, permissions, try-it preview, import/export). A live status light on the banner and in the Assistant title bar while the selected agent is a voice agent (ready, speaking, listening, paused). A microphone in the Assistant window that says which agent is missing which permission (one-tap fix), with tap / hold / toggle modes, live text, send and cancel phrases, spoken punctuation, barge-in and conversation mode, sharing the microphone with AmberX hands-free listening, dictation and Speak a command through the page's mic lease (mic-lease@1) so they never conflict. Hooks to its settings in the app menu (Plugins, View), right-click, the banner light, the Assistant title bar and search.",
   "targets": [
     "axf-console",
-    "axf-web-app",
-    "amberx-droid"
+    "axf-web-app"
   ],
   "provides": [
     "view:agent-voice",
     "settings-tab:agent-voice",
     "action:agent-voice.open",
-    "service:axf.agent-voice@1"
+    "service:axf.agent-voice@1",
+    "service:axf.speech@1"
   ],
   "optional": [
     "service:axf.agents@1"

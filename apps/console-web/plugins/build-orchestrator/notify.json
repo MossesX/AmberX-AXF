@@ -17,6 +17,63 @@
       "priority": "high"
     },
     {
+      "id": "pipeline.attempt",
+      "label": "FYI: build retry attempt",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "vps-never-gives-up: an FYI each time the server starts a new attempt on a failing build (crash, red CI, a clash, a failed push, a stall, a fall back to Pending): what broke, the strategy it tries now (retry, merge main, a fix, a fresh session, another model or account) and what is left before it is marked Failed. Nothing to do; one per attempt.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:attempt:"
+      },
+      "push": true,
+      "priority": "normal"
+    },
+    {
+      "id": "pipeline.escalated",
+      "label": "Build failed: every option used up",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "done-means-merged@1: a build failed (crash, red CI, a clash, a failed push, a stall, a fall back to Pending) and the server tried every rung of its retry ladder (the same approach, a fix, a fresh session, another model or account) without getting past it. One push per escalation with what broke, every try and since when; the build is on the systems check banner (Builds that need you) with Retry. Never pushed twice for the same escalation.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:escalated:"
+      },
+      "push": true,
+      "priority": "high"
+    },
+    {
+      "id": "pipeline.selfcheck",
+      "label": "Dispatcher self-check",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "The dispatcher checked every Claude account one by one (signed in, limited, API key saved and not rejected, free slots) and either fixed something (released a slot held by an ended session, cleared an expired limit, put a build that never ran back in the Queue) or found an account it can't use, with what to do.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:selfcheck"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
+    },
+    {
+      "id": "pipeline.reaper",
+      "label": "VPS reaper cleared ghosts",
+      "group": "builds",
+      "app": "console",
+      "source": "VPS reaper (framework/cli/reaper.mjs)",
+      "description": "vps-reaper@1: the VPS killed processes nothing owns any more and says what and why: a claude -p still running after its build log ended (the run is closed and handed to the lander), a dead tmux axf-* session, an agent slot or heavy lock held by a host or process that is gone, a test server left on a port. A build that is working is never touched. One FYI per pass; every kill is also a note on AmberX's Automatic fixes list.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:reaper"
+      },
+      "push": true,
+      "priority": "normal"
+    },
+    {
       "id": "pipeline.launched",
       "label": "Build started",
       "group": "builds",
@@ -47,6 +104,36 @@
       "priority": "high"
     },
     {
+      "id": "pipeline.launch-failed",
+      "label": "Queued build failed to start",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "The dispatcher picked a Queue build and it did not start: the build name and the exact reason from every account it tried (a refused login, no slot, the dispatch gate, a launcher error). Sent at once, for every failed start.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:launch:"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
+    },
+    {
+      "id": "pipeline.oauth",
+      "label": "Build stopped on a Claude login failure",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "A build's run stopped on an OAuth / sign-in failure: which account, which build, the exact error. The build is held in Pending and goes back to the Queue by itself, once, when the account's health check signs in again (a second alert says so).",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:oauth:"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
+    },
+    {
       "id": "pipeline.split",
       "label": "Build split into steps",
       "group": "builds",
@@ -60,6 +147,108 @@
       "channels": {
         "amberx": false
       }
+    },
+    {
+      "id": "pipeline.fyi",
+      "label": "Build FYI",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "A running build tells you about a milestone you asked to hear about (a fix queued, a branch landed, a migration done). Information only, nothing to act on.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:fyi:"
+      },
+      "push": true,
+      "priority": "normal"
+    },
+    {
+      "id": "pipeline.autoqueue",
+      "label": "Pending builds auto-queued",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "Auto-queue pending builds is on and agent slots were still free after every ready step and every Queue build had one: split Pending builds that clash with nothing running moved to the Queue in priority order (each gets the build note 'auto-queued: slots free'). One alert per round, listing them.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:autoqueue:"
+      },
+      "setting": "notify.buildDone",
+      "push": true,
+      "priority": "normal"
+    },
+    {
+      "id": "pipeline.step-conflict",
+      "label": "Parallel step could not merge back",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "A step that ran in parallel (Fill every slot) conflicted with work already merged into its build branch: it went back as blocked and re-runs after the steps it clashed with, in the build's own session. Its branch is kept.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:step-conflict:"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
+
+    },
+    {
+      "id": "watchdog.cleaned",
+      "label": "Watchdog cleaned stale rows",
+      "group": "builds",
+      "app": "console",
+      "source": "Stale-row watchdog (VPS)",
+      "description": "FYI, one per run that cleaned something: how many stale rows the VPS watchdog took off the builds lists (Pending, Queue, Building, merge queue, UI Review) and which, each with why (PR merged, PR closed, build archived). Nothing to do; the Cleanups log has every one.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "watchdog:cleaned"
+      },
+      "setting": "watchdog.notify",
+      "push": true,
+      "priority": "normal"
+    },
+    {
+      "id": "watchdog.caught",
+      "label": "FYI: the watchdog caught something",
+      "group": "builds",
+      "app": "console",
+      "source": "Build watchdog (VPS)",
+      "description": "FYI, one per pass (or one per catch, Settings → Plugins → Build orchestrator → Watchdog → Alerts): what the build watchdog caught and what it did: a stuck status pushed to the next rung of its ladder, a merge recorded, a build landed, a failure recorded. Nothing to do; the Watchdog tab lists every one.",
+      "match": {
+        "source": "watchdog",
+        "keyPrefix": "watchdog:caught"
+      },
+      "push": true,
+      "priority": "normal"
+    },
+    {
+      "id": "watchdog.fix",
+      "label": "FYI: the watchdog recovered a build session",
+      "group": "builds",
+      "app": "console",
+      "source": "Build watchdog (VPS)",
+      "description": "FYI for each build session the watchdog recovered (killed, failed, hung, a usage limit): the build, the cause, what it did (retry, requeue, another account) and the attempt. Pushed at normal priority; nothing to do.",
+      "match": {
+        "source": "watchdog",
+        "keyPrefix": "watchdog:fix"
+      },
+      "push": true,
+      "priority": "normal"
+    },
+    {
+      "id": "watchdog.gave-up",
+      "label": "The watchdog gave up on a build",
+      "group": "builds",
+      "app": "console",
+      "source": "Build watchdog (VPS)",
+      "description": "The watchdog ran out of options on a build: past its retries, every account tried, or its retry ladder has no rung left. The build waits for you; it is on the systems check banner with Retry / Requeue.",
+      "match": {
+        "source": "watchdog",
+        "keyPrefix": "watchdog:gave-up"
+      },
+      "push": true,
+      "priority": "high"
     }
   ]
 }

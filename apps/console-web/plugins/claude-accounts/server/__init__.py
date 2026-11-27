@@ -13,6 +13,13 @@ Claude reports: the saved logins stay on the host and nothing here reads them.
   POST remove     { name }: asks to set a saved account aside; it is moved, never deleted (held)
   POST label      { name, label }: a display name (Hulu, Moses X…)
 
+One account (build one-account-picker, Nov 13 2026): Brett picks the single Claude account the console and every VPS
+build use. It is claude-workers@1 `buildAccount`; the launcher and the dispatcher read it for every new job, so a change
+takes effect for the next build (running ones keep theirs). Every other account, API ones too, is off for builds.
+  GET  build-account     { buildAccount, active, consoleMatches, pending, options: [{name, label, email, plan, active, limited}] }
+  POST build-account     { name }: '' = off (the normal routing). Saved at once; when the console is on another account
+                         the held switch to it is asked too (the console follows once Brett's approval clears it).
+
 Job routing (build workers-api-routing, Nov 8 2026): every subscription login is a worker unless stopped, the console's
 account takes jobs after them (setting), 3 build and 5 wait per account, and API-key accounts take only the jobs a rule
 sends them, under daily / weekly spend caps. The rules engine is deploy/worker-routing.mjs (run here with node, fixed
@@ -325,6 +332,9 @@ def ask(op: str, name: str, by: str) -> dict[str, Any]:
             raise HTTPException(409, f"{name} is the console's account: switch to another one first.")
         if row["running"]:
             raise HTTPException(409, f"{name} is running {len(row['running'])} job(s): wait for them to finish.")
+    if op == "use" and name != v["active"] and _raw_config().get("buildAccount") and row and row["kind"] == "subscription":
+        # one account: switching the console moves the build account with it, so the two never part
+        _save_config({**_raw_config(), "buildAccount": name}, by, True)
     if op == "use" and name == v["active"]:
         return {"ok": True, "state": "done", "name": name, "message": f"{name} is already the active account.", "note": NOTE}
     if op == "use" and v["loginChanged"]:
@@ -412,6 +422,53 @@ async def role(request: Request) -> dict[str, Any]:
 
     await run_in_threadpool(change)
     return {"ok": True, "name": name, "role": want, "message": f"{name} takes headless jobs." if want == "worker" else f"{name} no longer takes headless jobs."}
+
+
+def build_account_view() -> dict[str, Any]:
+    """The one build account and what can be picked: saved subscription logins (an API key bills per token)."""
+    v = view()
+    pick = str(config().get("buildAccount") or "")
+    opts = [{"name": a["name"], "label": a.get("label") or "", "email": a.get("email") or "", "plan": a.get("plan") or "", "active": a["active"],
+             "limited": a.get("limited")} for a in v["accounts"] if a["kind"] == "subscription"]
+    return {"ok": True, "ready": v["ready"], "buildAccount": pick, "active": v["active"], "consoleMatches": not pick or pick == v["active"],
+            "known": not pick or any(o["name"] == pick for o in opts) or not v["ready"], "pending": v["pending"], "options": opts}
+
+
+def set_build_account(name: str, by: str) -> dict[str, Any]:
+    """Pick the one account ('' = off). Saved now; the console's switch to it is the usual held call."""
+    v = view()
+    if name:
+        row = next((a for a in v["accounts"] if a["name"] == name), None)
+        if v["ready"] and not row:
+            raise HTTPException(404, f"No saved account called {name}.")
+        if row and row["kind"] == "api":
+            raise HTTPException(409, f"{name} is an API key (billed per token): the one account is a subscription login.")
+    _save_config({**_raw_config(), "buildAccount": name}, by, True)
+    if not name:
+        return {"ok": True, "state": "done", "buildAccount": "", "message": "One account is off: builds go to every worker again, from the next one on."}
+    msg = f"{name} runs every build from the next one on; every other account is off for builds."
+    if name == v["active"]:
+        return {"ok": True, "state": "done", "buildAccount": name, "message": f"{msg} The console is on it already."}
+    try:
+        r = ask("use", name, by)
+    except HTTPException as e:
+        return {"ok": True, "state": "console-not-switched", "buildAccount": name, "message": f"{msg} The console is still on {v['active']}: {e.detail}"}
+    return {"ok": True, "state": r.get("state", "waiting"), "buildAccount": name, "message": f"{msg} Console: {r.get('message', '')}"}
+
+
+@router.get("/build-account")
+def get_build_account(request: Request) -> dict[str, Any]:
+    _who(request)
+    return build_account_view()
+
+
+@router.post("/build-account")
+async def post_build_account(request: Request) -> dict[str, Any]:
+    by = _who(request)
+    b = await _body(request)
+    raw = str(b.get("name") or "").strip().lower()
+    name = "" if raw in ("", "off", "auto", "none") else clean_name(raw)
+    return await run_in_threadpool(set_build_account, name, by)
 
 
 def _body_dict(b: Any) -> dict[str, Any]:
@@ -630,6 +687,13 @@ class AccountsService:
 
     def use(self, name: str, by: str) -> dict[str, Any]:
         return ask("use", clean_name(name), by)
+
+    def build_account(self) -> dict[str, Any]:
+        """The one account the console and every build use ('' = the normal routing), and what can be picked."""
+        return build_account_view()
+
+    def set_build_account(self, name: str, by: str) -> dict[str, Any]:
+        return set_build_account(clean_name(name) if name and name not in ("off", "auto", "none") else "", by)
 
 
 plugin_services.provide("axf.claude-accounts@1", AccountsService(), FOLDER)

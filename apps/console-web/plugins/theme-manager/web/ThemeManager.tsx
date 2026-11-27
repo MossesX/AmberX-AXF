@@ -4,12 +4,15 @@
  * a roll as a standard asset (asset@1) and manage saved ones. Works only with the existing asset types and engines.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, IconButton, Switch, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, CHROME_PICK_DIALOG, Chip, HubSkinLockArea, Icon, IconButton, PageToolbar, Switch, SwatchFan, useAxfState, useEditorSync, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { assetTypeSpecs, hideable } from '@console/axf/core';
 import type { AssetType, AxfRuntime } from '@console/axf/core';
 import { PRESETS, allLeafIds, buildTree, getAt, leaves, readability, rollType, setAt, toggle, triState, type Json, type Node, type TypeSpec } from './rollEngine';
 import { call, del, post, put, type SavedTheme } from './api';
 import { MoreMenu } from './MoreMenu';
+
+/** The skin's own sections: picked through a skin, never rolled here (only the colour theme swaps inside a skin). */
+const SKIN_ONLY_TYPES = ['style-theme', 'layout', 'behavior-theme'];
 
 const P = 'axp-theme-manager';
 type Data = Record<string, Json>;
@@ -50,8 +53,10 @@ export function ThemeManager() {
   const ax = useAxfState();
   const hist = useHistory();
   const narrow = useNarrow();
-  const types = useMemo(() => Object.keys(assetTypeSpecs).filter((t) => t !== 'uac-policy'), []);
-  const active = useMemo(() => Object.fromEntries(types.map((t) => [t, (rt.asset(t as never) as unknown as { data: Data }).data])) as Snap, [rt, types, ax.active]); // eslint-disable-line react-hooks/exhaustive-deps
+  // skins only (Nov 10 2026): style, layout and behaviour themes are a skin's sections and are not rolled on their own
+  const types = useMemo(() => Object.keys(assetTypeSpecs).filter((t) => t !== 'uac-policy' && !SKIN_ONLY_TYPES.includes(t)), []);
+  // an optional type (banner, clock, badge…) with no active asset is left out: rt.asset() has nothing to give for it
+  const active = useMemo(() => Object.fromEntries(types.flatMap((t) => { const a = rt.assetOrNull(t as never) as unknown as { data: Data } | null; return a ? [[t, a.data]] : []; })) as Snap, [rt, types, ax.active]); // eslint-disable-line react-hooks/exhaustive-deps
   const assets = useMemo(() => Object.fromEntries(types.map((t) => [t, rt.registry.list(t as never).filter((a) => !String(a.id).startsWith('tm-preview-')) as unknown as { data: Data }[]])), [rt, types, ax.active]); // eslint-disable-line react-hooks/exhaustive-deps
   const tree = useMemo(() => buildTree(assetTypeSpecs as unknown as Record<string, TypeSpec>, assets, active, types), [assets, active, types]);
   const [ticked, setTicked] = useState<Set<string>>(() => new Set(read<string[] | null>(LS.ticked, null) ?? PRESETS['colors only']!(buildTree(assetTypeSpecs as unknown as Record<string, TypeSpec>, assets, active, types))));
@@ -83,7 +88,7 @@ export function ThemeManager() {
     return tree.map(f).filter((x): x is Node => !!x);
   }, [tree, q]);
 
-  const snapshot = (): Snap => Object.fromEntries(types.map((t) => [t, structuredClone(active[t]!)]));
+  const snapshot = (): Snap => Object.fromEntries(Object.keys(active).map((t) => [t, structuredClone(active[t]!)]));
   const push = (s: Snap) => { store.history = [...store.history.slice(0, store.index + 1), s].slice(-50); store.index = store.history.length - 1; emit(); };
   const applySnap = (s: Snap) => {
     const problems: string[] = [];
@@ -141,6 +146,7 @@ export function ThemeManager() {
           )}
           {n.leaf && <button type="button" className={`fx-iconbtn ${P}__lock ${lockedLeaf ? 'is-active' : ''}`} title={lockedLeaf ? 'Locked: never rolled' : 'Lock (keep this value when rolling)'} aria-pressed={!!lockedLeaf} onClick={() => setLocked((l) => { const x = new Set(l); if (x.has(n.id)) x.delete(n.id); else x.add(n.id); return x; })}><Icon name="lock" size={12} /></button>}
           {!n.leaf && !narrow && <button type="button" className={`fx-chip ${P}__only`} title="Tick only this branch" onClick={() => setTicked(new Set(leaves(n).map((l) => l.id)))}>only</button>}
+          {top && !n.leaf && rt.isHubOverridden(n.type) && <Chip tone="warning">Overridden</Chip>}
           {top && !n.leaf && hideable(n.type) && (
             <Switch hideLabel className={`${P}__hide`} label={`Show ${n.label}`} text={off ? 'Hidden' : 'Shown'} title={off ? `${n.label} is hidden: it isn't drawn and rolls skip it` : `Hide ${n.label} from the screen`}
               checked={!off} disabled={rt.gate('assets.swap') !== 'allow'} onChange={(on) => rt.setSlotHidden(n.type as AssetType, !on)} />
@@ -154,8 +160,43 @@ export function ThemeManager() {
   const shownNodes = narrow && current ? current.children : filtered;
   const selNode = sel ? byId.get(sel) : null;
 
+  // the Theme manager toolbar (page-toolbar@1, assets/toolbar/theme-manager.json): the runtime's skin@1 actions
+  const look = rt.appLook();
+  const skins = rt.skinList();
+  const skinId = look?.skin.id ?? '';
+  const overrides = rt.skinOverrides();
+  const SCOPE_HERE = 'ui:theme-manager';
+  const scoped = rt.skinScopes().some((x) => x.key === SCOPE_HERE && x.use === 'on');
+  const previewing = rt.previewedSkin();
+  usePublishPageState('theme-manager', {
+    skins: skins.length, overrides: overrides.length, locked: rt.gate('assets.swap') !== 'allow' || !!rt.appearanceLockReason(),
+    skin: { id: skinId, on: !!look?.skin.use }, previewing: !!previewing, scoped,
+    selection: selNode ? { id: selNode.id, type: selNode.type } : null,
+  });
+  useToolbarHandlers('theme-manager', {
+    'theme-manager.use-skin': () => { const on = !look?.skin.use; rt.useSkin(on, skinId || undefined); return { use: on, skin: skinId }; },
+    'theme-manager.back-to-skin': () => { for (const slot of overrides) rt.backToSkin(slot); return { back: overrides }; },
+    'theme-manager.restore': () => { rt.restoreDefaultAppearance(); return { restored: true }; },
+    'theme-manager.preview': () => {
+      if (previewing) { rt.previewSkin(null); return { preview: null }; }
+      const ids = skins.map((x) => x.id);
+      const next = ids[(ids.indexOf(skinId) + 1) % Math.max(1, ids.length)] ?? null;
+      rt.previewSkin(next);
+      return { preview: next };
+    },
+    'theme-manager.scope-here': () => { rt.scopeSkin(SCOPE_HERE, scoped ? 'inherit' : 'on', skinId || undefined); return { scope: SCOPE_HERE, on: !scoped }; },
+    'theme-manager.pick-asset': () => {
+      const type = selNode?.type;
+      if (type) rt.openDialog(CHROME_PICK_DIALOG, { type });
+      else rt.dispatch('settings.open:appearance');
+      return { type: type ?? 'appearance' };
+    },
+  });
+
   return (
+    <HubSkinLockArea>
     <div className={`${P} fx-stack`}>
+      <PageToolbar view="theme-manager" />
       {/* one toolbar: the two rolls used most, undo / redo / pin, the rest behind ⋯ (compact pages, Oct 30 2026) */}
       <div className={`${P}__bar ${P}__toolbar`} role="toolbar" aria-label="Roll">
         <Button tone="primary" size="sm" icon="shuffle" onClick={() => roll(types.filter(rollable))}>Roll ticked</Button>
@@ -164,8 +205,6 @@ export function ThemeManager() {
         <IconButton icon="redo" label="Redo" disabled={hist.index >= hist.history.length - 1} onClick={redo} />
         <IconButton icon="star" label="Pin this roll" disabled={!changed.length} onClick={() => setPins([{ name: `Favourite ${pins.length + 1}`, at: Date.now(), snap: snapshot() }, ...pins].slice(0, 12))} />
         <MoreMenu label="More roll actions" items={[
-          { id: 'style', label: 'Roll style theme', icon: 'type', disabled: !rollable('style-theme'), onSelect: () => roll(['style-theme']) },
-          { id: 'layout', label: 'Roll layout', icon: 'layout', disabled: !rollable('layout'), onSelect: () => roll(['layout']) },
           { id: 'revert', label: 'Back to the saved look', icon: 'x', disabled: !changed.length, onSelect: revert },
         ]} />
         <span className="fx-grow" />
@@ -221,6 +260,7 @@ export function ThemeManager() {
       </div>
       <SavedThemes onApply={(t, id) => { store.base = {}; store.history = []; store.index = -1; emit(); rt.swap(t as never, id); rememberApplied(t, id); }} />
     </div>
+    </HubSkinLockArea>
   );
 }
 
@@ -244,7 +284,7 @@ function ValueEditor({ node, value, onChange }: { node: Node; value: Json; onCha
       )}
       {f.kind === 'color' && (
         <div className={`${P}__bar`}>
-          {hex && <input type="color" value={hex} onChange={(e) => commit(e.target.value)} aria-label={`${node.label} colour`} />}
+          {hex && <SwatchFan value={hex} onChange={commit} label={`${node.label} colour`} />}
           <input className="fx-input fx-mono fx-grow" value={String(v ?? '')} onChange={(e) => setV(e.target.value)} onBlur={() => commit(String(v))} />
         </div>
       )}

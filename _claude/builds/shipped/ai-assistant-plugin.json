@@ -1,0 +1,70 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-ai-assistant-plugin",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:18Z",
+ "build": {
+  "id": "ai-assistant-plugin",
+  "title": "AI Assistant plugin (Fable rebuild)",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Cross-app plugin porting the xGallery assistant with providers (Anthropic, Claude Code subscription, OpenAI, Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI, Ollama, LM Studio, custom OpenAI-compatible), setup wizard in its settings tab, settings dialog from the chat dialog, far more features than xGallery. Integrates with the Agent Manager when both installed (pick the active agent). The Opus version is in apps/console-web/plugins/ai-assistant (web console only): remove it first with its uninstall script (uninstall.mjs --all --publish), then build this one following plugin-lifecycle@1, and port to Android + other ports.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Keep live sessions (live-session@1, Oct 18 2026): every chat is a session owned by its host; replies run detached from the browser and survive closes; viewers reattach and replay by seq; sessions end only when closed on purpose. Implement SessionHost from framework/core/live-session.ts / Kotlin ai.amberx.axf.kernel.live on every port, keep axf.live-sessions@1, add the axHub host (session workers on the VPS) when axHub builds them, and resume interrupted turns if possible. Spec: framework/spec/LIVE-SESSIONS.md.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-20T22:30:00Z",
+ "landedAt": "2026-10-20T22:30:00Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": [
+  "s1: Keep live sessions (live-session@1, Oct 18 2026): every chat is a session owned by its host; replies run detached from the browser and survive closes; viewers reattach and replay by seq; sessions end"
+ ]
+}

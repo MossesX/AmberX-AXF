@@ -2,15 +2,18 @@
  * skin@1 + app-look@1: the format and its rules against spec/fixtures/skin.json, the build engine's validator agrees,
  * the Windows skin resolves against framework assets, and the runtime behaviour: landing changes nothing on screen
  * (snapshot = the current look), a skin stays in its own app, off gives the app's look back, overrides, Restore + one undo.
+ * The colour theme rule (Brett, Nov 9 2026): a colour theme pick is switched inside the skin in force, from every
+ * entry point (picker, swap, action, CLI rules, control@1); it never changes the skin id and never makes another skin.
  *   npx -y tsx framework/spec/check-skin.mts
  */
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeSkin, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveLookSkin, resolveSkinChain, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, skinCoverage, skinCoverageSummary, skinCovers, skinPartsTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinUncovered, uncoveredTypes, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinErrors, skinFromDesignPackage, skinSlots, snapshotLook, undoRestore, type AppLookDocument, type AppLookStore } from '../core/engines/skin';
+import { adoptHubDefault, backToSkin, backupLook, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, hubDefaultOf, hubOnlyLook, lookAfterChange, lookBackup, newAppLook, normalizeAppLook, overriddenSlots, restoreLookBackup, setLookSlot, setSkinColorTheme, skinChromeErrors, skinChromeSettings, skinColorOf, skinColorTheme, LOOK_BACKUPS_MAX, SKIN_COLOR_SLOT, SKIN_SCOPE_DEFAULT, normalizeSkin, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveLookSkin, resolveSkinChain, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, skinCoverage, skinCoverageSummary, skinCovers, skinPartsTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinUncovered, uncoveredTypes, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinErrors, skinFromDesignPackage, skinSlots, snapshotLook, undoRestore, type AppLookDocument, type AppLookStore } from '../core/engines/skin';
 import { validateAsset } from '../core/validate';
-import { AxfRuntime, type AppearanceSource } from '../core/runtime';
-import { mergeAppearance, parseAppearance, type AppearanceDocument, type AppearanceSourceState } from '../core/engines/appearance';
+import { AxfRuntime, HUB_SKIN_ONLY_KEY, type AppearanceSource } from '../core/runtime';
+import { isAppearanceSetting } from '../core/engines/designpackage';
+import { combineAppearanceChanges, mergeAppearance, parseAppearance, serializeAppearance, type AppearanceDocument, type AppearanceSourceState } from '../core/engines/appearance';
 import type { AxfManifest } from '../core/types';
 import * as engine from '../cli/build-engine.mjs';
 
@@ -43,11 +46,12 @@ eq(composeLook(fx.look.shared && { ...shared, slots: { ...shared.slots, 'color-t
 const on = setUseSkin(pickSkin(look0, 'windows'), true);
 eq(composeLook(shared, on, skin), fx.look.on, 'skin on');
 eq(composeLook(shared, on, null), fx.look.unknownSkin, 'an unknown skin reads as off');
-const over = lookAfterChange(on, { slots: { 'color-theme': 'aurora-night' } }, skin);
+const over = lookAfterChange(on, { slots: { button: 'terminal' } }, skin);
 eq(over, fx.look.overridden.doc, 'a pick overrides just that part');
+eq(over.skin.overrides, { button: 'terminal' }, 'the override is kept beside the skin');
 eq(composeLook(shared, over, skin), fx.look.overridden.composed, 'override wins');
-eq(composeLook(shared, backToSkin(over, 'color-theme'), skin), fx.look.overridden.backToSkin, 'back to skin');
-eq(lookAfterChange(over, { slots: { 'color-theme': skin.colorTheme } }, skin).skin.overrides, {}, "picking the skin's own theme drops the override");
+eq(composeLook(shared, backToSkin(over, 'button'), skin), fx.look.overridden.backToSkin, 'back to skin');
+eq(lookAfterChange(over, { slots: { button: skin.assets.button } }, skin).skin.overrides, {}, "picking the skin's own asset drops the override");
 eq(lookAfterChange(look0, { slots: { button: 'terminal' }, hidden: { toolbar: false } }, null), fx.look.own.doc, 'no skin: picks are the app\'s own');
 const restored = restoreAppDefault(over, '2026-11-05T00:00:00Z');
 eq(restored, fx.look.restored.doc, 'restore keeps one undo');
@@ -56,6 +60,115 @@ eq(undoRestore(restored).skin, fx.look.restored.undone, 'undo');
 eq(undoRestore(undoRestore(restored)), undoRestore(restored), 'one undo only');
 eq(parseAppLook(JSON.stringify(restored)), restored, 'round trip');
 ok(parseAppLook('{"$axf":"appearance@1"}') === null, 'wrong frame refused');
+
+/* ---- the colour theme inside a skin: switched on its own, never an override, never another skin ---- */
+{
+  const cf = fx.colour;
+  const pick = { slots: { 'color-theme': 'plum-noir' } };
+  const skins: Record<string, typeof skin> = { windows: skin, aurora: normalizeSkin({ ...skin, colorTheme: 'aurora-night' }) };
+  const skinOf = (id: string) => skins[id] ?? null;
+  const place = { app: 'app', ui: 'home', plugin: 'notes' };
+  eq(SKIN_COLOR_SLOT, cf.slot, 'the colour theme slot');
+  const picked = lookAfterChange(on, pick, skin);
+  eq(picked, cf.picked.doc, 'a colour theme pick under a skin = fixture');
+  eq(picked.skin.id, on.skin.id, 'the skin is still the same skin');
+  eq(picked.skin.overrides, {}, 'the pick is not an override');
+  eq(picked.skin.colorTheme, 'plum-noir', 'it is the colour theme inside the skin');
+  eq(overriddenSlots(picked), cf.picked.overridden, 'no overridden dot for a colour theme');
+  eq(skinColorTheme(picked), 'plum-noir', 'skinColorTheme reads the pick');
+  eq(composeLook(shared, picked, skin), cf.picked.composed, 'composed: the skin with the picked colours');
+  eq(composeLook(shared, picked, skin).slots!['style-theme'], skin.styleTheme, 'every other section is still the skin\'s');
+  eq(composeLook(shared, picked, skin).slots!.layout, skin.layoutTheme, 'layout included');
+  eq(skinColorOf(skin, picked.skin), cf.picked.color, 'skinColorOf: shown, own, picked');
+  eq(skinColorOf(skin, on.skin), cf.skinsOwn.color, "no pick = the skin's own");
+  eq(skinColorOf(null, picked.skin), { id: '', own: '', picked: false }, 'no skin = nothing');
+  eq(lookAfterChange(picked, { slots: { 'color-theme': skin.colorTheme } }, skin), cf.skinsOwn.doc, "picking the skin's own theme keeps no pick");
+  eq(lookAfterChange(picked, { slots: { 'color-theme': null } }, skin), cf.back.byPick, 'a cleared pick');
+  eq(backToSkin(picked, 'color-theme'), cf.back.byBackToSkin, "Back to skin on the colour slot = the skin's own colours");
+  eq(setSkinColorTheme(picked, null), cf.back.bySet, 'setSkinColorTheme(null)');
+  eq(cf.back.byPick, on, 'all three ways land on the untouched skin');
+  eq(cf.back.byBackToSkin, on, 'all three ways land on the untouched skin (2)');
+  eq(cf.back.bySet, on, 'all three ways land on the untouched skin (3)');
+  eq(setSkinColorTheme(on, 'plum-noir'), picked, 'setSkinColorTheme = the same document a pick makes');
+  eq(setSkinColorTheme(on, 'Bad Id'), on, 'a bad id is no pick');
+  eq(lookAfterChange(picked, { slots: { button: 'terminal' } }, skin), cf.withOverride, 'an override and the colour theme live side by side');
+  eq(pickSkin(picked, 'windows').skin, cf.sameSkin, 'picking the same skin again keeps the colour theme');
+  eq(pickSkin(picked, 'aurora').skin, cf.otherSkin, 'another skin starts with its own colours');
+  ok(!('colorTheme' in pickSkin(picked, 'aurora').skin), 'no pick is carried into another skin');
+  eq(setUseSkin(setUseSkin(picked, false), true).skin, cf.offAndOn, 'Use skin off and on keeps the colour theme');
+  eq(composeLook(shared, setUseSkin(picked, false), skin).slots, shared.slots, 'skin off: the pick inside the skin does not leak into the app\'s own look');
+  eq(lookAfterChange(look0, pick, null), cf.noSkin, 'no skin: the colour theme is the app\'s own pick');
+  // documents saved before the rule kept the pick among the overrides
+  const legacy = { ...on, skin: { ...on.skin, overrides: { 'color-theme': 'plum-noir', button: 'terminal' } }, scopes: { 'plugin:notes': { use: 'on', id: 'aurora', overrides: { 'color-theme': 'harbor' } } } };
+  eq(normalizeAppLook(legacy), cf.legacy.doc, 'an old color-theme override is read as the colour theme inside the skin');
+  eq(composeLook(shared, normalizeAppLook(legacy)!, skin), cf.legacy.composed, 'and draws the same look as before');
+  eq(normalizeAppLook({ ...legacy, skin: { ...legacy.skin, colorTheme: 'harbor' } })!.skin.colorTheme, 'harbor', 'the field wins over an old override');
+  eq(normalizeAppLook(normalizeAppLook(legacy)), normalizeAppLook(legacy), 'reading twice changes nothing');
+  eq(normalizeAppLook(on), on, 'a document without a pick is byte-identical after the rule (no colorTheme field)');
+  // from outside the app (control@1 tokens.slots, the skins CLI)
+  const following = setInheritSkin(look0, true);
+  const hub = { ...shared, skin: { id: 'aurora' } };
+  const hubPicked = { ...shared, skin: { id: 'aurora', colorTheme: 'harbor' } };
+  eq(setLookSlot(on, 'color-theme', 'plum-noir'), cf.fromOutside.skinOn, 'from outside, skin on: inside the skin');
+  eq(setLookSlot(on, 'color-theme', 'plum-noir'), picked, 'the same document as a pick in the app');
+  eq(setLookSlot(on, 'button', 'terminal'), cf.fromOutside.skinOnOtherSlot, 'from outside, another slot: an override');
+  eq(setLookSlot(following, 'color-theme', 'plum-noir', globalSkinOf(hub as never)), cf.fromOutside.following, 'from outside, following the hub-wide skin: inside that skin');
+  eq(setLookSlot(following, 'color-theme', 'plum-noir', null), cf.fromOutside.followingNoHubSkin, 'following with no hub-wide skin: the app\'s own');
+  eq(setLookSlot(look0, 'color-theme', 'plum-noir'), cf.fromOutside.noSkin, 'from outside, no skin: the app\'s own');
+  eq(setLookSlot(picked, 'color-theme', null), cf.fromOutside.cleared, 'from outside, cleared');
+  // the hub-wide skin
+  eq(globalSkinOf(hub as never), cf.hub.plain, 'hub-wide skin, no pick');
+  eq(globalSkinOf(hubPicked as never), cf.hub.picked, 'hub-wide skin with a colour theme inside');
+  eq(globalSkinOf({ ...shared, skin: { id: 'aurora', overrides: { 'color-theme': 'harbor', button: 'global-button' } } } as never), cf.hub.legacy, 'an old hub-wide color-theme override is read as its colour theme');
+  eq(resolveLookSkin(following, globalSkinOf(hubPicked as never), null), cf.hub.resolved, 'a following app takes the hub-wide skin with its colour theme');
+  eq(composeLookAt(hubPicked as never, following, skinOf).doc.slots, cf.hub.composed, 'and draws it');
+  eq(composeLookAt(hubPicked as never, following, skinOf).doc.slots!['color-theme'], 'harbor', 'hub-wide colours');
+  eq(resolveLookSkin(setSkinColorTheme(following, 'plum-noir'), globalSkinOf(hubPicked as never), null), cf.hub.appPickWins, "the app's own pick inside the hub-wide skin wins in that app");
+  eq(resolveLookSkin(setSkinColorTheme(following, 'plum-noir'), globalSkinOf(hubPicked as never), null).id, 'aurora', 'and the skin is still the hub-wide one');
+  eq(lookAfterChange(setSkinColorTheme(following, 'plum-noir'), { slots: { 'color-theme': 'harbor' } }, skins.aurora!, 'harbor').skin, cf.hub.sameAsHub, 'picking what the hub-wide skin already shows keeps no pick');
+  eq(parseAppearance(JSON.stringify(hubPicked))?.skin, { id: 'aurora', colorTheme: 'harbor' }, 'appearance@1 keeps the colour theme of the hub-wide skin');
+  eq(parseAppearance(JSON.stringify({ ...shared, skin: { id: 'aurora', overrides: { 'color-theme': 'harbor' } } }))?.skin, { id: 'aurora', colorTheme: 'harbor' }, 'appearance@1 reads an old override as the colour theme');
+  eq(parseAppearance(JSON.stringify(hub))?.skin, { id: 'aurora' }, 'appearance@1: no pick, no field');
+  // one screen or plugin
+  const inPlugin = setSkinColorTheme(on, 'harbor', 'plugin:notes');
+  eq(inPlugin, cf.scope.inPlugin.doc, 'a colour theme inside one plugin');
+  eq(resolveLookSkin(inPlugin, null, place), cf.scope.inPlugin.resolved, 'inside the plugin: the app skin with the plugin\'s colours');
+  eq(resolveLookSkin(inPlugin, null, place).id, 'windows', 'the same skin inside the plugin');
+  eq(resolveLookSkin(inPlugin, null, { app: 'app', ui: 'home' }), cf.scope.inPlugin.outside, 'outside it: the skin\'s own colours');
+  eq(composeLookAt(shared, inPlugin, skinOf, place).doc.slots, cf.scope.inPlugin.composed, 'composed inside the plugin');
+  const pluginSkin = setSkinColorTheme(setScopeSkin(picked, 'plugin:notes', 'on', 'aurora'), 'harbor', 'plugin:notes');
+  eq(pluginSkin, cf.scope.pluginSkin.doc, 'a plugin with its own skin and its own colour theme');
+  eq(resolveLookSkin(pluginSkin, null, place), cf.scope.pluginSkin.resolved, 'resolved inside');
+  eq(resolveLookSkin(pluginSkin, null, { app: 'app' }), cf.scope.pluginSkin.outside, 'resolved outside');
+  eq(setScopeOverride(on, 'plugin:notes', 'color-theme', 'harbor'), cf.scope.byOverride, 'a scope override on the colour slot is the scope\'s colour theme');
+  eq(setScopeOverride(on, 'plugin:notes', 'color-theme', 'harbor'), inPlugin, 'the same document');
+  eq(setSkinColorTheme(inPlugin, null, 'plugin:notes'), cf.scope.dropped, 'cleared: the scope entry goes');
+  eq(setSkinColorTheme(inPlugin, null, 'plugin:notes'), on, 'back to the untouched document');
+  eq(setScopeSkin(pluginSkin, 'plugin:notes', 'on', 'windows').scopes, cf.scope.otherSkin, 'another skin for the scope starts with its own colours');
+  eq(scopeState(picked, 'app'), cf.scope.state, 'the app level as a state carries the colour theme');
+  assert.throws(() => setSkinColorTheme(on, 'harbor', 'nope'), /not a ui: or plugin: scope/); n++;
+  eq(resolveSkinChain(['a', 'b', 'c'], (k) => ({ a: { use: 'inherit', colorTheme: 'leaf' }, b: { use: 'on', id: 'x', colorTheme: 'mid' }, c: { use: 'on', id: 'y', colorTheme: 'root' } } as never)[k]), { id: 'x', overrides: {}, from: 'b', colorTheme: 'leaf' }, 'the nearest level with a colour theme wins; a parent skin\'s pick stays with that skin');
+  eq(resolveSkinChain(['a', 'b'], (k) => (k === 'a' ? { use: 'off', colorTheme: 'x' } : { use: 'on', id: 'y' })), { id: '', overrides: {}, from: 'a' }, 'no skin = no colour theme inside one');
+  // Restore, undo, round trip
+  const restoredC = restoreAppDefault(picked, '2026-11-09T00:00:00Z');
+  eq(restoredC, cf.restored.doc, 'Restore clears the colour theme pick');
+  eq(undoRestore(restoredC).skin, cf.restored.undone, 'undo brings it back');
+  eq(parseAppLook(JSON.stringify(pluginSkin)), cf.roundTrip, 'round trip = fixture');
+  eq(parseAppLook(JSON.stringify(pluginSkin)), pluginSkin, 'round trip keeps every pick');
+  // the invariant, over every entry point: the skin id never moves and the skin's own data is never touched
+  const frozen = JSON.stringify(skin);
+  for (const [name, doc] of Object.entries({
+    pick: picked, set: setSkinColorTheme(on, 'harbor'), outside: setLookSlot(on, 'color-theme', 'harbor'), back: backToSkin(picked, 'color-theme'),
+    scope: inPlugin, twice: lookAfterChange(picked, { slots: { 'color-theme': 'harbor' } }, skin), withOther: lookAfterChange(on, { slots: { 'color-theme': 'harbor', button: 'terminal' } }, skin),
+  })) {
+    eq(doc.skin.id, 'windows', `${name}: the skin id is unchanged`);
+    eq(doc.skin.use, true, `${name}: Use skin is unchanged`);
+    ok(!(SKIN_COLOR_SLOT in doc.skin.overrides), `${name}: the colour theme is never an override`);
+    ok(Object.values(doc.scopes).every((st) => !(SKIN_COLOR_SLOT in st.overrides)), `${name}: nor in a scope`);
+  }
+  eq(JSON.stringify(skin), frozen, "the skin's own data is never written to");
+}
+console.log(`check-skin (colour theme inside the skin): ${n} checks passed`);
 
 /* ---- the Windows skin is real assets ---- */
 const assets: Record<string, unknown>[] = [];
@@ -122,12 +235,64 @@ eq(a.active().button, 'windows', 'the skin assets are on');
 eq(b.active(), before, 'the other app did not move');
 eq(a.src.saved, [], 'a skin writes nothing to the shared document');
 
+/* the colour theme is switched inside the skin: same skin, no new skin, no override */
+const skinsBefore = a.rt.skinList().map((s) => s.id);
+const skinAssetBefore = JSON.stringify(a.rt.registry.get('skin' as never, 'windows'));
+const registryBefore = (rt: AxfRuntime) => JSON.stringify(['skin', 'design-package', 'interface', 'color-theme'].map((t) => rt.registry.list(t as never).map((x) => x.id)));
+const typesBefore = registryBefore(a.rt);
+eq(a.rt.skinColorTheme(), { id: 'windows-light', own: 'windows-light', picked: false }, "the skin shows its own colour theme");
 a.rt.swap('color-theme' as never, 'aurora-night');
-eq(a.active()['color-theme'], 'aurora-night', 'a pick overrides the skin');
-eq(a.rt.skinOverrides(), ['color-theme'], 'the overridden dot');
+eq(a.active()['color-theme'], 'aurora-night', 'the picked colour theme is on');
+eq(a.store.doc?.skin.id, 'windows', 'the skin is still Windows');
+eq(a.store.doc?.skin.use, true, 'and still on');
+eq(a.store.doc?.skin.colorTheme, 'aurora-night', 'the pick is kept as the colour theme inside the skin');
+eq(a.store.doc?.skin.overrides, {}, 'not as an override');
+eq(a.rt.skinInForce().id, 'windows', 'the skin in force did not change');
+eq(a.rt.skinOverrides(), [], 'no overridden dot for a colour theme');
+eq(a.rt.skinColorTheme(), { id: 'aurora-night', own: 'windows-light', picked: true }, 'skinColorTheme: shown, own, picked');
 eq(a.active()['style-theme'], 'windows', 'the rest stays the skin');
-ok(a.rt.backToSkin('color-theme'), 'Back to skin');
+eq(a.active().layout, 'windows-explorer', 'layout too');
+eq(a.active().button, 'windows', 'and its assets');
+eq(a.rt.skinList().map((s) => s.id), skinsBefore, 'no skin was added, copied or removed');
+eq(JSON.stringify(a.rt.registry.get('skin' as never, 'windows')), skinAssetBefore, 'the skin asset is untouched');
+eq(registryBefore(a.rt), typesBefore, 'no skin, design package, interface or colour theme asset was created');
+eq(a.src.saved, [], 'nothing reaches the shared document');
+eq(b.active(), before, 'the other app did not move');
+ok(a.rt.setSkinColorTheme('plum-noir'), 'setSkinColorTheme switches it again');
+eq(a.active()['color-theme'], 'plum-noir', 'on screen');
+eq(a.store.doc?.skin, { use: true, inherit: false, id: 'windows', overrides: {}, colorTheme: 'plum-noir' }, 'same skin, other colours');
+ok(!a.rt.setSkinColorTheme('no-such-theme'), 'an unknown colour theme is refused');
+eq(a.active()['color-theme'], 'plum-noir', 'and nothing moved');
+a.rt.dispatch('skin.color:aurora-night');
+eq(a.active()['color-theme'], 'aurora-night', 'the skin.color action switches it');
+eq(a.store.doc?.skin.id, 'windows', 'still the same skin');
+a.rt.swap('button' as never, 'terminal');
+eq(a.rt.skinOverrides(), ['button'], 'another slot is an override (the dot)');
+eq(a.store.doc?.skin.colorTheme, 'aurora-night', 'and the colour theme stays');
+ok(a.rt.backToSkin('button'), 'Back to skin');
+ok(a.rt.useSkin(false), 'skin off');
+eq(a.active()['color-theme'], before['color-theme'], "skin off: the app's own colours, the pick does not leak");
+ok(a.rt.useSkin(true), 'skin on again');
+eq(a.active()['color-theme'], 'aurora-night', 'the colour theme picked inside the skin is back with it');
+ok(a.rt.useSkin(true, 'hub-default'), 'another skin');
+ok(!('colorTheme' in (a.store.doc?.skin ?? {})), 'another skin starts with its own colours');
+ok(a.rt.useSkin(true, 'windows'), 'back to Windows');
+eq(a.active()['color-theme'], 'windows-light', "Windows shows its own colours again");
+a.rt.swap('color-theme' as never, 'aurora-night');
+a.rt.dispatch('skin.color:default');
+eq(a.active()['color-theme'], 'windows-light', "skin.color:default = the skin's own colours");
+ok(!('colorTheme' in (a.store.doc?.skin ?? {})), 'no pick is left');
+a.rt.swap('color-theme' as never, 'aurora-night');
+ok(a.rt.backToSkin('color-theme'), 'Back to skin on the colour slot');
 eq(a.active()['color-theme'], 'windows-light', 'the skin colour is back');
+ok(a.rt.setSkinColorTheme('harbor', 'plugin:ai.amberx.notes'), 'a colour theme inside one plugin');
+eq(a.rt.skinAt({ plugin: 'ai.amberx.notes' }), { id: 'windows', overrides: {}, from: 'app', colorTheme: 'harbor' }, 'the plugin shows the same skin in other colours');
+eq((a.rt.skinScoped('plugin:ai.amberx.notes')!.getState().active as Record<string, string>)['color-theme'], 'harbor', 'drawn inside the plugin');
+eq(a.active()['color-theme'], 'windows-light', 'the app keeps the skin\'s own');
+ok(a.rt.setSkinColorTheme(null, 'plugin:ai.amberx.notes'), 'and back');
+eq(a.rt.skinScoped('plugin:ai.amberx.notes'), null, 'nothing left to scope');
+ok(!a.rt.setSkinColorTheme('harbor', 'nope'), 'a bad scope key is refused');
+ok(a.rt.actions.list().some((x) => x.id === 'skin.color'), 'the skin.color action is registered');
 
 ok(a.rt.useSkin(false), 'Use skin off');
 eq(a.active(), before, 'off = the app\'s own look');
@@ -225,8 +390,8 @@ console.log(`check-skin: ${n} checks passed`);
   // scopes: plugin → ui → app → global, the child overrides the parent
   const sc = fx.scopes;
   const place = { app: 'app', ui: 'home', plugin: 'notes' };
-  eq(skinScopeChain(place), ['plugin:notes', 'ui:home', 'app', 'global'], 'chain from the leaf');
-  eq(skinScopeChain({ app: 'app' }), ['app', 'global'], 'the app chain');
+  eq(skinScopeChain(place), ['plugin:notes', 'ui:home', 'app', 'global', 'default'], 'chain from the leaf (the hub default skin is the root)');
+  eq(skinScopeChain({ app: 'app' }), ['app', 'global', 'default'], 'the app chain');
   eq([skinScopeKey(place), skinScopeKey({ app: 'app', ui: 'home' }), skinScopeKey({ app: 'app' })], ['plugin:notes', 'ui:home', 'app'], 'keys');
   eq(['global', 'app', 'ui:home', 'plugin:notes'].map(skinScopeKind), ['global', 'app', 'ui', 'plugin'], 'kinds');
   eq(skinScopeSelector('plugin:ai.amberx.notes'), '[data-fx-scope="skin-plugin-ai-amberx-notes"]', 'a plugin scope is drawn under its scope root');
@@ -283,8 +448,187 @@ console.log(`check-skin: ${n} checks passed`);
   eq(parsed?.skin, { id: 'aurora', overrides: { button: 'global-button' } }, 'appearance@1 keeps the hub-wide skin');
   eq(mergeAppearance(parsed, { skin: null }, 'test', 'now').skin, undefined, 'a null change clears it');
   eq(mergeAppearance(parsed, { skin: { id: 'windows' } }, 'test', 'now').skin, { id: 'windows' }, 'a pick replaces it');
+
+  // Skin from axHub only: the hub-wide skin alone is drawn; the app's own skin, override, colour pick and scopes stay stored
+  const mine = setScopeSkin(setSkinColorTheme(lookAfterChange(setUseSkin(pickSkin(look0, 'windows'), true), { slots: { button: 'terminal' } }, skinned), 'plum-noir'), 'plugin:notes', 'on', 'aurora');
+  const drawn = hubOnlyLook(mine);
+  eq(mine, sc.hubOnly.mine, 'hub only: the app look = fixture');
+  eq(drawn, sc.hubOnly.drawn, 'hub only: the drawn look = fixture');
+  eq(drawn.skin, { use: false, inherit: true, id: '', overrides: {} }, 'hub only: no skin of its own, follows the hub-wide skin');
+  eq([drawn.own, drawn.scopes, drawn.default], [{}, {}, mine.default], 'hub only: no own picks, no scopes, the default snapshot kept');
+  ok(mine.skin.use && mine.skin.id === 'windows' && mine.skin.overrides.button === 'terminal' && mine.skin.colorTheme === 'plum-noir' && !!mine.scopes['plugin:notes'], 'hub only: the stored look is untouched');
+  const hubComposed = composeLookAt(withGlobal as never, drawn, skinOf);
+  eq(hubComposed, sc.hubOnly.composed, 'hub only: composed = fixture');
+  eq([hubComposed.skin.id, hubComposed.skin.from, hubComposed.doc.slots!.button, hubComposed.doc.slots!['color-theme']], ['aurora', 'global', 'global-button', 'aurora-night'], "hub only: axHub's skin, its override and its colours");
+  eq(composeLookAt(withGlobal as never, drawn, skinOf, place), sc.hubOnly.inPlugin, 'hub only: a plugin scope of its own is not drawn either');
+  eq(composeLookAt(withGlobal as never, drawn, skinOf, place).skin.id, 'aurora', 'hub only: inside the plugin, the hub-wide skin');
+  eq(composeLookAt(shared as never, drawn, skinOf), sc.hubOnly.noHubSkin, 'hub only, no hub-wide skin = fixture');
+  eq(composeLookAt(shared as never, drawn, skinOf).doc.slots, composeLook(shared as never, look0, null).slots, 'hub only, no hub-wide skin: the default snapshot');
+  eq(hubOnlyLook(null), sc.hubOnly.none, 'hub only: no look stays none');
 }
 console.log(`check-skin (coverage + scopes): ${n} checks passed`);
+
+/* ---- the hub default skin (build console-look-becomes-default-axhub-skin, Nov 14 2026): the floor every app stands on ---- */
+{
+  const hd = fx.hubDefault;
+  const consoleSkin = normalizeSkin({ layoutTheme: 'classic-ide', colorTheme: 'arctic-daylight', styleTheme: 'soft-studio', assets: { button: 'rounded-solid', 'nav-menu': 'amber-signature', toolbar: 'standard-icons' }, extras: { spacing: 'tight', hidden: { toolbar: false }, settings: { 'axf.tokens.layout': { '*': { toolbarPosition: 'bottom' } } } }, chrome: { toolbar: { interface: 'chrome-toolbar', instances: { main: { bogus: 1 } } }, 'tab-group': { instances: { builds: { style: 'pills', position: 'left' }, 'Bad Id!': { style: 'pills' } } }, nope: { interface: 'x' } } });
+  const windows = normalizeSkin(skin);
+  const skins: Record<string, typeof windows> = { console: consoleSkin, windows, aurora: normalizeSkin({ ...skin, colorTheme: 'aurora-night' }) };
+  const skinOf = (id: string) => skins[id] ?? null;
+  const withDefault = { ...shared, defaultSkin: { id: 'console', overrides: { dialog: 'hub-dialog' } } };
+  const withGlobal = { ...withDefault, skin: { id: 'aurora' } };
+  const hubDefault = hubDefaultOf(withDefault as never);
+  const place = { app: 'app', ui: 'home', plugin: 'notes' };
+  const edited = lookAfterChange(look0, { slots: { button: 'terminal' }, hidden: { toolbar: true } }, null);
+  const pluginOver = setScopeOverride(edited, 'plugin:notes', 'button', 'plugin-button');
+  const pluginOff = setScopeSkin(look0, 'plugin:notes', 'off');
+  const ownOn = setUseSkin(pickSkin(look0, 'windows'), true);
+  const following = setInheritSkin(look0, true);
+  const mine = setScopeSkin(setSkinColorTheme(lookAfterChange(ownOn, { slots: { dialog: 'my-dialog' } }, windows), 'plum-noir'), 'plugin:notes', 'on', 'aurora');
+  const adopted = adoptHubDefault(mine, { at: '2026-11-14T23:00:00Z', by: 'skins-cli', reason: 'console look becomes the hub default' });
+  const restored = restoreLookBackup(adopted, '', '2026-11-14T23:30:00Z');
+  const chromeBad = { toolbar: { interface: 'Bad Id', instances: { main: { bogus: 1 }, 'Bad Id!': { variant: 'icons' } } }, 'tab-group': { instances: 7 }, nope: {} };
+
+  // the chain and the pointer
+  eq(skinScopeChain(place), hd.chain, 'chain = fixture');
+  eq(hd.chain[hd.chain.length - 1], SKIN_SCOPE_DEFAULT, 'the hub default skin is the root of the chain');
+  eq(hubDefaultOf(withDefault as never), hd.pointer.good, 'pointer = fixture');
+  eq(hd.pointer.good, { id: 'console', overrides: { dialog: 'hub-dialog' } }, 'the pointer: a skin id and hub-level overrides');
+  eq([hubDefaultOf(shared as never), hd.pointer.none, hd.pointer.junk], [null, null, null], 'no pointer or a junk one = no floor');
+  eq(hd.pointer.legacyColour, { id: 'console', overrides: { dialog: 'd' }, colorTheme: 'harbor' }, 'an old color-theme override on the pointer is read as its colour theme');
+  // the skin's chrome block
+  eq(consoleSkin.chrome, hd.chrome.normalized, 'chrome = fixture');
+  eq(consoleSkin.chrome, { toolbar: { interface: 'chrome-toolbar' }, 'tab-group': { instances: { builds: { style: 'pills', position: 'left' } } } }, 'chrome kinds and fields kept; an unknown kind, a bad instance id and a bogus field dropped');
+  eq(skinChromeErrors(chromeBad), hd.chrome.errors, 'chrome errors = fixture');
+  eq(hd.chrome.errors.length, 5, 'bad interface, bogus field, bad instance id, instances not an object, unknown kind');
+  eq(skinErrors({ ...skin, chrome: chromeBad }), hd.chrome.skinErrors, 'skinErrors carries the chrome errors');
+  eq((engine as unknown as { skinErrors(d: unknown): string[] }).skinErrors({ ...skin, chrome: chromeBad }), skinErrors({ ...skin, chrome: chromeBad }), 'build engine agrees on the chrome block');
+  eq(skinErrors({ ...skin, chrome: consoleSkin.chrome }), [], 'a clean chrome block passes');
+  eq(skinChromeSettings(consoleSkin.chrome), hd.chrome.settings, 'chrome settings = fixture');
+  eq(hd.chrome.settings, { 'axf.chrome.settings.toolbar': 'chrome-toolbar', 'axf.chrome.tab-group.builds': { style: 'pills', position: 'left' } }, 'the chrome block lands on the chrome-settings@1 keys');
+  // resolution
+  const resolve = {
+    noOverride: resolveLookSkin(look0, null, place, hubDefault), noDefault: resolveLookSkin(look0, null, place, null), ownSkinOn: resolveLookSkin(ownOn, null, place, hubDefault), pluginOff: resolveLookSkin(pluginOff, null, place, hubDefault),
+    pluginOverride: resolveLookSkin(pluginOver, null, place, hubDefault), followingHub: resolveLookSkin(following, globalSkinOf(withGlobal as never), place, hubDefault), followingNoHub: resolveLookSkin(following, null, place, hubDefault),
+    notFollowingHub: resolveLookSkin(look0, globalSkinOf(withGlobal as never), place, hubDefault), noDocument: resolveLookSkin(null, null, place, hubDefault), offSkinColourStays: resolveLookSkin(setSkinColorTheme(look0, 'plum-noir'), null, place, hubDefault),
+  };
+  eq(resolve, hd.resolve, 'resolution = fixture');
+  eq(hd.resolve.noOverride, { id: 'console', overrides: { dialog: 'hub-dialog' }, from: 'default' }, 'no override: the floor decides, with the pointer\'s overrides');
+  eq(hd.resolve.noDefault, { id: '', overrides: {}, from: 'app' }, 'without a hub default nothing changes: the app\'s own look');
+  eq(hd.resolve.ownSkinOn, { id: 'windows', overrides: {}, from: 'app' }, 'Use skin on beats the floor');
+  eq(hd.resolve.pluginOff, { id: '', overrides: {}, from: 'plugin:notes' }, 'a plugin that says off stands below the floor');
+  eq(hd.resolve.pluginOverride, { id: 'console', overrides: { dialog: 'hub-dialog', button: 'plugin-button' }, from: 'default' }, 'a plugin override rides the floor');
+  eq(hd.resolve.followingHub.from, 'global', 'Follow still takes the hub-wide skin');
+  eq(hd.resolve.followingNoHub.from, 'default', 'Follow with no hub-wide skin: the floor');
+  eq(hd.resolve.notFollowingHub, hd.resolve.noOverride, 'a hub-wide skin is not taken without Follow: the floor');
+  eq(hd.resolve.noDocument.from, 'default', 'an app without a look document stands on the floor');
+  ok(!('colorTheme' in hd.resolve.offSkinColourStays), 'the colour theme kept beside a switched-off skin does not leak onto the floor');
+  eq(resolveSkinChain(['app', 'global', 'default'], (k) => (k === 'default' ? { use: 'on', id: 'x' } : { use: 'inherit' })), { id: 'x', overrides: {}, from: 'default' }, 'resolveSkinChain: the root decides when everything above inherits');
+  // composition: the floor, then the app's edits, then its screens and plugins
+  const composed = {
+    noOverride: composeLookAt(withDefault as never, look0, skinOf), partialOverride: composeLookAt(withDefault as never, edited, skinOf), pluginOverride: composeLookAt(withDefault as never, pluginOver, skinOf, place), pluginOff: composeLookAt(withDefault as never, pluginOff, skinOf, place),
+    ownSkinOn: composeLookAt(withDefault as never, ownOn, skinOf), followingHub: composeLookAt(withGlobal as never, following, skinOf), unknownDefault: composeLookAt({ ...shared, defaultSkin: { id: 'gone' } } as never, look0, skinOf), hubOnly: composeLookAt(withDefault as never, hubOnlyLook(mine), skinOf),
+  };
+  eq(composed, hd.composed, 'composition = fixture');
+  const c0 = hd.composed.noOverride;
+  eq(c0.doc.slots, { layout: 'classic-ide', 'color-theme': 'arctic-daylight', 'style-theme': 'soft-studio', button: 'rounded-solid', 'nav-menu': 'amber-signature', toolbar: 'standard-icons', dialog: 'hub-dialog', 'design-package': 'hub-default' }, 'no override: the hub default skin, the pointer\'s override, the snapshot only where the skin names nothing');
+  eq([c0.doc.hidden, c0.doc.spacing], [{ toolbar: false }, 'tight'], 'the skin\'s extras over the snapshot');
+  eq([c0.doc.settings!['axf.chrome.settings.toolbar'], c0.doc.settings!['axf.chrome.tab-group.builds'], c0.doc.settings!['axf.tokens.button']], ['chrome-toolbar', { style: 'pills', position: 'left' }, 'x'], 'the chrome block and the shared tokens are in the settings');
+  eq(c0.skin, hd.resolve.noOverride, 'who decided');
+  const c1 = hd.composed.partialOverride;
+  eq([c1.doc.slots!.button, c1.doc.hidden!.toolbar], ['terminal', true], 'partial override: the edited slot and the edited chrome flag');
+  eq({ ...c1.doc.slots, button: c0.doc.slots!.button }, c0.doc.slots, 'and nothing else differs from the floor');
+  eq(hd.composed.pluginOverride.doc.slots!.button, 'plugin-button', 'a plugin override beats the app\'s edit');
+  eq(hd.composed.pluginOff.doc.slots, composeLook(shared as never, look0, null).slots, 'a plugin that says off draws the saved look');
+  eq(hd.composed.ownSkinOn.doc.slots, composeLook(shared as never, ownOn, windows).slots, 'Use skin on composes as it always has');
+  eq(hd.composed.followingHub.skin.id, 'aurora', 'Follow draws the hub-wide skin');
+  eq(hd.composed.unknownDefault.doc.slots, composeLook(shared as never, look0, null).slots, 'a hub default this app does not have reads as none');
+  eq(hd.composed.unknownDefault.skin, { id: '', overrides: {}, from: 'default' }, 'and says so');
+  eq([hd.composed.hubOnly.skin.from, hd.composed.hubOnly.doc.slots!.dialog], ['default', 'hub-dialog'], 'Skin from axHub only with no hub-wide skin draws the floor');
+  // adopt: back up, then stand on the floor keeping only the edits
+  eq(adopted, hd.adopt.adopted, 'adopt = fixture');
+  eq(adopted.skin, { use: false, inherit: false, id: 'windows', overrides: {} }, 'Use skin off, the picked skin remembered, overrides moved');
+  eq(adopted.own.slots, { dialog: 'my-dialog', 'color-theme': 'plum-noir' }, 'the override and the colour pick made under the old skin are kept as own picks: the edits');
+  eq(adopted.scopes, {}, 'every scope inherits again');
+  eq(adopted.backups!.length, 1, 'one backup');
+  eq([adopted.backups![0].own, adopted.backups![0].skin, adopted.backups![0].scopes], [mine.own, mine.skin, mine.scopes], 'the backup is what the app drew');
+  eq([adopted.backups![0].id, adopted.backups![0].by, adopted.backups![0].reason], ['2026-11-14T23:00:00Z', 'skins-cli', 'console look becomes the hub default'], 'named, signed, explained');
+  eq([adopted.undo!.action, adopted.undo!.scope], ['adopt-default', 'app:app'], 'one undo');
+  eq(hd.adopt.adoptedTwice, adopted, 'adopting again changes nothing');
+  eq(hd.adopt.alreadyOnFloor, look0, 'an app already on the floor is untouched: no backup, no undo');
+  eq([hd.adopt.composed.dialog, hd.adopt.composed['color-theme'], hd.adopt.composed.layout, hd.adopt.composed.button], ['my-dialog', 'plum-noir', 'classic-ide', 'rounded-solid'], 'after adopt: the floor plus the kept edits');
+  eq(undoRestore(adopted), hd.adopt.undone, 'undo = fixture');
+  eq([hd.adopt.undone.skin, hd.adopt.undone.scopes, hd.adopt.undone.undo], [mine.skin, mine.scopes, null], 'undo brings the old skin and scopes back');
+  eq(hd.adopt.undone.backups, adopted.backups, 'undo keeps the backup');
+  // restore from backup
+  eq(restored, hd.adopt.restored, 'restore = fixture');
+  eq([restored.own, restored.skin, restored.scopes], [mine.own, mine.skin, mine.scopes], 'restore from backup: what the app drew is back');
+  eq(restored.backups, adopted.backups, 'the backups are kept');
+  eq([restored.undo!.action, restored.undo!.scope], ['restore-backup', 'app:app'], 'one undo');
+  eq(hd.adopt.restoredUndone.skin, adopted.skin, 'undo after restore goes back onto the floor');
+  eq(hd.adopt.nothingToRestore, look0, 'nothing to restore = unchanged');
+  eq(hd.adopt.roundTrip, adopted, 'backups and the undo survive the document rules');
+  eq(parseAppLook(JSON.stringify(adopted)), adopted, 'round trip');
+  eq(hd.adopt.backups.twice.length, 2, 'a backup identical to the newest is not added again');
+  eq(hd.adopt.backups.cap.length, LOOK_BACKUPS_MAX, `at most ${LOOK_BACKUPS_MAX} backups`);
+  eq(hd.adopt.backups.cap[0], `t${LOOK_BACKUPS_MAX + 1}`, 'newest first');
+  eq(hd.adopt.backups.newest, adopted.backups![0], 'lookBackup() = the newest');
+  eq([hd.adopt.backups.byId.id, hd.adopt.backups.missing], ['b2', null], 'by id, or null');
+  eq(lookBackup(adopted), adopted.backups![0], 'lookBackup reads the newest');
+  eq(backupLook(adopted, { at: 'b2' }).backups!.length, 2, 'backupLook adds a record');
+  assert.throws(() => adoptHubDefault(mine, {} as never), /needs the time/); n++;
+  assert.throws(() => restoreLookBackup(adopted, '', ''), /needs the time/); n++;
+  // the shared document carries the pointer
+  eq(parseAppearance(JSON.stringify(withDefault)), hd.shared.parsed, 'appearance@1 with defaultSkin = fixture');
+  eq(hd.shared.parsed.defaultSkin, { id: 'console', overrides: { dialog: 'hub-dialog' } }, 'parsed');
+  eq(mergeAppearance(parseAppearance(JSON.stringify(withGlobal)), { defaultSkin: { id: 'windows' } }, 'skins-cli', '2026-11-14T23:00:00Z'), hd.shared.merged, 'merge = fixture');
+  eq([hd.shared.merged.defaultSkin, hd.shared.merged.skin], [{ id: 'windows' }, { id: 'aurora' }], 'a default pick replaces the pointer and leaves the hub-wide skin alone');
+  eq(hd.shared.cleared.defaultSkin, undefined, 'null clears it');
+  eq(hd.shared.cleared.skin, undefined, 'the fixture document had no hub-wide skin');
+  eq(serializeAppearance(parseAppearance(JSON.stringify(withGlobal))!), hd.shared.serialized, 'serialize = fixture');
+  ok(hd.shared.serialized.includes('"defaultSkin"') && hd.shared.serialized.includes('"skin"'), 'the text carries both pointers (a save no longer drops the hub-wide skin)');
+  eq([parseAppearance(hd.shared.serialized)?.defaultSkin, parseAppearance(hd.shared.serialized)?.skin], [hd.shared.parsed.defaultSkin, { id: 'aurora' }], 'and reads back');
+  eq(combineAppearanceChanges({ defaultSkin: { id: 'a' } }, { skin: null }), hd.shared.combined, 'combine = fixture');
+  eq(hd.shared.combined, { defaultSkin: { id: 'a' }, skin: null }, 'a pending default pick survives a later change');
+
+  // the runtime: an app whose shared document names a hub default draws it with no change to its look document
+  const h = (() => {
+    const rt = new AxfRuntime({ manifest: manifest('app-i'), assets: assets as never, storageKey: 'skin-app-i' });
+    const store = new Store();
+    const src = new Source(store, { ...hubDoc, defaultSkin: { id: 'windows' } } as AppearanceDocument);
+    rt.attachAppearanceSource(src);
+    return { rt, store, src, active: () => ({ ...rt.getState().active }) as Record<string, string> };
+  })();
+  eq(h.rt.hubDefaultSkin(), { id: 'windows', overrides: {} }, 'the runtime reads the pointer');
+  eq(h.active()['color-theme'], 'windows-light', 'the floor is drawn');
+  eq(h.rt.skinInForce(), { id: 'windows', overrides: {}, from: 'default' }, 'the default level decided');
+  eq(h.rt.skinAt().from, 'default', 'skinAt agrees');
+  eq(h.store.doc?.skin, { use: false, inherit: false, id: '', overrides: {} }, 'the look document did not change: Use skin is off, nothing picked');
+  eq(h.src.saved, [], 'nothing is written to the shared document');
+  h.rt.swap('button' as never, 'terminal');
+  eq(h.store.doc?.own.slots, { button: 'terminal' }, 'an edit over the floor is the app\'s own pick');
+  eq([h.active().button, h.active()['color-theme']], ['terminal', 'windows-light'], 'the edit shows, the rest is still the floor');
+  eq(h.rt.skinInForce().from, 'default', 'the floor still decides');
+  eq(h.rt.skinOverrides(), [], 'no overridden dot: the app has no skin of its own');
+  h.rt.swap('color-theme' as never, 'aurora-night');
+  eq(h.active()['color-theme'], 'aurora-night', 'a colour pick over the floor shows');
+  eq(h.store.doc?.own.slots!['color-theme'], 'aurora-night', 'and is an own pick, not a pick inside the hub default skin');
+  eq(h.rt.skinScoped('plugin:ai.amberx.notes'), null, 'a plugin that inherits needs no scope of its own on the floor');
+  ok(h.rt.scopeSkin('plugin:ai.amberx.notes', 'off'), 'a plugin may stand below the floor');
+  eq((h.rt.skinScoped('plugin:ai.amberx.notes')!.getState().active as Record<string, string>)['style-theme'], before['style-theme'], 'inside it: the saved look');
+  h.rt.scopeSkin('plugin:ai.amberx.notes', 'inherit');
+  ok(h.rt.useSkin(true, 'hub-default'), 'Use skin on');
+  eq(h.rt.skinInForce().from, 'app', 'the app\'s own skin beats the floor');
+  ok(h.rt.useSkin(false), 'Use skin off');
+  eq(h.rt.skinInForce().from, 'default', 'off = back on the floor');
+  h.rt.restoreDefaultAppearance();
+  eq([h.rt.skinInForce().from, h.active().button, h.active()['color-theme']], ['default', 'windows', 'windows-light'], 'Restore to default = the floor with no edits');
+  h.src.doc = { ...hubDoc } as AppearanceDocument;
+  h.src.start();
+  eq(h.rt.skinInForce().from, 'app', 'the pointer gone from the shared document: the app\'s own look again');
+  eq(h.active()['color-theme'], before['color-theme'], 'exactly as before');
+}
+console.log(`check-skin (hub default skin): ${n} checks passed`);
 
 /* ---- the runtime: scopes, the hub-wide skin, parts and the icon pack ---- */
 {
@@ -304,7 +648,10 @@ console.log(`check-skin (coverage + scopes): ${n} checks passed`);
   eq(g.rt.skinAt().id, 'windows', 'skinAt() agrees');
   g.rt.swap('color-theme' as never, 'aurora-night');
   eq(g.rt.skinOverrides(), [], "overrides while following: the app's own Use skin is off, so the dot list is empty");
-  eq(g.active()['color-theme'], 'aurora-night', 'a pick while following overrides that part');
+  eq(g.active()['color-theme'], 'aurora-night', 'a colour theme pick while following is switched inside the hub-wide skin');
+  eq(g.rt.skinInForce().id, 'windows', 'the hub-wide skin is still the skin in force');
+  eq(g.store.doc?.skin, { use: false, inherit: true, id: '', overrides: {}, colorTheme: 'aurora-night' }, "kept in this app's look, not as an override and not as a skin of its own");
+  eq(g.rt.skinColorTheme(), { id: 'aurora-night', own: 'windows-light', picked: true }, 'skinColorTheme while following');
   eq(g.src.saved, [], 'nothing reaches the shared document');
   ok(g.rt.skinInherit(false), 'stop following');
   eq(g.active()['color-theme'], before['color-theme'], 'own look again');
@@ -350,3 +697,60 @@ console.log(`check-skin (coverage + scopes): ${n} checks passed`);
   eq(f.rt.skinIconPack(), '', 'skin off: no skin pack');
 }
 console.log(`check-skin (runtime scopes): ${n} checks passed`);
+
+/* ---- Skin from axHub only (build console-skin-axhub-only): the switch drives the lock, draws the hub-wide skin only ---- */
+{
+  const rt = new AxfRuntime({ manifest: manifest('app-h'), assets: assets as never, storageKey: 'skin-app-h' });
+  const store = new Store();
+  const src = new Source(store, { ...hubDoc, skin: { id: 'windows' } } as AppearanceDocument);
+  rt.attachAppearanceSource(src);
+  const active = () => ({ ...rt.getState().active }) as Record<string, string>;
+  ok(!rt.hubSkinOnly() && !rt.appearanceLocked() && rt.appearanceLockReason() === '', 'default off');
+  ok(!isAppearanceSetting(HUB_SKIN_ONLY_KEY), 'not an appearance setting: Restore and the hub document leave it');
+  // this app's own look: Use skin with a design package, an override, a UI scope
+  ok(rt.useSkin(true, 'hub-default'), 'own skin on');
+  rt.swap('button' as never, rt.registry.list('button' as never).find((a) => a.id !== active().button)!.id);
+  ok(rt.scopeSkin('ui:home', 'on', 'windows'), 'a UI scope of its own');
+  const own = active();
+  const ownDoc = JSON.stringify(store.doc);
+  ok(own['color-theme'] !== 'windows-light', "the app's own skin is drawn");
+
+  ok(rt.setHubSkinOnly(true), 'switch on');
+  ok(rt.hubSkinOnly() && rt.appearanceLocked() && rt.appearanceLockReason() === 'hub', 'on: drives the appearance lock (reason hub)');
+  eq(active()['color-theme'], 'windows-light', "on: axHub's skin is drawn");
+  eq(rt.skinInForce(), { id: 'windows', overrides: {}, from: 'global' }, 'on: the global level decides');
+  eq(rt.skinAt({ ui: 'home' }).from, 'global', 'on: the UI scope of its own is not drawn');
+  eq(rt.skinScoped('ui:home'), null, 'on: no scoped view for it');
+  ok(rt.customSheet().includes('.fx-widget-label'), "on: the hub skin's own parts still draw");
+  eq(JSON.stringify(store.doc), ownDoc, 'on: the own look is kept, not changed');
+  ok(rt.gate('assets.swap') === 'disable' && !rt.can('assets.swap'), 'on: look controls are locked');
+  ok(!rt.useSkin(false) && !rt.pickSkin('windows') && !rt.swap('color-theme' as never, 'arctic-daylight') && !rt.scopeSkin('ui:home', 'off'), 'on: local picks are refused');
+  ok(!rt.previewSkin('hub-default'), 'on: no preview');
+  eq(src.saved, [], 'on: nothing is written to axHub');
+
+  // a change made on axHub applies live
+  src.doc = { ...hubDoc, skin: { id: 'windows', colorTheme: 'aurora-night' } } as AppearanceDocument;
+  src.start();
+  eq(active()['color-theme'], 'aurora-night', 'on: a colour picked on axHub applies live');
+  src.doc = { ...hubDoc, skin: { id: 'hub-default' } } as AppearanceDocument;
+  src.start();
+  eq(rt.skinInForce().id, 'hub-default', 'on: another hub-wide skin applies live');
+
+  rt.dispatch('appearance.hubskin:off');
+  ok(!rt.hubSkinOnly() && !rt.appearanceLocked(), 'appearance.hubskin:off turns it off and unlocks');
+  eq(active(), own, "off: the app's own look is back, exactly");
+  rt.dispatch('appearance.hubskin:toggle');
+  ok(rt.hubSkinOnly(), 'appearance.hubskin:toggle turns it on');
+  rt.settings.set(HUB_SKIN_ONLY_KEY, false);
+  ok(!rt.appearanceLocked() && rt.skinInForce().id === 'hub-default' && rt.skinInForce().from === 'app', 'the setting itself (settings.set) switches it off and redraws');
+
+  // the lock and the switch are separate: one off leaves the other
+  rt.setHubSkinOnly(true);
+  ok(rt.setAppearanceLocked(true), 'the lock on as well');
+  rt.setHubSkinOnly(false);
+  ok(rt.appearanceLocked() && rt.appearanceLockReason() === 'lock', 'switch off: the lock set on its own stays');
+  rt.dispatch('appearance.lock:off');
+  ok(!rt.appearanceLocked(), 'and appearance.lock:off unlocks it');
+  ok(['appearance.hubskin', 'appearance.lock'].every((id) => rt.actions.list().some((x) => x.id === id)), 'both actions registered');
+}
+console.log(`check-skin (skin from axHub only): ${n} checks passed`);

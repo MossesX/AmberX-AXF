@@ -1,0 +1,104 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-74063i",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:24Z",
+ "build": {
+  "id": "project-thread-74063i",
+  "title": "project-thread-74063i",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-74063i",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-74063i",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "4521f5a9dc66cf89b38b67ff8f173f72b6aced4d",
+ "commits": [
+  "2a92dcadc566dae3a1f5dd112ba38ca964907622"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-26T00:12:06Z",
+ "files": [
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/core/engines/actions.ts",
+  "apps/axhub-web/src/axf/core/engines/appearancepackage.ts",
+  "apps/axhub-web/src/axf/core/engines/banner.ts",
+  "apps/axhub-web/src/axf/core/engines/widgets.ts",
+  "apps/axhub-web/src/axf/core/index.ts",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/libs/README.md",
+  "apps/axhub-web/src/axf/libs/settings/index.tsx",
+  "apps/axhub-web/src/axf/react/components/Arrange.tsx",
+  "apps/axhub-web/src/axf/react/components/Banner.tsx",
+  "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/axhub-web/src/axf/react/components/Chrome.tsx",
+  "apps/axhub-web/src/axf/react/components/Icon.tsx",
+  "apps/axhub-web/src/axf/react/components/Overlays.tsx",
+  "apps/axhub-web/src/axf/react/components/Slots.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/react/library.ts",
+  "apps/axhub-web/src/axf/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/core/engines/actions.ts",
+    "apps/axhub-web/src/axf/core/engines/appearancepackage.ts",
+    "apps/axhub-web/src/axf/core/engines/banner.ts",
+    "apps/axhub-web/src/axf/core/engines/widgets.ts",
+    "apps/axhub-web/src/axf/core/index.ts",
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/libs/README.md",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx",
+    "apps/axhub-web/src/axf/react/components/Arrange.tsx",
+    "apps/axhub-web/src/axf/react/components/Banner.tsx",
+    "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/axhub-web/src/axf/react/components/Chrome.tsx",
+    "apps/axhub-web/src/axf/react/components/Icon.tsx",
+    "apps/axhub-web/src/axf/react/components/Overlays.tsx",
+    "apps/axhub-web/src/axf/react/components/Slots.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/react/library.ts",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

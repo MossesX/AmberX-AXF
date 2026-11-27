@@ -73,8 +73,8 @@ export default function FilterDialog({ open, onClose }: { open: boolean; onClose
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ fontSize: 15, fontWeight: 700, pb: 1 }}>Advanced filter</DialogTitle>
-      <DialogContent dividers sx={{ display: "grid", gap: 1.4 }}>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)', fontWeight: 700, pb: 1 }}>Advanced filter</DialogTitle>
+      <DialogContent dividers sx={{ display: "grid", gap: 'var(--fx-dens-gap-2xl)' }}>
         <TextField
           autoFocus
           size="small"
@@ -91,18 +91,18 @@ export default function FilterDialog({ open, onClose }: { open: boolean; onClose
         />
 
         <Box>
-          <Typography sx={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: token("dim"), mb: 0.5 }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', letterSpacing: "0.08em", textTransform: "uppercase", color: token("dim"), mb: 0.5 }}>
             Columns
           </Typography>
-          <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: "0 12px" }}>
+          <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: "0 var(--fx-dens-gap-2xl)" }}>
             {FILTER_COLUMNS.map((c) => (
               <FormControlLabel
                 key={c.id}
                 control={<Switch size="small" checked={columns.has(c.id)} onChange={() => toggle(c.id)} />}
                 label={
                   <Box>
-                    <Typography sx={{ fontSize: 12.5 }}>{c.label}</Typography>
-                    <Typography sx={{ fontSize: 11, color: token("dim") }}>{c.hint}</Typography>
+                    <Typography sx={{ fontSize: 'var(--fx-type-root-md)' }}>{c.label}</Typography>
+                    <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>{c.hint}</Typography>
                   </Box>
                 }
                 sx={{ alignItems: "flex-start", my: 0.4, mr: 0 }}
@@ -111,12 +111,12 @@ export default function FilterDialog({ open, onClose }: { open: boolean; onClose
           </Box>
         </Box>
 
-        <Stack direction="row" sx={{ alignItems: "center", gap: 1 }}>
+        <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)' }}>
           <FormControlLabel
             control={<Switch size="small" checked={matchAll} onChange={(e) => setMatchAll(e.target.checked)} />}
-            label={<Typography sx={{ fontSize: 12.5 }}>Every word must match</Typography>}
+            label={<Typography sx={{ fontSize: 'var(--fx-type-root-md)' }}>Every word must match</Typography>}
           />
-          <Typography sx={{ fontSize: 11, color: token("dim") }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
             {matchAll ? "“walmart sep” needs both" : "“walmart target” finds either"}
           </Typography>
         </Stack>

@@ -1,0 +1,70 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-install-tmux-ntfy-tailscale",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:58Z",
+ "build": {
+  "id": "install-tmux-ntfy-tailscale",
+  "title": "install-tmux-ntfy-tailscale",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "install-tmux-ntfy-tailscale",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/install-tmux-ntfy-tailscale",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "6cb095aca19a61e47d7a14210b72f7df39f066b9",
+ "commits": [
+  "171f1869dac334b678ad9006aa49b00856206d53"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-27T22:27:19Z",
+ "files": [
+  "install_instructions.md",
+  "install_steps.md"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "install_instructions.md",
+    "install_steps.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

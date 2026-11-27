@@ -282,7 +282,26 @@
     "status": "running",
     "deleted": true
    },
-   {}
+   {},
+   {
+    "status": "fixing"
+   },
+   {
+    "status": "landing",
+    "pr": "330"
+   },
+   {
+    "status": "landed",
+    "pr": "330",
+    "mergedAt": "2026-11-05T00:00:00Z"
+   },
+   {
+    "status": "escalated"
+   },
+   {
+    "status": "escalated",
+    "pr": "330"
+   }
   ],
   "isoTimes": [
    "2026-11-05T02:00:00+02:00",
@@ -1234,6 +1253,26 @@
    {
     "status": "planned",
     "stalled": false
+   },
+   {
+    "status": "building",
+    "stalled": false
+   },
+   {
+    "status": "in-pr",
+    "stalled": false
+   },
+   {
+    "status": "merged",
+    "stalled": false
+   },
+   {
+    "status": "building",
+    "stalled": true
+   },
+   {
+    "status": "in-pr",
+    "stalled": true
    }
   ],
   "isoTimes": [

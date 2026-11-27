@@ -1,3 +1,5 @@
+> **Archived and retired (Nov 20 2026).** Its pages are console plugins now (module axHub). See [ARCHIVED.md](ARCHIVED.md).
+
 # AXHub
 
 Initialized by the **AmberX AXF 0.2.0** build engine (`react-ts` template).

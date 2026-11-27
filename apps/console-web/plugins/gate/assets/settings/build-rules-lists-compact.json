@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "build-rules-lists-compact",
+  "name": "build-rules-lists: Compact grid, one line a row",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "The grid at one line a row: fits the most of the 118 rules on screen.",
+  "tags": [
+    "ui-choice",
+    "choice-set:build-rules-lists",
+    "choice-option:compact"
+  ],
+  "data": {
+    "view": "compact",
+    "settingKey": "gate.view",
+    "appliesTo": [
+      "gate.build-rules"
+    ],
+    "builtFor": "plugin:gate"
+  }
+}

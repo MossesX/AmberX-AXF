@@ -1,0 +1,349 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-approve-button-fix",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:54Z",
+ "build": {
+  "id": "approve-button-fix",
+  "title": "Approve/Deny in the console do nothing: server-side owner relay",
+  "profile": "all",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Bug: in the console's \"Approval waiting\" dialog (approvals-in-place, landed today on main), clicking Approve repeatedly does nothing; the dialog stays. It says \"This browser can't decide from here: its axHub session didn't reach the console. Use Open on axHub below.\" Brett is signed in to the console as owner (Admin). (launch brief, Nov 7 2026)",
+  "verbatim": true,
+  "at": "2026-11-07T16:36:58.936Z",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Approve/Deny in the console do nothing (URGENT, Brett Nov 7)\n\nBug: in the console's \"Approval waiting\" dialog (approvals-in-place, landed today on main), clicking Approve repeatedly does nothing; the dialog stays. It says \"This browser can't decide from here: its axHub session didn't reach the console. Use Open on axHub below.\" Brett is signed in to the console as owner (Admin).\n\n1. Make Approve/Deny work from the console with the console's own owner login: the console server relays the decision to axHub using a server-side owner credential (owner-only, audited), no separate axHub sign-in in the browser. Follow axHub's approvals API; coordinate with orchestrator-vps-gate if landed.\n2. While a decision is in flight: disable the button, show a spinner; on success close the dialog; on failure show the exact reason in place. Never a dead clickable button.\n3. Also fix in AmberX if it shares the dialog.\n4. Tests: approve, deny, expired, already decided, relay down. Screenshots to UI Review with three options (--choices). Add to Shipped features.\n\nProgress: append `<time> START|DONE <step>` to PROGRESS.md here at each step; don't stop between steps. Commit, don't push.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-approve-button-fix--earl",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-07T16:33:55.750Z",
+   "endedAt": "2026-11-07T16:51:19.641Z",
+   "exit": 0,
+   "costUsd": 7.0629
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Server relay: decide with a server-side owner hub credential when the browser session is missing (owner-only, audited)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T16:33:55.750Z",
+   "doneAt": "2026-11-07T16:49:50.137Z",
+   "actualMin": 16,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Dialog + banner: busy spinner, close on success, exact reason in place, never a dead button",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T16:49:50.137Z",
+   "doneAt": "2026-11-07T16:49:51.410Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "AmberX: same dialog check",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-07T16:49:51.410Z",
+   "doneAt": "2026-11-07T16:49:52.623Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Tests: approve, deny, expired, already decided, relay down",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T16:49:52.623Z",
+   "doneAt": "2026-11-07T16:49:53.830Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "UI Review (3 choices) + Shipped features + report",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T16:49:53.830Z",
+   "doneAt": "2026-11-07T16:50:29.972Z",
+   "actualMin": 1,
+   "done": true
+  }
+ ],
+ "branch": "claude/approve-button-fix",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [
+  "124423159df4f7bf400c5e843b9f781f574fbcae",
+  "cdd925491a7a6139cc08b789fa13deb2e05ed08b",
+  "4f5fdb993e0a08567ceeee36fc5af25dd7653868",
+  "f4ee124c1e315996151194d7460d9689bde3ff69",
+  "c07f630a86cfa5c26e7348fb2b3d1661282785a0",
+  "7bf0ef05a7e4704ecdd235ee4432fcb81956e28a"
+ ],
+ "mergedAt": "2026-11-07T16:50:29.973Z",
+ "landedAt": "2026-11-07T16:50:29.973Z",
+ "files": [
+  "CLAUDE.md",
+  "PROGRESS.md",
+  "_claude/THREADS.md",
+  "_claude/builds/progress/shipped-features.md",
+  "_claude/builds/reports/approve-button-fix.md",
+  "_claude/builds/reports/approve-button-fix/shots/opt-inline--approved-desktop.png",
+  "_claude/builds/reports/approve-button-fix/shots/opt-inline--approved-phone.png",
+  "_claude/builds/reports/approve-button-fix/shots/opt-inline--busy-desktop.png",
+  "_claude/builds/reports/approve-button-fix/shots/opt-inline--busy-phone.png",
+  "_claude/builds/reports/approve-button-fix/shots/opt-inline--refused-desktop.png",
+  "_claude/builds/reports/approve-button-fix/shots/opt-inline--refused-phone.png",
+  "_claude/builds/reports/approve-button-fix/shots/opt-swap--refused-desktop.png",
+  "_claude/builds/reports/approve-button-fix/shots/opt-swap--refused-phone.png",
+  "_claude/builds/reports/approve-button-fix/shots/opt-top--refused-desktop.png",
+  "_claude/builds/reports/approve-button-fix/shots/opt-top--refused-phone.png",
+  "_claude/builds/reports/shipped-features.md",
+  "_claude/memory/STATUS.md",
+  "_claude/memory/builds-registry.md",
+  "_claude/memory/docs/chain-control.md",
+  "_claude/memory/docs/token-log.md",
+  "_claude/memory/handoff-2026-11-05.md",
+  "_claude/memory/todo/features-landed.md",
+  "_claude/memory/todo/install-keys.md",
+  "_claude/sessions/2026-11-04-shipped-features.md",
+  "_claude/sessions/2026-11-04.md",
+  "_claude/sessions/2026-11-05.md",
+  "_claude/shared/memory/vision.md",
+  "_claude/shared/memory/write-ups.md",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/approvals-banner/server/__init__.py",
+  "apps/console-web/plugins/approvals-banner/test.mts",
+  "apps/console-web/plugins/approvals-banner/test.py",
+  "apps/console-web/plugins/approvals-banner/web/index.tsx",
+  "apps/console-web/plugins/follow-amber/assets/dialog/approval-waiting-approve-mw6n1cnm-inline.json",
+  "apps/console-web/plugins/follow-amber/assets/dialog/approval-waiting-approve-mw6n1cnm-swap.json",
+  "apps/console-web/plugins/follow-amber/assets/dialog/approval-waiting-approve-mw6n1cnm-top.json",
+  "apps/console-web/plugins/follow-amber/web/index.tsx",
+  "apps/console-web/plugins/shipped-features/README.md",
+  "apps/console-web/plugins/shipped-features/help.json",
+  "apps/console-web/plugins/shipped-features/ledger/apply.mjs",
+  "apps/console-web/src/axf/core/build-hook.mjs",
+  "apps/console-web/src/axf/core/deploy-log.mjs",
+  "apps/console-web/src/axf/core/feature-ledger.d.mts",
+  "apps/console-web/src/axf/core/feature-ledger.mjs",
+  "apps/console-web/src/axf/schemas/build-hook.json",
+  "apps/expenses/_claude/README.md",
+  "apps/expenses/_claude/instructions/README.md",
+  "apps/expenses/_claude/memory/README.md",
+  "apps/expenses/_claude/rules/README.md",
+  "deploy/install-console.sh",
+  "framework/cli/build-hooks.mjs",
+  "framework/core/build-hook.mjs",
+  "framework/core/deploy-log.mjs",
+  "framework/core/feature-ledger.d.mts",
+  "framework/core/feature-ledger.mjs",
+  "framework/plan/profiles/breakroom/framework/catalog/status.json",
+  "framework/plan/profiles/breakroom/framework/plan/build-queue.json",
+  "framework/plan/profiles/breakroom/framework/plan/plan.json",
+  "framework/schemas/build-hook.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-build-hook.mjs",
+  "framework/spec/check-feature-ledger.mjs",
+  "framework/spec/fixtures/build-hook.json",
+  "framework/spec/fixtures/feature-ledger.json"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "PROGRESS.md",
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/memory/builds-registry.md",
+    "_claude/memory/docs/chain-control.md",
+    "_claude/memory/docs/token-log.md",
+    "_claude/memory/handoff-2026-11-05.md",
+    "_claude/memory/todo/features-landed.md",
+    "_claude/memory/todo/install-keys.md",
+    "_claude/sessions/2026-11-04-shipped-features.md",
+    "_claude/sessions/2026-11-04.md",
+    "_claude/sessions/2026-11-05.md",
+    "_claude/shared/memory/vision.md",
+    "_claude/shared/memory/write-ups.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/progress/shipped-features.md",
+    "_claude/builds/reports/approve-button-fix.md",
+    "_claude/builds/reports/approve-button-fix/shots/opt-inline--approved-desktop.png",
+    "_claude/builds/reports/approve-button-fix/shots/opt-inline--approved-phone.png",
+    "_claude/builds/reports/approve-button-fix/shots/opt-inline--busy-desktop.png",
+    "_claude/builds/reports/approve-button-fix/shots/opt-inline--busy-phone.png",
+    "_claude/builds/reports/approve-button-fix/shots/opt-inline--refused-desktop.png",
+    "_claude/builds/reports/approve-button-fix/shots/opt-inline--refused-phone.png",
+    "_claude/builds/reports/approve-button-fix/shots/opt-swap--refused-desktop.png",
+    "_claude/builds/reports/approve-button-fix/shots/opt-swap--refused-phone.png",
+    "_claude/builds/reports/approve-button-fix/shots/opt-top--refused-desktop.png",
+    "_claude/builds/reports/approve-button-fix/shots/opt-top--refused-phone.png",
+    "_claude/builds/reports/shipped-features.md"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/core/build-hook.mjs",
+    "apps/console-web/src/axf/core/deploy-log.mjs",
+    "apps/console-web/src/axf/core/feature-ledger.d.mts",
+    "apps/console-web/src/axf/core/feature-ledger.mjs",
+    "apps/console-web/src/axf/schemas/build-hook.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-build-hook.mjs",
+    "framework/spec/check-feature-ledger.mjs",
+    "framework/spec/fixtures/build-hook.json",
+    "framework/spec/fixtures/feature-ledger.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/server/__init__.py",
+    "apps/console-web/plugins/approvals-banner/test.mts",
+    "apps/console-web/plugins/approvals-banner/test.py",
+    "apps/console-web/plugins/approvals-banner/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "follow-amber",
+   "files": [
+    "apps/console-web/plugins/follow-amber/assets/dialog/approval-waiting-approve-mw6n1cnm-inline.json",
+    "apps/console-web/plugins/follow-amber/assets/dialog/approval-waiting-approve-mw6n1cnm-swap.json",
+    "apps/console-web/plugins/follow-amber/assets/dialog/approval-waiting-approve-mw6n1cnm-top.json",
+    "apps/console-web/plugins/follow-amber/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "expenses",
+   "files": [
+    "apps/expenses/_claude/README.md",
+    "apps/expenses/_claude/instructions/README.md",
+    "apps/expenses/_claude/memory/README.md",
+    "apps/expenses/_claude/rules/README.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-hook.mjs",
+    "framework/core/deploy-log.mjs",
+    "framework/core/feature-ledger.d.mts",
+    "framework/core/feature-ledger.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "shipped-features",
+   "files": [
+    "apps/console-web/plugins/shipped-features/README.md",
+    "apps/console-web/plugins/shipped-features/help.json",
+    "apps/console-web/plugins/shipped-features/ledger/apply.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/profiles/breakroom/framework/catalog/status.json",
+    "framework/plan/profiles/breakroom/framework/plan/build-queue.json",
+    "framework/plan/profiles/breakroom/framework/plan/plan.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-hooks.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/build-hook.json"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/install-console.sh"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261107-d2315004",
+   "name": "Approval waiting: Approve / Deny decide in the console",
+   "status": "approved",
+   "group": "g-20261107-a164cbe5",
+   "url": "/review/r-20261107-d2315004"
+  }
+ ],
+ "cost": {
+  "usd": 7.0629,
+  "estimated": false,
+  "tokens": {
+   "input": 250,
+   "output": 1603,
+   "cacheRead": 20374429,
+   "cacheWrite": 219381
+  }
+ },
+ "report": "",
+ "open": []
+}

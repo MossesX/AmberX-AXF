@@ -1,0 +1,223 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less",
+ "rev": 2,
+ "source": "api",
+ "by": "merge-watch",
+ "shippedAt": "2026-11-16T14:08:50Z",
+ "build": {
+  "id": "10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less",
+  "title": "10-minute steps: the splitter cuts every build into steps of 10 minutes or less (was 30). Steps are checkpoints inside ONE session: the session ticks each one done and commits as it goes, so nothing is lost if it dies, and there is no new prompt or relaunch per step. Update the splitter prompt, the ",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "10-minute steps: the splitter cuts every build into steps of 10 minutes or less (was 30). Steps are checkpoints inside ONE session: the session ticks each one done and commits as it goes, so nothing is lost if it dies, and there is no new prompt or relaunch per step. Update the splitter prompt, the ",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Build: 10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"10-minute steps: the splitter cuts every build into steps of 10 minutes or less (was 30). Steps are checkpoints inside ONE session: the session ticks each one done and commits as it goes, so nothing is lost if it dies, and there is no new prompt or relaunch per step. Update the splitter prompt, the \" (10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less) — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (4 left, ~1.8 h):\n[ ] s1 (~30 min) 10-minute steps: the splitter cuts every build into steps of 10 minutes or less (was 30).\n[ ] s2 (~30 min) Steps are checkpoints inside ONE session: the session ticks each one done and commits as it goes, so nothing is lost if it dies, and there is no new prompt or relaunch per step.\n[ ] s3 (~30 min) Update the splitter prompt, the\n[ ] s4 (~20 min) Tests green, report _claude/builds/reports/10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step 10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link 10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step 10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note 10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "10-minute steps: the splitter cuts every build into steps of 10 minutes or less (was 30).",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-11-13T01:15:44.704Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Steps are checkpoints inside ONE session: the session ticks each one done and commits as it goes, so nothing is lost if it dies, and there is no new prompt or relaunch per step.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-13T01:15:44.704Z",
+   "doneAt": "2026-11-13T01:16:21.359Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Update the splitter prompt, the",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-13T01:16:21.359Z",
+   "doneAt": "2026-11-13T01:19:27.358Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Tests green, report _claude/builds/reports/10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-13T01:19:27.358Z",
+   "doneAt": "2026-11-13T01:20:40.925Z",
+   "actualMin": 1,
+   "done": true
+  }
+ ],
+ "branch": "claude/10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 552,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/535"
+ },
+ "landedCommit": "4dbbdd96f9f2ffc09239616c1829be3720421ae2",
+ "commits": [
+  "4dbbdd96f9f2ffc09239616c1829be3720421ae2"
+ ],
+ "mergedAt": "2026-11-13T06:36:36Z",
+ "landedAt": "2026-11-13T06:28:07Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less.md",
+  "apps/amberx-droid/src/plugins/commands/web/lib-developer.ts",
+  "apps/console-web/plugins/build-orchestrator/help.json",
+  "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/test.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.d.mts",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/pipeline.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+  "apps/console-web/plugins/glossary-index/terms.json",
+  "framework/core/build-pipeline.mjs",
+  "framework/plan/builds-store-core.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/help.json",
+    "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/test.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.d.mts",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/pipeline.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "commands",
+   "files": [
+    "apps/amberx-droid/src/plugins/commands/web/lib-developer.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "glossary-index",
+   "files": [
+    "apps/console-web/plugins/glossary-index/terms.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-pipeline.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/builds-store-core.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "CI: Android framework + console",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43378955594",
+   "result": "pass",
+   "detail": "success"
+  },
+  {
+   "name": "apps/console-web/plugins/build-orchestrator/test.mjs: 35 passed (new: ceiling, legacy limit, createdAt kept, rules clamp, checkpoint brief)",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "pipeline.test.mjs: 45 passed (prompt, parse limit 10, rules split 10 min, needsSplit legacy, e2e brief checkpoint wording)",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "check-builds-store 40, check-builds-live 62, check-build-limit 52, check-build-origin 21, check-build-priority 8, check-model-policy 18",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "check-theme, check-controls pass; console-web tsc --noEmit is clean for the plugin.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "plugin-lifecycle check build-orchestrator reports stale references in framework/spec/check-projects.mjs. That file is unchanged by this build, so the findings were already there.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less.md",
+ "open": [
+  "The request title was cut off at \"Update the splitter prompt, the\". I read it as: update the splitter prompt and every place that states the limit.",
+  "`framework/cli/build-queue.mjs` and `framework/cli/pending.mjs` `--check-steps` (legacy plan queue / pending.json) still use 30. They check the old plan files, not orchestrator builds.",
+  "`plan-studio/web/plan-ai.mjs` still says plan steps are 30 minutes. Plan Studio is a separate plugin with its own step concept.",
+  "UI change is text plus a field range (Rules tab). No UI Review shots were taken in this headless run."
+ ]
+}

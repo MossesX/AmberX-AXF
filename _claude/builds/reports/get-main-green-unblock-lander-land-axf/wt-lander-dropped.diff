@@ -1,0 +1,376 @@
+# /tmp/wt-lander (claude/auto-lander-controls-in-the-gate-plugin @ 61013c9db): uncommitted state dropped 2026-11-16
+# staged + unstaged, stat of everything:
+#  _claude/THREADS.md                                 |  501 +-
+#  _claude/builds/journal/2026-11-p10.jsonl           |   21 -
+#  _claude/builds/journal/2026-11-p11.jsonl           |  108 -
+#  _claude/builds/journal/2026-11-p9.jsonl            |  157 -
+#  _claude/builds/orchestrator.json                   | 6531 +++-----------
+#  _claude/builds/origins.json                        |  204 -
+#  ...lander-controls-in-the-gate-plugin.choices.json |   14 +-
+#  .../auto-lander-controls-in-the-gate-plugin.md     |   24 +-
+#  ...o-lander-controls-in-the-gate-plugin.shots.json |   29 +-
+#  .../after/opt-compact--auto-lander-desktop.png     |  Bin 75868 -> 0 bytes
+#  .../shots/after/opt-compact--auto-lander-phone.png |  Bin 110552 -> 0 bytes
+#  .../after/opt-line-first--auto-lander-desktop.png  |  Bin 91921 -> 0 bytes
+#  .../after/opt-line-first--auto-lander-phone.png    |  Bin 148495 -> 0 bytes
+#  .../opt-status-first--auto-lander-desktop.png      |  Bin 91831 -> 0 bytes
+#  .../after/opt-status-first--auto-lander-phone.png  |  Bin 148407 -> 0 bytes
+#  ...ery-build-into-steps-of-10-minutes-or-less.json |  378 +-
+#  ...-not-showing-only-the-android-notification.json |  335 +-
+#  .../console-look-becomes-default-axhub-skin.json   |  744 --
+#  .../builds/shipped/console-skin-axhub-only.json    |   75 -
+#  .../shipped/context-menu-console-settings.json     |  146 -
+#  ...x-the-27-open-check-theme-problems-and-the.json |  305 +-
+#  ...hing-in-the-console-before-the-android-app.json |  334 +-
+#  .../shipped/hotfix-console-deploy-build-id.json    |   87 -
+#  .../builds/shipped/hotfix-launcher-splitter.json   |   89 -
+#  _claude/builds/shipped/land-all-skin-builds.json   |  363 -
+#  .../land-batch-merge-main-each-finished.json       |  257 +-
+#  .../merge-main-land-change-to-move-amberx.json     |  183 -
+#  .../merge-main-land-console-axhub-retry.json       |  219 -
+#  _claude/builds/shipped/notes-tasks-r2-land.json    |  112 -
+#  ...-claude-account-the-console-and-vps-builds.json |  150 +-
+#  _claude/builds/shipped/orch-build-id-40-chars.json |  149 -
+#  _claude/builds/shipped/overlay-float.json          |   96 -
+#  _claude/builds/shipped/overlay-pages.json          |  141 -
+#  .../per-toolbar-settings-fix-failing-chrome.json   |  108 +-
+#  _claude/builds/shipped/test-project-seed.json      |  165 -
+#  .../shipped/urgent-land-gizmo-chat-report.json     |   81 -
+#  _claude/builds/store.json                          | 9298 +++++---------------
+#  .../build-orchestrator/assets/card/home.json       |   28 -
+#  .../assets/settings/auto-lander-compact.json       |   24 +
+#  .../assets/settings/auto-lander-line-first.json    |   24 +
+#  .../assets/settings/auto-lander-status-first.json  |   24 +
+#  .../auto-lander-tab-build-or-mwi9pk6z-compact.json |   24 -
+#  ...to-lander-tab-build-or-mwi9pk6z-line-first.json |   24 -
+#  ...-lander-tab-build-or-mwi9pk6z-status-first.json |   24 -
+#  .../plugins/push-banner/assets/card/home.json      |   28 -
+#  apps/console-web/src/control/inventory.json        | Unmerged
+#  framework/cli/axf.mjs                              | Unmerged
+#  45 files changed, 5451 insertions(+), 16153 deletions(-)
+
+# full diff of code (everything outside _claude/):
+diff --git a/apps/console-web/plugins/build-orchestrator/assets/card/home.json b/apps/console-web/plugins/build-orchestrator/assets/card/home.json
+deleted file mode 100644
+index 7006e8df5..000000000
+--- a/apps/console-web/plugins/build-orchestrator/assets/card/home.json
++++ /dev/null
+@@ -1,28 +0,0 @@
+-{
+-  "$axf": "asset@1",
+-  "type": "card",
+-  "id": "build-orchestrator-home",
+-  "name": "Build orchestrator",
+-  "version": "1.0.0",
+-  "description": "Build orchestrator on Home: Build priorities.",
+-  "author": "AmberX AXF (gate fixer home-card)",
+-  "tags": [
+-    "home",
+-    "plugin-home"
+-  ],
+-  "data": {
+-    "title": "Build orchestrator",
+-    "icon": "box",
+-    "source": {
+-      "kind": "command",
+-      "plugin": "build-orchestrator",
+-      "command": "priority-list"
+-    },
+-    "view": "auto",
+-    "refresh": {
+-      "kind": "every",
+-      "every": 60
+-    },
+-    "size": "m"
+-  }
+-}
+diff --git a/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-compact.json b/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-compact.json
+new file mode 100644
+index 000000000..2a5d4ec58
+--- /dev/null
++++ b/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-compact.json
+@@ -0,0 +1,24 @@
++{
++  "$axf": "asset@1",
++  "type": "settings",
++  "id": "auto-lander-compact",
++  "name": "Auto-lander: compact",
++  "version": "1.0.0",
++  "description": "Switch and mode in the header toolbar, status as one line, then the landing line; recent runs folded.",
++  "author": "Build orchestrator plugin",
++  "tags": [
++    "build-orchestrator",
++    "auto-lander",
++    "ui-choices:build-orchestrator-auto-lander"
++  ],
++  "data": {
++    "view": "compact",
++    "order": [
++      "controls",
++      "line",
++      "runs"
++    ],
++    "compact": true,
++    "storageKey": "auto-lander-view"
++  }
++}
+diff --git a/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-line-first.json b/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-line-first.json
+new file mode 100644
+index 000000000..46905790a
+--- /dev/null
++++ b/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-line-first.json
+@@ -0,0 +1,24 @@
++{
++  "$axf": "asset@1",
++  "type": "settings",
++  "id": "auto-lander-line-first",
++  "name": "Auto-lander: line first",
++  "version": "1.0.0",
++  "description": "The landing line on top (what lands next is the first thing you see), then switch, mode and status, then recent runs.",
++  "author": "Build orchestrator plugin",
++  "tags": [
++    "build-orchestrator",
++    "auto-lander",
++    "ui-choices:build-orchestrator-auto-lander"
++  ],
++  "data": {
++    "view": "line-first",
++    "order": [
++      "line",
++      "controls",
++      "runs"
++    ],
++    "compact": false,
++    "storageKey": "auto-lander-view"
++  }
++}
+diff --git a/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-status-first.json b/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-status-first.json
+new file mode 100644
+index 000000000..ae1714493
+--- /dev/null
++++ b/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-status-first.json
+@@ -0,0 +1,24 @@
++{
++  "$axf": "asset@1",
++  "type": "settings",
++  "id": "auto-lander-status-first",
++  "name": "Auto-lander: status first",
++  "version": "1.0.0",
++  "description": "Switch and mode next to the status card on top, then the landing line, then recent runs. The default.",
++  "author": "Build orchestrator plugin",
++  "tags": [
++    "build-orchestrator",
++    "auto-lander",
++    "ui-choices:build-orchestrator-auto-lander"
++  ],
++  "data": {
++    "view": "status-first",
++    "order": [
++      "controls",
++      "line",
++      "runs"
++    ],
++    "compact": false,
++    "storageKey": "auto-lander-view"
++  }
++}
+diff --git a/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-tab-build-or-mwi9pk6z-compact.json b/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-tab-build-or-mwi9pk6z-compact.json
+deleted file mode 100644
+index d376544d7..000000000
+--- a/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-tab-build-or-mwi9pk6z-compact.json
++++ /dev/null
+@@ -1,24 +0,0 @@
+-{
+- "$axf": "asset@1",
+- "type": "settings",
+- "id": "auto-lander-tab-build-or-mwi9pk6z-compact",
+- "name": "auto-lander-tab-build-or-mwi9pk6z: Compact",
+- "version": "0.1.0",
+- "author": "UI Review choices",
+- "description": "Switch and mode in the header toolbar, status as one line, then the landing line; recent runs folded.",
+- "tags": [
+-  "ui-choice",
+-  "choice-set:auto-lander-tab-build-or-mwi9pk6z",
+-  "choice-option:compact"
+- ],
+- "data": {
+-  "view": "compact",
+-  "order": [
+-   "controls",
+-   "line",
+-   "runs"
+-  ],
+-  "compact": true,
+-  "storageKey": "auto-lander-view"
+- }
+-}
+\ No newline at end of file
+diff --git a/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-tab-build-or-mwi9pk6z-line-first.json b/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-tab-build-or-mwi9pk6z-line-first.json
+deleted file mode 100644
+index ef3dfd02b..000000000
+--- a/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-tab-build-or-mwi9pk6z-line-first.json
++++ /dev/null
+@@ -1,24 +0,0 @@
+-{
+- "$axf": "asset@1",
+- "type": "settings",
+- "id": "auto-lander-tab-build-or-mwi9pk6z-line-first",
+- "name": "auto-lander-tab-build-or-mwi9pk6z: Line first",
+- "version": "0.1.0",
+- "author": "UI Review choices",
+- "description": "The landing line on top (what lands next is the first thing you see), then switch, mode and status, then recent runs.",
+- "tags": [
+-  "ui-choice",
+-  "choice-set:auto-lander-tab-build-or-mwi9pk6z",
+-  "choice-option:line-first"
+- ],
+- "data": {
+-  "view": "line-first",
+-  "order": [
+-   "line",
+-   "controls",
+-   "runs"
+-  ],
+-  "compact": false,
+-  "storageKey": "auto-lander-view"
+- }
+-}
+\ No newline at end of file
+diff --git a/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-tab-build-or-mwi9pk6z-status-first.json b/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-tab-build-or-mwi9pk6z-status-first.json
+deleted file mode 100644
+index a26738976..000000000
+--- a/apps/console-web/plugins/build-orchestrator/assets/settings/auto-lander-tab-build-or-mwi9pk6z-status-first.json
++++ /dev/null
+@@ -1,24 +0,0 @@
+-{
+- "$axf": "asset@1",
+- "type": "settings",
+- "id": "auto-lander-tab-build-or-mwi9pk6z-status-first",
+- "name": "auto-lander-tab-build-or-mwi9pk6z: Status first",
+- "version": "0.1.0",
+- "author": "UI Review choices",
+- "description": "Switch and mode next to the status card on top, then the landing line, then recent runs. The default.",
+- "tags": [
+-  "ui-choice",
+-  "choice-set:auto-lander-tab-build-or-mwi9pk6z",
+-  "choice-option:status-first"
+- ],
+- "data": {
+-  "view": "status-first",
+-  "order": [
+-   "controls",
+-   "line",
+-   "runs"
+-  ],
+-  "compact": false,
+-  "storageKey": "auto-lander-view"
+- }
+-}
+\ No newline at end of file
+diff --git a/apps/console-web/plugins/push-banner/assets/card/home.json b/apps/console-web/plugins/push-banner/assets/card/home.json
+deleted file mode 100644
+index 2e4d38e16..000000000
+--- a/apps/console-web/plugins/push-banner/assets/card/home.json
++++ /dev/null
+@@ -1,28 +0,0 @@
+-{
+-  "$axf": "asset@1",
+-  "type": "card",
+-  "id": "push-banner-home",
+-  "name": "Push banner",
+-  "version": "1.0.0",
+-  "description": "Push banner on Home: Auto-land: every finished build.",
+-  "author": "AmberX AXF (gate fixer home-card)",
+-  "tags": [
+-    "home",
+-    "plugin-home"
+-  ],
+-  "data": {
+-    "title": "Push banner",
+-    "icon": "box",
+-    "source": {
+-      "kind": "command",
+-      "plugin": "push-banner",
+-      "command": "land-list"
+-    },
+-    "view": "auto",
+-    "refresh": {
+-      "kind": "every",
+-      "every": 60
+-    },
+-    "size": "m"
+-  }
+-}
+diff --git a/apps/console-web/src/control/inventory.json b/apps/console-web/src/control/inventory.json
+index 6eadbf552..47bf0c0e1 100644
+--- a/apps/console-web/src/control/inventory.json
++++ b/apps/console-web/src/control/inventory.json
+@@ -4,11 +4,19 @@
+   "counts": {
+     "views": 65,
+     "nav": 16,
++<<<<<<< HEAD
++    "tabGroups": 25,
++    "tabs": 74,
++    "settingsTabs": 70,
++    "settings": 87,
++    "functions": 251,
++=======
+     "tabGroups": 26,
+     "tabs": 78,
+     "settingsTabs": 71,
+     "settings": 89,
+-    "functions": 275,
++    "functions": 274,
++>>>>>>> origin/main
+     "buttons": 62,
+     "plugins": 71
+   },
+diff --git a/framework/cli/axf.mjs b/framework/cli/axf.mjs
+index 99f1bfb10..7b7c1a553 100644
+--- a/framework/cli/axf.mjs
++++ b/framework/cli/axf.mjs
+@@ -99,20 +99,7 @@ if (cmd === 'console') {
+   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'console.mjs')).href);
+   process.exit(await main(rest));
+ }
+-// `axf voice …` goes to the plugin that provides the voice listener (service:axf.wake-listener@1 with a cli.mjs), never
+-// by folder name: Claude mode on / off / status / test and the command history.
+-if (cmd === 'voice') {
+-  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
+-  const { join: joinPath } = await import('node:path');
+-  const { pathToFileURL } = await import('node:url');
+-  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
+-  const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
+-    try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).provides?.includes('service:axf.wake-listener@1') && exists(joinPath(plugins, d, 'cli.mjs')); } catch { return false; }
+-  });
+-  if (!dir) { console.error('no plugin provides the voice listener (service:axf.wake-listener@1)'); process.exit(1); }
+-  const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'cli.mjs')).href);
+-  process.exit(await main(rest));
+-}
++<<<<<<< HEAD
+ // A plugin's own CLI words (plugin.json `cli: { "<word>": "<file in the plugin>" }`, e.g. `axf lander status`): the word
+ // goes to whichever plugin declares it (never by folder name); its file exports main(argv).
+ {
+@@ -131,6 +118,21 @@ if (cmd === 'voice') {
+       process.exit(process.exitCode || 0);
+     }
+   }
++=======
++// `axf voice …` goes to the plugin that provides the voice listener (service:axf.wake-listener@1 with a cli.mjs), never
++// by folder name: Claude mode on / off / status / test and the command history.
++if (cmd === 'voice') {
++  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
++  const { join: joinPath } = await import('node:path');
++  const { pathToFileURL } = await import('node:url');
++  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
++  const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
++    try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).provides?.includes('service:axf.wake-listener@1') && exists(joinPath(plugins, d, 'cli.mjs')); } catch { return false; }
++  });
++  if (!dir) { console.error('no plugin provides the voice listener (service:axf.wake-listener@1)'); process.exit(1); }
++  const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'cli.mjs')).href);
++  process.exit(await main(rest));
++>>>>>>> origin/main
+ }
+ // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
+ // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that

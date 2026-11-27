@@ -1,0 +1,137 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-profiles-all-finish",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:44Z",
+ "build": {
+  "id": "profiles-all-finish",
+  "title": "Finish the one-profile merge: main-framework into all, old folders gone",
+  "profile": "all",
+  "category": "Builds",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Brett approved both open questions from merge-profiles-one:\n1. Fold the `main-framework` profile into `all` too (same rules: keep ids/status/steps, add fromProfile, suffix clashes).\n2. Delete the old profile folders (angel, big-dog, breakroom, current, refactor, urgent, main-framework) everywhere: repo AND the hub copy (claude-sync / axHub projects tree).",
+  "verbatim": false,
+  "at": "",
+  "source": "console",
+  "by": "profiles-all-finish",
+  "addenda": []
+ },
+ "brief": "# Finish the one-profile merge (main @ df77d2cc9)\n\nBrett approved both open questions from merge-profiles-one:\n1. Fold the `main-framework` profile into `all` too (same rules: keep ids/status/steps, add fromProfile, suffix clashes).\n2. Delete the old profile folders (angel, big-dog, breakroom, current, refactor, urgent, main-framework) everywhere: repo AND the hub copy (claude-sync / axHub projects tree).\n\nAlso: build_land's resolver just 'settled' the six old orchestrator.json files during the merge. Check they did not come back on main or re-gain builds; if they did, move any builds not already in `all` into it, then delete them. Make sure the reconciler/resolver (/opt/axf-batch/resolve.py and the builds-live publisher) no longer recreate old profile files.\n\nPostgres plan's build `postgres-console` (7 steps) must exist in `all`; add it if missing.\n\nValidate: all JSON parses, builds count = everything, orchestrator lists fine, related checks green. Commit, don't push.\n\nProgress: append `<time> START|DONE <step>` lines to PROGRESS.md in this folder at each step's start and end. Don't stop between steps.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-1"
+ ],
+ "runs": [
+  {
+   "session": "axf-profiles-all-finish--sully",
+   "account": "account-1",
+   "model": "Opus",
+   "startedAt": "2026-11-07T10:15:50.788Z",
+   "endedAt": "2026-11-07T10:32:08.591Z",
+   "exit": 0,
+   "costUsd": 5.6252
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Store core + persist + Python mirror: main-framework retired into all; all is the base profile (root export paths, catalog on)",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-07T10:15:50.788Z",
+   "doneAt": "2026-11-07T10:35:00Z",
+   "actualMin": 19,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Run the merge on the store (175 main-framework builds moved, 14 shared), regenerate root exports",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-07T10:15:50.788Z",
+   "doneAt": "2026-11-07T10:35:00Z",
+   "actualMin": 19,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Add postgres-console (7 steps) from the Postgres Plan Studio plan",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-07T10:15:50.788Z",
+   "doneAt": "2026-11-07T10:35:00Z",
+   "actualMin": 19,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Delete old profile folders in repo + hub; matrices to _claude/builds/matrices.json; manifest stops syncing framework/plan/profiles/",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-07T10:15:50.788Z",
+   "doneAt": "2026-11-07T10:35:00Z",
+   "actualMin": 19,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Stop recreation: builds-live publisher takes stale profile exports off main; /opt/axf-batch/resolve.py drops retired-profile files; profiles.mjs merge-all prunes folders",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-07T10:15:50.788Z",
+   "doneAt": "2026-11-07T10:35:00Z",
+   "actualMin": 19,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Tests + checks updated and green",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-07T10:15:50.788Z",
+   "doneAt": "2026-11-07T10:35:00Z",
+   "actualMin": 19,
+   "done": true
+  }
+ ],
+ "branch": "claude/profiles-all-finish",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "aeccdb0a848b520cd60fa4bb412e90f5037042ad",
+ "commits": [],
+ "mergedAt": "",
+ "landedAt": "2026-11-07T16:33:00Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 5.6252,
+  "estimated": false,
+  "tokens": {
+   "input": 180,
+   "output": 857,
+   "cacheRead": 13895703,
+   "cacheWrite": 210109
+  }
+ },
+ "report": "",
+ "open": []
+}

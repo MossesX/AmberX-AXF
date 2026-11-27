@@ -1,0 +1,362 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-crew-retrain",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:07Z",
+ "build": {
+  "id": "crew-retrain",
+  "title": "Crew retrain: every agent an all-rounder, no anonymous sessions",
+  "profile": "all",
+  "category": "Breakroom",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "every swarm agent can take every job type (skills, home job as preference only); new job types feature-build and ops-fix; router picks any free agent under budget; every headless launch is assigned to a named agent first and booked on its card; back-assign today's headless builds; Breakroom cards show skills, home job, current job. Booked on Landin' Lenny.",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Register crew-retrain in the Breakroom profile + banner entry",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "2026-11-03T15:58:19.537Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Job model: job types declare required skills; agents carry skills (all six get every skill); home job = preference",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T15:58:19.537Z",
+   "doneAt": "2026-11-03T16:05:30.656Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "New job types feature-build and ops-fix",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T16:05:30.656Z",
+   "doneAt": "2026-11-03T16:05:31.738Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Router: any on-duty agent under budget, home job first, then least busy",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T16:05:31.738Z",
+   "doneAt": "2026-11-03T16:05:32.857Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Launchers require an agent: claude-headless.sh + build_start take AXF_AGENT (auto-assign), --agent flag, agent-job.mjs assign",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T16:05:32.857Z",
+   "doneAt": "2026-11-03T16:07:20.795Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Back-assign today's headless builds round-robin and book them on the cards",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T16:07:20.795Z",
+   "doneAt": "2026-11-03T16:12:16.094Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Breakroom UI: cards show all skills, home job, current job; roster shows who's free",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T16:12:16.094Z",
+   "doneAt": "2026-11-03T16:23:04.430Z",
+   "actualMin": 11,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Tests, theme/controls checks, lifecycle, report, THREADS.md, PR",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T16:23:04.430Z",
+   "doneAt": "2026-11-03T16:23:05.239Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/crew-retrain",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 265,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/265"
+ },
+ "landedCommit": "390639cb193da958ca0d29f6515ae5bdc5465d17",
+ "commits": [
+  "4890c73a2067fd74da4238cbc96e22eb55559108",
+  "f5cf63213f079c76e0e4ee4699eeef833a74f02d",
+  "f58a644d933504f6d88f4b31c06f9b3f31960787",
+  "11f197e635db497ee3ab76208064544be83e3b2f",
+  "da1e79ca50a322b23b0cc2fc989574b3ac95c1a8",
+  "d30111f42490ca7f304f78380983d76cdeb3e3f6"
+ ],
+ "mergedAt": "2026-11-04T02:10:22Z",
+ "landedAt": "2026-11-04T02:10:22Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/current/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/crew-retrain.md",
+  "_claude/builds/reports/crew-retrain/shots/breakroom-crew-card-desktop.png",
+  "_claude/builds/reports/crew-retrain/shots/breakroom-crew-card-phone.png",
+  "_claude/builds/reports/crew-retrain/shots/breakroom-crew-desktop.png",
+  "_claude/builds/reports/crew-retrain/shots/breakroom-crew-phone.png",
+  "_claude/builds/reports/crew-retrain/shots/breakroom-jobs-desktop.png",
+  "_claude/builds/reports/crew-retrain/shots/breakroom-jobs-phone.png",
+  "_claude/builds/store.json",
+  "apps/console-web/plugins/agent-swarm/agents/roster.json",
+  "apps/console-web/plugins/agent-swarm/agents/skills/feature-build.md",
+  "apps/console-web/plugins/agent-swarm/agents/skills/ops-fix.md",
+  "apps/console-web/plugins/agent-swarm/jobs-core.mjs",
+  "apps/console-web/plugins/agent-swarm/jobs.mjs",
+  "apps/console-web/plugins/agent-swarm/plugin.json",
+  "apps/console-web/plugins/agent-swarm/swarm.mjs",
+  "apps/console-web/plugins/agent-swarm/test.mjs",
+  "apps/console-web/plugins/agent-swarm/web/cards.tsx",
+  "apps/console-web/plugins/agent-swarm/web/jobs.tsx",
+  "apps/console-web/plugins/agent-swarm/web/swarm.css",
+  "apps/console-web/plugins/agent-swarm/web/ui-types.tsx",
+  "apps/console-web/plugins/agent-swarm/web/ui.tsx",
+  "apps/console-web/plugins/chat-viewer/server/ingest.py",
+  "deploy/claude-headless.sh",
+  "framework/assets/job-type/feature-build.json",
+  "framework/assets/job-type/ops-fix.json",
+  "framework/cli/agent-job.mjs",
+  "framework/core/engines/job-type-rules.d.mts",
+  "framework/core/engines/job-type-rules.mjs",
+  "framework/core/engines/swarm-rules.d.mts",
+  "framework/core/engines/swarm-rules.mjs",
+  "framework/plan/profiles/current/framework/plan/pending.json",
+  "framework/schemas/json/agent.schema.json",
+  "framework/schemas/json/job-type.schema.json",
+  "framework/schemas/swarm.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-agent-slots.mjs",
+  "framework/spec/check-job-type.mts",
+  "framework/spec/fixtures/job-type.json",
+  "framework/spec/fixtures/swarm.json"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/current/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/crew-retrain.md",
+    "_claude/builds/reports/crew-retrain/shots/breakroom-crew-card-desktop.png",
+    "_claude/builds/reports/crew-retrain/shots/breakroom-crew-card-phone.png",
+    "_claude/builds/reports/crew-retrain/shots/breakroom-crew-desktop.png",
+    "_claude/builds/reports/crew-retrain/shots/breakroom-crew-phone.png",
+    "_claude/builds/reports/crew-retrain/shots/breakroom-jobs-desktop.png",
+    "_claude/builds/reports/crew-retrain/shots/breakroom-jobs-phone.png",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-swarm",
+   "files": [
+    "apps/console-web/plugins/agent-swarm/agents/roster.json",
+    "apps/console-web/plugins/agent-swarm/agents/skills/feature-build.md",
+    "apps/console-web/plugins/agent-swarm/agents/skills/ops-fix.md",
+    "apps/console-web/plugins/agent-swarm/jobs-core.mjs",
+    "apps/console-web/plugins/agent-swarm/jobs.mjs",
+    "apps/console-web/plugins/agent-swarm/plugin.json",
+    "apps/console-web/plugins/agent-swarm/swarm.mjs",
+    "apps/console-web/plugins/agent-swarm/test.mjs",
+    "apps/console-web/plugins/agent-swarm/web/cards.tsx",
+    "apps/console-web/plugins/agent-swarm/web/jobs.tsx",
+    "apps/console-web/plugins/agent-swarm/web/swarm.css",
+    "apps/console-web/plugins/agent-swarm/web/ui-types.tsx",
+    "apps/console-web/plugins/agent-swarm/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-agent-slots.mjs",
+    "framework/spec/check-job-type.mts",
+    "framework/spec/fixtures/job-type.json",
+    "framework/spec/fixtures/swarm.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/job-type-rules.d.mts",
+    "framework/core/engines/job-type-rules.mjs",
+    "framework/core/engines/swarm-rules.d.mts",
+    "framework/core/engines/swarm-rules.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/json/agent.schema.json",
+    "framework/schemas/json/job-type.schema.json",
+    "framework/schemas/swarm.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/job-type/feature-build.json",
+    "framework/assets/job-type/ops-fix.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "chat-viewer",
+   "files": [
+    "apps/console-web/plugins/chat-viewer/server/ingest.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/agent-job.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/profiles/current/framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "node apps/console-web/plugins/agent-swarm/test.mjs: 93 passed (router: home first, least busy, round the crew, --agent, force; build outcomes; assign and book end to end; all-rounder roster).",
+   "command": "node apps/console-web/plugins/agent-swarm/test.mjs",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "npx -y tsx framework/spec/check-job-type.mts: 122 · check-swarm.mts: 229 · check-agent-card.mts: 84.",
+   "command": "npx -y tsx framework/spec/check-job-type.mts",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "node framework/spec/check-agent-slots.mjs: 56/56 (its launcher runs now book into a scratch swarm folder).",
+   "command": "node framework/spec/check-agent-slots.mjs",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "check-theme, check-controls, console tsc --noEmit, axf validate --framework (481 assets), build-manager 42, console-terminal 75, chat-viewer 98, plugin-lifecycle check agent-swarm clean.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "tracker.mjs --check is red on main already (391 items without a status); not touched here.",
+   "command": "",
+   "result": "fail",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261103-5e7f222e",
+   "name": "Breakroom: all-rounder crew cards, Who's free, Jobs",
+   "status": "approved",
+   "group": "g-20261103-fc734bfa",
+   "url": "/review/r-20261103-5e7f222e"
+  }
+ ],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/crew-retrain.md",
+ "open": [
+  "Pay: the crew's weekly salaries ($6–20) are under a feature build's $40 cap, so a direct `agent-job.mjs feature-build` run is refused for budget; launches through `claude-headless.sh` book anyway (forced, noted on the card). Minimum-wage pay comes with the finished Breakroom (HR stays shelved).",
+  "Until this lands, the console runs the old sweep: the three runs still going (land-everything, crew-retrain, pass-all) would close as *failed* (no swarm report) and add one strike each. Lenny has two, under the rage-quit limit of three.",
+  "axHub's `build_start` source wasn't on this host to read; it goes through `claude-headless.sh`, which books it. Anything that looks a session up by exact name `=axf-<slug>` would miss the `--<agent>` suffix.",
+  "Android twin of the job-type/agent skill fields is deferred (Android on hold)."
+ ]
+}

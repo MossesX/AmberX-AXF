@@ -8,8 +8,9 @@
 import assert from 'node:assert/strict';
 import { controlGate } from '../core/engines/control-rules.mjs';
 import {
-  CONSOLE_CLIENT_STALE_MS, CONSOLE_TOOLS, consoleActionConfirm, consoleActionEffect, consoleActionNeeds, consoleCatalogFrom, consoleMessage, consoleMessageErrors,
-  consolePickClients, consoleResolve, consoleSearch, normalizeConsoleCatalog, runConsoleCommand,
+  CONSOLE_CLIENT_STALE_MS, CONSOLE_LATE_MS, CONSOLE_TOOLS, consoleActionConfirm, consoleActionEffect, consoleActionNeeds, consoleCatalogFrom, consoleFieldValue, consoleMessage, consoleMessageErrors,
+  consoleMessageLate, consolePickClients, consoleResolve, consoleSearch, consoleShotState, consoleSplitFocus, normalizeConsoleCatalog, runConsoleCommand,
+  CONSOLE_SHOT_MAX_WIDTH,
 } from '../core/engines/console-commands.mjs';
 
 let n = 0;
@@ -30,6 +31,10 @@ const entries = [
   { kind: 'dialog', label: 'Asset JSON', focus: { kind: 'dialog', id: 'asset-json' } },
   { kind: 'setting', label: 'Compact mode', focus: { kind: 'setting', tab: 'appearance', anchor: 'setting:compact' } },
   { kind: 'action', label: 'Randomize assets', focus: { kind: 'action', spec: 'assets.random' } },
+  { kind: 'field', label: 'Text size', detail: 'Settings › Appearance › Display', keywords: ['axf.display.fontScale'], focus: { tab: 'appearance', key: 'axf.display.fontScale' }, field: { type: 'slider', value: 100, min: 80, max: 140 } },
+  { kind: 'field', label: 'Help mode', detail: 'Settings › Help', focus: { tab: 'help', key: 'axf.help.mode' }, field: { type: 'toggle', value: false } },
+  { kind: 'field', label: 'Hub token', detail: 'Settings › Token control', focus: { tab: 'token-control', key: 'axf.hub.token' }, field: { type: 'secret', secret: true, value: 'leak' } },
+  { kind: 'field', label: 'Layout', detail: 'Settings › Appearance', focus: { tab: 'appearance', key: 'axf.layout' }, field: { type: 'choice', value: 'tabs-top', options: [{ value: 'tabs-top', label: 'Top' }, { value: 'list', label: 'List' }] } },
 ];
 const actions = [
   { id: 'assets.random', meta: { label: 'Randomize assets', requires: 'assets.swap' } },
@@ -44,7 +49,12 @@ const cat = consoleCatalogFrom(entries, actions, { app: 'console-web', here: { s
 eq(cat.items.filter((i) => i.kind === 'screen').map((i) => i.id), ['plan-studio', 'build-orchestrator', 'builds', 'home', 'theme-manager', 'token-control'], 'views become screens');
 eq(cat.items.find((i) => i.kind === 'settings' && i.id === 'token-control')!.label, 'Token control', '" settings" dropped from tab labels');
 ok(!cat.items.some((i) => i.id === 'file.save'), 'stub actions are left out');
-ok(!cat.items.some((i) => i.label === 'Compact mode'), 'single settings are not catalog items (their tab is)');
+ok(!cat.items.some((i) => i.label === 'Compact mode'), 'search-index setting rows are not catalog items (fields come as kind field)');
+const fsz = cat.items.find((i) => i.kind === 'field' && i.id === 'axf.display.fontScale')!;
+eq([fsz.parent, fsz.type, fsz.value, fsz.min, fsz.max], ['appearance', 'slider', '100', 80, 140], 'a field keeps its tab, kind, value as text and range');
+const tok = cat.items.find((i) => i.id === 'axf.hub.token')!;
+ok(tok.secret === true && tok.value === undefined, 'a secret field never carries its value');
+eq(cat.items.find((i) => i.id === 'axf.layout')!.options, ['tabs-top', 'list'], 'choices by value');
 ok(cat.items.find((i) => i.id === 'nav')!.params === true, 'params kept');
 eq(cat.here, { screen: 'home' }, 'here kept');
 eq(normalizeConsoleCatalog({ items: [{ kind: 'screen', id: 'a' }, { kind: 'screen', id: 'a' }, { kind: 'bogus', id: 'b' }, { kind: 'dialog' }] }).items, [{ kind: 'screen', id: 'a', label: 'a' }], 'de-duplicated, unknown kinds and id-less items dropped');
@@ -151,6 +161,103 @@ ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'open', kind: 'action',
 ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'explode' }).length === 1, 'unknown op refused');
 ok(consoleMessageErrors({ op: 'back' }).length === 1, 'frame required');
 eq(consoleMessage({ op: 'back' }, { id: 'x', by: 'me', now: NOW }), { $axf: 'console-command@1', id: 'x', op: 'back', by: 'me', at: new Date(NOW).toISOString() }, 'message shape');
-eq(CONSOLE_TOOLS.length, 9, 'nine MCP shortcut tools');
+eq(CONSOLE_TOOLS.length, 10, 'ten MCP shortcut tools');
+
+/* ---- focus on a screen (console-commands-reliable, Nov 11 2026): a tab or an item after the screen's name ---- */
+{
+  const screens = cat.items.filter((i) => i.kind === 'screen');
+  eq(consoleResolve(screens, 'screen', 'build-orchestrator pending'), { item: screens.find((i) => i.id === 'build-orchestrator'), focus: 'pending' }, 'screen id + tab');
+  eq(consoleResolve(screens, 'screen', 'Build orchestrator / my-build').focus, 'my-build', 'screen title + item');
+  eq(consoleResolve(screens, 'screen', 'build-orchestrator:console-commands-reliable').focus, 'console-commands-reliable', 'screen id: item');
+  eq(consoleResolve(screens, 'screen', 'builds queue').item?.id, 'builds', 'the longest exact screen name wins, and only a whole name');
+  eq(consoleResolve(screens, 'screen', 'plan studio').focus, undefined, 'a plain title has no focus');
+  eq(consoleResolve(screens, 'screen', 'open the build orchestrator approvals').focus, 'approvals', 'leading words people add');
+  // a keyword of two or more words is another exact name: it beats a shorter screen name that starts the same way
+  const named = [{ kind: 'screen', id: 'plan', label: 'Plan' }, { kind: 'screen', id: 'plan-studio-2', label: 'Plan Studio 2.0', keywords: ['plans', 'plan studio'] }] as typeof screens;
+  eq(consoleResolve(named, 'screen', 'plan studio'), { item: named[1] }, 'an alias names the screen, with no focus');
+  eq(consoleResolve(named, 'screen', 'Plan-Studio').item?.id, 'plan-studio-2', 'an alias is folded like a title');
+  eq(consoleResolve(named, 'screen', 'open the plan studio / Removals'), { item: named[1], focus: 'Removals' }, 'alias + what to focus');
+  eq(consoleResolve(named, 'screen', 'plan-studio-2 Removals').focus, 'Removals', 'id + focus as before');
+  eq(consoleResolve(named, 'screen', 'go to plan studio'), { item: named[1] }, 'leading words, then a whole name: no focus is cut out of it');
+  eq(consoleResolve(named, 'screen', 'open the Plan Studio 2.0'), { item: named[1] }, 'leading words, then the title');
+  eq(consoleResolve(named, 'screen', 'plan'), { item: named[0] }, 'the shorter screen keeps its own name');
+  eq(consoleResolve(named, 'screen', 'plan roadmap'), { item: named[0], focus: 'roadmap' }, 'and its own focus');
+  eq(consoleResolve(named, 'screen', 'plans').item?.id, 'plan-studio-2', 'a one-word keyword only scores');
+  eq(consoleSplitFocus(screens, 'build-orchestrator'), null, 'nothing after the name');
+  eq(consoleSplitFocus(screens, 'build-orchestratorx y'), null, 'a name must end at a separator');
+  const live = [{ id: 'tab', lastUsed: Date.now(), lastSeen: Date.now(), catalog: cat }];
+  const g = (path: string, input?: Record<string, unknown>) => runConsoleCommand({ op: 'act', target: 'console.screens', path, action: 'open', ...(input ? { input } : {}) } as never, { clients: live, id: 'f1' });
+  const a = g('build-orchestrator pending');
+  ok(a.ok && a.deliver?.message.focus === 'pending' && a.deliver.message.target === 'build-orchestrator' && (a.data as { focus?: string }).focus === 'pending', 'open carries focus');
+  const b = g('build-orchestrator', { focus: 'my-build' });
+  ok(b.ok && b.deliver?.message.focus === 'my-build', 'input.focus wins');
+  const c = runConsoleCommand({ op: 'act', target: 'console.settings', path: 'appearance', action: 'open', input: { focus: 'x' } } as never, { clients: live, id: 'f2' });
+  ok(c.ok && c.deliver?.message.focus === undefined, 'focus only on screens');
+}
+
+/* ---- single settings (fields): open, get, list, values ---- */
+{
+  const f1 = runConsoleCommand({ op: 'act', target: 'console.settings', path: 'text size', action: 'open' }, ctx);
+  ok(f1.ok && f1.deliver!.message.kind === 'settings' && f1.deliver!.message.target === 'appearance' && f1.deliver!.message.anchor === 'setting:axf.display.fontScale', 'a field by name opens its tab scrolled to it');
+  const f2 = runConsoleCommand({ op: 'act', target: 'console.settings', path: 'appearance', action: 'open' }, ctx);
+  ok(f2.ok && f2.deliver!.message.target === 'appearance' && !f2.deliver!.message.anchor, 'a tab name still opens the tab');
+  const f3 = runConsoleCommand({ op: 'get', target: 'console.settings', path: 'field:axf.help.mode' }, ctx);
+  ok(f3.ok && f3.data.value === 'false', 'get reads a field value');
+  const f4 = runConsoleCommand({ op: 'get', target: 'console.settings', path: 'token-control/axf.hub.token' }, ctx);
+  ok(f4.ok && f4.data.value === null, 'a secret reads as null');
+  const f5 = runConsoleCommand({ op: 'list', target: 'console.settings', select: { q: 'help' } }, ctx);
+  ok(f5.ok && (f5.data.items as { kind: string }[]).some((i) => i.kind === 'field'), 'a search lists fields after tabs');
+  const f6 = runConsoleCommand({ op: 'list', target: 'console.settings' }, ctx);
+  ok(f6.ok && !(f6.data.items as { kind: string }[]).some((i) => i.kind === 'field'), 'no search = tabs only');
+  ok(gated({ op: 'act', target: 'console.settings', path: 'text size', action: 'open' }, ['control.console.navigate']).ok, 'opening a field needs navigate only');
+  eq(consoleFieldValue({ type: 'toggle' }, 'on'), { value: true }, 'toggle on');
+  eq(consoleFieldValue({ type: 'toggle' }, 'toggle', true), { value: false }, 'toggle flips');
+  eq(consoleFieldValue({ type: 'slider', min: 80, max: 140 }, '120'), { value: 120 }, 'slider number');
+  ok(consoleFieldValue({ type: 'slider', min: 80, max: 140 }, '200').error, 'out of range refused');
+  eq(consoleFieldValue({ kind: 'choice', options: [{ value: 'tabs-top', label: 'Top' }] }, 'TABS-TOP'), { value: 'tabs-top' }, 'a choice by value, any case (SettingSpec shape)');
+  ok(consoleFieldValue({ type: 'choice', options: ['a'] }, 'b').error, 'unknown choice refused');
+  eq(consoleFieldValue({ type: 'multi_choice', options: ['a', 'b'] }, 'a, b'), { value: ['a', 'b'] }, 'multi choice');
+  eq(consoleFieldValue({ type: 'text' }, 'https://x:1'), { value: 'https://x:1' }, 'text as sent');
+  ok(consoleFieldValue({ type: 'action' }, 'x').error, 'an action row has no value');
+  const s1 = runConsoleCommand({ op: 'act', target: 'console.actions', path: 'settings.set', action: 'run', input: { args: ['axf.help.mode', 'on'] } }, { ...ctx, clients: [{ ...clients[0], catalog: consoleCatalogFrom(entries, [...actions, { id: 'settings.set', meta: { label: 'Change one setting', params: true, effect: 'write' } }]) }] });
+  ok(s1.ok && s1.deliver!.message.spec === 'settings.set:axf.help.mode:on', 'settings.set runs through console.actions');
+}
+
+/* ---- screenshots (console.nav act screenshot) ---- */
+{
+  ok(CONSOLE_TOOLS.includes('console_screenshot'), 'console_screenshot is a console MCP tool');
+  ok(CONSOLE_SHOT_MAX_WIDTH <= 1600, 'screenshots stay small');
+  const shot = (input?: Record<string, unknown>) => runConsoleCommand({ op: 'act', target: 'console.nav', path: 'here', action: 'screenshot', ...(input ? { input } : {}) }, ctx);
+  const w = shot();
+  ok(w.ok && w.deliver!.message.op === 'screenshot' && !w.deliver!.message.selector && !w.deliver!.message.address, 'a whole-page screenshot');
+  eq(consoleMessageErrors(w.ok ? w.deliver!.message : null), [], 'the screenshot message is valid');
+  const a = shot({ address: 'view:settings/panel:appearance' });
+  ok(a.ok && a.deliver!.message.address === 'view:settings/panel:appearance', 'one panel by console-control address');
+  const sel = shot({ selector: '.fx-dialog', to: 'all' });
+  ok(sel.ok && sel.deliver!.message.selector === '.fx-dialog' && sel.deliver!.to.length === 2, 'by CSS selector, to every open console');
+  const both = shot({ selector: '#x', address: 'view:home' });
+  ok(!both.ok && both.code === 'validation', 'a selector and an address together are refused');
+  ok(consoleMessageErrors({ $axf: 'console-command@1', id: 'x', op: 'screenshot', selector: 'a', address: 'b', by: '', at: '' }).length === 1, 'the console refuses both too');
+  ok(gated({ op: 'act', target: 'console.nav', path: 'here', action: 'screenshot' }, ['control.console.read']).ok, 'a screenshot is a read');
+  ok(!gated({ op: 'act', target: 'console.nav', path: 'here', action: 'screenshot' }, ['control.console.navigate']).ok, 'navigate alone does not show what is on screen');
+  eq(consoleShotState(
+    { screen: 'build-orchestrator', screenLabel: 'Build orchestrator', tabs: { 'view:build-orchestrator/tab:bo.tabs': 'pending', bad: 3 }, dialog: 'asset-json', focused: 'grid:queue', focusedRow: 'grid:queue/row:b1', scroll: { top: 40, fraction: 0.5, nested: {} } },
+    { screen: 'ignored', settings: 'appearance' }, { capture: 'page', width: 1600, height: 900, scale: 1 }),
+  { screen: 'build-orchestrator', screenLabel: 'Build orchestrator', tabs: { 'view:build-orchestrator/tab:bo.tabs': 'pending' }, dialog: 'asset-json', settings: 'appearance', selection: 'grid:queue/row:b1', scroll: { top: 40, fraction: 0.5 }, capture: 'page', width: 1600, height: 900, scale: 1 },
+  'the screen state: screen, tabs, dialog, settings tab, selection (the focused row first), scroll, what was captured');
+  eq(consoleShotState(null, { screen: 'home', screenLabel: 'Home' }), { screen: 'home', screenLabel: 'Home' }, 'without a live snapshot: where the console is');
+  eq(normalizeConsoleCatalog({ items: [], here: { screen: 'builds', tabs: { 'view:builds/tab:b.tabs': 'pending', x: 1 }, selection: 'grid:queue/row:b1', scroll: 3 } }).here,
+    { screen: 'builds', tabs: { 'view:builds/tab:b.tabs': 'pending' }, selection: 'grid:queue/row:b1' }, 'where a console is carries its open tabs and selection too');
+}
+
+/* ---- liveness + late commands ---- */
+ok(CONSOLE_CLIENT_STALE_MS <= 60_000, 'a console that stopped beating drops within a minute');
+{
+  const NOW2 = Date.parse('2026-11-11T10:00:00Z');
+  const m = consoleMessage({ op: 'open', kind: 'screen', target: 'home' }, { id: 'l', now: NOW2 });
+  eq(consoleMessageLate(m, NOW2 + 1_000), false, 'on time');
+  eq(consoleMessageLate(m, NOW2 + CONSOLE_LATE_MS + 1), true, 'a live command that reached a waking tab late is skipped');
+  eq(consoleMessageLate({ ...m, delivery: 'queued' }, NOW2 + CONSOLE_LATE_MS * 10), false, 'a queued command always runs');
+}
 
 console.log(`✓ console commands — ${n} checks`);

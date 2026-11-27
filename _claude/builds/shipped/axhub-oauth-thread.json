@@ -1,0 +1,98 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-axhub-oauth-thread",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:20Z",
+ "build": {
+  "id": "axhub-oauth-thread",
+  "title": "axhub-oauth-thread",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "axhub-oauth-thread",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/axhub-oauth-thread",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "b66b7ad95c6a2433f341309e42e15e314930863c",
+ "commits": [
+  "dc2a65c5f486e601ea216fd2728b846b4c4deca0",
+  "8e29abd9f2534466a008501ac4a193289446a7a3",
+  "2dcc5feaaee4c22b64ef8d04e18b3d39c2d2e93d",
+  "48f284f9ab4fa602fad0ce2e051118a81706d989",
+  "161d077dfdbbe5c33e5bf3422b00f421fd369cfe"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-26T22:52:20Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/handoff/INSTRUCTIONS.md",
+  "apps/console-web/plugins/claude-handoff/handoff-core.mjs",
+  "changes/2026/10/chg-20261026-120d016a22.json",
+  "framework/plan/pending.json"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/handoff/INSTRUCTIONS.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-handoff",
+   "files": [
+    "apps/console-web/plugins/claude-handoff/handoff-core.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "changes/2026/10/chg-20261026-120d016a22.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

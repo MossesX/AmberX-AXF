@@ -1,0 +1,92 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-voice-notes-tab",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:22Z",
+ "build": {
+  "id": "voice-notes-tab",
+  "title": "Voice notes: tabbable page that fetches saved notes",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Voice notes plugin gets a page (view voice-notes) listing the notes Voice Vault saved on axHub, and plugin.json tabable so Patches can add it as a tab.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Notes core + store: read the notes table, filter/search/group",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "",
+   "doneAt": "2026-10-24T11:26:29.001Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Notes page view + nav/menu, tabable in plugin.json",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-24T11:26:29.001Z",
+   "doneAt": "2026-10-24T11:26:29.008Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests, typecheck, build, docs",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-10-24T11:26:29.008Z",
+   "doneAt": "2026-10-24T11:26:29.013Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-24T11:26:29.022Z",
+ "landedAt": "2026-10-24T11:26:29.022Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

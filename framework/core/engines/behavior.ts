@@ -2,7 +2,8 @@
  * behavior-theme@1: how an app behaves, as one swappable asset (type `behavior-theme`), next to the colour theme (what
  * it looks like), the style theme (its shapes and type) and the layout (where things go). Four groups:
  *
- *  - motion       how fast and how things move: speed, easing, reduced motion, how pages and lists come in
+ *  - motion       how fast and how things move: speed, easing, reduced motion, how pages and lists come in, and the
+ *                 skin animations (swatch wave, skin-switch ripple / sweep, colour-picker fan; speed and intensity)
  *  - interaction  how controls answer: hover, press, focus ring, long-press and double-tap times, drag start, cursor
  *  - windows      how dialogs, pop-ups, drawers and floating windows open, close, snap, stack and minimize
  *  - feedback     how the app tells you things: toasts, sounds, vibration, confirm before delete, busy cursor
@@ -15,6 +16,8 @@
  */
 import type { BehaviorThemeData } from '../types';
 import type { StyleOutput } from './components';
+import { ANIMATION_ENUMS, ANIMATION_RANGES, SKIN_ANIMATIONS, animationStateOf, applyAnimationPrefs, type AnimationState } from './animation-rules.mjs';
+export { ANIMATION_DEFAULTS, ANIMATION_ENUMS, ANIMATION_PREF_KEYS, ANIMATION_PREFS_KEY, ANIMATION_RANGES, SKIN_ANIMATIONS, animationStateOf, applyAnimationPrefs, normalizeAnimationMotion, normalizeAnimationPrefs, setAnimationPref, type AnimationPrefKey, type AnimationPrefs, type AnimationState, type SkinAnimationKey } from './animation-rules.mjs';
 
 export const BEHAVIOR_TYPE = 'behavior-theme';
 
@@ -24,6 +27,9 @@ export const BEHAVIOR_ENUMS = {
   'motion.easing': ['standard', 'emphasized', 'linear', 'spring', 'bounce'],
   'motion.reduced': ['system', 'always', 'never'],
   'motion.entrance': ['theme', 'none', 'fade', 'rise', 'scale'],
+  'motion.swatches': ANIMATION_ENUMS.swatches,
+  'motion.skinSwitch': ANIMATION_ENUMS.skinSwitch,
+  'motion.picker': ANIMATION_ENUMS.picker,
   'interaction.hover': ['theme', 'none', 'tint', 'lift', 'glow', 'underline'],
   'interaction.press': ['theme', 'none', 'shrink', 'darken', 'ripple'],
   'interaction.focusRing': ['auto', 'always', 'never'],
@@ -42,6 +48,8 @@ export const BEHAVIOR_ENUMS = {
 
 /** Number fields: [min, max]. */
 export const BEHAVIOR_RANGES = {
+  'motion.animSpeed': ANIMATION_RANGES.animSpeed,
+  'motion.animIntensity': ANIMATION_RANGES.animIntensity,
   'interaction.longPressMs': [250, 1500],
   'interaction.doubleTapMs': [150, 700],
   'interaction.dragThreshold': [0, 24],
@@ -56,7 +64,7 @@ export const BEHAVIOR_GROUPS = ['motion', 'interaction', 'windows', 'feedback'] 
 
 /** The framework's behaviour when an app has no behaviour theme (the same as before the type existed). */
 export const DEFAULT_BEHAVIOR: BehaviorThemeData = {
-  motion: { speed: 'theme', easing: 'standard', reduced: 'system', entrance: 'theme' },
+  motion: { speed: 'theme', easing: 'standard', reduced: 'system', entrance: 'theme', swatches: 'wave', skinSwitch: 'ripple', picker: 'fan', animSpeed: 100, animIntensity: 60 },
   interaction: { hover: 'theme', press: 'theme', focusRing: 'auto', cursor: 'pointer', longPressMs: 550, doubleTapMs: 300, dragThreshold: 10 },
   windows: { dialogOpen: 'asset', backdrop: 'asset', popupOpen: 'asset', drawerOpen: 'asset', snap: false, snapGrid: 8, stack: 'cascade', minimize: 'cursor', closeOnBackdrop: true, closeOnEscape: true },
   feedback: { toastPosition: 'asset', toastMs: 0, sound: 'off', vibration: 'off', confirmDelete: 'risky', busyCursor: true },
@@ -64,6 +72,24 @@ export const DEFAULT_BEHAVIOR: BehaviorThemeData = {
 
 /** Speed → milliseconds (`theme` = keep the style theme's motion). */
 export const MOTION_MS: Record<string, number> = { instant: 0, fast: 90, normal: 160, slow: 260, relaxed: 380 };
+/**
+ * The skin animations (colour swatches that wave, the skin-switch ripple / sweep, the colour picker that fans out
+ * into shades): fields of `motion` (core/engines/animation-rules.mjs), so a skin's behaviour theme carries its own set.
+ */
+/** The animation tokens (CSS vars) every skin animation reads: duration, easing, intensity, speed and stagger. */
+export function skinAnimationVars(b: BehaviorThemeData): Record<string, string> {
+  const speed = b.motion.animSpeed > 0 ? b.motion.animSpeed : 100;
+  const k = (2.5 * 100) / speed;
+  return {
+    '--fx-anim-dur': `calc(var(--fx-motion) * ${k.toFixed(3)})`,
+    '--fx-anim-sweep-dur': `calc(var(--fx-motion) * ${(k * 1.6).toFixed(3)})`,
+    '--fx-anim-stagger': `calc(var(--fx-motion) * ${(k * 0.16).toFixed(3)})`,
+    '--fx-anim-ease': MOTION_EASE[b.motion.easing === 'linear' ? 'standard' : b.motion.easing] ?? MOTION_EASE.standard!,
+    '--fx-anim-pop-ease': MOTION_EASE.spring!,
+    '--fx-anim-intensity': (b.motion.animIntensity / 100).toFixed(2),
+  };
+}
+
 /** Easing → CSS timing function. */
 export const MOTION_EASE: Record<string, string> = {
   standard: 'cubic-bezier(0.2, 0, 0, 1)',
@@ -137,6 +163,7 @@ export function behaviorStyle(raw: unknown, prefersReduced = false): StyleOutput
   };
   if (reduced) vars['--fx-motion'] = '0ms';
   else if (b.motion.speed !== 'theme') vars['--fx-motion'] = `${MOTION_MS[b.motion.speed] ?? 160}ms`;
+  Object.assign(vars, skinAnimationVars(b));
   const attrs: Record<string, string> = {
     'data-fx-motion': reduced ? 'reduced' : b.motion.speed,
     'data-fx-entrance': reduced ? 'none' : b.motion.entrance,
@@ -145,6 +172,7 @@ export function behaviorStyle(raw: unknown, prefersReduced = false): StyleOutput
     'data-fx-focus': b.interaction.focusRing,
     'data-fx-cursor': b.interaction.cursor,
   };
+  for (const a of SKIN_ANIMATIONS) attrs[a.attr] = reduced || b.motion.animIntensity === 0 ? 'off' : String(b.motion[a.key]);
   // "asset" = follow the dialog / pop-up asset (their own attributes stay); anything else overrides them
   const w = b.windows;
   if (reduced) attrs['data-fx-dialog-anim'] = 'none';
@@ -171,4 +199,18 @@ export function vibrationPattern(raw: unknown, kind: 'tap' | 'success' | 'warnin
   if (v === 'off') return [];
   const base = v === 'strong' ? 30 : 12;
   return kind === 'tap' ? [base] : kind === 'success' ? [base, 40, base] : [base * 2, 60, base * 2, 60, base * 2];
+}
+
+/** The behaviour theme with this app's animation picks (Settings → Appearance → Animations) laid over it. */
+export function withAnimationPrefs(raw: unknown, prefs: unknown): BehaviorThemeData {
+  const b = normalizeBehavior(raw);
+  Object.assign(b.motion, applyAnimationPrefs(b.motion, prefs));
+  return b;
+}
+
+/** What the Animations section, the API and voice read: each animation's value, the skin's, and whether it plays. */
+export function animationState(raw: unknown, prefs: unknown, prefersReduced = false): AnimationState {
+  const b = normalizeBehavior(raw);
+  const reduced = b.motion.reduced === 'always' || (b.motion.reduced === 'system' && prefersReduced);
+  return animationStateOf(b.motion, prefs, reduced);
 }

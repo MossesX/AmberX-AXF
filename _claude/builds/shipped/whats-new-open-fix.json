@@ -1,0 +1,358 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-whats-new-open-fix",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:48Z",
+ "build": {
+  "id": "whats-new-open-fix",
+  "title": "Bug fix: tapping the What's new banner item opens nothing; dialogs cannot be closed on phone",
+  "profile": "all",
+  "category": "App",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Brett (Nov 3 2026, voice): \"I see the What's new banner and I'm clicking it. But I'm not seeing anything.\" Addendum: \"I have this banner open. I can't close it.\" Tap opens the panel every time (phone/desktop, standalone/Molly); every dialog closes by X, outside tap, back/Escape, swipe down; control@1 console.dialogs close. Agent: Janitor Joey.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-whats-new-open-fix",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T21:18:28.495Z",
+   "endedAt": "2026-11-03T22:46:49.237Z",
+   "exit": 0,
+   "costUsd": 17.382
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Reproduce the dead tap and find the cause",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T21:18:28.495Z",
+   "doneAt": "2026-11-03T21:36:01.248Z",
+   "actualMin": 18,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Fix the banner tap for What's new and every other banner item",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T21:36:01.248Z",
+   "doneAt": "2026-11-03T22:14:37.442Z",
+   "actualMin": 39,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Dialog close: X, outside tap, back/Escape, swipe down on phone",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T22:14:37.442Z",
+   "doneAt": "2026-11-03T22:14:39.053Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "console.dialogs close action + console_dialog close",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T22:14:39.053Z",
+   "doneAt": "2026-11-03T22:14:41.008Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Tests, screenshots, report, THREADS, PR",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T22:14:41.008Z",
+   "doneAt": "2026-11-03T22:16:59.239Z",
+   "actualMin": 2,
+   "done": true
+  }
+ ],
+ "branch": "claude/whats-new-open-fix",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 290,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/290"
+ },
+ "landedCommit": "88886a2efb35a3b3411f092b60601b2575a80606",
+ "commits": [
+  "e4ba3e600da10f2ccec9eebcc47217f30546a4cb",
+  "8e116fd2f6eda91d63f2e9954ce21a1c5e401765"
+ ],
+ "mergedAt": "2026-11-04T04:52:23Z",
+ "landedAt": "2026-11-04T04:15:46Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/whats-new-open-fix.md",
+  "_claude/builds/reports/whats-new-open-fix/shots/after-panel-desktop.png",
+  "_claude/builds/reports/whats-new-open-fix/shots/after-panel-phone.png",
+  "_claude/builds/reports/whats-new-open-fix/shots/after-strip-tap-opens-panel-desktop.png",
+  "_claude/builds/reports/whats-new-open-fix/shots/after-strip-tap-opens-panel-phone.png",
+  "_claude/builds/reports/whats-new-open-fix/shots/after-swipe-down-phone.png",
+  "_claude/builds/reports/whats-new-open-fix/shots/after-window-below-chrome-desktop.png",
+  "_claude/builds/reports/whats-new-open-fix/shots/after-window-below-chrome-phone.png",
+  "_claude/builds/reports/whats-new-open-fix/shots/before-strip-tap-expands-inline-phone.png",
+  "_claude/builds/reports/whats-new-open-fix/shots/before-window-over-banners-phone.png",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/core/engines/console-commands.mjs",
+  "apps/amberx-droid/src/axf/core/engines/control-rules.mjs",
+  "apps/amberx-droid/src/axf/core/engines/windows.ts",
+  "apps/amberx-droid/src/axf/react/components/Overlays.tsx",
+  "apps/amberx-droid/src/axf/react/windows/WindowHost.tsx",
+  "apps/amberx-droid/src/axf/schemas/control.json",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/core/engines/console-commands.mjs",
+  "apps/axhub-web/src/axf/core/engines/control-rules.mjs",
+  "apps/axhub-web/src/axf/core/engines/windows.ts",
+  "apps/axhub-web/src/axf/react/components/Overlays.tsx",
+  "apps/axhub-web/src/axf/react/windows/WindowHost.tsx",
+  "apps/axhub-web/src/axf/schemas/control.json",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/console-commands/console.mjs",
+  "apps/console-web/plugins/console-commands/server/__init__.py",
+  "apps/console-web/plugins/console-commands/web/index.tsx",
+  "apps/console-web/plugins/systems-check/web/WhatsNew.tsx",
+  "apps/console-web/plugins/whats-shipped/web/index.tsx",
+  "apps/console-web/server/mcp_server.py",
+  "apps/console-web/src/axf/core/engines/console-commands.mjs",
+  "apps/console-web/src/axf/core/engines/control-rules.mjs",
+  "apps/console-web/src/axf/core/engines/windows.ts",
+  "apps/console-web/src/axf/react/components/Overlays.tsx",
+  "apps/console-web/src/axf/react/windows/WindowHost.tsx",
+  "apps/console-web/src/axf/schemas/control.json",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/core/engines/console-commands.mjs",
+  "apps/molly/src/axf/core/engines/control-rules.mjs",
+  "apps/molly/src/axf/core/engines/windows.ts",
+  "apps/molly/src/axf/react/components/Overlays.tsx",
+  "apps/molly/src/axf/react/windows/WindowHost.tsx",
+  "apps/molly/src/axf/schemas/control.json",
+  "apps/molly/src/axf/ui/axf.css",
+  "framework/core/engines/console-commands.mjs",
+  "framework/core/engines/control-rules.mjs",
+  "framework/core/engines/windows.ts",
+  "framework/react/components/Overlays.tsx",
+  "framework/react/windows/WindowHost.tsx",
+  "framework/schemas/control.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-console-commands.mts",
+  "framework/spec/check-windows.mts",
+  "framework/spec/fixtures/control.json",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/whats-new-open-fix.md",
+    "_claude/builds/reports/whats-new-open-fix/shots/after-panel-desktop.png",
+    "_claude/builds/reports/whats-new-open-fix/shots/after-panel-phone.png",
+    "_claude/builds/reports/whats-new-open-fix/shots/after-strip-tap-opens-panel-desktop.png",
+    "_claude/builds/reports/whats-new-open-fix/shots/after-strip-tap-opens-panel-phone.png",
+    "_claude/builds/reports/whats-new-open-fix/shots/after-swipe-down-phone.png",
+    "_claude/builds/reports/whats-new-open-fix/shots/after-window-below-chrome-desktop.png",
+    "_claude/builds/reports/whats-new-open-fix/shots/after-window-below-chrome-phone.png",
+    "_claude/builds/reports/whats-new-open-fix/shots/before-strip-tap-expands-inline-phone.png",
+    "_claude/builds/reports/whats-new-open-fix/shots/before-window-over-banners-phone.png"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/server/mcp_server.py",
+    "apps/console-web/src/axf/core/engines/console-commands.mjs",
+    "apps/console-web/src/axf/core/engines/control-rules.mjs",
+    "apps/console-web/src/axf/core/engines/windows.ts",
+    "apps/console-web/src/axf/react/components/Overlays.tsx",
+    "apps/console-web/src/axf/react/windows/WindowHost.tsx",
+    "apps/console-web/src/axf/schemas/control.json",
+    "apps/console-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/core/engines/console-commands.mjs",
+    "apps/amberx-droid/src/axf/core/engines/control-rules.mjs",
+    "apps/amberx-droid/src/axf/core/engines/windows.ts",
+    "apps/amberx-droid/src/axf/react/components/Overlays.tsx",
+    "apps/amberx-droid/src/axf/react/windows/WindowHost.tsx",
+    "apps/amberx-droid/src/axf/schemas/control.json",
+    "apps/amberx-droid/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/core/engines/console-commands.mjs",
+    "apps/axhub-web/src/axf/core/engines/control-rules.mjs",
+    "apps/axhub-web/src/axf/core/engines/windows.ts",
+    "apps/axhub-web/src/axf/react/components/Overlays.tsx",
+    "apps/axhub-web/src/axf/react/windows/WindowHost.tsx",
+    "apps/axhub-web/src/axf/schemas/control.json",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/core/engines/console-commands.mjs",
+    "apps/molly/src/axf/core/engines/control-rules.mjs",
+    "apps/molly/src/axf/core/engines/windows.ts",
+    "apps/molly/src/axf/react/components/Overlays.tsx",
+    "apps/molly/src/axf/react/windows/WindowHost.tsx",
+    "apps/molly/src/axf/schemas/control.json",
+    "apps/molly/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-console-commands.mts",
+    "framework/spec/check-windows.mts",
+    "framework/spec/fixtures/control.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-commands",
+   "files": [
+    "apps/console-web/plugins/console-commands/console.mjs",
+    "apps/console-web/plugins/console-commands/server/__init__.py",
+    "apps/console-web/plugins/console-commands/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/console-commands.mjs",
+    "framework/core/engines/control-rules.mjs",
+    "framework/core/engines/windows.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/Overlays.tsx",
+    "framework/react/windows/WindowHost.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/web/WhatsNew.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "whats-shipped",
+   "files": [
+    "apps/console-web/plugins/whats-shipped/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/control.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "**Phone:** the window opens at y 246, where the strip ends at 246. Strip tap → panel. Back, swipe down, outside tap and X each close it. The X is 35×35. The chevron folds and leaves no dialog.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "**Desktop:** the same, with Escape instead of swipe.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261103-049edfb2",
+   "name": "What's new opens from the banner; dialogs close every way",
+   "status": "approved",
+   "group": "g-20261103-307d9efe",
+   "url": "/review/r-20261103-049edfb2"
+  }
+ ],
+ "cost": {
+  "usd": 17.382,
+  "estimated": false,
+  "tokens": {
+   "input": 318,
+   "output": 1809,
+   "cacheRead": 25772349,
+   "cacheWrite": 246493
+  }
+ },
+ "report": "_claude/builds/reports/whats-new-open-fix.md",
+ "open": [
+  "A window that is already open stays where it is; only newly opened windows go below the chrome. The Terminal window is opened fresh on each load.",
+  "In the local harness the Banners strip sometimes stayed hidden until its banners loaded (seen only with partial hub data; the live console shows it).",
+  "Inside Molly: the console runs as in a phone browser, so the same fixes apply; not separately tested on a device."
+ ]
+}

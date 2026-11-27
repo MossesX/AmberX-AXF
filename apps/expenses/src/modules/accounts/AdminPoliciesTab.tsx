@@ -77,12 +77,12 @@ interface OverrideSummary {
 function DiffRow({ row, pinned, inherited }: { row: PolicyRowWire; pinned: SettingValue; inherited: SettingValue }) {
   const same = fmtPolicyValue(row, pinned) === fmtPolicyValue(row, inherited);
   return (
-    <Stack direction="row" sx={{ gap: 1, alignItems: "baseline", flexWrap: "wrap" }}>
-      <Typography sx={{ fontSize: 11.5, minWidth: 160 }}>{row.label}</Typography>
-      <Typography sx={{ fontSize: 11.5, fontFamily: token("mono"), color: token("accent") }}>
+    <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-xl)', alignItems: "baseline", flexWrap: "wrap" }}>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', minWidth: 160 }}>{row.label}</Typography>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', fontFamily: token("mono"), color: token("accent") }}>
         {fmtPolicyValue(row, pinned)}
       </Typography>
-      <Typography sx={{ fontSize: 10.5, color: token("dim") }}>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
         {same
           ? // Worth naming rather than hiding: a pin that equals the tier above
             // looks like nothing today and is the whole point tomorrow — it
@@ -112,24 +112,24 @@ function OverrideCard({
       : entry.view.defaults[key];
 
   return (
-    <Box sx={{ border: `1px solid ${token("edge")}`, borderRadius: token("radius"), p: 1.25 }}>
-      <Stack direction="row" sx={{ alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-        <Typography sx={{ fontSize: 12.5, fontWeight: 600, fontFamily: token("mono") }}>
+    <Box sx={{ border: `var(--fx-border-w) solid ${token("edge")}`, borderRadius: token("radius"), p: 1.25 }}>
+      <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap" }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 600, fontFamily: token("mono") }}>
           {entry.subject}
         </Typography>
         <Chip
           size="small"
           variant="outlined"
           label={`${entry.keys.length} pinned`}
-          sx={{ height: 18, fontSize: 10, color: token("accent"), borderColor: token("accent") }}
+          sx={{ height: 18, fontSize: 'var(--fx-type-root-2xs)', color: token("accent"), borderColor: token("accent") }}
         />
         <Box sx={{ flex: 1 }} />
-        <Button size="small" onClick={onToggle} sx={{ fontSize: 11.5, textTransform: "none" }}>
+        <Button size="small" onClick={onToggle} sx={{ fontSize: 'var(--fx-type-root-sm)', textTransform: "none" }}>
           {open ? "Close editor" : "Edit"}
         </Button>
       </Stack>
 
-      <Stack sx={{ gap: 0.25, mt: 0.75 }}>
+      <Stack sx={{ gap: 'var(--fx-dens-gap-xs)', mt: 0.75 }}>
         {entry.keys.map((key) => {
           const row = rowFor(key);
           return row ? (
@@ -138,7 +138,7 @@ function OverrideCard({
             // A pinned key with no catalog row: a module registered the row,
             // pinned somebody, and was then unregistered. Shown rather than
             // dropped — an invisible pin is one nobody can clear.
-            <Typography key={key} sx={{ fontSize: 11, color: token("warn") }}>
+            <Typography key={key} sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("warn") }}>
               {key}: pinned, but no catalog row declares it any more
             </Typography>
           );
@@ -207,9 +207,9 @@ export default function AdminPoliciesTab() {
 
   const overrides = (
     <Box sx={{ height: "100%", minHeight: 0, overflow: "auto", p: 1.5 }}>
-      <Stack sx={{ gap: 1.25 }}>
-        <Stack direction="row" sx={{ alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-          <Typography sx={{ fontSize: 12.5, fontWeight: 700, flex: 1 }}>
+      <Stack sx={{ gap: 'var(--fx-dens-gap-2xl)' }}>
+        <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap" }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 700, flex: 1 }}>
             Members with overrides
           </Typography>
           <Button
@@ -217,32 +217,32 @@ export default function AdminPoliciesTab() {
             variant="outlined"
             disabled={busy}
             onClick={() => void run()}
-            sx={{ fontSize: 11.5, textTransform: "none" }}
+            sx={{ fontSize: 'var(--fx-type-root-sm)', textTransform: "none" }}
           >
             {busy ? <CircularProgress size={14} /> : scan ? "Rescan" : "Scan roster"}
           </Button>
         </Stack>
 
         {error && (
-          <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+          <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
             {error}
           </Alert>
         )}
 
         {busy && (
-          <Stack sx={{ gap: 0.5 }}>
+          <Stack sx={{ gap: 'var(--fx-dens-gap-md)' }}>
             <LinearProgress
               variant="determinate"
               value={total > 0 ? Math.min(100, (scanned / Math.min(total, SCAN_LIMIT)) * 100) : 0}
             />
-            <Typography sx={{ fontSize: 11, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
               read {scanned} of {Math.min(total, SCAN_LIMIT)}…
             </Typography>
           </Stack>
         )}
 
         {scan === null && !busy && (
-          <Typography sx={{ fontSize: 12, color: token("dim") }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
             Nothing indexes the override documents — one file per subject, and no route lists them —
             so finding out who has pinned anything means reading each member’s cascade. That is a
             request per member, so it happens when you ask for it and not on the way in.
@@ -251,7 +251,7 @@ export default function AdminPoliciesTab() {
 
         {scan !== null && (
           <>
-            <Typography sx={{ fontSize: 11, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
               {scan.length === 0
                 ? "Nobody has pinned anything — every member follows the site defaults."
                 : `${scan.length} member${scan.length === 1 ? "" : "s"} carry overrides.`}

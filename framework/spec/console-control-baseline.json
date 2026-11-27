@@ -1,0 +1,14 @@
+{
+  "$axf": "console-control-baseline@1",
+  "note": "Things the console shows without a console-control address. Only goes down: node framework/cli/check-console-control.mjs --update",
+  "counts": {
+    "views": 0,
+    "nav": 0,
+    "tabGroups": 0,
+    "settings": 0,
+    "plugins": 0,
+    "toolbars": 0,
+    "dataGrids": 0,
+    "rawButtons": 437
+  }
+}

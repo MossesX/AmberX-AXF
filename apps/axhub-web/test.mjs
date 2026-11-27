@@ -132,7 +132,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   const { readFileSync, existsSync } = await import('node:fs');
   const here = new URL('.', import.meta.url).pathname;
   const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
-  const own = { banner: 'amberx-thin', toolbar: 'axhub-web', 'context-menu': 'axhub-web', 'nav-menu': 'axhub-web', 'app-menu': 'axhub-web' };
+  const own = { banner: 'amberx-thin', toolbar: 'axhub-web', 'context-menu': 'axhub-web', 'nav-menu': 'default-axhub-web-nav', 'app-menu': 'default-axhub-web-appmenu' };
   for (const [type, id] of Object.entries(own)) {
     eq(man.defaults[type], id, `default ${type} is ${id}`);
     ok(mine.has(`${type}/${id}`), `ships ${type}/${id}`);
@@ -152,7 +152,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   eq(parseRoute('#/approvals'), { view: 'home', params: {} }, '#/approvals is home');
   eq(parseRoute('#/go-pass'), { view: 'go-pass', params: {} }, '#/go-pass opens the Go pass page (axHub decision #99)');
   const readText = (await import('node:fs')).readFileSync;
-  ok(readText(new URL('./src/assets/nav-menu/axhub-web.json', import.meta.url), 'utf8').includes('"view": "go-pass"'), 'the nav menu reaches the Go pass page');
+  ok(readText(new URL('./src/assets/nav-menu/default-axhub-web-nav.json', import.meta.url), 'utf8').includes('"view": "go-pass"'), 'the nav menu reaches the Go pass page');
   {
     const parts = readText(new URL('./src/views/ApprovalParts.tsx', import.meta.url), 'utf8');
     ok(/title="The code that runs"[^>]*collapsible/.test(parts), 'the code that runs has its own collapsible section');
@@ -247,7 +247,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   const actionsAt = detail.indexOf('approval-actions'), whatAt = detail.indexOf('<WhatItDoes'), codeAt = detail.indexOf('<CodeSection');
   ok(actionsAt > 0 && actionsAt < detail.indexOf('</header>') && actionsAt < whatAt && actionsAt < codeAt, 'Approve is in the page head, above the description and the code');
   ok(/orderActions\(item\.actions\)/.test(detail) && /filter\(\(a\) => a === 'approve'\)/.test(detail), 'Approve comes first among the actions');
-  const nav = JSON.parse(readFileSync(`${here}src/assets/nav-menu/axhub-web.json`, 'utf8'));
+  const nav = JSON.parse(readFileSync(`${here}src/assets/nav-menu/default-axhub-web-nav.json`, 'utf8'));
   const navViews = nav.data.sections.flatMap((x) => x.items.map((i) => i.view));
   for (const v of ['home', 'approvals-log', 'passes', 'users', 'handoff', 'account', 'apps']) ok(navViews.includes(v), `the nav reaches ${v}`);
 }

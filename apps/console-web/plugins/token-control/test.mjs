@@ -4,14 +4,14 @@
  * document, the AmberX tables, the plans and an orchestrator@1 file (AXF_ORCH_FILE), so nothing shared is touched.
  */
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const T = mkdtempSync(join(tmpdir(), 'axf-tc-'));
 Object.assign(process.env, {
   AXF_APPEARANCE_FILE: join(T, 'appearance.json'), AXF_AMBERX_NOTES_DIR: join(T, 'notes'), AXF_CONTROL_DATA_DIR: join(T, 'data'),
-  AXF_PLANS_DIR: join(T, 'plans'), AXF_ORCH_FILE: join(T, 'orch.json'), AXF_CONTROL_SALT: 'test-salt',
+  AXF_PLAN_TREE_DIR: join(T, 'plans'), AXF_ORCH_FILE: join(T, 'orch.json'), AXF_CONTROL_SALT: 'test-salt',
   AXF_THREADS_FILE: join(T, 'THREADS.md'), AXF_PASS_SECRET: 'pass-secret', AXF_NO_TTY_APPROVAL: '1',
 });
 writeFileSync(process.env.AXF_APPEARANCE_FILE, JSON.stringify({ $axf: 'appearance@1', slots: { 'design-package': 'hub-default', layout: 'axhub-console' }, settings: { 'axf.banners.x': 1 } }));
@@ -53,6 +53,36 @@ await test('tokens: get / set / list / reset ride the look document', async () =
   const r = await runControl({ op: 'reset', target: 'tokens.layout', path: 'navWidth' });
   assert.equal(r.ok, true); assert.equal(doc().settings['axf.tokens.layout'], undefined);
 });
+await test('tokens: component tokens in the style (grid.* / tabs.*) and per instance (tokens.instances)', async () => {
+  const s = await runControl({ op: 'set', target: 'tokens.style', path: 'grid.hoverBg', value: 'accentSoft', by: 'test' });
+  assert.equal(s.ok, true); assert.equal(s.item.value, 'accentSoft'); assert.equal(s.item.token, '--fx-grid-hover-bg');
+  assert.deepEqual(doc().settings['axf.tokens.style'], { '*': { 'grid.hoverBg': 'accentSoft' } });
+  assert.equal((await runControl({ op: 'set', target: 'tokens.style', path: 'tabs.indicator', value: 'nope nope' })).code, 'validation');
+  const l = await runControl({ op: 'list', target: 'tokens.style' });
+  const row = l.items.find((x) => x.id === 'tabs.pillsActiveBg');
+  assert.equal(row.level, 'basic'); assert.equal(row.default, 'var(--fx-accent)'); assert.ok(row.description.length > 10);
+  assert.equal((await runControl({ op: 'reset', target: 'tokens.style', path: 'grid.hoverBg' })).ok, true);
+  // one tab row's own values
+  const i1 = await runControl({ op: 'set', target: 'tokens.instances', path: 'tabs.settings.main.activeText', value: 'accent', by: 'test' });
+  assert.equal(i1.ok, true); assert.equal(i1.item.value, 'accent'); assert.equal(i1.key, 'axf.tokens.instances');
+  const i2 = await runControl({ op: 'set', target: 'tokens.instances', path: 'tabs.settings.main.indicator', value: 'danger' });
+  assert.equal(i2.ok, true); assert.deepEqual(i2.item.values, { activeText: 'accent', indicator: 'danger' });
+  assert.equal((await runControl({ op: 'set', target: 'tokens.instances', path: 'tabs.settings.main.indicator', value: 'not a colour!' })).code, 'validation');
+  assert.equal((await runControl({ op: 'set', target: 'tokens.instances', path: 'tabs.settings.main', value: 'accent' })).code, 'validation');
+  const li = await runControl({ op: 'list', target: 'tokens.instances' });
+  assert.equal(li.items.length, 2); assert.deepEqual(li.instances.map((x) => x.id), ['tabs.settings.main']); assert.equal(li.instances[0].hasPrevious, true);
+  const g = await runControl({ op: 'get', target: 'tokens.instances', path: 'tabs.settings.main' });
+  assert.deepEqual(g.value, { activeText: 'accent', indicator: 'danger' });
+  const rp = await runControl({ op: 'act', target: 'tokens.instances', path: 'tabs.settings.main', action: 'restore-previous', by: 'test' });
+  assert.equal(rp.ok, true); assert.deepEqual(rp.values, { activeText: 'accent' });
+  assert.equal((await runControl({ op: 'act', target: 'tokens.instances', path: 'tabs.settings.main', action: 'nope' })).code, 'validation');
+  const rh = await runControl({ op: 'act', target: 'tokens.instances', path: 'tabs.settings.main', action: 'restore-hub', by: 'test' });
+  assert.equal(rh.ok, true); assert.deepEqual(rh.values, {});
+  assert.equal(doc().settings['axf.tokens.instances'], undefined, 'nothing left: the key is dropped');
+  await runControl({ op: 'set', target: 'tokens.instances', path: 'grid.builds.hoverBg', value: 'accentSoft' });
+  assert.equal((await runControl({ op: 'reset', target: 'tokens.instances' })).ok, true);
+  assert.equal(doc().settings['axf.tokens.instances'], undefined);
+});
 await test('tokens: theme colour, style field, design package resolves the theme', async () => {
   const g = await runControl({ op: 'get', target: 'tokens.theme', path: 'accent' });
   assert.equal(g.item.asset, 'hub-night');
@@ -69,6 +99,26 @@ await test('tokens: slots swap, override under a design package, reset needs a s
   assert.equal((await runControl({ op: 'reset', target: 'tokens.slots' })).code, 'validation');
   assert.equal((await runControl({ op: 'reset', target: 'tokens.slots', path: 'color-theme' })).ok, true);
   assert.equal(doc().settings['axf.appearance.overrides'], undefined);
+});
+await test('tokens: a colour theme set from outside lands inside each app\'s skin (same skin, no new one)', async () => {
+  const rules = await import('../../../../framework/core/engines/skin-rules.mjs');
+  const looks = join(T, 'looks');
+  mkdirSync(looks, { recursive: true });
+  const skinned = rules.setUseSkin(rules.pickSkin(rules.newAppLook('tc-skinned', {}), 'windows'), true);
+  writeFileSync(join(looks, 'tc-skinned.json'), JSON.stringify(skinned));
+  writeFileSync(join(looks, 'tc-own.json'), JSON.stringify(rules.newAppLook('tc-own', {})));
+  const look = (app) => JSON.parse(readFileSync(join(looks, `${app}.json`), 'utf8'));
+  assert.equal((await runControl({ op: 'set', target: 'tokens.slots', path: 'color-theme', value: 'arctic-daylight' })).ok, true);
+  const after = look('tc-skinned');
+  assert.equal(after.skin.id, 'windows', 'the skin stays');
+  assert.equal(after.skin.colorTheme, 'arctic-daylight', 'the pick is the colour theme inside the skin');
+  assert.equal(after.skin.overrides?.['color-theme'], undefined, 'never a skin override');
+  assert.deepEqual(readdirSync(looks).sort(), ['tc-own.json', 'tc-skinned.json'], 'no other look or skin is written');
+  assert.equal(look('tc-own').own.slots['color-theme'], 'arctic-daylight', 'an app without a skin takes it as its own pick');
+  await runControl({ op: 'reset', target: 'tokens.slots', path: 'color-theme' });
+  assert.equal(look('tc-skinned').skin.colorTheme, undefined, 'reset = the skin\'s own colours');
+  assert.equal(look('tc-skinned').skin.id, 'windows');
+  rmSync(looks, { recursive: true, force: true });
 });
 await test('tokens: look / custom are retired', async () => {
   assert.equal((await runControl({ op: 'set', target: 'tokens.look', path: 'compact', value: true })).code, 'not_implemented');

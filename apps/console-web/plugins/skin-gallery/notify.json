@@ -1,0 +1,16 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "skin-gallery.switched",
+      "label": "Skin switched",
+      "group": "console",
+      "app": "console",
+      "source": "Skins",
+      "description": "A skin was used, put back, restored to default or undone at some scope (hub, app, screen or plugin), from the screen, the API, the CLI or voice. Shown as a popup with Undo.",
+      "match": { "source": "skin-gallery" },
+      "enforced": "browser",
+      "only": ["popup"]
+    }
+  ]
+}

@@ -57,10 +57,11 @@ export function deriveColor(seed) {
     const surface2 = hslToHex(hue, tint, 98);
     const surface3 = hslToHex(hue, tint, 92.5);
     const text = fit(hue, Math.min(tint * 2, 35), 13, bg, 12, -1);
-    const muted = fit(hue, Math.min(tint, 18), 44, surface, 4.6, -1);
+    // text tokens are fitted on the page (bg), the darker of the two light surfaces: AA on both (spec/check-theme-contrast.mjs)
+    const muted = fit(hue, Math.min(tint, 18), 44, bg, 4.6, -1);
     const border = fit(hue, tint, 87, surface, 1.3, -0.5);
-    const accent = fit(ah, as, 46, '#ffffff', 4.6, -1);
-    const st = (h, s, l) => fit(h, s, l, surface, 3.2, -1);
+    const accent = fit(ah, as, 46, bg, 4.6, -1);
+    const st = (h, s, l) => fit(h, s, l, bg, 4.6, -1);
     return {
       bg, surface, surface2, surface3, text, muted, border,
       accent, accentText: '#ffffff', accentSoft: rgba(accent, 0.1),
@@ -262,7 +263,7 @@ const TOOLBAR = [
   { id: 'status-strip', name: 'Status Strip', use: 'A status bar on top', tags: ['widgets', 'status'], description: 'Widgets only: AI and connection status, build progress, unread alerts and the clock.', data: TB('icons', 'spread', [], { widgets: [W('status', 'ai', 'start', 0), W('status', 'online', 'start', 10), W('progress', 'build', 'end', 10), W('counter', 'alerts', 'end', 20), W('clock', 'digital-24h', 'end', 30)], density: 'compact', surface: 'flat' }) },
   { id: 'power-user', name: 'Power User', use: 'Experts who want everything', tags: ['dense', 'live'], description: 'Eleven icon commands, the pages provider and the bar toggles, folding away when not needed.', data: TB('icons', 'start', [G('file', [T.new, T.openFile, T.save]), G('edit', [T.undo, T.redo, T.cut, T.copy, T.paste]), G('app', [T.alerts, T.settings, T.keys]), G('pages', [], { provider: 'views', max: 6, label: 'Pages' }), G('chrome', [], { provider: 'chrome', max: 4, label: 'Bars' })], { density: 'compact', collapsible: true }) },
   { id: 'review-flow', name: 'Review Flow', use: 'Side-by-side review', tags: ['review', 'live'], description: 'Undo, redo and save with the open windows provider so reviewers jump between compared items.', data: TB('icons-labels', 'start', [G('history', [T.undo, T.redo, T.save]), G('windows', [], { provider: 'windows', max: 6, label: 'Open windows' }), G('inbox', [T.alerts])]) },
-  { id: 'amberx-signature', name: 'AmberX Signature', use: 'The AmberX brand frame', tags: ['brand', 'amber', 'glass'], description: 'The AmberX house toolbar: live pages, a live search, the day and night switch and the account, on glass; the brand draws its own mark here.', data: TB('icons', 'start', [G('pages', [T.home], { provider: 'views', max: 6, label: 'Pages' }), G('app', [T.settings])], { search: live('Search AmberX…  (Ctrl K)'), widgets: [W('theme-switch', 'day-night', 'end', 10), W('avatar', 'account', 'end', 20)], surface: 'glass', collapsible: true }) },
+  { id: 'amberx-signature', name: 'AmberX Signature', use: 'The AmberX brand frame', tags: ['brand', 'amber', 'glass'], description: 'The AmberX house toolbar: live pages, a live search, the day and night switch and the account, on glass; the brand draws its own mark here.', data: TB('icons', 'start', [G('pages', [T.home], { provider: 'views', max: 6, label: 'Pages' }), G('app', [T.settings])], { search: live('Search AmberX…  (Ctrl K)'), widgets: [W('theme-switch', 'amberx-day-night', 'end', 10), W('avatar', 'account', 'end', 20)], surface: 'glass', collapsible: true }) },
 ];
 
 /* ───────────────────────── seeds: style packages (s19, s20) ───────────────────────── */
@@ -383,11 +384,26 @@ const NAVS = [
   ['amber-signature', 'AmberX Signature', NAV('list', [NS(null, ['home', 'approvals', 'apps']), NS('Make', ['components', 'assets', 'demos']), NS(null, ['settings'])], { header: 'AmberX', indicator: 'fill' }), 'amber', BH(['normal', 'emphasized', 'rise'], ['lift', 'shrink', 500, 280, 8], ['scale', 'blur', 'scale', 'slide', true, 8, 'cascade', 'cursor'], ['top-right', 4500, 'subtle', 'light', 'risky']), 'AmberX', 'the AmberX house behaviour', 'The AmberX house feel: emphasized motion, lifting hovers, frosted dialogs, a subtle sound.'],
   ['gizmo-console', 'GizmoX Console', NAV('list', DEV, { header: 'GizmoX', density: 'compact', indicator: 'bar' }), 'gizmo', BH(['fast', 'emphasized', 'fade'], ['tint', 'darken', 500, 260, 6], ['fade', 'dim', 'fade', 'slide', true, 8, 'remember', 'dock'], ['bottom-right', 3500, 'off', 'off', 'risky']), 'GizmoX', 'the GizmoX development console', 'The GizmoX console feel: fast emphasized fades, docked windows that remember their places, quiet notices.'],
 ];
+// Skin animations per behaviour theme (build skin-animations-swatches-skin-switch, Nov 14 2026): swatch rows, the skin
+// switch, the colour picker, speed (percent) and intensity, laid into the theme's motion block.
+const BH_ANIM = {
+  precise: ['ripple', 'sweep', 'fan', 130, 40],
+  fluid: ['wave', 'ripple', 'fan', 100, 70],
+  quiet: ['ripple', 'fade', 'pop', 90, 30],
+  alert: ['pop', 'sweep', 'pop', 160, 55],
+  instant: ['off', 'off', 'off', 100, 0],
+  cinematic: ['wave', 'sweep', 'fan', 60, 80],
+};
+const withAnim = (bid, b) => {
+  const a = BH_ANIM[bid];
+  return a ? { ...b, motion: { ...b.motion, swatches: a[0], skinSwitch: a[1], picker: a[2], animSpeed: a[3], animIntensity: a[4] } } : b;
+};
+
 function navAssets() {
   const out = [];
   for (const [id, name, data, bid, bdata, bname, use, bdesc] of NAVS) {
     out.push(env('nav-menu', { id, name, tags: ['pairs:' + bid], description: `${name}: ${use}. Lists the pages it can; each app shows the ones it has. Pairs with the ${bname ?? bid} behaviour theme.` }, data));
-    if (bdata) out.push(env('behavior-theme', { id: bid, name: bname, tags: ['pairs:' + id], description: bdesc }, bdata));
+    if (bdata) out.push(env('behavior-theme', { id: bid, name: bname, tags: ['pairs:' + id], description: bdesc }, withAnim(bid, bdata)));
   }
   return out;
 }
@@ -407,8 +423,8 @@ const DP = [
   ['humanist-reader', 'Humanist Reader', 'humanist', 'linen-slate', 'document-reader', 'gentle', { 'style-package': 'calm-reader', 'nav-menu': 'text-only', 'context-menu': 'reader-minimal' }, 'regular', ['light', 'reading'], 'Serif headings on warm linen in a focused reading column; gentle motion and a minimal menu.'],
   ['creative-plum', 'Creative Plum', 'geometric', 'plum-noir', 'canvas-studio', 'cinematic', { 'style-package': 'gradient-pop', toolbar: 'appearance-studio', 'context-menu': 'appearance-quick' }, null, ['dark', 'creative'], 'Geometric type on plum-black, gradient controls and cinematic motion for creative suites.'],
   ['kiosk-display', 'Kiosk Display', 'soft-touch', 'saffron-day', 'kiosk', 'kiosk', { 'style-package': 'kiosk-bold', toolbar: 'kiosk-lite', 'context-menu': 'locked-down' }, 'regular', ['light', 'kiosk'], 'Chrome-free, big-target and forgiving: for kiosks, wall displays and shared screens.'],
-  ['amberx-signature-day', 'AmberX Signature Day', 'geometric', 'saffron-day', 'signature-dock', 'amber', { 'style-package': 'amber-signature', toolbar: 'amberx-signature', 'nav-menu': 'amber-signature' }, null, ['light', 'brand', 'amber'], 'The AmberX house look by day: gold on cream, signature controls, the AmberX toolbar and behaviour.'],
-  ['amberx-signature-night', 'AmberX Signature Night', 'geometric', 'carbon-amber', 'signature-dock', 'amber', { 'style-package': 'amber-signature', toolbar: 'amberx-signature', 'nav-menu': 'amber-signature' }, null, ['dark', 'brand', 'amber'], 'The AmberX house look after dark: molten gold on carbon, with the same signature set.'],
+  ['amberx-signature-day', 'AmberX Signature Day', 'geometric', 'saffron-day', 'signature-dock', 'amber', { 'style-package': 'amber-signature', toolbar: 'amberx-signature' }, null, ['light', 'brand', 'amber'], 'The AmberX house look by day: gold on cream, signature controls, the AmberX toolbar and behaviour.'],
+  ['amberx-signature-night', 'AmberX Signature Night', 'geometric', 'carbon-amber', 'signature-dock', 'amber', { 'style-package': 'amber-signature', toolbar: 'amberx-signature' }, null, ['dark', 'brand', 'amber'], 'The AmberX house look after dark: molten gold on carbon, with the same signature set.'],
   ['gizmox-console', 'GizmoX Console', 'terminal-pro', 'obsidian', 'console-pro', 'gizmo', { 'style-package': 'gizmo-console', toolbar: 'developer-ops', 'nav-menu': 'gizmo-console', 'context-menu': 'developer-tools' }, 'tight', ['dark', 'brand', 'developer'], 'The GizmoX development console: monospace headings on Obsidian, the console frame, developer toolbar and menus.'],
 ];
 // The scale assets every package names (Angel build ui-all-assets, Oct 31 2026): compact unless the package's look needs more room.

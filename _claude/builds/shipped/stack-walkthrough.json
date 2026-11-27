@@ -1,0 +1,412 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-stack-walkthrough",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:49Z",
+ "build": {
+  "id": "stack-walkthrough",
+  "title": "Whole-stack walkthrough plugin (AmberX, editable voice, video download)",
+  "profile": "all",
+  "category": "AmberX",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "90-min narrated walkthrough of the whole stack, AmberX plugin, editable voice, downloadable video, 10-minute steps saved as they go.",
+  "verbatim": false,
+  "at": "2026-11-01T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Shared loader: pick a walkthrough by WALKTHROUGH env, apply voice/narration overrides (voice.json)",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "2026-11-01T22:39:10.877Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "tts.mjs + record.mjs + assemble.mjs read the loader; AmberX tour unchanged",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:39:10.877Z",
+   "doneAt": "2026-11-01T22:39:11.252Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Per-chapter url/viewport/device; one recorded context per device kind",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:39:11.252Z",
+   "doneAt": "2026-11-01T22:41:00.655Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Explainer page (diagram slides served by the recorder), slide() helper",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:41:00.655Z",
+   "doneAt": "2026-11-01T22:41:00.902Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Read-only guard for console + axHub chapters (writes answered in the browser)",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:41:00.902Z",
+   "doneAt": "2026-11-01T22:41:01.140Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Assemble: per-scene cut with freeze-frame when a clip grows, letterbox phone into 1080p",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:41:01.140Z",
+   "doneAt": "2026-11-01T22:41:50.034Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Assemble: 1080p + 720p download copies, per-walkthrough publish folder",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:41:50.034Z",
+   "doneAt": "2026-11-01T22:41:50.257Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "rebuild.sh: WALKTHROUGH, VOICE, VOICE_ONLY (re-voice without re-recording), voice download by name",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:41:50.257Z",
+   "doneAt": "2026-11-01T22:42:15.684Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Server: /api/walkthrough/<id>/<file>, walkthroughs.json, download with attachment header",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:42:15.684Z",
+   "doneAt": "2026-11-01T22:42:58.670Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Script ch1 cold open + ch2 asset@1",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:42:58.670Z",
+   "doneAt": "2026-11-01T22:44:38.285Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Script ch3 engines + ch4 two ports",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:44:38.285Z",
+   "doneAt": "2026-11-01T22:45:09.902Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Script ch5 build engine + CLI",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:45:09.902Z",
+   "doneAt": "2026-11-01T22:45:30.621Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "Script ch6 Dev Console tour",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:45:30.621Z",
+   "doneAt": "2026-11-01T22:45:52.729Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Script ch7 plugins",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:45:52.729Z",
+   "doneAt": "2026-11-01T22:46:15.036Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "Script ch8 builds + orchestrator",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:46:15.036Z",
+   "doneAt": "2026-11-01T22:46:35.147Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s16",
+   "text": "Script ch9 changes log, UI Review, systems check",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:46:35.147Z",
+   "doneAt": "2026-11-01T22:47:01.821Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s17",
+   "text": "Script ch10 agents + ch11 axHub",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:47:01.821Z",
+   "doneAt": "2026-11-01T22:47:31.373Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s18",
+   "text": "Script ch12 veto + ch13 AmberX",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:47:31.373Z",
+   "doneAt": "2026-11-01T22:48:05.128Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s19",
+   "text": "Script ch14 VPS + ch15 MCP + ch16 close; check.mjs passes",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:48:05.128Z",
+   "doneAt": "2026-11-01T22:49:01.061Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s29",
+   "text": "Script extra: a build from ask to merge + making a new look",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:49:01.061Z",
+   "doneAt": "2026-11-01T22:49:42.935Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s28",
+   "text": "Script extra: the family of apps + what it is worth",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:49:42.935Z",
+   "doneAt": "2026-11-01T22:50:15.151Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s27",
+   "text": "Script extra: Claude everywhere (threads, memory, Go pass) + voice and Molly",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:50:15.151Z",
+   "doneAt": "2026-11-01T22:50:42.206Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s26",
+   "text": "Script extra: straight answers; order chapters; ~90 min check",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:50:42.206Z",
+   "doneAt": "2026-11-01T22:51:55.917Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s20",
+   "text": "Plugin: walkthrough picker (AmberX tour / The whole stack) + Download button",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:51:55.917Z",
+   "doneAt": "2026-11-01T22:56:32.281Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s21",
+   "text": "Plugin: voice editor (voice, speed, per-scene narration), overrides saved on axHub",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:56:32.281Z",
+   "doneAt": "2026-11-01T22:56:32.543Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s22",
+   "text": "Plugin: Re-voice / Re-record button through the console (veto call), molly-guide takes walkthrough + overrides",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:56:32.543Z",
+   "doneAt": "2026-11-01T22:56:32.811Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s23",
+   "text": "Tests (test.mjs, server tests), typecheck, theme + controls checks",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:56:32.811Z",
+   "doneAt": "2026-11-01T22:56:33.085Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s24",
+   "text": "Docs: README, plan doc, THREADS, PR ready",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:56:33.085Z",
+   "doneAt": "2026-11-01T22:58:58.048Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s25",
+   "text": "Record + publish on the VPS (unattended run, job agent)",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T22:58:58.048Z",
+   "doneAt": "2026-11-02T05:32:27.280Z",
+   "actualMin": 393,
+   "done": true
+  }
+ ],
+ "branch": "claude/project-thread-646cjb",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 229,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/229"
+ },
+ "landedCommit": "5e458f37d64b10da1c09d2b0b6ad3685b2337166",
+ "commits": [
+  "8667a4beef79730df116ec182efab78650a2e628"
+ ],
+ "mergedAt": "2026-11-02T01:38:15Z",
+ "landedAt": "2026-11-02T14:54:00Z",
+ "files": [
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/store.json",
+  "framework/plan/profiles/big-dog/framework/plan/pending.json"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/profiles/big-dog/framework/plan/pending.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

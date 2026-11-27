@@ -46,6 +46,8 @@ export const PLUGIN_TOOL_MAX = 64;
 export const PLUGIN_AUTO_READS = ['info', 'data', 'data-file'];
 /** The generic MCP tools (always there, whatever plugins are installed). */
 export const PLUGIN_GENERIC_TOOLS = ['plugin_commands', 'plugin_read', 'plugin_run'];
+/** A declared MCP tool name (commands.items[].tool): the name a contract fixes, e.g. `lander_status`. */
+export const PLUGIN_TOOL_NAME = /^[a-z][a-z0-9_]{2,63}$/;
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 const str = (v, max = 400) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
@@ -187,10 +189,11 @@ export function normalizeCommandsBlock(raw) {
   (Array.isArray(raw.items) ? raw.items : []).forEach((it, i) => {
     if (!isObj(it)) { errors.push(`commands.items[${i}] must be an object`); return; }
     const n = {};
-    for (const k of ['id', 'title', 'description', 'output', 'route', 'action', 'skip']) { const v = str(it[k], k === 'description' ? 800 : 300); if (v) n[k] = v; }
+    for (const k of ['id', 'title', 'description', 'output', 'route', 'action', 'skip', 'tool']) { const v = str(it[k], k === 'description' ? 800 : 300); if (v) n[k] = v; }
     for (const k of ['readOnly', 'destructive', 'confirm', 'navigate']) if (typeof it[k] === 'boolean') n[k] = it[k];
     if (it.input !== undefined) { if (isObj(it.input)) n.input = it.input; else errors.push(`commands.items[${i}].input must be a JSON Schema object`); }
     if (n.id && !ID.test(n.id)) errors.push(`commands.items[${i}].id "${n.id}" must be lower case letters, digits and dashes`);
+    if (n.tool && (!PLUGIN_TOOL_NAME.test(n.tool) || PLUGIN_GENERIC_TOOLS.includes(n.tool))) errors.push(`commands.items[${i}].tool "${n.tool}" must be lower case letters, digits and underscores (3-64) and not a generic tool`);
     if (n.route) { const rm = /^(GET|POST|PUT|PATCH|DELETE)\s+(\/\S*)$/.exec(n.route); if (!rm) errors.push(`commands.items[${i}].route must be "<METHOD> /path"`); }
     if (!n.id && !n.route && !n.action) errors.push(`commands.items[${i}] needs an id, a route or an action`);
     if (it.skip !== undefined && !n.skip) errors.push(`commands.items[${i}].skip must say why`);
@@ -218,6 +221,7 @@ function command(fields) {
     output: fields.output || '',
     source: fields.source,
     ...(fields.context ? { context: true } : {}),
+    ...(fields.tool ? { tool: fields.tool } : {}),
   };
 }
 
@@ -285,7 +289,7 @@ export function derivePluginCommands(plugin) {
       if (r.stream && !d) { skipped.push({ route: key, why: 'a live stream (server-sent events), not a command' }); return; }
       const effect = d?.readOnly ? 'read' : d?.destructive ? 'destructive' : d?.navigate ? 'navigate' : d?.readOnly === false && r.method === 'GET' ? 'write' : routeEffect(r.method, r.path);
       add(command({ id: d?.id || ids[i], title: d?.title || (routes.filter((x) => x.fn === r.fn).length > 1 ? `${humanize(r.fn, r.method)}: ${r.path.replace(/^\//, '') || 'root'}` : humanize(r.fn, r.method)),  description: d?.description || r.doc || `${r.method} /api/plugins/${folder}${r.path === '/' ? '' : r.path}`,
-        effect, confirm: d?.confirm, run: { route: { method: r.method, path: r.path, params: r.params.map((p) => ({ name: p.name, in: p.in })), body: r.body } },
+        effect, confirm: d?.confirm, tool: d?.tool, run: { route: { method: r.method, path: r.path, params: r.params.map((p) => ({ name: p.name, in: p.in })), body: r.body } },
         input: d?.input ?? routeInput(r), output: d?.output, source: d ? 'declared' : 'route' }));
     });
     for (const a of plugin.actions ?? []) {
@@ -309,7 +313,7 @@ export function derivePluginCommands(plugin) {
     const [method, path] = d.route ? d.route.split(/\s+/) : [];
     const r = d.route ? routes.find((x) => x.method === method && x.path === path) : null;
     const effect = d.readOnly ? 'read' : d.destructive ? 'destructive' : d.navigate ? 'navigate' : d.route ? routeEffect(method, path) : actionEffect(d.action);
-    add(command({ id: d.id || (d.route ? commandSlug(path) : `action-${commandSlug(d.action)}`), title: d.title, description: d.description, effect, confirm: d.confirm,
+    add(command({ id: d.id || (d.route ? commandSlug(path) : `action-${commandSlug(d.action)}`), title: d.title, description: d.description, effect, confirm: d.confirm, tool: d.tool,
       run: d.route ? { route: { method, path, params: (r?.params ?? []).map((p) => ({ name: p.name, in: p.in })), body: r?.body ?? method !== 'GET' } } : { action: d.action },
       input: d.input ?? (r ? routeInput(r) : undefined), output: d.output, source: 'declared' }));
   }
@@ -392,7 +396,7 @@ export function pluginRouteRequest(folder, cmd, input = {}) {
 
 /* ================================================================== projections */
 
-/** The MCP tool name of a command: `<plugin>_<command>`, dashes as underscores, at most 64 characters. */
+/** The MCP tool name of a command: `<plugin>_<command>`, dashes as underscores, at most 64 characters (a declared `tool` name wins in pluginCommandTools when free). */
 export function commandToolName(folder, id, app = 'console-web') {
   const base = `${app === 'console-web' ? '' : `${app}_`}${folder}_${id}`.replace(/[^A-Za-z0-9_]+/g, '_');
   if (base.length <= PLUGIN_TOOL_MAX) return base;
@@ -407,17 +411,18 @@ export function pluginControlCommand(folder, cmd, input = {}, extra = {}) {
 
 /** MCP tools: one per command of every enabled console plugin (`<plugin>_<command>`), annotations from its effect. */
 export function pluginCommandTools(registry) {
-  const tools = [];
+  const tools = []; const taken = new Set(PLUGIN_GENERIC_TOOLS);
   for (const p of registry?.plugins ?? []) {
     if (p.app !== 'console-web' || p.enabled === false) continue;
     for (const c of p.commands) {
       tools.push({
-        name: commandToolName(p.folder, c.id), title: `${p.name}: ${c.title}`.slice(0, 120),
+        name: c.tool && !taken.has(c.tool) ? c.tool : commandToolName(p.folder, c.id), title: `${p.name}: ${c.title}`.slice(0, 120),
         description: `${c.description || c.title}${c.confirm ? ' Needs a confirm token: the first call answers confirmation_required with one; call again with confirm set to it.' : ''}${c.context ? ' Acts on a row or selection: pass it in input.args.' : ''} (control@1 ${c.kind === 'read' ? 'plugins.reads read' : 'plugins.commands run'} ${p.folder}/${c.id})`.slice(0, 1000),
         inputSchema: { type: 'object', properties: { input: c.input, ...(c.kind === 'read' ? {} : { by: { type: 'string', description: 'who asks (audited)' }, reason: { type: 'string', description: 'why (audited)' } }), ...(c.confirm ? { confirm: { type: 'string', description: 'the confirm token from the first call' } } : {}) }, additionalProperties: false },
         annotations: { readOnlyHint: c.effect === 'read', destructiveHint: c.effect === 'destructive', idempotentHint: c.effect === 'read', openWorldHint: false },
         plugin: p.folder, command: c.id, kind: c.kind, effect: c.effect,
       });
+      taken.add(tools[tools.length - 1].name);
     }
   }
   return tools;

@@ -1,0 +1,168 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-ai-keys-console-store",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:30Z",
+ "build": {
+  "id": "ai-keys-console-store",
+  "title": "AI keys: one console-wide store, VPS accounts listed and switchable by API",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "AI keys: store every key in the console, not per user\n\nBrett saved 4 Claude subscription accounts and 1 API key (5 keys) in AI keys while logged into the console as himself. The VPS side (apps/console-web/plugins/ai-keys/switch.mjs, deploy/claude-headless.sh, the /api/plugins/ai-keys routes called with AXF_TOKEN from /opt/axf/.axf-console/env) authenticates as a different console identity, and GET /keys returns NO keys. So Amber and the VPS can't see or switch accounts without Brett pressing a button.",
+  "verbatim": true,
+  "at": "2026-11-05T23:51:02.650Z",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-2"
+ ],
+ "runs": [
+  {
+   "session": "axf-ai-keys-console-store--rhonda",
+   "account": "account-2",
+   "model": "Opus",
+   "startedAt": "2026-11-05T23:38:00.848Z",
+   "endedAt": "2026-11-05T23:38:23.531Z",
+   "exit": 1,
+   "costUsd": 0
+  },
+  {
+   "session": "axf-ai-keys-console-store-2--joey",
+   "account": "account-2",
+   "model": "Opus",
+   "startedAt": "2026-11-05T23:41:00.880Z",
+   "endedAt": "2026-11-06T00:34:12.685Z",
+   "exit": 1,
+   "costUsd": 12.1852
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Admin + service-token guard, per-user store migration with .bak, tests",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T23:38:00.848Z",
+   "doneAt": "2026-11-05T23:51:03.652Z",
+   "actualMin": 13,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "VPS accounts in GET /keys, POST /active and /switch through axf.claude-accounts@1, fix dropped [token]/[api key] rows",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T23:51:03.652Z",
+   "doneAt": "2026-11-05T23:51:04.566Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Docs section 8, all gates, PR to the merge queue, redeploy, verify",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/ai-keys-console-store-2",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 358,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/358"
+ },
+ "landedCommit": "c79d45b798b0914782b6325adb4c1041050418d6",
+ "commits": [
+  "aa99ac149193e2e730acd34d6ffc1560ebf0c919",
+  "8d4cae680883e6bd0f6c6d4d9c5758d236e79969"
+ ],
+ "mergedAt": "2026-11-06T00:33:19Z",
+ "landedAt": "2026-11-06T00:33:18Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/memory/STATUS.md",
+  "apps/console-web/plugins/ai-keys/plugin.json",
+  "apps/console-web/plugins/ai-keys/server/__init__.py",
+  "apps/console-web/plugins/ai-keys/switch.mjs",
+  "apps/console-web/plugins/ai-keys/test.py",
+  "apps/console-web/plugins/claude-accounts/README.md",
+  "apps/console-web/plugins/claude-accounts/plugin.json",
+  "apps/console-web/plugins/claude-accounts/server/__init__.py",
+  "apps/console-web/plugins/claude-accounts/test.py",
+  "install_instructions.md"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "ai-keys",
+   "files": [
+    "apps/console-web/plugins/ai-keys/plugin.json",
+    "apps/console-web/plugins/ai-keys/server/__init__.py",
+    "apps/console-web/plugins/ai-keys/switch.mjs",
+    "apps/console-web/plugins/ai-keys/test.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-accounts",
+   "files": [
+    "apps/console-web/plugins/claude-accounts/README.md",
+    "apps/console-web/plugins/claude-accounts/plugin.json",
+    "apps/console-web/plugins/claude-accounts/server/__init__.py",
+    "apps/console-web/plugins/claude-accounts/test.py"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "install_instructions.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 12.1852,
+  "estimated": false,
+  "tokens": {
+   "input": 86,
+   "output": 554,
+   "cacheRead": 7118220,
+   "cacheWrite": 220935
+  }
+ },
+ "report": "",
+ "open": [
+  "s3: Docs section 8, all gates, PR to the merge queue, redeploy, verify"
+ ]
+}

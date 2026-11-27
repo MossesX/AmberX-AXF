@@ -82,6 +82,9 @@ import tempfile  # noqa: E402
 
 ok(tools["claude_settings_get"].annotations.read_only_hint is True, "claude_settings_get reads")
 ok(tools["claude_settings_set"].annotations.read_only_hint is not True, "claude_settings_set writes")
+ok(tools["claude_policy_get"].annotations.read_only_hint is True and tools["claude_policy_plan_get"].annotations.read_only_hint is True, "the policy tools only read")
+ok("claude_policy_set" not in tools, "no MCP tool writes axHub policy")
+ok(tools["claude_view_set"].annotations.read_only_hint is not True, "claude_view_set writes")
 with tempfile.TemporaryDirectory() as tmp:
     os.environ["AXF_CLAUDE_SETTINGS_FILE"] = f"{tmp}/settings.json"
     os.environ["AXF_CLAUDE_SETTINGS_DATA"] = tmp
@@ -127,15 +130,37 @@ cserver = mcp_server.build_server(lambda op, **a: {}, console=lambda c: csent.ap
 ctools = {t.name: t for t in asyncio.run(cserver.list_tools())}
 for name in (*mcp_server.CONSOLE_TOOLS, *mcp_server.FOLLOW_TOOLS):
     ok(name in ctools, f"{name} exists")
-for name in ("console_open", "console_dialog", "console_settings", "console_back", "console_where", "console_list", "console_clients", "console_show", "console_follow"):
+for name in ("console_open", "console_dialog", "console_settings", "console_back", "console_where", "console_list", "console_clients", "console_show", "console_follow", "console_screenshot"):
     a = ctools[name].annotations
     ok(a.read_only_hint is True and a.destructive_hint is not True, f"{name} only navigates or reads: read-only, so it never waits on a veto")
 ok(ctools["console_action"].annotations.read_only_hint is not True, "console_action can change data: it stays a write")
+# console_screenshot (Nov 19 2026): the image comes back as MCP image content, the screen state as JSON beside it
+import base64 as _b64  # noqa: E402
+png = _b64.b64encode(b"\x89PNG\r\n\x1a\nfake").decode()
+shot_server = mcp_server.build_server(lambda op, **a: {}, console=lambda c: csent.append(c) or {"ok": True, "status": "delivered", "sent": {"id": "cc-1"},
+    "images": [{"client": "cc-abcdef", "mime": "image/png", "data": png, "bytes": 12, "width": 800, "height": 600}], "state": {"screen": "settings", "screenLabel": "Settings", "dialog": "asset-json"}})
+res = asyncio.run(shot_server.call_tool("console_screenshot", {"address": "view:settings", "to": "all"}))
+blocks = res.content if hasattr(res, "content") else res[0] if isinstance(res, tuple) else res
+ok(csent[-1] == {"op": "act", "target": "console.nav", "path": "here", "action": "screenshot", "input": {"address": "view:settings", "to": "all"}, "by": "mcp"}, "console_screenshot → console.nav act screenshot with address and to")
+ok(blocks[0].type == "image" and blocks[0].data == png and blocks[0].mime_type == "image/png", "the screenshot is the first content block, as an MCP image")
+meta = json.loads(blocks[-1].text)
+ok(meta["state"]["screen"] == "settings" and meta["state"]["dialog"] == "asset-json" and meta["status"] == "delivered", "the screen state and status come with it")
+ok("data" not in meta["images"][0] and meta["images"][0]["width"] == 800 and "sent" not in meta, "the JSON beside the image carries no image data")
+pend = mcp_server.build_server(lambda op, **a: {}, console=lambda c: {"ok": True, "queued": True, "status": "pending", "message": "queued"})
+pres = asyncio.run(pend.call_tool("console_screenshot", {}))
+pblocks = pres.content if hasattr(pres, "content") else pres
+ok(len(pblocks) == 1 and json.loads(pblocks[0].text)["status"] == "pending", "no console answered yet: pending, no image block")
 calls: list[tuple[str, dict]] = []
 real_follow = mcp_server.follow_call
 mcp_server.follow_call = lambda op, args: calls.append((op, args)) or ({"ok": True, "on": True, "by": "Brett", "at": "", "clients": 1} if op == "state" else {"ok": True, "shown": True, "message": "opened Plan Studio"})
 r = asyncio.run(cserver.call_tool("console_show", {"target": "plan studio", "highlight": "h1", "say": "here's the plan"}))
-ok(calls[-1] == ("show", {"target": "plan studio", "highlight": "h1", "say": "here's the plan", "to": "recent"}), "console_show → follow-amber show with target, highlight, say")
+ok(calls[-1] == ("show", {"target": "plan studio", "highlight": "h1", "say": "here's the plan", "focus": "", "to": "recent"}), "console_show → follow-amber show with target, highlight, say")
+asyncio.run(cserver.call_tool("console_show", {"target": "build-orchestrator", "focus": "pending"}))
+ok(calls[-1][1]["focus"] == "pending", "console_show passes focus (a tab or a build on the screen)")
+asyncio.run(cserver.call_tool("console_open", {"screen": "build:console-commands-reliable"}))
+ok(csent[-1]["path"] == "build:console-commands-reliable" and csent[-1]["target"] == "console.screens", "console_open takes build:<id> (Console commands opens the orchestrator on it)")
+asyncio.run(cserver.call_tool("console_open", {"screen": "build-orchestrator", "focus": "pending"}))
+ok(csent[-1]["input"] == {"focus": "pending"}, "console_open passes focus")
 asyncio.run(cserver.call_tool("console_follow", {}))
 ok(calls[-1][0] == "state", "console_follow → follow-amber state")
 mcp_server.follow_call = lambda op, args: {"ok": False, "code": "not_implemented", "message": "off"}

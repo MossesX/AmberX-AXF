@@ -77,7 +77,9 @@
     "history",
     "updatedAt",
     "pairId",
-    "prediction"
+    "prediction",
+    "choices",
+    "singleOption"
   ],
   "groupOptional": [
     "submittedBy",

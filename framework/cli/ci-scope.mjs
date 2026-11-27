@@ -10,12 +10,12 @@
  *   node framework/cli/ci-scope.mjs light [--run]                     the light PR checks for this change (or run them)
  *
  * Three modes:
- *   full   a queue branch (queue/pr-<n>), a workflow_dispatch, or any PR while the merge queue is off: every job the
+ *   full   a queue branch (queue/batch, or queue/pr-<n> in stack mode), a workflow_dispatch, or any PR while the merge queue is off: every job the
  *          change touches (path filters below), nothing else;
  *   light  a PR while the merge queue is on (repo variable AXF_MERGE_QUEUE=on, set by the queue runner): the cheap
  *          checks only (framework validators, the console type-check, the touched plugins' own tests); the full set
  *          runs once, in the merge queue;
- *   main   a push to main: when the merge queue already ran CI green on the same code (a queue/pr-* commit whose files
+ *   main   a push to main: when the merge queue already ran CI green on the same code (a queue/batch or queue/pr-* commit whose files
  *          match main's outside _claude/), nothing runs again except the Android publish when Android changed.
  */
 import { spawnSync } from 'node:child_process';
@@ -25,7 +25,7 @@ import { fileURLToPath } from 'node:url';
 
 export const SCOPE_FRAME = 'ci-scope@1';
 /** The jobs (and app builds inside the console job) a change can need. */
-export const KEYS = Object.freeze(['engine', 'console', 'axhubweb', 'amberxweb', 'molly', 'walkthrough', 'amberx', 'android']);
+export const KEYS = Object.freeze(['engine', 'console', 'molly', 'walkthrough', 'android']);
 const ALL = Object.freeze(Object.fromEntries(KEYS.map((k) => [k, true])));
 
 /** Paths → what they need, first match wins. Anything not listed runs everything (an unknown path is never skipped). */
@@ -37,11 +37,9 @@ export const RULES = Object.freeze([
   { re: /^framework\/android\//, needs: ['engine', 'android'] },
   { re: /^framework\//, needs: ['engine', 'console'] },
   { re: /^apps\/console-web\//, needs: ['engine', 'console'] },
-  { re: /^apps\/axhub-web\//, needs: ['engine', 'console', 'axhubweb'] },
-  { re: /^apps\/amberx-droid\//, needs: ['engine', 'console', 'amberxweb', 'amberx'] },
   { re: /^apps\/molly\//, needs: ['engine', 'console', 'molly'] },
   { re: /^apps\/walkthrough-studio\//, needs: ['engine', 'console', 'walkthrough'] },
-  { re: /^apps\/(console|voicevault|axhub-android)\//, needs: ['engine', 'android'] },
+  { re: /^apps\/(console|console-droid|voicevault|axhub-android|phone-connect)\//, needs: ['engine', 'android'] },
   { re: /^apps\/demo\//, needs: ['engine'] },
   { re: /^deploy\//, needs: ['engine', 'console'] },
   // data and docs: the builds store, tracker and manifests are checked by the engine sweep
@@ -94,6 +92,7 @@ export function lightCommands(files, { exists = () => false, list = () => [] } =
     'node framework/cli/tracker.mjs --check',
     'node framework/cli/project.mjs validate --all',
     'node framework/cli/builds-store.mjs verify',
+    'node framework/cli/check-tracking-files.mjs',
     'node framework/cli/check-theme.mjs',
     'node framework/cli/check-controls.mjs',
     'node framework/cli/check-toolbars.mjs',
@@ -145,7 +144,7 @@ export function changedFiles({ event, ref, before = '' }) {
 }
 
 /**
- * Has the merge queue already run CI green on this code? A queue/pr-* branch whose files equal HEAD's outside
+ * Has the merge queue already run CI green on this code? A queue/* branch (queue/batch, queue/pr-<n>) whose files equal HEAD's outside
  * _claude/, and whose head commit has a successful run of this workflow (GitHub API, the job's own token).
  */
 /**

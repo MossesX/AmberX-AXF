@@ -1,0 +1,239 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-fable-no-approval",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:13Z",
+ "build": {
+  "id": "fable-no-approval",
+  "title": "Fable upgrades need no approval",
+  "profile": "all",
+  "category": "Builds > Model policy",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "I don't want the approvals. Just put everything that needs to be on Fable on Fable. No more approvals. If it needs Fable, set it to be Fable. And what about yesterday? Was anything that needed to be Fable done with Opus?",
+  "verbatim": true,
+  "at": "2026-11-04T00:00:00Z",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-fable-no-approval--sully",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-04T14:32:38.984Z",
+   "endedAt": "2026-11-04T14:52:12.873Z",
+   "exit": 0,
+   "costUsd": 9.2086
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Policy in model-switch + upgrade-policy reader; owner-only setting in the Claude settings registry",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-04T14:32:38.984Z",
+   "doneAt": "2026-11-04T14:39:13.247Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Orchestrator core/CLI/UI, launch gate, swarm planner and headless brief follow the policy; tests",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T14:39:13.247Z",
+   "doneAt": "2026-11-04T14:39:14.672Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Apply to builds waiting on an upgrade; queue fable-review-nov3; rule in RULES.md; report, PR",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-04T14:39:14.672Z",
+   "doneAt": "2026-11-04T14:43:18.172Z",
+   "actualMin": 4,
+   "done": true
+  }
+ ],
+ "branch": "claude/fable-no-approval",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 319,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/319"
+ },
+ "landedCommit": "97a47d6b3d6516fc9ee1446088f77306d273a891",
+ "commits": [
+  "f681798562e8a8bffdfc4e4d07dd4a2d431653b9",
+  "411a0a83b959f582b3de3eba1dfcaba185b7e627",
+  "4bd1ff4d18f17c62a922187772afbd1579bef57c"
+ ],
+ "mergedAt": "2026-11-04T22:15:40Z",
+ "landedAt": "2026-11-04T17:43:48Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/current/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/fable-no-approval.md",
+  "_claude/builds/store.json",
+  "_claude/memory/decisions.md",
+  "_claude/rules/RULES.md",
+  "apps/console-web/plugins/agent-swarm/swarm.mjs",
+  "apps/console-web/plugins/agent-swarm/web/swarm-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+  "apps/console-web/plugins/build-orchestrator/server/test_upgrade.py",
+  "apps/console-web/plugins/build-orchestrator/test.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.d.mts",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+  "apps/console-web/plugins/claude-settings/registry.json",
+  "apps/console-web/plugins/claude-settings/test.mjs",
+  "apps/console-web/server/mcp_server.py",
+  "changes/2026/11/chg-20261104-146867671e.json",
+  "changes/2026/11/chg-20261104-5d61647dc1.json",
+  "changes/2026/11/chg-20261104-82fa8bff42.json",
+  "changes/2026/11/chg-20261104-ee7551f189.json",
+  "deploy/claude-headless.sh",
+  "framework/cli/model-gate.mjs",
+  "framework/cli/upgrade-policy.mjs",
+  "framework/core/model-switch.mjs",
+  "framework/spec/check-model-policy.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/current/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/fable-no-approval.md",
+    "_claude/builds/store.json",
+    "changes/2026/11/chg-20261104-146867671e.json",
+    "changes/2026/11/chg-20261104-5d61647dc1.json",
+    "changes/2026/11/chg-20261104-82fa8bff42.json",
+    "changes/2026/11/chg-20261104-ee7551f189.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+    "apps/console-web/plugins/build-orchestrator/server/test_upgrade.py",
+    "apps/console-web/plugins/build-orchestrator/test.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.d.mts",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/decisions.md",
+    "_claude/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-swarm",
+   "files": [
+    "apps/console-web/plugins/agent-swarm/swarm.mjs",
+    "apps/console-web/plugins/agent-swarm/web/swarm-core.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-settings",
+   "files": [
+    "apps/console-web/plugins/claude-settings/registry.json",
+    "apps/console-web/plugins/claude-settings/test.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/model-gate.mjs",
+    "framework/cli/upgrade-policy.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/server/mcp_server.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/model-switch.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-model-policy.mjs"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 9.2086,
+  "estimated": false,
+  "tokens": {
+   "input": 182,
+   "output": 1089,
+   "cacheRead": 12660023,
+   "cacheWrite": 178026
+  }
+ },
+ "report": "_claude/builds/reports/fable-no-approval.md",
+ "open": [
+  "Change-log entries for each automatic switch: recorded in the build notes, `approvals[]` and the builds store journal. The core can't write the Codebase changes log (another plugin), so it isn't written there per switch. This session's change-log entry lists them.",
+  "Kotlin: none needed (orchestrator and gate are web/Node only)."
+ ]
+}

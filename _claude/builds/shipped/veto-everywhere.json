@@ -1,0 +1,158 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-veto-everywhere",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:17Z",
+ "build": {
+  "id": "veto-everywhere",
+  "title": "Veto everywhere: every axHub call that needs Brett runs after the 3-minute countdown unless denied",
+  "profile": "all",
+  "category": "axHub",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "it's not an approval system anymore, it's a veto system; send the notice, keep building, don't wait or check; finish the veto system wherever it needs to be and delete anything pending that conflicts. axHub decision #103: hub option confirmAs / AXHUB_CONFIRM_AS (default veto). Shared rules rewritten. Pending item axhub-auto-approve-all removed (main-framework). veto-window + approval-costs were already archived.",
+  "verbatim": false,
+  "at": "2026-10-30T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "axHub: confirmAs option (core policy + hub + server env default veto) + tests (450) + decision #103 docs",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-01T02:31:12.146Z",
+   "doneAt": "2026-11-03T13:57:06.541Z",
+   "actualMin": 3566,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Shared rules: veto replaces approvals + retry + merge-approval rules; remove conflicting pending item axhub-auto-approve-all",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-01T02:31:12.146Z",
+   "doneAt": "2026-11-03T13:57:06.541Z",
+   "actualMin": 3566,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "axHub PR + merge + redeploy (veto calls), then GitHub writes/PRs/merges run on the countdown",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-10-30T18:15:09.555Z",
+   "doneAt": "2026-11-01T02:31:11.676Z",
+   "actualMin": 1936,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Auto-merge (Brett Oct 30: 'When stuff needs to merge automatic merge'): push banner merges every ready PR every 3 min (setting on by default, 112 tests); axHub gets CI so its PRs go green; shared rules updated",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-01T02:31:12.146Z",
+   "doneAt": "2026-11-03T13:57:06.541Z",
+   "actualMin": 3566,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "axHub (decision #104): Approve now + Shelve next to Deny (core state machine, routes approve-now/shelve with Deny's guards, CLI, feeds, shelved/cleared push phases), default countdown 90 s; tests 450 -> 458",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-30T18:15:09.312Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "lib-hub veto.ts: shelved/approvedNow/actions, vetoAction/runVetoAction, setVetoHost seam; re-bake console, AmberX, axHub web, Walkthrough (Patches skipped)",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-30T18:15:09.312Z",
+   "doneAt": "2026-10-30T18:15:09.394Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Veto banner plugin (approvals-banner 0.4.0, targets console + amberx-droid): Deny/Approve/Shelve rows, veto screen dialog, notices, configurable alarm (alarm.ts) + settings + self-test",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:15:09.394Z",
+   "doneAt": "2026-10-30T18:15:09.470Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "AmberX: installVetoHost; Java VetoAlerts cards with Deny/Approve/Shelve (tap = veto screen), HubRules.act; VetoAlarm on the alarm stream (through silent); approvals plugin slimmed to the Terminal; AXHub web HeldCall Approve/Shelve",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:15:09.470Z",
+   "doneAt": "2026-10-30T18:15:09.555Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Docs (veto.md, veto-approvals.md, PORTING, shared rules 90 s + Approve/Shelve), THREADS, tests (axHub pnpm test, AmberX test.mjs + tsc + build, console tsc, plugin self-tests, check-theme, check-controls), push, PRs",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-01T02:31:11.676Z",
+   "doneAt": "2026-11-01T02:31:12.146Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/veto-everywhere + claude/veto-complete (AXF + axHub)",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 176,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/176"
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-31T07:26:37Z",
+ "landedAt": "2026-10-31T07:26:37Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

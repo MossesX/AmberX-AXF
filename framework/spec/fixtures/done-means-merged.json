@@ -1,0 +1,2096 @@
+{
+ "$axf": "done-means-merged@1",
+ "note": "Golden cases for done-means-merged@1 (framework/spec/DONE-MEANS-MERGED.md). `records` replays normAttempts / normFailure / normLanded / normEscalation; `guard` replays guardStatus; `migrate` replays migrateDone on one record and `store` migrateDoneStore on all of them; `ladder` and `escalations` replay retry-ladder.mjs (nextStrategy, escalationOf), `walks` the full ladder per kind. Regenerate the `out` blocks with: node framework/spec/check-done-means-merged.mjs --write",
+ "at": "2026-11-17T01:00:00.000Z",
+ "records": [
+  {
+   "name": "two attempts, an open failure, no evidence",
+   "in": {
+    "attempts": [
+     {
+      "n": 1,
+      "kind": "crash",
+      "strategy": "retry",
+      "model": "Opus",
+      "account": "w-max",
+      "session": "axf-b--earl",
+      "step": "s3",
+      "head": "aaaa",
+      "pr": "#12",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "result": "failed",
+      "log": "/var/tmp/axf-headless/logs/b-1.log",
+      "note": "exit 137 on s3",
+      "source": "pipeline"
+     },
+     {
+      "n": 7,
+      "kind": "crash",
+      "strategy": "fresh-session",
+      "model": "Opus",
+      "account": "w-max",
+      "startedAt": "2026-11-17T00:30:00.000Z",
+      "result": "started"
+     }
+    ],
+    "failure": {
+     "kind": "crash",
+     "at": "2026-11-17T00:20:00.000Z",
+     "why": "exit 137 on s3",
+     "head": "aaaa",
+     "step": "s3",
+     "exit": 137
+    },
+    "landed": null,
+    "escalation": null
+   },
+   "out": {
+    "attempts": [
+     {
+      "n": 1,
+      "kind": "crash",
+      "strategy": "retry",
+      "fixStrategy": "",
+      "model": "Opus",
+      "account": "w-max",
+      "session": "axf-b--earl",
+      "step": "s3",
+      "head": "aaaa",
+      "pr": 12,
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "result": "failed",
+      "log": "/var/tmp/axf-headless/logs/b-1.log",
+      "note": "exit 137 on s3",
+      "source": "pipeline"
+     },
+     {
+      "n": 2,
+      "kind": "crash",
+      "strategy": "fresh-session",
+      "fixStrategy": "",
+      "model": "Opus",
+      "account": "w-max",
+      "session": "",
+      "step": "",
+      "head": "",
+      "pr": 0,
+      "startedAt": "2026-11-17T00:30:00.000Z",
+      "endedAt": "",
+      "result": "started",
+      "log": "",
+      "note": "",
+      "source": "pipeline"
+     }
+    ],
+    "failure": {
+     "kind": "crash",
+     "at": "2026-11-17T00:20:00.000Z",
+     "why": "exit 137 on s3",
+     "head": "aaaa",
+     "step": "s3",
+     "exit": 137
+    },
+    "landed": null,
+    "escalation": null
+   }
+  },
+  {
+   "name": "a fix attempt keeps its fix strategy; a non-fix drops it; bad values fall safe",
+   "in": {
+    "attempts": [
+     {
+      "kind": "ci-red",
+      "strategy": "fix",
+      "fixStrategy": "regenerate",
+      "model": "Sonnet",
+      "result": "ok",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:15:00.000Z",
+      "pr": "https://github.com/o/r/pull/44"
+     },
+     {
+      "kind": "ci-red",
+      "strategy": "retry",
+      "fixStrategy": "regenerate",
+      "result": "nope",
+      "startedAt": "bad date"
+     }
+    ],
+    "failure": {
+     "kind": "nope"
+    },
+    "landed": {
+     "ci": "none"
+    },
+    "escalation": {
+     "kind": "ci-red",
+     "why": "x"
+    }
+   },
+   "out": {
+    "attempts": [
+     {
+      "n": 1,
+      "kind": "ci-red",
+      "strategy": "fix",
+      "fixStrategy": "regenerate",
+      "model": "",
+      "account": "",
+      "session": "",
+      "step": "",
+      "head": "",
+      "pr": 44,
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:15:00.000Z",
+      "result": "ok",
+      "log": "",
+      "note": "",
+      "source": "pipeline"
+     },
+     {
+      "n": 2,
+      "kind": "ci-red",
+      "strategy": "retry",
+      "fixStrategy": "",
+      "model": "",
+      "account": "",
+      "session": "",
+      "step": "",
+      "head": "",
+      "pr": 0,
+      "startedAt": "",
+      "endedAt": "",
+      "result": "failed",
+      "log": "",
+      "note": "",
+      "source": "pipeline"
+     }
+    ],
+    "failure": null,
+    "landed": null,
+    "escalation": {
+     "at": "",
+     "kind": "ci-red",
+     "attempts": 0,
+     "why": "x",
+     "head": "",
+     "tried": [],
+     "bannerId": "",
+     "pushedAt": ""
+    }
+   }
+  },
+  {
+   "name": "landed evidence and an escalation with rungs tried",
+   "in": {
+    "attempts": [],
+    "failure": null,
+    "landed": {
+     "pr": 12,
+     "sha": "deadbeef",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "ci": "success",
+     "ciAt": "2026-11-17T00:50:00.000Z",
+     "ciRun": "https://github.com/o/r/actions/runs/1",
+     "verifiedAt": "2026-11-17T00:55:00.000Z",
+     "verifyHow": "check",
+     "verifyLog": "ok"
+    },
+    "escalation": {
+     "at": "2026-11-17T00:59:00.000Z",
+     "kind": "ci-red",
+     "attempts": 5,
+     "why": "CI red five times",
+     "head": "aaaa",
+     "tried": [
+      "fix:targeted",
+      "fix:regenerate",
+      "fresh-session",
+      "switch-model:Opus",
+      "switch-account:w-two"
+     ],
+     "bannerId": "build-escalated:b",
+     "pushedAt": "2026-11-17T00:59:30.000Z"
+    }
+   },
+   "out": {
+    "attempts": [],
+    "failure": null,
+    "landed": {
+     "pr": 12,
+     "sha": "deadbeef",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "ci": "success",
+     "ciAt": "2026-11-17T00:50:00.000Z",
+     "ciRun": "https://github.com/o/r/actions/runs/1",
+     "verifiedAt": "2026-11-17T00:55:00.000Z",
+     "verifyHow": "check",
+     "verifyLog": "ok"
+    },
+    "escalation": {
+     "at": "2026-11-17T00:59:00.000Z",
+     "kind": "ci-red",
+     "attempts": 5,
+     "why": "CI red five times",
+     "head": "aaaa",
+     "tried": [
+      "fix:targeted",
+      "fix:regenerate",
+      "fresh-session",
+      "switch-model:Opus",
+      "switch-account:w-two"
+     ],
+     "bannerId": "build-escalated:b",
+     "pushedAt": "2026-11-17T00:59:30.000Z"
+    }
+   }
+  }
+ ],
+ "guard": [
+  {
+   "name": "landing: every step done, a branch, a PR",
+   "in": {
+    "build": {
+     "status": "running",
+     "branch": "claude/b",
+     "pr": "#12",
+     "steps": [
+      {
+       "done": true
+      },
+      {
+       "skip": true
+      }
+     ]
+    },
+    "to": "landing"
+   },
+   "out": {
+    "ok": true,
+    "why": ""
+   }
+  },
+  {
+   "name": "landing refused with a step open",
+   "in": {
+    "build": {
+     "status": "running",
+     "branch": "claude/b",
+     "pr": "#12",
+     "steps": [
+      {
+       "done": true
+      },
+      {
+       "done": false
+      }
+     ]
+    },
+    "to": "landing"
+   },
+   "out": {
+    "ok": false,
+    "why": "1 step still open: a build lands when every step is done"
+   }
+  },
+  {
+   "name": "landing refused without a PR (push-fail instead)",
+   "in": {
+    "build": {
+     "status": "running",
+     "branch": "claude/b",
+     "steps": [
+      {
+       "done": true
+      }
+     ]
+    },
+    "to": "landing"
+   },
+   "out": {
+    "ok": false,
+    "why": "no PR yet: that is a push-fail failure (fixing), not landing"
+   }
+  },
+  {
+   "name": "landed refused: PR open, not merged",
+   "in": {
+    "build": {
+     "status": "landing",
+     "pr": "#12",
+     "steps": []
+    },
+    "to": "landed"
+   },
+   "out": {
+    "ok": false,
+    "why": "landed needs the PR merged to main: mergedAt is empty"
+   }
+  },
+  {
+   "name": "landed refused: merged, no merge commit recorded",
+   "in": {
+    "build": {
+     "status": "landing",
+     "pr": "#12",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "steps": []
+    },
+    "to": "landed"
+   },
+   "out": {
+    "ok": false,
+    "why": "landed needs the merge commit (landed.sha)"
+   }
+  },
+  {
+   "name": "landed refused: merged, CI running on the merge commit",
+   "in": {
+    "build": {
+     "status": "landing",
+     "pr": "#12",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "landed": {
+      "sha": "deadbeef",
+      "ci": "running"
+     },
+     "steps": []
+    },
+    "to": "landed"
+   },
+   "out": {
+    "ok": false,
+    "why": "landed needs CI green on the merge commit: landed.ci is running"
+   }
+  },
+  {
+   "name": "landed refused: merged, CI red on the merge commit",
+   "in": {
+    "build": {
+     "status": "landing",
+     "pr": "#12",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "landed": {
+      "sha": "deadbeef",
+      "ci": "failure"
+     },
+     "steps": []
+    },
+    "to": "landed"
+   },
+   "out": {
+    "ok": false,
+    "why": "landed needs CI green on the merge commit: landed.ci is failure"
+   }
+  },
+  {
+   "name": "landed allowed: merged, CI green on the merge commit",
+   "in": {
+    "build": {
+     "status": "landing",
+     "pr": "#12",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "landed": {
+      "sha": "deadbeef",
+      "ci": "success",
+      "ciAt": "2026-11-17T00:50:00.000Z"
+     },
+     "steps": []
+    },
+    "to": "landed"
+   },
+   "out": {
+    "ok": true,
+    "why": ""
+   }
+  },
+  {
+   "name": "built (legacy) needs the same proof as landed",
+   "in": {
+    "build": {
+     "status": "landing",
+     "pr": "#12",
+     "steps": []
+    },
+    "to": "built"
+   },
+   "out": {
+    "ok": false,
+    "why": "built needs the PR merged to main: mergedAt is empty"
+   }
+  },
+  {
+   "name": "complete refused: landed but not verified",
+   "in": {
+    "build": {
+     "status": "landed",
+     "pr": "#12",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "landed": {
+      "sha": "deadbeef",
+      "ci": "success"
+     },
+     "steps": []
+    },
+    "to": "complete"
+   },
+   "out": {
+    "ok": false,
+    "why": "complete needs the feature verify passed (landed.verifiedAt, landed.verifyHow)"
+   }
+  },
+  {
+   "name": "complete allowed: landed and verified",
+   "in": {
+    "build": {
+     "status": "landed",
+     "pr": "#12",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "landed": {
+      "sha": "deadbeef",
+      "ci": "success",
+      "verifiedAt": "2026-11-17T00:55:00.000Z",
+      "verifyHow": "check"
+     },
+     "steps": []
+    },
+    "to": "complete"
+   },
+   "out": {
+    "ok": true,
+    "why": ""
+   }
+  },
+  {
+   "name": "complete refused straight from landing even when merged and green: not verified",
+   "in": {
+    "build": {
+     "status": "landing",
+     "pr": "#12",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "landed": {
+      "sha": "deadbeef",
+      "ci": "success"
+     },
+     "steps": []
+    },
+    "to": "complete"
+   },
+   "out": {
+    "ok": false,
+    "why": "complete needs the feature verify passed (landed.verifiedAt, landed.verifyHow)"
+   }
+  },
+  {
+   "name": "a record at rest is never judged (same status)",
+   "in": {
+    "build": {
+     "status": "complete",
+     "steps": []
+    },
+    "to": "complete"
+   },
+   "out": {
+    "ok": true,
+    "why": ""
+   }
+  },
+  {
+   "name": "fixing needs no proof",
+   "in": {
+    "build": {
+     "status": "running",
+     "steps": []
+    },
+    "to": "fixing"
+   },
+   "out": {
+    "ok": true,
+    "why": ""
+   }
+  }
+ ],
+ "migrate": [
+  {
+   "name": "built, PR open, not merged → landing",
+   "in": {
+    "id": "m-built-pr",
+    "title": "x",
+    "status": "built",
+    "branch": "claude/x",
+    "pr": "#301",
+    "notes": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "a",
+      "done": true
+     }
+    ]
+   },
+   "out": {
+    "status": "landing",
+    "failure": null,
+    "landed": null,
+    "change": {
+     "from": "built",
+     "to": "landing",
+     "why": "every step done, PR not merged: the auto-lander lands it"
+    },
+    "noted": true
+   }
+  },
+  {
+   "name": "built, a branch and no PR → landing (the lander opens the PR)",
+   "in": {
+    "id": "m-built-branch",
+    "title": "x",
+    "status": "built",
+    "branch": "claude/x",
+    "notes": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "a",
+      "done": true
+     }
+    ]
+   },
+   "out": {
+    "status": "landing",
+    "failure": null,
+    "landed": null,
+    "change": {
+     "from": "built",
+     "to": "landing",
+     "why": "every step done, PR not merged: the auto-lander lands it"
+    },
+    "noted": true
+   }
+  },
+  {
+   "name": "built, no branch, no PR → fixing with a push-fail failure",
+   "in": {
+    "id": "m-built-nothing",
+    "title": "x",
+    "status": "built",
+    "notes": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "a",
+      "done": true
+     }
+    ]
+   },
+   "out": {
+    "status": "fixing",
+    "failure": {
+     "kind": "push-fail",
+     "at": "2026-11-17T01:00:00.000Z",
+     "why": "built with no branch and no PR: nothing ever reached GitHub",
+     "head": "",
+     "step": "",
+     "exit": null
+    },
+    "landed": null,
+    "change": {
+     "from": "built",
+     "to": "fixing",
+     "why": "built with no branch and no PR: nothing ever reached GitHub"
+    },
+    "noted": true
+   }
+  },
+  {
+   "name": "built with a merged PR → landed, CI unknown (legacy)",
+   "in": {
+    "id": "m-built-merged",
+    "title": "x",
+    "status": "built",
+    "branch": "claude/x",
+    "pr": "#302",
+    "mergedAt": "2026-11-10T00:00:00.000Z",
+    "notes": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "a",
+      "done": true
+     }
+    ]
+   },
+   "out": {
+    "status": "landed",
+    "failure": null,
+    "landed": {
+     "pr": 302,
+     "sha": "",
+     "mergedAt": "2026-11-10T00:00:00.000Z",
+     "ci": "unknown",
+     "ciAt": "",
+     "ciRun": "",
+     "verifiedAt": "",
+     "verifyHow": "",
+     "verifyLog": ""
+    },
+    "change": {
+     "from": "built",
+     "to": "landed",
+     "why": "merged, CI unknown"
+    },
+    "noted": true
+   }
+  },
+  {
+   "name": "complete with a merged PR → untouched",
+   "in": {
+    "id": "m-complete-merged",
+    "title": "x",
+    "status": "complete",
+    "branch": "claude/x",
+    "pr": "#303",
+    "mergedAt": "2026-11-10T00:00:00.000Z",
+    "notes": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "a",
+      "done": true
+     }
+    ]
+   },
+   "out": {
+    "status": "complete",
+    "failure": null,
+    "landed": null,
+    "change": null,
+    "noted": false
+   }
+  },
+  {
+   "name": "complete, PR but no merge recorded → landing",
+   "in": {
+    "id": "m-complete-pr",
+    "title": "x",
+    "status": "complete",
+    "branch": "claude/x",
+    "pr": "#304",
+    "notes": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "a",
+      "done": true
+     }
+    ]
+   },
+   "out": {
+    "status": "landing",
+    "failure": null,
+    "landed": null,
+    "change": {
+     "from": "complete",
+     "to": "landing",
+     "why": "complete was never proven (no merge recorded): the lander checks and lands it"
+    },
+    "noted": true
+   }
+  },
+  {
+   "name": "complete, a branch and no PR → landing",
+   "in": {
+    "id": "m-complete-branch",
+    "title": "x",
+    "status": "complete",
+    "branch": "claude/x",
+    "notes": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "a",
+      "done": true
+     }
+    ]
+   },
+   "out": {
+    "status": "landing",
+    "failure": null,
+    "landed": null,
+    "change": {
+     "from": "complete",
+     "to": "landing",
+     "why": "complete was never proven (no merge recorded): the lander checks and lands it"
+    },
+    "noted": true
+   }
+  },
+  {
+   "name": "complete, nothing to check → untouched, unprovable",
+   "in": {
+    "id": "m-complete-nothing",
+    "title": "x",
+    "status": "complete",
+    "notes": [
+     {
+      "text": "old",
+      "at": "2026-10-20T00:00:00.000Z"
+     }
+    ],
+    "steps": []
+   },
+   "out": {
+    "status": "complete",
+    "failure": null,
+    "landed": null,
+    "change": {
+     "from": "complete",
+     "to": "complete",
+     "why": "unprovable: no PR, no branch, no merge recorded (pre-pipeline record)"
+    },
+    "noted": false
+   }
+  },
+  {
+   "name": "deleted built → untouched",
+   "in": {
+    "id": "m-deleted",
+    "title": "x",
+    "status": "built",
+    "pr": "#305",
+    "deleted": true,
+    "deletedAt": "2026-11-11T00:00:00.000Z",
+    "notes": [],
+    "steps": []
+   },
+   "out": {
+    "status": "built",
+    "failure": null,
+    "landed": null,
+    "change": null,
+    "noted": false
+   }
+  },
+  {
+   "name": "an open build → untouched",
+   "in": {
+    "id": "m-running",
+    "title": "x",
+    "status": "running",
+    "branch": "claude/x",
+    "notes": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "a",
+      "done": false
+     }
+    ]
+   },
+   "out": {
+    "status": "running",
+    "failure": null,
+    "landed": null,
+    "change": null,
+    "noted": false
+   }
+  },
+  {
+   "name": "archived → untouched",
+   "in": {
+    "id": "m-archived",
+    "title": "x",
+    "status": "archived",
+    "pr": "#306",
+    "notes": [],
+    "steps": []
+   },
+   "out": {
+    "status": "archived",
+    "failure": null,
+    "landed": null,
+    "change": null,
+    "noted": false
+   }
+  }
+ ],
+ "store": {
+  "moved": [
+   "m-built-pr:built>landing",
+   "m-built-branch:built>landing",
+   "m-built-nothing:built>fixing",
+   "m-built-merged:built>landed",
+   "m-complete-pr:complete>landing",
+   "m-complete-branch:complete>landing"
+  ],
+  "unprovable": [
+   "m-complete-nothing"
+  ],
+  "meta": {
+   "at": "2026-11-17T01:00:00.000Z",
+   "moved": 6,
+   "unprovable": 1
+  }
+ },
+ "ladder": [
+  {
+   "name": "crash, nothing tried: the same approach once more",
+   "in": {
+    "attempts": [],
+    "failure": {
+     "kind": "crash",
+     "why": "exit 137",
+     "step": "s3"
+    },
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "crash",
+    "n": 1,
+    "strategy": "retry",
+    "fixStrategy": "",
+    "model": "Fable",
+    "account": "a1",
+    "rung": "retry",
+    "tried": [],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "The session crashed on s3 (exit 137): the same approach again (attempt 1 of 5)."
+   }
+  },
+  {
+   "name": "crash, the retry failed 40 min ago: a fresh session, no wait left",
+   "in": {
+    "attempts": [
+     {
+      "kind": "crash",
+      "strategy": "retry",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline"
+     }
+    ],
+    "failure": {
+     "kind": "crash"
+    },
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "crash",
+    "n": 2,
+    "strategy": "fresh-session",
+    "fixStrategy": "",
+    "model": "Fable",
+    "account": "a1",
+    "rung": "fresh-session",
+    "tried": [
+     "retry"
+    ],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "The session crashed: a fresh session (attempt 2 of 5)."
+   }
+  },
+  {
+   "name": "crash, the retry failed a minute ago: a fresh session, not before the backoff ends",
+   "in": {
+    "attempts": [
+     {
+      "kind": "crash",
+      "strategy": "retry",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:59:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline"
+     }
+    ],
+    "failure": {
+     "kind": "crash"
+    },
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "crash",
+    "n": 2,
+    "strategy": "fresh-session",
+    "fixStrategy": "",
+    "model": "Fable",
+    "account": "a1",
+    "rung": "fresh-session",
+    "tried": [
+     "retry"
+    ],
+    "notBefore": "2026-11-17T01:01:00.000Z",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "The session crashed: a fresh session (attempt 2 of 5), not before 2026-11-17T01:01:00.000Z."
+   }
+  },
+  {
+   "name": "ci-red, nothing tried: a targeted fix",
+   "in": {
+    "attempts": [],
+    "failure": {
+     "kind": "ci-red",
+     "why": "android / check-theme",
+     "step": "s7"
+    },
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "ci-red",
+    "n": 1,
+    "strategy": "fix",
+    "fixStrategy": "targeted",
+    "model": "Fable",
+    "account": "a1",
+    "rung": "fix:targeted",
+    "tried": [],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "CI is red on s7 (android / check-theme): a fix session (targeted) (attempt 1 of 5)."
+   }
+  },
+  {
+   "name": "ci-red, the targeted fix failed: a different fix strategy (regenerate)",
+   "in": {
+    "attempts": [
+     {
+      "kind": "ci-red",
+      "strategy": "fix",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline",
+      "fixStrategy": "targeted"
+     }
+    ],
+    "failure": {
+     "kind": "ci-red"
+    },
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "ci-red",
+    "n": 2,
+    "strategy": "fix",
+    "fixStrategy": "regenerate",
+    "model": "Fable",
+    "account": "a1",
+    "rung": "fix:regenerate",
+    "tried": [
+     "fix:targeted"
+    ],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "CI is red: a fix session (regenerate) (attempt 2 of 5)."
+   }
+  },
+  {
+   "name": "ci-red, both fixes and a fresh session failed, pinned Fable on Fable: another model (Opus, under the pin)",
+   "in": {
+    "attempts": [
+     {
+      "kind": "ci-red",
+      "strategy": "fix",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline",
+      "fixStrategy": "targeted"
+     },
+     {
+      "kind": "ci-red",
+      "strategy": "fix",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline",
+      "fixStrategy": "regenerate"
+     },
+     {
+      "kind": "ci-red",
+      "strategy": "fresh-session",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline"
+     }
+    ],
+    "failure": {
+     "kind": "ci-red"
+    },
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "ci-red",
+    "n": 4,
+    "strategy": "switch-model",
+    "fixStrategy": "",
+    "model": "Opus",
+    "account": "a1",
+    "rung": "switch-model:Opus",
+    "tried": [
+     "fix:targeted",
+     "fix:regenerate",
+     "fresh-session"
+    ],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "CI is red: another model (Opus, under the step's pin; attempt 4 of 5)."
+   }
+  },
+  {
+   "name": "ci-red, same, pinned Opus on Opus: no model under the pin, so another account",
+   "in": {
+    "attempts": [
+     {
+      "kind": "ci-red",
+      "strategy": "fix",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Opus",
+      "account": "a1",
+      "source": "pipeline",
+      "fixStrategy": "targeted"
+     },
+     {
+      "kind": "ci-red",
+      "strategy": "fix",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Opus",
+      "account": "a1",
+      "source": "pipeline",
+      "fixStrategy": "regenerate"
+     },
+     {
+      "kind": "ci-red",
+      "strategy": "fresh-session",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Opus",
+      "account": "a1",
+      "source": "pipeline"
+     }
+    ],
+    "failure": {
+     "kind": "ci-red"
+    },
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Opus",
+     "model": "Opus",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "ci-red",
+    "n": 4,
+    "strategy": "switch-account",
+    "fixStrategy": "",
+    "model": "Opus",
+    "account": "a2",
+    "rung": "switch-account:a2",
+    "tried": [
+     "fix:targeted",
+     "fix:regenerate",
+     "fresh-session"
+    ],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "CI is red: another account (a2; attempt 4 of 5)."
+   }
+  },
+  {
+   "name": "ci-red, same, pinned Opus and only one account: nothing left, escalate before the cap",
+   "in": {
+    "attempts": [
+     {
+      "kind": "ci-red",
+      "strategy": "fix",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Opus",
+      "account": "a1",
+      "source": "pipeline",
+      "fixStrategy": "targeted"
+     },
+     {
+      "kind": "ci-red",
+      "strategy": "fix",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Opus",
+      "account": "a1",
+      "source": "pipeline",
+      "fixStrategy": "regenerate"
+     },
+     {
+      "kind": "ci-red",
+      "strategy": "fresh-session",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Opus",
+      "account": "a1",
+      "source": "pipeline"
+     }
+    ],
+    "failure": {
+     "kind": "ci-red"
+    },
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Opus",
+     "model": "Opus",
+     "account": "a1",
+     "accounts": [
+      "a1"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "ci-red",
+    "n": 4,
+    "strategy": "escalate",
+    "fixStrategy": "",
+    "model": "",
+    "account": "",
+    "rung": "escalate",
+    "tried": [
+     "fix:targeted",
+     "fix:regenerate",
+     "fresh-session"
+    ],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": true,
+    "reason": "CI is red: every rung of the ladder was tried (fix:targeted, fix:regenerate, fresh-session) and it still fails. Needs a hand."
+   }
+  },
+  {
+   "name": "ci-red, pinned Fable but running on Opus after a downgrade: back up to Fable (the pin)",
+   "in": {
+    "attempts": [
+     {
+      "kind": "ci-red",
+      "strategy": "fix",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Opus",
+      "account": "a1",
+      "source": "pipeline",
+      "fixStrategy": "targeted"
+     },
+     {
+      "kind": "ci-red",
+      "strategy": "fix",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Opus",
+      "account": "a1",
+      "source": "pipeline",
+      "fixStrategy": "regenerate"
+     },
+     {
+      "kind": "ci-red",
+      "strategy": "fresh-session",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Opus",
+      "account": "a1",
+      "source": "pipeline"
+     }
+    ],
+    "failure": {
+     "kind": "ci-red"
+    },
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Opus",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "ci-red",
+    "n": 4,
+    "strategy": "switch-model",
+    "fixStrategy": "",
+    "model": "Fable",
+    "account": "a1",
+    "rung": "switch-model:Fable",
+    "tried": [
+     "fix:targeted",
+     "fix:regenerate",
+     "fresh-session"
+    ],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "CI is red: another model (Fable, the step's pin; attempt 4 of 5)."
+   }
+  },
+  {
+   "name": "clash, nothing tried: merge main in",
+   "in": {
+    "attempts": [],
+    "failure": {
+     "kind": "clash",
+     "why": "framework/ui/axf.css"
+    },
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "clash",
+    "n": 1,
+    "strategy": "merge-main",
+    "fixStrategy": "",
+    "model": "Fable",
+    "account": "a1",
+    "rung": "merge-main",
+    "tried": [],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "It clashes with main (framework/ui/axf.css): merging main in (attempt 1 of 5)."
+   }
+  },
+  {
+   "name": "clash again after merge-main went ok once: the rung is used, a fix session resolves it",
+   "in": {
+    "attempts": [
+     {
+      "kind": "clash",
+      "strategy": "merge-main",
+      "result": "ok",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "",
+      "account": "",
+      "source": "pipeline"
+     }
+    ],
+    "failure": {
+     "kind": "clash"
+    },
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "clash",
+    "n": 1,
+    "strategy": "fix",
+    "fixStrategy": "targeted",
+    "model": "Fable",
+    "account": "a1",
+    "rung": "fix:targeted",
+    "tried": [
+     "merge-main"
+    ],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "It clashes with main: a fix session (targeted) (attempt 1 of 5)."
+   }
+  },
+  {
+   "name": "maxAttempts 2 reached: escalate",
+   "in": {
+    "attempts": [
+     {
+      "kind": "crash",
+      "strategy": "retry",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline"
+     },
+     {
+      "kind": "crash",
+      "strategy": "fresh-session",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline"
+     }
+    ],
+    "failure": {
+     "kind": "crash"
+    },
+    "policy": {
+     "maxAttempts": 2
+    },
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "crash",
+    "n": 3,
+    "strategy": "escalate",
+    "fixStrategy": "",
+    "model": "",
+    "account": "",
+    "rung": "escalate",
+    "tried": [
+     "retry",
+     "fresh-session"
+    ],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": true,
+    "reason": "The session crashed: 2 attempts failed (the limit is 2). Tried retry, fresh-session. Needs a hand."
+   }
+  },
+  {
+   "name": "maxTotal reached across kinds: escalate even with rungs left",
+   "in": {
+    "attempts": [
+     {
+      "kind": "crash",
+      "strategy": "retry",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline"
+     },
+     {
+      "kind": "crash",
+      "strategy": "fresh-session",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline"
+     },
+     {
+      "kind": "ci-red",
+      "strategy": "fix",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline",
+      "fixStrategy": "targeted"
+     },
+     {
+      "kind": "ci-red",
+      "strategy": "fix",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline",
+      "fixStrategy": "regenerate"
+     }
+    ],
+    "failure": {
+     "kind": "stalled"
+    },
+    "policy": {
+     "maxTotal": 4
+    },
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "stalled",
+    "n": 1,
+    "strategy": "escalate",
+    "fixStrategy": "",
+    "model": "",
+    "account": "",
+    "rung": "escalate",
+    "tried": [],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": true,
+    "reason": "It stalled: 4 attempts of every kind failed on this build (the limit is 4). Needs a hand."
+   }
+  },
+  {
+   "name": "an attempt still running: the same rung, in flight",
+   "in": {
+    "attempts": [
+     {
+      "kind": "crash",
+      "strategy": "retry",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline"
+     },
+     {
+      "kind": "crash",
+      "strategy": "fresh-session",
+      "result": "started",
+      "startedAt": "2026-11-17T00:58:00.000Z",
+      "endedAt": "",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline"
+     }
+    ],
+    "failure": {
+     "kind": "crash"
+    },
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "crash",
+    "n": 2,
+    "strategy": "fresh-session",
+    "fixStrategy": "",
+    "model": "Fable",
+    "account": "a1",
+    "rung": "fresh-session",
+    "tried": [
+     "retry",
+     "fresh-session"
+    ],
+    "notBefore": "",
+    "inFlight": true,
+    "escalate": false,
+    "reason": "Attempt 2 (a fresh session) is still running since 2026-11-17T00:58:00.000Z."
+   }
+  },
+  {
+   "name": "an attempt open past the timeout counts as a failure: the next rung",
+   "in": {
+    "attempts": [
+     {
+      "kind": "crash",
+      "strategy": "retry",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline"
+     },
+     {
+      "kind": "crash",
+      "strategy": "fresh-session",
+      "result": "started",
+      "startedAt": "2026-11-17T00:00:00.000Z",
+      "endedAt": "",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline"
+     }
+    ],
+    "failure": {
+     "kind": "crash"
+    },
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "crash",
+    "n": 3,
+    "strategy": "switch-account",
+    "fixStrategy": "",
+    "model": "Fable",
+    "account": "a2",
+    "rung": "switch-account:a2",
+    "tried": [
+     "retry",
+     "fresh-session"
+    ],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "The session crashed: another account (a2; attempt 3 of 5)."
+   }
+  },
+  {
+   "name": "skipped attempts (a hand reset) do not count: the ladder starts over",
+   "in": {
+    "attempts": [
+     {
+      "kind": "crash",
+      "strategy": "retry",
+      "result": "skipped",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline"
+     },
+     {
+      "kind": "crash",
+      "strategy": "fresh-session",
+      "result": "skipped",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline"
+     }
+    ],
+    "failure": {
+     "kind": "crash"
+    },
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "crash",
+    "n": 1,
+    "strategy": "retry",
+    "fixStrategy": "",
+    "model": "Fable",
+    "account": "a1",
+    "rung": "retry",
+    "tried": [],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "The session crashed: the same approach again (attempt 1 of 5)."
+   }
+  },
+  {
+   "name": "fell-to-pending, nothing tried: requeue (retry)",
+   "in": {
+    "attempts": [],
+    "failure": {
+     "kind": "fell-to-pending",
+     "why": "stopped mid-phase"
+    },
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "fell-to-pending",
+    "n": 1,
+    "strategy": "retry",
+    "fixStrategy": "",
+    "model": "Fable",
+    "account": "a1",
+    "rung": "retry",
+    "tried": [],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "It fell back to Pending (stopped mid-phase): the same approach again (attempt 1 of 5)."
+   }
+  },
+  {
+   "name": "stalled: a fresh session first",
+   "in": {
+    "attempts": [],
+    "failure": {
+     "kind": "stalled",
+     "why": "no heartbeat for 25 min"
+    },
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "stalled",
+    "n": 1,
+    "strategy": "fresh-session",
+    "fixStrategy": "",
+    "model": "Fable",
+    "account": "a1",
+    "rung": "fresh-session",
+    "tried": [],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "It stalled (no heartbeat for 25 min): a fresh session (attempt 1 of 5)."
+   }
+  },
+  {
+   "name": "push-fail with retrySame 0: straight to a fresh session",
+   "in": {
+    "attempts": [],
+    "failure": {
+     "kind": "push-fail",
+     "why": "token expired"
+    },
+    "policy": {
+     "retrySame": 0
+    },
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "push-fail",
+    "n": 1,
+    "strategy": "fresh-session",
+    "fixStrategy": "",
+    "model": "Fable",
+    "account": "a1",
+    "rung": "fresh-session",
+    "tried": [],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "The push failed (token expired): a fresh session (attempt 1 of 5)."
+   }
+  },
+  {
+   "name": "a custom ladder in the policy",
+   "in": {
+    "attempts": [],
+    "failure": {
+     "kind": "crash"
+    },
+    "policy": {
+     "ladders": {
+      "crash": [
+       "fresh-session",
+       "escalate"
+      ]
+     }
+    },
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "crash",
+    "n": 1,
+    "strategy": "fresh-session",
+    "fixStrategy": "",
+    "model": "Fable",
+    "account": "a1",
+    "rung": "fresh-session",
+    "tried": [],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "The session crashed: a fresh session (attempt 1 of 5)."
+   }
+  },
+  {
+   "name": "a bad custom ladder (no escalate at the end) falls back to the default",
+   "in": {
+    "attempts": [],
+    "failure": {
+     "kind": "crash"
+    },
+    "policy": {
+     "ladders": {
+      "crash": [
+       "fresh-session"
+      ]
+     }
+    },
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "crash",
+    "n": 1,
+    "strategy": "retry",
+    "fixStrategy": "",
+    "model": "Fable",
+    "account": "a1",
+    "rung": "retry",
+    "tried": [],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "The session crashed: the same approach again (attempt 1 of 5)."
+   }
+  },
+  {
+   "name": "a bare kind string as the failure",
+   "in": {
+    "attempts": [],
+    "failure": "ci-red",
+    "policy": {},
+    "ctx": {
+     "pinnedModel": "Fable",
+     "model": "Fable",
+     "account": "a1",
+     "accounts": [
+      "a1",
+      "a2"
+     ]
+    }
+   },
+   "out": {
+    "$axf": "retry-decision@1",
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "ci-red",
+    "n": 1,
+    "strategy": "fix",
+    "fixStrategy": "targeted",
+    "model": "Fable",
+    "account": "a1",
+    "rung": "fix:targeted",
+    "tried": [],
+    "notBefore": "",
+    "inFlight": false,
+    "escalate": false,
+    "reason": "CI is red: a fix session (targeted) (attempt 1 of 5)."
+   }
+  }
+ ],
+ "escalations": [
+  {
+   "name": "ci-red after five failed tries",
+   "in": {
+    "attempts": [
+     {
+      "kind": "ci-red",
+      "strategy": "fix",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline",
+      "fixStrategy": "targeted"
+     },
+     {
+      "kind": "ci-red",
+      "strategy": "fix",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline",
+      "fixStrategy": "regenerate"
+     },
+     {
+      "kind": "ci-red",
+      "strategy": "fresh-session",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Fable",
+      "account": "a1",
+      "source": "pipeline"
+     },
+     {
+      "kind": "ci-red",
+      "strategy": "switch-model",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Opus",
+      "account": "a1",
+      "source": "pipeline"
+     },
+     {
+      "kind": "ci-red",
+      "strategy": "switch-account",
+      "result": "failed",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "model": "Opus",
+      "account": "a2",
+      "source": "pipeline"
+     }
+    ],
+    "failure": {
+     "kind": "ci-red",
+     "why": "android / check-theme",
+     "head": "aaaa"
+    },
+    "head": "aaaa"
+   },
+   "out": {
+    "at": "2026-11-17T01:00:00.000Z",
+    "kind": "ci-red",
+    "attempts": 5,
+    "why": "CI is red (android / check-theme): 5 attempts failed (the limit is 5). Tried fix:targeted, fix:regenerate, fresh-session, switch-model:Opus, switch-account:a2. Needs a hand.",
+    "head": "aaaa",
+    "tried": [
+     "fix:targeted",
+     "fix:regenerate",
+     "fresh-session",
+     "switch-model:Opus",
+     "switch-account:a2"
+    ],
+    "bannerId": "",
+    "pushedAt": ""
+   }
+  }
+ ],
+ "walks": {
+  "crash": [
+   "retry",
+   "fresh-session",
+   "switch-account:a2",
+   "switch-model:Opus",
+   "escalate"
+  ],
+  "ci-red": [
+   "fix:targeted",
+   "fix:regenerate",
+   "fresh-session",
+   "switch-model:Opus",
+   "switch-account:a2",
+   "escalate"
+  ],
+  "clash": [
+   "merge-main",
+   "fix:targeted",
+   "fresh-session",
+   "switch-model:Opus",
+   "escalate"
+  ],
+  "push-fail": [
+   "retry",
+   "fresh-session",
+   "switch-account:a2",
+   "escalate"
+  ],
+  "stalled": [
+   "fresh-session",
+   "switch-account:a2",
+   "switch-model:Opus",
+   "escalate"
+  ],
+  "fell-to-pending": [
+   "retry",
+   "fresh-session",
+   "switch-model:Opus",
+   "switch-account:a2",
+   "escalate"
+  ]
+ }
+}

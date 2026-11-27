@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "plugin-screen-settings-g-mwjz4jca-menu",
+  "name": "plugin-screen-settings-g-mwjz4jca: Inside a ⋯ overflow menu",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "A ⋯ button that opens the screen's menu with Settings in it (next to the usual right-click items). Least visible, room for more screen actions later.",
+  "tags": [
+    "ui-choice",
+    "choice-set:plugin-screen-settings-g-mwjz4jca",
+    "choice-option:menu"
+  ],
+  "data": {
+    "placement": "menu",
+    "setting": "axf.plugins.settingsGear.placement",
+    "builtFor": "plugin:plugin-manager"
+  }
+}

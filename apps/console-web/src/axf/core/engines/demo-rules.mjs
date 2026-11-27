@@ -77,7 +77,7 @@ export const DOCS_DEFAULTS = {
 const SLUG = /^[a-z0-9][a-z0-9-]{1,47}$/;
 /** An id inside an asset (a chapter, a step): one character is enough. */
 const KEY = /^[a-z0-9][a-z0-9-]{0,47}$/;
-/** A glossary entry id: `<kind>:<rest>` (plugin:build-manager, control:console-web:ui-review:approve, concept:asset). */
+/** A glossary entry id: `<kind>:<rest>` (plugin:build-orchestrator, control:console-web:ui-review:approve, concept:asset). */
 const ENTRY_ID = /^[a-z][a-z0-9-]*:[^\s]{1,200}$/;
 /** An asset reference inside a book: demonstration/<id>, clip/<id>, book/<id>, book/<id>#<chapter>. */
 const ASSET_REF = /^(demonstration|clip|book)\/([a-z0-9][a-z0-9-]{1,47})(?:#([a-z0-9][a-z0-9-]{0,47}))?$/;
@@ -184,7 +184,7 @@ export function stepsSeconds(steps, wpm = DEMO_WPM) {
 export function demonstrationErrors(raw) {
   if (!isObj(raw)) return ['data must be an object'];
   const e = [];
-  if (raw.about !== undefined && raw.about !== '' && !(typeof raw.about === 'string' && ENTRY_ID.test(raw.about))) e.push('data.about must be the glossary entry id this demonstrates (e.g. plugin:build-manager)');
+  if (raw.about !== undefined && raw.about !== '' && !(typeof raw.about === 'string' && ENTRY_ID.test(raw.about))) e.push('data.about must be the glossary entry id this demonstrates (e.g. plugin:build-orchestrator)');
   if (raw.entries !== undefined && (!Array.isArray(raw.entries) || raw.entries.length > DEMO_LIMITS.entries || raw.entries.some((x) => typeof x !== 'string' || !ENTRY_ID.test(x)))) e.push(`data.entries must be up to ${DEMO_LIMITS.entries} glossary entry ids`);
   if (raw.app !== undefined && !/^[a-z][a-z0-9-]{0,39}$/.test(raw.app ?? '')) e.push('data.app must be an app id (console, axhub-web, amberx-droid…)');
   if (raw.surface !== undefined && !DEMO_ENUMS.surface.includes(raw.surface)) e.push(`data.surface must be one of ${DEMO_ENUMS.surface.join(', ')}`);

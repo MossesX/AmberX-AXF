@@ -44,6 +44,15 @@ const assetFile = (type: string, id: string) => {
 const menuAsset = assetFile('app-menu', manifest.defaults['app-menu']);
 const navAsset = assetFile('nav-menu', manifest.defaults['nav-menu']);
 const toolbarAsset = assetFile('toolbar', manifest.defaults.toolbar);
+/** The console nav's section labels: every plugin's nav entry names one of them (checked below). */
+const navSections = new Set<string>((navAsset.data.sections as { label?: string }[]).map((x) => x.label ?? '').filter(Boolean));
+{
+  const seen = new Set<string>();
+  for (const sec of navAsset.data.sections as { label?: string; items: { view: string; label: string }[] }[]) for (const it of sec.items) {
+    if (seen.has(it.view)) problems.push(`nav entry "${it.label}" (view ${it.view}) is listed twice in ${navAsset.id}`);
+    seen.add(it.view);
+  }
+}
 /** Every toolbar the console ships (any can be picked in Settings → Appearance). */
 const toolbars = ofType('toolbar');
 /** Framework stand-ins the console gives no handler (they only say "no handler yet"): reached through the toolbar live list. */
@@ -53,11 +62,14 @@ const stubs = new Set(Object.keys(STANDARD_ACTIONS).filter((a) => !consoleAction
 /** `const NAME = 'value'` in a source file, for resolving `view: VIEW` / `[VIEW]`. */
 const constsOf = (src: string) => Object.fromEntries([...src.matchAll(/const\s+([A-Z_][A-Z0-9_]*)\s*=\s*'([^']+)'/g)].map((m) => [m[1], m[2]]));
 /** View ids in a source file's `nav: { … items: [ … view: X … ] }` lines. */
-function navViews(src: string): string[] {
-  const c = constsOf(src);
+function navViews(src: string, more: Record<string, string> = {}): string[] {
+  const c = { ...more, ...constsOf(src) };
   const out: string[] = [];
-  for (const line of src.split('\n').filter((l) => /^\s*nav:\s*\{/.test(l))) {
-    for (const m of line.matchAll(/view:\s*(?:'([^']+)'|([A-Z_][A-Z0-9_]*))/g)) { const v = m[1] ?? c[m[2]!]; if (v) out.push(v); }
+  // the whole `nav: { … }` block, one line or many (a plugin with several pages lists one item per line)
+  for (const start of [...src.matchAll(/^\s*nav:\s*\{/gm)].map((m) => m.index! + m[0].length)) {
+    let depth = 1; let i = start;
+    for (; i < src.length && depth > 0; i++) { if (src[i] === '{') depth++; else if (src[i] === '}') depth--; }
+    for (const m of src.slice(start, i).matchAll(/view:\s*(?:'([^']+)'|([A-Z_][A-Z0-9_]*))/g)) { const v = m[1] ?? c[m[2]!]; if (v) out.push(v); }
   }
   return out;
 }
@@ -84,16 +96,26 @@ const contributions: AppMenuContribution[] = consoleMenuContributions.map((c) =>
 const providers = new Set<string>(['views', 'nav', 'toolbar', 'settings', 'windows', 'dialogs', 'chrome', ...Object.values(CONSOLE_PROVIDERS).map((p) => p.id)]);
 const moreActions: string[] = Object.values(CONSOLE_PROVIDERS).map((p) => p.moreAction);
 const pluginNav: { folder: string; view: string }[] = [];
+const pluginPages: string[] = [];
 const pluginDir = join(app, 'plugins');
 for (const folder of readdirSync(pluginDir).filter((f) => !f.startsWith('_') && !f.startsWith('.') && existsSync(join(pluginDir, f, 'plugin.json'))).sort()) {
   const indexFile = join(pluginDir, folder, 'web/index.tsx');
   if (!existsSync(indexFile)) continue;
   const src = readFileSync(indexFile, 'utf8');
   const id = JSON.parse(readFileSync(join(pluginDir, folder, 'plugin.json'), 'utf8')).id as string;
-  let views = navViews(src);
+  // constants a plugin imports from its own web/ files (e.g. `VIEW` from './ui')
+  const webDir = join(pluginDir, folder, 'web');
+  const local = Object.assign({}, ...readdirSync(webDir).filter((f) => /\.(ts|tsx)$/.test(f)).map((f) => constsOf(readFileSync(join(webDir, f), 'utf8'))));
+  let views = navViews(src, local);
   // A plugin built on a framework library (`...lib` from createXLibrary) gets the library's nav.
   for (const m of src.matchAll(/from '@console\/axf\/libs\/([\w-]+)'/g)) if (/\.\.\.lib\b/.test(src)) views = views.concat(navViews(readText(`src/axf/libs/${m[1]}/index.tsx`)));
-  for (const v of views) pluginNav.push({ folder, view: v });
+  // every page a plugin declares is a known page (a menu item may open it); the "its nav entry is in the app menu" rule
+  // still covers what the one-line, same-file parse saw before Nov 10 2026 (agent-voice and codebase-changes reach
+  // their pages through an .open action, a gap recorded in the enforce-the-merge-queue report)
+  pluginPages.push(...views);
+  for (const v of navViews(src.split('\n').filter((l) => /^\s*nav:\s*\{/.test(l)).join('\n'))) pluginNav.push({ folder, view: v });
+  // the side nav keeps one shape: a plugin's nav entry joins one of the console nav asset's sections (by label)
+  for (const m of [...src.matchAll(/^\s*nav:\s*\{\s*label:\s*'([^']*)'/gm), ...src.matchAll(/\bnavLabel:\s*'([^']*)'/g)]) need(navSections.has(m[1]!), `plugin ${folder}'s nav entry joins section "${m[1]}", which the console nav (${navAsset.id}) doesn't have: use one of ${[...navSections].join(', ')}`);
   const hasUi = views.length > 0 || /\bdialogs:\s*\{/.test(src) || /\bsettingsTabs\b/.test(src);
   const menuFile = join(pluginDir, folder, 'web/menu.ts');
   if (!existsSync(menuFile)) { need(!hasUi, `plugin ${folder} has a page, dialog or settings tab but no web/menu.ts`); continue; }
@@ -146,13 +168,22 @@ for (const s of navAsset.data.sections) for (const it of s.items) need(reaches(i
 for (const p of pluginNav) need(reaches(p.view), `plugin ${p.folder}'s nav entry (view ${p.view}) isn't in the app menu`);
 for (const v of libViews) need(reaches(v), `library page "${v}" isn't in the app menu`);
 const stubbed = new Set<string>();
+/*
+ * Skins only (#532): the style / layout / spacing / design-package pickers left the console menus; the skin carries
+ * those parts and View › Look steps it (skin.use:next|prev). The shared toolbars still offer the retired picks (the
+ * runtime routes swap:<folded type>:next|prev to the skin step), so they count as reached when the menu steps the skin.
+ */
+const SKIN_STEP = ['skin.use:next', 'skin.use:prev'];
+const retiredPick = (a: string) => /^swap:(style-theme|layout|behavior-theme|style-package):(next|prev)$/.test(a) || /^design\.package:(next|prev)$/.test(a) || /^spacing:(tight|compact|regular)$/.test(a);
+const skinStepped = new Set<string>();
 for (const tb of toolbars) for (const g of tb.data.groups) for (const it of g.items) {
   if (stubs.has(it.action) && !actions.has(it.action)) { stubbed.add(it.action); continue; }
+  if (!actions.has(it.action) && retiredPick(it.action) && SKIN_STEP.every((a) => actions.has(a))) { skinStepped.add(it.action); continue; }
   need(actions.has(it.action), `toolbar ${tb.id}: item "${it.label}" (${it.action}) isn't in the app menu`);
 }
 for (const v of consoleViews) need(reaches(v), `page "${v}" (src/App.tsx) isn't in the app menu`);
 
-const known = new Set([...consoleViews, ...libViews, ...pluginNav.map((p) => p.view)]);
+const known = new Set([...consoleViews, ...libViews, ...pluginNav.map((p) => p.view), ...pluginPages]);
 for (const a of actions) if (a.startsWith('nav:')) need(known.has(a.slice(4)), `menu item opens unknown page "${a.slice(4)}"`);
 for (const p of ['views', 'nav', 'toolbar', 'settings', 'windows', 'dialogs', 'chrome']) need(used.has(p), `built-in live list "${p}" is missing from the menu`);
 for (const p of Object.values(CONSOLE_PROVIDERS)) need(used.has(p.id), `console live list "${p.id}" is registered but not in the menu`);
@@ -171,5 +202,6 @@ if (problems.length) {
   process.exit(1);
 }
 assert.ok(items > 0);
+if (skinStepped.size) console.log(`menu-reach: retired picks on the toolbars, reached through View › Look › Next / Previous skin: ${[...skinStepped].join(', ')}`);
 if (stubbed.size) console.log(`menu-reach: framework stand-ins with no console handler, reached through View › Toolbar items: ${[...stubbed].join(', ')}`);
 console.log(`menu-reach: ok — ${checks} checks; ${compiled.menus.length} menus, ${items} static items, ${used.size} live lists, ${contributions.length} contributions; ${known.size} pages and items of ${toolbars.length} toolbars reachable`);

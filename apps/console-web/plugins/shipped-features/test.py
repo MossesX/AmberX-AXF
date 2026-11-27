@@ -26,10 +26,11 @@ const f = D.putFeature(db, { name: 'Status chips', plugin: 'shipped-features', s
 D.putPrompt(db, { build: 'sf', said: 'Put every feature in the list the moment it is planned.', verbatim: true });
 D.putEdit(db, { feature: f.id, summary: 'Stalled tone', build: 'sf-fix', status: 'building', at: '2026-11-05T00:00:00Z' });
 const { applyManifest } = await import(process.argv[2]);
-applyManifest(db, { build: { id: 'veto', title: 'Veto notice alarm too loud', profile: 'all' }, said: { text: 'I received the alarm, so it is still stopping.', verbatim: true }, pr: { number: 397 }, landedCommit: '661901740ba21f97', mergedAt: '2026-11-09T00:06:38Z', files: ['apps/console-web/plugins/approvals-banner/web/index.tsx'], tests: [{ name: 'banner 18 checks', result: 'pass' }] });
+applyManifest(db, { build: { id: 'veto', title: 'Veto notice alarm too loud', profile: 'all' }, said: { text: 'I received the alarm, so it is still stopping.', verbatim: true }, pr: { number: 397 }, landedCommit: '661901740ba21f97', mergedAt: '2026-11-09T00:06:38Z', files: ['apps/console-web/plugins/example-banner/web/index.tsx'], tests: [{ name: 'banner 18 checks', result: 'pass' }] });
 """
 subprocess.run(["node", "--input-type=module", "-e", SEED, str(HERE / "ledger" / "db.mjs"), str(HERE / "ledger" / "manifest.mjs")], check=True, env=os.environ)
 
+sys.path.insert(0, str(HERE.parent.parent / "server"))  # the plugin imports the console server's data_store (data-store@1)
 sys.modules.setdefault("axf_console_plugins", types.ModuleType("axf_console_plugins")).__path__ = []
 spec = importlib.util.spec_from_file_location("axf_console_plugins.shipped_features_test", HERE / "server" / "__init__.py", submodule_search_locations=[str(HERE / "server")])
 mod = importlib.util.module_from_spec(spec)

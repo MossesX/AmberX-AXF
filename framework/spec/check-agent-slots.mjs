@@ -5,26 +5,52 @@
  * end (a fake `claude` in real tmux sessions named axf-slotstest-*, so nothing real is touched).
  *   node framework/spec/check-agent-slots.mjs
  */
+process.env.AXF_BUILD_LIMIT ??= 'off'; // the hard build limit counts the VPS's real builds: keep these tests off it (check-build-limit.mjs covers it)
 import { mkdtempSync, mkdirSync, writeFileSync, chmodSync, readFileSync, existsSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+process.env.AXF_CREW_SAY ??= 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const tmp = mkdtempSync(join(tmpdir(), 'axf-slots-'));
 Object.assign(process.env, { AXF_SLOTS_DIR: join(tmp, 'store'), AXF_SLOTS_TMUX: 'off', AXF_SLOTS_MEM_GB: '8', AXF_SLOTS_SWAP_MB: '0', AXF_SLOTS_PREFIX: 'axf-slotstest-' });
 const S = await import('../cli/agent-slots.mjs');
+const L = await import('../cli/build-limit.mjs');
 
 let n = 0; let failed = 0;
 const ok = (cond, what) => { n++; if (!cond) { failed++; console.error(`FAIL ${what}`); } };
 const eq = (a, b, what) => ok(JSON.stringify(a) === JSON.stringify(b), `${what}: ${JSON.stringify(a)} != ${JSON.stringify(b)}`);
-const reset = (settings = {}) => { rmSync(process.env.AXF_SLOTS_DIR, { recursive: true, force: true }); S.saveSettings(settings); };
+// Builds at once is one stored key (build-limit.json maxBuilds); `maxAgents` here is its read alias, so the cap is set there.
+const setCap = (cap) => L.saveLimit({ maxBuilds: cap }, { by: 'test', owner: true });
+const reset = (settings = {}) => { rmSync(process.env.AXF_SLOTS_DIR, { recursive: true, force: true }); const { maxAgents, ...rest } = settings; S.saveSettings(rest); if (maxAgents !== undefined) setCap(maxAgents); };
 const alive = { alive: () => true };
 
 // settings: defaults, limits, bad rules dropped
 reset();
-eq([S.loadSettings().maxAgents, S.loadSettings().maxHeavy, S.loadSettings().minFreeGb], [6, 3, 2], 'defaults 6 agents / 3 heavy / 2 GB');
+eq([S.loadSettings().maxAgents, S.loadSettings().maxHeavy, S.loadSettings().minFreeGb], [L.DEFAULTS.maxBuilds, 3, 2], 'defaults: the build limit / 3 heavy / 2 GB');
+// one true source: maxAgents is a read alias of build-limit.json maxBuilds, never stored again
+ok(!('maxAgents' in JSON.parse(readFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), 'utf8'))), 'a save never stores maxAgents');
+eq(S.saveSettings({ maxAgents: 2, maxHeavy: 4 }).maxAgents, L.DEFAULTS.maxBuilds, 'saving the retired key changes nothing');
+eq(S.loadSettings().maxHeavy, 4, 'the other keys in the same save are kept');
+writeFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), JSON.stringify({ maxAgents: 2 }));
+eq([S.loadSettings().maxAgents, S.migrateBuildsAtOnce()], [2, null], 'a store with only the old key is still read from it (nothing to migrate into)');
+{ // migration: the one saved last is kept and logged; a later maxAgents never raises the limit
+  const logOf = () => readFileSync(join(process.env.AXF_SLOTS_DIR, 'build-limit.log.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l)).filter((l) => l.event === 'settings-migrated');
+  rmSync(process.env.AXF_SLOTS_DIR, { recursive: true, force: true }); mkdirSync(process.env.AXF_SLOTS_DIR, { recursive: true });
+  writeFileSync(join(process.env.AXF_SLOTS_DIR, 'build-limit.json'), JSON.stringify({ maxBuilds: 6, setAt: '2020-01-01T00:00:00.000Z' }));
+  writeFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), JSON.stringify({ maxAgents: 4, maxHeavy: 2 }));
+  eq([S.loadSettings().maxAgents, L.loadLimit().maxBuilds, S.loadSettings().maxHeavy], [4, 4, 2], 'maxAgents saved last and lower: kept as the one value');
+  ok(!('maxAgents' in JSON.parse(readFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), 'utf8'))), 'the old key is gone from the file');
+  eq([logOf().length, logOf()[0].disagreed, logOf()[0].kept.value, logOf()[0].dropped.value], [1, true, 4, 4], 'the migration is logged once');
+  writeFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), JSON.stringify({ maxAgents: 9 }));
+  eq([S.loadSettings().maxAgents, L.loadLimit().maxBuilds, logOf()[1].kept.value], [4, 4, 4], 'a later maxAgents above the limit never raises it');
+  writeFileSync(join(process.env.AXF_SLOTS_DIR, 'build-limit.json'), JSON.stringify({ maxBuilds: 7, setAt: '2099-01-01T00:00:00.000Z' }));
+  writeFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), JSON.stringify({ maxAgents: 3 }));
+  eq([S.loadSettings().maxAgents, logOf()[2].why], [7, 'build-limit.json maxBuilds was saved last'], 'the limit saved last wins over an older maxAgents');
+  reset();
+}
 eq(S.normSettings({ maxAgents: 999, minFreeGb: -1 }).maxAgents, 64, 'cap clamps high');
 eq(S.normSettings({ minFreeGb: -1 }).minFreeGb, 0, 'floor clamps low');
 eq(S.normSettings({ priorityRules: [{ match: '(', level: 'boss' }, { match: 'x', level: 'nope' }, { match: '^vip', level: 'urgent' }] }).priorityRules, [{ match: '^vip', level: 'urgent' }], 'bad rules dropped');
@@ -36,6 +62,8 @@ const a = S.enqueue({ name: 'a' }, alive); const b = S.enqueue({ name: 'b' }, al
 eq([a.started, b.started, c.started, d.started], [true, true, false, false], 'cap 2: two start, two queue');
 eq([c.position, d.position], [1, 2], 'FIFO positions');
 eq(S.status(alive).used, 2, 'used = 2');
+{ const st = S.enqueue({ name: 'dag--s3', build: 'dag', step: 's3' }, { ...alive, mayTake: () => true }); const row = [...S.status(alive).running, ...S.status(alive).queue].find((r) => r.id === st.id);
+  eq([row?.build, row?.step], ['dag', 's3'], 'a step launch books its own slot, named with its step'); S.cancel?.(st.id); }
 
 // priority: urgent jumps the normal line, boss jumps urgent; FIFO within a level
 const u = S.enqueue({ name: 'urgent-x' }, alive); const bs = S.enqueue({ name: 'y', priority: 'boss' }, alive);
@@ -105,7 +133,7 @@ reset({ maxAgents: 1 });
 S.enqueue({ name: 'p' }, alive);
 const q2 = S.enqueue({ name: 'q' }, alive);
 eq(q2.started, false, 'cap 1 queues q');
-writeFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), JSON.stringify({ maxAgents: 3 }));
+setCap(3);
 eq(S.claim(q2.id, {}, alive).started, true, 'raised cap applies on the next claim');
 eq(S.status(alive).cap, 3, 'status shows the new cap');
 
@@ -155,6 +183,39 @@ eq(r4.adopted, ['axf-slotstest-live'], 'old session with a live claude is adopte
 const sm = S.status({ tmux: new Map() });
 ok(['used', 'cap', 'queued', 'queue', 'heavy', 'memory', 'guard', 'swap', 'settings'].every((k) => k in sm), 'status has every field the console reads');
 
+// emergency slots: a second pool with its own line and its own cap; the pools never lend
+{
+  const L = await import('../cli/build-limit.mjs');
+  reset({ maxAgents: 2 });
+  L.grantEmergency('rush', { by: 'brett', owner: true });
+  eq([S.loadSettings().emergencySlots, S.loadSettings().emergencyBuilds], [2, ['rush']], 'settings carry the emergency pool and its grants');
+  const n1 = S.enqueue({ name: 'n1' }, alive); const n2 = S.enqueue({ name: 'n2' }, alive); const n3 = S.enqueue({ name: 'n3' }, alive);
+  eq([n1.started, n2.started, n3.started], [true, true, false], 'the orchestrator pool is full: an ordinary run queues');
+  const r1 = S.enqueue({ name: 'rush--s1', build: 'rush' }, { ...alive, mayTake: () => true });
+  const r2 = S.enqueue({ name: 'rush--s2' }, alive);
+  eq([r1.started, r2.started, r2.cap], [true, true, 2], 'emergency runs start at once beside a full orchestrator pool');
+  const r3 = S.enqueue({ name: 'rush--s3' }, alive);
+  eq([r3.started, r3.position, r3.reason], [false, 1, 'cap'], 'emergency 2 of 2: the third waits, first in the emergency line (not behind n3)');
+  let st = S.status({ ...alive, hard: false });
+  eq([st.used, st.cap, st.free, st.queued], [2, 2, 0, 1], 'status: the orchestrator pool counts only its own');
+  eq(st.emergency, { used: 2, cap: 2, free: 0, queued: 1 }, 'status: the emergency pool, counted apart');
+  eq(st.running.filter((r) => r.pool === 'emergency').map((r) => r.name), ['rush--s1', 'rush--s2'], 'running emergency entries are tagged');
+  S.release(n1.id);
+  eq(S.claim(r3.id, {}, alive).started, false, 'a freed orchestrator slot is not an emergency slot');
+  eq(S.claim(n3.id, {}, alive).started, true, 'it goes to the ordinary line');
+  S.release(r1.id);
+  eq(S.claim(r3.id, {}, alive).started, true, 'a freed emergency slot starts the waiting emergency run');
+  // ordinary runs never take an emergency place, even with the emergency pool empty
+  S.release(r2.id); S.release(r3.id);
+  const n4 = S.enqueue({ name: 'n4' }, alive);
+  st = S.status({ ...alive, hard: false });
+  eq([n4.started, st.emergency.used, st.emergency.free], [false, 0, 2], 'the orchestrator never uses the emergency slots');
+  // the grant goes: the same name is an ordinary run again
+  L.revokeEmergency('rush');
+  eq(S.enqueue({ name: 'rush--s9' }, alive).started, false, 'no grant: it queues with everyone else');
+  eq(S.poolOfEntry({ name: 'rush--s9' }, S.loadSettings()), 'builds', 'and counts in the orchestrator pool');
+}
+
 // claude-headless.sh end to end: real tmux, fake claude, cap 1
 const hasTmux = !spawnSync('tmux', ['-V']).error;
 if (hasTmux) {
@@ -164,7 +225,10 @@ if (hasTmux) {
   writeFileSync(join(bin, 'claude'), '#!/bin/sh\nwhile [ ! -f "$PWD/go" ]; do sleep 0.2; done\necho \'{"type":"result","result":"done"}\'\n');
   chmodSync(join(bin, 'claude'), 0o755);
   const runIn = (name) => { const d = join(tmp, name); mkdirSync(d); writeFileSync(join(d, 'brief.md'), 'hi'); return d; };
-  const env = { ...process.env, PATH: `${bin}:${process.env.PATH}`, AXF_WATCH_LIVE: 'off', AXF_SWARM_DIR: join(tmp, 'swarm'), HOME: process.env.HOME }; // every run is booked on an agent: keep it off the live crew
+  // every run is booked on an agent: keep it off the live crew. HOME: the launcher puts ~/.local/bin first on PATH, so the
+  // real HOME ran the real claude (and waited for a free real worker account); a scratch HOME keeps the fake one in use.
+  mkdirSync(join(tmp, 'home'), { recursive: true });
+  const env = { ...process.env, PATH: `${bin}:${process.env.PATH}`, AXF_WATCH_LIVE: 'off', AXF_SWARM_DIR: join(tmp, 'swarm'), HOME: join(tmp, 'home'), AXF_WORKERS: 'off', AXF_OWN_LOGIN: 'off', AXF_LOGIN_NOTE: 'off' };
   const sh = (cwd, name) => spawnSync('bash', [join(ROOT, 'deploy/claude-headless.sh'), '--name', name, '--brief', 'brief.md', '--log', 'run.log', '--'], { cwd, env, encoding: 'utf8', timeout: 30_000 });
   const d1 = runIn('one'); const d2 = runIn('two');
   const tag = `slotstest-${process.pid}`;

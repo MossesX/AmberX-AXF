@@ -30,7 +30,8 @@
     ],
     "mentions": [
       "_claude/THREADS.md",
-      "_claude/memory/STATUS.md"
+      "_claude/memory/STATUS.md",
+      "framework/cli/project_seed_stores.py"
     ]
   },
   "commands": { "$axf": "plugin-commands@1", "auto": true },

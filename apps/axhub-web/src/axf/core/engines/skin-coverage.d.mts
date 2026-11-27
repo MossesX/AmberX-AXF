@@ -6,16 +6,20 @@ export const PART_ELEMENTS: readonly PartElement[];
 export const SKIN_SCOPE_KINDS: readonly SkinScopeKind[];
 export const SKIN_SCOPE_GLOBAL: 'global';
 export const SKIN_SCOPE_APP: 'app';
+/** The root level: the hub default skin (`defaultSkin` on appearance@1), the floor every app stands on. */
+export const SKIN_SCOPE_DEFAULT: 'default';
 
 export type CoverageKind = 'slot' | 'parts' | 'reference' | 'bundle' | 'none';
 export type PartElement = 'box' | 'text' | 'icon' | 'items';
-export type SkinScopeKind = 'global' | 'app' | 'ui' | 'plugin';
+export type SkinScopeKind = 'default' | 'global' | 'app' | 'ui' | 'plugin';
 
 /** One place in an app: the app, a UI / screen in it, a plugin in it. */
 export interface SkinScope { app: string; ui: string; plugin: string }
 /** One level's skin state: on with a skin, off, or inherit from the parent level. */
-export interface SkinScopeState { use: 'on' | 'off' | 'inherit'; id: string; overrides: Record<string, string> }
-export interface ResolvedSkin { id: string; overrides: Record<string, string>; from: string }
+/** `colorTheme` = the colour theme picked inside the skin at this level (absent = the skin's own). */
+export interface SkinScopeState { use: 'on' | 'off' | 'inherit'; id: string; overrides: Record<string, string>; colorTheme?: string }
+/** `colorTheme` = the colour theme picked inside the skin by the nearest level that has one (absent = the skin's own). */
+export interface ResolvedSkin { id: string; overrides: Record<string, string>; from: string; colorTheme?: string }
 
 export interface CoverageRow {
   type: string;

@@ -5,6 +5,7 @@
  * start tokens, the run notes the console reads, and the launcher's line protocol. No Claude call (the real before /
  * after numbers come from `headless-context.mjs measure`, see _claude/builds/reports/brief-only-headless.md).
  */
+process.env.AXF_BUILD_LIMIT ??= 'off'; // the hard build limit counts the VPS's real builds: keep these tests off it (check-build-limit.mjs covers it)
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';

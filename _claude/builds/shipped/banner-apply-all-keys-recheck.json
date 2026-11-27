@@ -1,0 +1,151 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-banner-apply-all-keys-recheck",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:12Z",
+ "build": {
+  "id": "banner-apply-all-keys-recheck",
+  "title": "banner-apply-all-keys-recheck",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "banner-apply-all-keys-recheck",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/banner-apply-all-keys-recheck",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "ba25358909be5c5b031c6c6fb4bd6485c2032c22",
+ "commits": [
+  "103773c6e5f463435fe52cd011e6c17b34ec868c",
+  "0214cc77019190509946b423cddad98fa507d251"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-26T23:54:51Z",
+ "files": [
+  "_claude/THREADS.md",
+  "apps/amberx-droid/src/axf/react/components/BannerSettings.tsx",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/plugins/systems-check/web/index.tsx",
+  "apps/console-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/patches-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/patches-web/src/axf/ui/axf.css",
+  "apps/walkthrough-studio/src/axf/react/components/BannerSettings.tsx",
+  "apps/walkthrough-studio/src/axf/ui/axf.css",
+  "framework/plan/pending.json",
+  "framework/react/components/BannerSettings.tsx",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/src/axf/react/components/BannerSettings.tsx",
+    "apps/amberx-droid/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/console-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "patches-web",
+   "files": [
+    "apps/patches-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/patches-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/src/axf/react/components/BannerSettings.tsx",
+    "apps/walkthrough-studio/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/BannerSettings.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

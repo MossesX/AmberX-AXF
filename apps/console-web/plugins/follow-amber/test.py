@@ -48,6 +48,12 @@ class FakeConsole:
             return {"ok": False, "code": "not_found", "message": "no console is open for you right now: open the Dev Console"}
         if path == "queued":
             return {"ok": True, "queued": True, "delivery": {"how": "queued", "id": "cq-1"}, "message": "queued, not open yet"}
+        if path == "asleep":  # the real Console commands: tried every live console, queued, woke one; says pending
+            return {"ok": True, "queued": True, "status": "pending", "delivered": [{"client": "cc-1", "ok": False, "pending": True}], "delivery": {"how": "queued", "id": "cq-9", "tried": ["cc-1"]}, "message": "not shown yet: no open console answered"}
+        if path == "build-orchestrator" and (command.get("input") or {}).get("focus"):
+            return {"ok": True, "status": "delivered", "item": {"label": "Build orchestrator"}, "focus": command["input"]["focus"], "delivered": [{"client": "cc-abc123", "ok": True, "message": "opened Build orchestrator"}], "delivery": {"how": "live", "tried": ["cc-abc123"]}}
+        if path.startswith("build:"):
+            return {"ok": True, "status": "delivered", "item": {"label": "Build orchestrator"}, "focus": path[6:], "delivered": [{"client": "cc-abc123", "ok": True, "message": "opened Build orchestrator"}], "delivery": {"how": "after retry", "tried": ["cc-1", "cc-abc123"]}}
         if path == "frozen":
             return {"ok": True, "item": {"label": "Frozen"}, "delivered": [{"client": "cc-1", "ok": False, "pending": True, "message": "sent; the console didn't answer yet"}]}
         label = known.get(target, {}).get(path.lower())
@@ -170,10 +176,75 @@ ok(r["ok"] and r["shown"] is False and r["queued"] is True and "opened" not in r
 r = fa.show("screen:frozen")
 ok(r["ok"] and r["shown"] is False and r["queued"] is True and len(fake.queued) == 1, f"a console that never answered: queued for the next one ({r})")
 
+# console-commands-reliable (Nov 11 2026): the status Console commands answers is passed on as is
+q_before = len(fake.queued)
+r = fa.show("screen:asleep")
+ok(r["ok"] and r["shown"] is False and r["status"] == "pending" and r["delivery"]["tried"] == ["cc-1"] and len(fake.queued) == q_before, f"pending stays pending, no second queue ({r})")
+r = fa.show("build:console-commands-reliable")
+ok(fake.calls[-1][0]["target"] == "console.screens" and fake.calls[-1][0]["path"] == "build:console-commands-reliable", "build:<id> goes to Console commands as a screen command")
+ok(r["shown"] and r["status"] == "delivered" and r["focus"] == "console-commands-reliable" and "on console-commands-reliable" in r["message"], f"a build is shown, focused ({r})")
+r = fa.show("console-commands-reliable", kind="build")
+ok(fake.calls[-1][0]["path"] == "build:console-commands-reliable", "kind=build too")
+r = svc.show("build-orchestrator", focus="pending")
+ok(fake.calls[-1][0].get("input") == {"focus": "pending"} and r["focus"] == "pending", f"focus reaches the console command ({fake.calls[-1][0]})")
+
 ok(svc.show("plan studio")["shown"] is True, "follow-amber@1 show")
 c.post(f"{P}/state", json={"on": False})
 n = len(fake.calls)
 ok(svc.show("plan studio")["shown"] is False and len(fake.calls) == n, "switched off again: nothing opens")
+
+# ---------------------------------------------------------------- the paired phone follows too (axf.phone@1)
+check_addr = [(("screen", "plan-studio", {"id": "plan-studio"}), "view:plan-studio"), (("screen", "plan studio", {}), ""),
+              (("screen", "build:x", {"id": "build-orchestrator"}), "view:build-orchestrator"), (("screen", "build:x", {}), ""),
+              (("settings", "appearance", {"id": "appearance"}), "view:settings/tab:settings.tabs=appearance"),
+              (("settings", "x", {"id": "follow-amber", "parent": "plugins"}), "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=follow-amber"),
+              (("settings", "plugins/follow-amber", {}), "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=follow-amber"),
+              (("approval", "0123abcd-0123-4abc-8def-0123456789ab", {}), "hub.review:0123abcd-0123-4abc-8def-0123456789ab"),
+              (("dialog", "about", {"id": "about"}), ""), (("action", "builds.open", {"id": "builds.open"}), ""), (("screen", "a?b=c", {}), "")]
+for args, want in check_addr:
+    ok(fa.phone_address(*args) == want, f"phone address of {args[0]} {args[1]!r} = {want!r} (got {fa.phone_address(*args)!r})")
+
+
+class FakePhone:
+    def __init__(self) -> None:
+        self.asked: list[tuple[str, dict]] = []
+
+    def follow(self, address: str, *, by: dict | None = None) -> dict:
+        self.asked.append((address, by or {}))
+        return {"ok": True, "shown": True, "id": "cmd-1", "url": "https://console.test/?axf-open=" + address, "message": "the phone is opening the console there"}
+
+
+phone = FakePhone()
+known_item = fake.run
+fake.run = lambda command, grants=None, by="", audience="owner": {**known_item(command, grants, by, audience), **({"item": {"label": "Plan Studio", "id": "plan-studio"}} if str(command.get("path")).lower() == "plan studio" else {})}  # type: ignore[method-assign]
+c.post(f"{P}/state", json={"on": True})
+ok("phone" not in svc.show("plan studio"), "no phone plugin: the show is as before")
+plugin_services.provide("axf.phone@1", phone, folder="some-phone-plugin")
+r = svc.show("plan studio", by="amber (mcp)")
+ok(r["shown"] and phone.asked == [("view:plan-studio", {"kind": "agent", "who": "amber (mcp)", "via": "console"})], f"a shown screen also opens on the phone ({phone.asked})")
+ok(r["phone"] == {"ok": True, "shown": True, "message": "the phone is opening the console there"}, f"the answer says what the phone did ({r.get('phone')})")
+n = len(phone.asked)
+svc.show("builds.open", kind="action")
+ok(len(phone.asked) == n, "an action never goes to the phone")
+# console-open-no-reload (Nov 23 2026): the console inside the phone's app acked it (its ack carries `shell`) and came
+# to the front itself; asking the phone to open the console there as well loaded the page again, at its home screen
+in_app = fake.run
+fake.run = lambda command, grants=None, by="", audience="owner": (lambda r: {**r, "delivered": [{**d, "shell": "console-droid", "surfaced": True} for d in r.get("delivered") or []]})(in_app(command, grants, by, audience))  # type: ignore[method-assign]
+n = len(phone.asked)
+r = svc.show("plan studio")
+ok(r["shown"] and len(phone.asked) == n, f"shown by the phone app's own page: the phone is not asked to open it again ({phone.asked[n:]})")
+ok(r["phone"]["shown"] is True and "no reload" in r["phone"]["message"], f"the answer says so ({r.get('phone')})")
+fake.run = in_app  # type: ignore[method-assign]
+ok(svc.phone("grid:queue/row:b1") == {"ok": True, "shown": True, "message": "the phone is opening the console there"} and phone.asked[-1][0] == "grid:queue/row:b1", "an address console_show opened itself reaches the phone too")
+c.post(f"{P}/state", json={"on": False})
+n = len(phone.asked)
+ok(svc.show("plan studio")["shown"] is False and svc.phone("view:builds") is None and len(phone.asked) == n, "Follow Amber off: nothing goes to the phone")
+phone.follow = lambda address, by=None: (_ for _ in ()).throw(RuntimeError("boom"))  # type: ignore[method-assign]
+c.post(f"{P}/state", json={"on": True})
+r = svc.show("plan studio")
+ok(r["shown"] is True and r["phone"]["ok"] is False, "a phone that fails never stops the show")
+plugin_services.withdraw("some-phone-plugin")
+fake.run = known_item  # type: ignore[method-assign]
 
 # ---------------------------------------------------------------- no Console commands: says so
 plugin_services.provide("console-commands@1", None, folder="console-commands")

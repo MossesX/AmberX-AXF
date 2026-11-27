@@ -1,0 +1,131 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-amberx-notify-panel",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:07Z",
+ "build": {
+  "id": "amberx-notify-panel",
+  "title": "AmberX notification panel",
+  "profile": "all",
+  "category": "AmberX",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "AmberX notification panel (Brett): A real notification panel inside the AmberX phone app that receives every kind of notification and status from the console, orchestrator, axHub and builds. 1. Typed notifications: build started/done/failed, approvals and veto holds (with Deny / Run now), account status (checks starting/done, expired, limit, no credits), UI Review items, alerts, info. Extensible type registry. 2. Panel: list grouped by type/source, filters, unread counts, search, mark read, clear, pin; tap opens the related screen; action buttons per type. 3. Live status area: current account statuses, running builds, queue. 4. Also delivered as Android push notifications with actions; panel keeps history. 5. One send API every plugin uses (console, orchestrator, axHub); reuse existing notifications/alert hub code (notifications-control-panel groups/triggers/actions) where it exists. Rules: Full API + voice + MCP/CLI control; settings in categorized collapsible sections (per-type on/off, sound, priority); 3 UI options to UI Review; phone screenshots; tests; report, STATUS, THREADS.",
+  "verbatim": true,
+  "at": "2026-11-08T17:50:26.084Z",
+  "source": "voice",
+  "by": "build:amberx-notify-panel",
+  "addenda": []
+ },
+ "brief": "# AmberX notification panel (Brett)\n\nA real notification panel inside the AmberX phone app that receives every kind of notification and status from the console, orchestrator, axHub and builds.\n\n1. Typed notifications: build started/done/failed, approvals and veto holds (with Deny / Run now), account status (checks starting/done, expired, limit, no credits), UI Review items, alerts, info. Extensible type registry.\n2. Panel: list grouped by type/source, filters, unread counts, search, mark read, clear, pin; tap opens the related screen; action buttons per type.\n3. Live status area: current account statuses, running builds, queue.\n4. Also delivered as Android push notifications with actions; panel keeps history.\n5. One send API every plugin uses (console, orchestrator, axHub); reuse existing notifications/alert hub code (notifications-control-panel groups/triggers/actions) where it exists.\n\n## Rules\nFull API + voice + MCP/CLI control; settings in categorized collapsible sections (per-type on/off, sound, priority); 3 UI options to UI Review; phone screenshots; tests; report, STATUS, THREADS.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-amberx-notify-panel--paulie",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-08T17:47:32.936Z",
+   "endedAt": "",
+   "exit": null,
+   "costUsd": 4.5729
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Server core: kinds registry (notify-panel-types@1), classify alerts, send API → alert hub, pins/read/clear, live status (accounts, running builds, queue); tests",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-08T17:47:32.936Z",
+   "doneAt": "2026-11-08T17:57:09.673Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Routes + plugin-commands (MCP/CLI), capability axf.notify-panel@1 for senders, voice phrases, settings sections (per-type on/off, sound, priority via notify-control)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s3",
+   "text": "Panel view (console + AmberX): grouped list, filters, unread counts, search, mark read, clear, pin, per-kind actions, approvals with Deny / Run now, live status area",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s4",
+   "text": "AmberX Android push: console alert notifications carry action buttons (open / panel) and the tap opens the panel item",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s5",
+   "text": "UI Review (3 options as assets, phone shots), report, STATUS, THREADS, PR to the merge queue",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/amberx-notify-panel",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "eab37d1a5a6327bff844bc8a69fd49fb86959ab6",
+ "commits": [],
+ "mergedAt": "",
+ "landedAt": "2026-11-08T22:30:23Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 4.5729,
+  "estimated": true,
+  "tokens": {
+   "input": 210,
+   "output": 1139,
+   "cacheRead": 16806050,
+   "cacheWrite": 237576
+  }
+ },
+ "report": "",
+ "open": [
+  "s2: Routes + plugin-commands (MCP/CLI), capability axf.notify-panel@1 for senders, voice phrases, settings sections (per-type on/off, sound, priority via notify-control)",
+  "s3: Panel view (console + AmberX): grouped list, filters, unread counts, search, mark read, clear, pin, per-kind actions, approvals with Deny / Run now, live status area",
+  "s4: AmberX Android push: console alert notifications carry action buttons (open / panel) and the tap opens the panel item",
+  "s5: UI Review (3 options as assets, phone shots), report, STATUS, THREADS, PR to the merge queue"
+ ]
+}

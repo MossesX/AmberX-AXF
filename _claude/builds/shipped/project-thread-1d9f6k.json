@@ -1,0 +1,99 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-1d9f6k",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:25Z",
+ "build": {
+  "id": "project-thread-1d9f6k",
+  "title": "project-thread-1d9f6k",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-1d9f6k",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-1d9f6k",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "c21123883890bb9b0e4a15b58a88d4d997d405a3",
+ "commits": [
+  "56991bb798a547387a55ff12e0883720763f4e81",
+  "6ad726e893c9a492fdbe117a6aae46da88064cc4"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-23T18:05:44Z",
+ "files": [
+  "apps/console-web/src/axf/react/components/BannerGroup.tsx",
+  "apps/console-web/src/axf/react/components/Slots.tsx",
+  "apps/console-web/src/axf/ui/axf.css",
+  "framework/plan/pending.json",
+  "framework/react/components/BannerGroup.tsx",
+  "framework/react/components/Slots.tsx",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/axf/react/components/BannerGroup.tsx",
+    "apps/console-web/src/axf/react/components/Slots.tsx",
+    "apps/console-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/BannerGroup.tsx",
+    "framework/react/components/Slots.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

@@ -6,7 +6,9 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
-import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeSkin, normalizeSkinScope, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, setUseSkin, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
+import { adoptHubDefault, backToSkin, backupLook, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, hubDefaultOf, hubOnlyLook, lookAfterChange, lookBackup, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinChromeErrors, skinChromeSettings, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
+import { foldLegacyPicks, legacyPicks, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, settingsNeedMigration } from '../core/engines/look-migration.mjs';
+import { SKIN_SWITCH_ACTIONS, SKIN_SWITCH_CONTRACT, SKIN_SWITCH_ERRORS, SKIN_SWITCH_HUB, SKIN_SWITCH_SCOPES, normalizeSkinSwitch, parseSwitchScope, skinSwitch, skinSwitchState, switchScopeOf, switchScopes } from '../core/engines/skin-switch.mjs';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
 import { AVATAR_FACES, AVATAR_GEAR } from '../core/engines/swarm-rules.mjs';
@@ -21,8 +23,9 @@ import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide';
 import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
-import { appearanceRetryMs, appearanceSlotTypes, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
-import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
+import { appearanceRetryMs, appearanceSlotTypes, combineAppearanceChanges, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
+import { LOOK_BACKUPS_MAX } from '../core/engines/skin-rules.mjs';
+import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, themeSwitchPair, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
@@ -35,6 +38,7 @@ import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITE
 import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
 import * as cs from '../core/engines/chrome-settings-rules.mjs';
+import * as ct from '../core/engines/component-tokens.mjs';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
 import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
 import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUrl, interpretApps } from '../libs/hub/apps';
@@ -45,8 +49,15 @@ import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, D
 import type { Pane, TabGroup } from '../core/engines/windows';
 import { NAV_STYLE_FIELDS, NAV_STYLE_FRAME, navArrange, navFollow, navPathTo, navStyleErrors, navStyleOutput, navToggle, normalizeNavStyle } from '../core/engines/navstyle';
 import { navFieldErrors } from '../core/engines/navstyle-rules.mjs';
+import { isPageToolbar, parseActionRef, parseBadge, parseToolbarScope, parseWhen, toolbarErrors, toolbarStateKeys, whenHolds } from '../core/engines/toolbar-rules.mjs';
+import { migrateToolbar, needsToolbarMigration, toolbarMigrationErrors, toolbarMigrationRecord, toolbarSignature } from '../core/engines/toolbar-migrate.mjs';
+import { TOOLBAR_FIXTURE_CASES, toolbarFixtureOutputs } from './toolbar-actions-cases';
 import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
 import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
+import { intentCommand, voiceIntent, voiceReply } from '../core/engines/console-control-voice.mjs';
+import { animationState, behaviorErrors, behaviorStyle, setAnimationPref, withAnimationPrefs } from '../core/engines/behavior';
+import { mixHex, shadesOf, skinSwatches, sweepOrigin } from '../core/engines/swatches';
+import { CONSOLE_CONTROL_CODES, CONSOLE_CONTROL_DEFAULT_CAN, CONSOLE_CONTROL_KINDS, CONSOLE_CONTROL_TARGETS_FRAME, CONSOLE_CONTROL_VERB_IDS, childAddress, consoleControlErrors, consoleControlFailure, consoleControlResult, failureOf, focusOptions, formatAddress, listTargets, nearestRegisteredParent, nearestTargets, normalizeConsoleControl, parseAddress, resolveAddress, resolveForVerb, scrollState, scrollStep, searchTargets, splitTabId, tabAddressId, type AddressSegment, type ConsoleControlScrollDir, type ConsoleControlVerb, type ScrollState, type TargetSnapshot } from '../core/engines/console-control';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -628,6 +639,11 @@ write('spacing.json', {
     avatar: AVATAR_SIZE,
     progressWidth: PROGRESS_WIDTH,
     themeSwitch: [['arctic-daylight', 'arctic-daylight', 'amber-ember'], ['amber-ember', 'arctic-daylight', 'amber-ember'], ['neon-tide', 'arctic-daylight', 'amber-ember'], [undefined, 'a', 'b']].map(([active, light, dark]) => ({ active, light, dark, next: themeSwitchNext(active, light, dark) })),
+    // A switch stays inside the light / dark pair of the look in force (skin pass, Nov 2026).
+    themeSwitchPair: ([['arctic-daylight', { light: 'arctic-daylight', dark: 'amber-ember' }], ['saffron-day', { light: 'arctic-daylight', dark: 'amber-ember' }], ['carbon-amber', { light: 'arctic-daylight', dark: 'amber-ember' }], ['neon-tide', { light: 'arctic-daylight', dark: 'amber-ember' }], [undefined, { light: 'a', dark: 'b' }], ['x', { light: 'a', dark: 'b' }]] as Array<[string | undefined, { light: string; dark: string }]>).map(([active, own]) => {
+      const others = [{ light: 'fresh-light', dark: 'fresh-dark' }, { light: 'saffron-day', dark: 'carbon-amber' }, { light: 'x', dark: 'x' }];
+      return { active, own, others, pair: themeSwitchPair(active, own, others) };
+    }),
   };
   // Search bar config normalization + host attachment validation (Fable rebuild Oct 20 2026; every port agrees).
   const searchBars: Record<string, unknown> = {
@@ -665,11 +681,13 @@ write('spacing.json', {
   const custom = cs.customCopy(defaults['chrome-tab-group']!, { id: 'axf-console', name: 'Dev Console' });
   const edited = { ...custom, id: 'chrome-tab-group-edited', data: { ...custom.data, layout: 'tabs-side', tabs: [], hide: ['interface'], levelOf: { look: 'basic' } } };
   const get = (id: string) => ({ ...defaults, [custom.id]: custom, [edited.id]: edited, loop1: { id: 'loop1', data: { for: 'toolbar', extends: 'loop2' } }, loop2: { id: 'loop2', data: { for: 'toolbar', extends: 'loop1', header: 'none' } } } as Record<string, unknown>)[id] ?? null;
+  const ids3 = ['chrome-tab-group', custom.id, edited.id, 'chrome-toolbar'];
+  const savedInst = { 'axf.chrome.toolbar.app.interface': 'chrome-toolbar-x', 'axf.chrome.tab-group.settings.main.interface': 'chrome-tab-group-x', 'axf.chrome.tab-group.settings.main': { style: 'pills' }, 'axf.chrome.banner.app.interface': '', 'axf.chrome.clock.app.interface': 'x', 'axf.chrome.settings.toolbar': 'chrome-toolbar' };
   write('chrome-settings.json', {
     contract: cs.CHROME_SETTINGS_CONTRACT,
     types: cs.CHROME_TYPES, labels: cs.CHROME_LABELS, many: cs.CHROME_MANY, targets: cs.CHROME_TARGETS, moves: cs.CHROME_MOVES, tabs: cs.CHROME_SETTINGS_TABS, fields: cs.CHROME_FIELDS,
     ids: Object.fromEntries(cs.CHROME_TYPES.map((t) => [t, { default: cs.chromeSettingsDefaultId(t), custom: cs.chromeSettingsCustomId(t, 'axf-console'), typeOfDefault: cs.chromeTypeOfSettingsId(cs.chromeSettingsDefaultId(t)), typeOfCustom: cs.chromeTypeOfSettingsId(cs.chromeSettingsCustomId(t, 'axf-console')) }])),
-    keys: { pick: cs.CHROME_SETTINGS_PICK_KEY('tab-group'), patch: cs.CHROME_SETTINGS_PATCH_KEY('tab-group'), instance: cs.CHROME_INSTANCE_KEY('tab-group', 'ui-review.sections'), instanceAsset: cs.CHROME_INSTANCE_ASSET_KEY('tab-group', 'ui-review.sections'), last: cs.TAB_GROUP_LAST_KEY('ui-review.sections'), fold: cs.TAB_GROUP_FOLD_KEY('ui-review.sections') },
+    keys: { pick: cs.CHROME_SETTINGS_PICK_KEY('tab-group'), patch: cs.CHROME_SETTINGS_PATCH_KEY('tab-group'), instance: cs.CHROME_INSTANCE_KEY('tab-group', 'ui-review.sections'), instanceAsset: cs.CHROME_INSTANCE_ASSET_KEY('tab-group', 'ui-review.sections'), instanceInterface: cs.CHROME_INSTANCE_INTERFACE_KEY('tab-group', 'ui-review.sections'), last: cs.TAB_GROUP_LAST_KEY('ui-review.sections'), fold: cs.TAB_GROUP_FOLD_KEY('ui-review.sections') },
     slugs: { 'Dev Console': cs.appSlug('Dev Console'), 'axf-console': cs.appSlug('axf-console'), '': cs.appSlug(''), '  Weird__Name!!': cs.appSlug('  Weird__Name!!') },
     targetTypes: Object.fromEntries(['tab-group', 'toolbar', 'banner', 'axf-banner', 'nav', 'nav-item', 'app-menu', 'menubar', 'canvas', 'default', ''].map((t) => [t || '(empty)', cs.chromeTypeOfTarget(t)])),
     customCopy: custom,
@@ -682,6 +700,20 @@ write('spacing.json', {
       noDefault: cs.chromeSettingsPick(undefined, 'tab-group', [custom.id]),
     },
     choices: cs.chromeSettingsChoices('tab-group', [edited, defaults['chrome-toolbar']!, custom, defaults['chrome-tab-group']!]),
+    // per-instance settings interface (Nov 13 2026, build per-instance-settings-window-picker): an instance's own pick,
+    // the kind's pick, then the shared default; `.interface` keys are never asset edits; library targets map to a kind
+    instancePicks: {
+      unset: cs.chromeInstanceSettingsPick(undefined, undefined, 'tab-group', ids3),
+      kind: cs.chromeInstanceSettingsPick(undefined, custom.id, 'tab-group', ids3),
+      own: cs.chromeInstanceSettingsPick(edited.id, custom.id, 'tab-group', ids3),
+      ownDefault: cs.chromeInstanceSettingsPick('chrome-tab-group', custom.id, 'tab-group', ids3),
+      gone: cs.chromeInstanceSettingsPick('chrome-tab-group-gone', custom.id, 'tab-group', ids3),
+      wrongType: cs.chromeInstanceSettingsPick('chrome-toolbar', undefined, 'tab-group', ids3),
+      none: cs.chromeInstanceSettingsPick(edited.id, undefined, 'tab-group', []),
+    },
+    instanceInterfaces: cs.chromeInstanceInterfaceList(savedInst),
+    prefixTargets: Object.fromEntries(['axf-ws-toolbar:main', 'axf-ws-toolbar:', 'axf-ws-toolbarx'].map((t) => [t, cs.chromeTypeOfTarget(t)])),
+    instanceSlugs: Object.fromEntries(['Tree search', 'ui-review.sections', '  MCP server!! ', ''].map((l) => [l || '(empty)', cs.chromeInstanceSlug(l)])),
     overrides: {
       clean: cs.normalizeInstanceOverride('tab-group', { style: 'pills', position: 'left', badges: false, bogus: 1, density: 'huge', sticky: 'yes' }),
       number: cs.normalizeInstanceOverride('banner', { height: 999.6, surface: 'raised' }),
@@ -699,6 +731,14 @@ write('spacing.json', {
     },
     plan: cs.chromeSettingsPlan('molly'),
     missing: cs.chromeSettingsMissing('molly', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-toolbar']),
+    // rows (Nov 13 2026): what a person says → the stored value, and the layout a row of N tabs gets
+    rows: {
+      parse: Object.fromEntries(['1', '3', 'three', '3 rows', 'Two', 'auto', 'Automatic', '0', '7', 'many', ''].map((v) => [v || '(empty)', cs.parseTabRows(v)])),
+      parseNumbers: [1, 3, 6, 7, 2.5].map((v) => cs.parseTabRows(v)),
+      override: cs.normalizeInstanceOverride('tab-group', { rows: 3, style: 'pills' }),
+      match: Object.fromEntries(['settings', 'the settings tabs', 'ui-review.sections', 'sections', 'review', 'nothing', ''].map((w) => [w || '(empty)', cs.matchTabGroup([{ id: 'ui-review.sections', label: 'Sections' }, { id: 'settings.tabs', label: 'Settings sections', visible: false }, { id: 'settings.main', label: 'Settings', visible: true }], w)])),
+      layout: Object.fromEntries([[10, '1'], [10, '3'], [10, '2'], [7, '3'], [2, '3'], [0, '3'], [10, 'auto'], [10, 'bogus']].map(([n, r]) => [`${n}x${r}`, cs.tabRowsLayout(n as number, r)])),
+    },
   });
 }
 write('components.json', {
@@ -733,6 +773,44 @@ write('components.json', {
     'menu-roomy-raised': appMenuStyle({ menus: [], density: 'roomy', surface: 'raised' }),
   },
 });
+// component-tokens@1 (Nov 13 2026): the grid / tab-group token schema, the :root defaults, the style-theme compile and the
+// per-instance rules (set → previous, Restore previous edit, Restore from axHub) a port must match
+{
+  const themeCases: Record<string, unknown> = {
+    none: null,
+    'no-maps': { fontSize: 14 },
+    'skin-sets-some': { grid: { hoverBg: 'accentSoft', headerText: 'text', radius: 6, opacity: 0.9 }, tabs: { indicator: '#f5a524', pillsActiveBg: 'accent2', radiusPills: 'radius.md', opacity: 0.8 } },
+    'bad-values-dropped': { grid: { hoverBg: 'red;}x{', bogus: 'x', opacity: 'x' }, tabs: { activeText: 7, indicatorSize: 'big' } },
+    'every-value-kind': { grid: { headerBg: 'surface3', cellPadY: 'dens-gap-sm', rowHeight: 36, stickyShadow: 'shadow.sm', headerWeight: 700, disabledOpacity: 0.4 }, tabs: { barBg: 'rgb(10 20 30 / 50%)', gap: '0.5em', windowActiveShadow: 'none', activeWeight: 600 } },
+  };
+  let saved: unknown = {};
+  const steps: Record<string, unknown> = {};
+  saved = ct.setInstanceToken(saved, 'tabs', 'settings.main', 'activeText', 'accent'); steps['set-first'] = saved;
+  saved = ct.setInstanceToken(saved, 'tabs', 'settings.main', 'indicator', '#ff0000'); steps['set-second'] = saved;
+  saved = ct.setInstanceToken(saved, 'grid', 'ui-review.items', 'hoverBg', 'accentSoft'); steps['set-other-family'] = saved;
+  steps['vars-tabs'] = ct.instanceTokenVars(saved, 'tabs', 'settings.main');
+  steps['vars-grid'] = ct.instanceTokenVars(saved, 'grid', 'ui-review.items');
+  steps['restore-previous'] = ct.restorePreviousInstanceTokens(saved, 'tabs', 'settings.main');
+  steps['restore-previous-twice'] = ct.restorePreviousInstanceTokens(ct.restorePreviousInstanceTokens(saved, 'tabs', 'settings.main'), 'tabs', 'settings.main');
+  steps['restore-hub'] = ct.restoreInstanceTokensFromHub(saved, 'tabs', 'settings.main');
+  steps['drop-one'] = ct.setInstanceToken(saved, 'tabs', 'settings.main', 'indicator', null);
+  steps['list'] = ct.instanceTokenList(saved);
+  steps['normalize-junk'] = ct.normalizeInstanceTokens({ 'tabs.a': { values: { activeText: 'accent', bogus: 1, indicator: 'x;y' } }, 'nav.a': { values: { x: 1 } }, junk: 1 });
+  write('component-tokens.json', {
+    contract: ct.COMPONENT_TOKENS_CONTRACT,
+    families: Object.fromEntries(Object.entries(ct.COMPONENT_TOKEN_FAMILIES).map(([id, f]) => [id, { label: f.label, prefix: f.prefix, tokens: f.tokens.length }])),
+    tokens: ct.componentTokenList(),
+    defaults: ct.componentTokenDefaults(),
+    paths: ct.componentTokenPaths(),
+    fields: ct.componentTokenFields(),
+    themeCases: Object.fromEntries(Object.entries(themeCases).map(([k, style]) => [k, { style, vars: ct.componentTokenVars(style) }])),
+    values: Object.fromEntries(['accentSoft', 'accent-soft', '#ff8800', 'rgb(1 2 3 / 50%)', 'transparent', 'red;}body{display:none', 'radius.sm', 'dens-gap-md', '0.5em', 'auto', 'shadow.md', 'none', 'big'].map((v) => [v, Object.fromEntries(ct.COMPONENT_TOKEN_KINDS.map((k) => [k, ct.componentTokenValue(k, v)]))])),
+    // every step's saved map equals its replay (the engine is deterministic); check-component-tokens replays them
+    instanceCases: Object.fromEntries(Object.entries(steps).map(([k, v]) => [k, { saved: v, replay: v }])),
+    key: ct.INSTANCE_TOKENS_KEY,
+    paths_instances: ['tabs.settings.main.activeText', 'grid.ui-review.items', 'nav.x.y', 'tabs', 'tabs.settings.main.bogus'].map((p) => ({ path: p, parsed: ct.parseInstanceTokenPath(p) })),
+  });
+}
 write('uac.json', Object.fromEntries(load('uac-policy').map((p) => [p.id, {
   roles: Object.fromEntries(p.data.roles.map((r: { id: string }) => [r.id, [...resolvePermissions(p.data, r.id)].sort()])),
   checks: ['files.write', 'dev.deploy', 'assets.swap', 'uac.manage', 'anything.else'].map((perm) => ({ perm, byRole: Object.fromEntries(p.data.roles.map((r: { id: string }) => [r.id, hasPermission(resolvePermissions(p.data, r.id), perm)])) })),
@@ -1967,7 +2045,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const shared = { $axf: 'appearance@1', slots: { layout: 'focus-top', 'color-theme': 'arctic-daylight', 'style-theme': 'hub', button: 'rounded-solid', 'design-package': 'hub-default' }, spacing: 'tight', hidden: { toolbar: true }, settings: { 'axf.banners.group': 'a', 'axf.tokens.button': 'x' } };
   const look0 = newAppLook('app', snapshotLook(shared as never));
   const on = setUseSkin(pickSkin(look0, 'windows'), true);
-  const overridden = lookAfterChange(on, { slots: { 'color-theme': 'aurora-night' } }, skin as never);
+  const overridden = lookAfterChange(on, { slots: { button: 'terminal' } }, skin as never);
   const own = lookAfterChange(look0, { slots: { button: 'terminal' }, hidden: { toolbar: false } }, null);
   const restored = restoreAppDefault(overridden, '2026-11-05T00:00:00Z');
   const movedShared = { ...shared, slots: { ...shared.slots, 'color-theme': 'other-theme' }, settings: { 'axf.tokens.button': 'y', 'axf.banners.group': 'other' } };
@@ -1983,7 +2061,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       offSharedMoved: composeLook(movedShared as never, look0, null),
       on: composeLook(shared as never, on, skin as never),
       unknownSkin: composeLook(shared as never, on, null),
-      overridden: { doc: overridden, composed: composeLook(shared as never, overridden, skin as never), backToSkin: composeLook(shared as never, backToSkin(overridden, 'color-theme'), skin as never) },
+      overridden: { doc: overridden, composed: composeLook(shared as never, overridden, skin as never), backToSkin: composeLook(shared as never, backToSkin(overridden, 'button'), skin as never) },
       own: { doc: own, composed: composeLook(shared as never, own, null) },
       restored: { doc: restored, composed: composeLook(shared as never, restored, null), undone: undoRestore(restored).skin, undoneTwice: undoRestore(undoRestore(restored)).skin },
     },
@@ -2031,7 +2109,500 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
         doc: { pluginOn, dropped: setScopeSkin(pluginOn, 'plugin:notes', 'inherit', ''), entries: scopeEntries(chainOver), state: scopeState(chainOver, 'plugin:notes'), appState: scopeState(inherit, 'app'), roundTrip: parseAppLook(JSON.stringify(chainOver)), restored: restoreAppDefault(chainOver, '2026-11-07T00:00:00Z').scopes, undone: undoRestore(restoreAppDefault(chainOver, '2026-11-07T00:00:00Z')).scopes },
         covers: skinCovers(skinned).filter((c) => ['button', 'label', 'icon-pack', 'uac-policy', 'skin', 'logo-mark', 'branding', 'toolbar'].includes(c.type)),
         globalSkin: { good: globalSkinOf(withGlobal as never), none: globalSkinOf(shared as never), junk: globalSkinOf({ $axf: 'appearance@1', skin: { id: 'Bad Id' } } as never) },
+        // Skin from axHub only (build console-skin-axhub-only): an app with its own skin, an override, a colour pick and a
+        // plugin scope draws the hub-wide skin alone; the stored document is untouched
+        hubOnly: (() => {
+          const mine = setScopeSkin(setSkinColorTheme(lookAfterChange(setUseSkin(pickSkin(look0, 'windows'), true), { slots: { button: 'terminal' } }, skinned), 'plum-noir'), 'plugin:notes', 'on', 'aurora');
+          const drawn = hubOnlyLook(mine);
+          return { mine, drawn, composed: composeLookAt(withGlobal as never, drawn, skinOf), inPlugin: composeLookAt(withGlobal as never, drawn, skinOf, place), noHubSkin: composeLookAt(shared as never, drawn, skinOf), none: hubOnlyLook(null) };
+        })(),
+      };
+    })(),
+    // The colour theme inside a skin (Brett, Nov 9 2026): switched on its own, kept as `colorTheme` beside the skin,
+    // never an override and never another skin. Every way of changing it leaves the skin id where it was.
+    colour: (() => {
+      const skinData = normalizeSkin(skin);
+      const skins: Record<string, typeof skinData> = { windows: skinData, aurora: normalizeSkin({ ...skin, colorTheme: 'aurora-night' }) };
+      const skinOf = (id: string) => skins[id] ?? null;
+      const place = { app: 'app', ui: 'home', plugin: 'notes' };
+      const pick = { slots: { 'color-theme': 'plum-noir' } };
+      const picked = lookAfterChange(on, pick, skinData);
+      const following = setInheritSkin(look0, true);
+      const hub = { ...shared, skin: { id: 'aurora' } };
+      const hubPicked = { ...shared, skin: { id: 'aurora', colorTheme: 'harbor' } };
+      const hubLegacy = { ...shared, skin: { id: 'aurora', overrides: { 'color-theme': 'harbor', button: 'global-button' } } };
+      const legacy = { ...on, skin: { ...on.skin, overrides: { 'color-theme': 'plum-noir', button: 'terminal' } }, scopes: { 'plugin:notes': { use: 'on', id: 'aurora', overrides: { 'color-theme': 'harbor' } } } };
+      const inPlugin = setSkinColorTheme(on, 'harbor', 'plugin:notes');
+      const pluginSkin = setSkinColorTheme(setScopeSkin(picked, 'plugin:notes', 'on', 'aurora'), 'harbor', 'plugin:notes');
+      return {
+        slot: 'color-theme',
+        picked: { doc: picked, composed: composeLook(shared as never, picked, skinData), overridden: overriddenSlots(picked), color: skinColorOf(skinData, picked.skin) },
+        skinsOwn: { doc: lookAfterChange(picked, { slots: { 'color-theme': skinData.colorTheme } }, skinData), color: skinColorOf(skinData, on.skin) },
+        back: { byPick: lookAfterChange(picked, { slots: { 'color-theme': null } }, skinData), byBackToSkin: backToSkin(picked, 'color-theme'), bySet: setSkinColorTheme(picked, null) },
+        withOverride: lookAfterChange(picked, { slots: { button: 'terminal' } }, skinData),
+        sameSkin: pickSkin(picked, 'windows').skin,
+        otherSkin: pickSkin(picked, 'aurora').skin,
+        offAndOn: setUseSkin(setUseSkin(picked, false), true).skin,
+        noSkin: lookAfterChange(look0, pick, null),
+        legacy: { doc: normalizeAppLook(legacy), composed: composeLook(shared as never, normalizeAppLook(legacy)!, skinData) },
+        fromOutside: {
+          skinOn: setLookSlot(on, 'color-theme', 'plum-noir'),
+          skinOnOtherSlot: setLookSlot(on, 'button', 'terminal'),
+          following: setLookSlot(following, 'color-theme', 'plum-noir', globalSkinOf(hub as never)),
+          followingNoHubSkin: setLookSlot(following, 'color-theme', 'plum-noir', null),
+          noSkin: setLookSlot(look0, 'color-theme', 'plum-noir'),
+          cleared: setLookSlot(picked, 'color-theme', null),
+        },
+        hub: {
+          plain: globalSkinOf(hub as never), picked: globalSkinOf(hubPicked as never), legacy: globalSkinOf(hubLegacy as never),
+          resolved: resolveLookSkin(following, globalSkinOf(hubPicked as never), null),
+          composed: composeLookAt(hubPicked as never, following, skinOf).doc.slots,
+          appPickWins: resolveLookSkin(setSkinColorTheme(following, 'plum-noir'), globalSkinOf(hubPicked as never), null),
+          sameAsHub: lookAfterChange(setSkinColorTheme(following, 'plum-noir'), { slots: { 'color-theme': 'harbor' } }, skins.aurora, 'harbor').skin,
+        },
+        scope: {
+          inPlugin: { doc: inPlugin, resolved: resolveLookSkin(inPlugin, null, place), outside: resolveLookSkin(inPlugin, null, { app: 'app', ui: 'home' }), composed: composeLookAt(shared as never, inPlugin, skinOf, place).doc.slots },
+          pluginSkin: { doc: pluginSkin, resolved: resolveLookSkin(pluginSkin, null, place), outside: resolveLookSkin(pluginSkin, null, { app: 'app' }) },
+          byOverride: setScopeOverride(on, 'plugin:notes', 'color-theme', 'harbor'),
+          dropped: setSkinColorTheme(inPlugin, null, 'plugin:notes'),
+          otherSkin: setScopeSkin(pluginSkin, 'plugin:notes', 'on', 'windows').scopes,
+          state: scopeState(picked, 'app'),
+        },
+        restored: { doc: restoreAppDefault(picked, '2026-11-09T00:00:00Z'), undone: undoRestore(restoreAppDefault(picked, '2026-11-09T00:00:00Z')).skin },
+        roundTrip: parseAppLook(JSON.stringify(pluginSkin)),
+      };
+    })(),
+    // The hub default skin (build console-look-becomes-default-axhub-skin, Nov 14 2026, Brett: "make it the default axHub
+    // look, and then make all the apps inherit it right now"): the `default` root of the chain, the floor every app stands
+    // on; its own picks are the edits over it; adopt / backup / restore; the skin's chrome block; the shared document.
+    hubDefault: (() => {
+      const consoleSkin = normalizeSkin({ layoutTheme: 'classic-ide', colorTheme: 'arctic-daylight', styleTheme: 'soft-studio', assets: { button: 'rounded-solid', 'nav-menu': 'amber-signature', toolbar: 'standard-icons' }, extras: { spacing: 'tight', hidden: { toolbar: false }, settings: { 'axf.tokens.layout': { '*': { toolbarPosition: 'bottom' } } } }, chrome: { toolbar: { interface: 'chrome-toolbar', instances: { main: { bogus: 1 } } }, 'tab-group': { instances: { builds: { style: 'pills', position: 'left' }, 'Bad Id!': { style: 'pills' } } }, nope: { interface: 'x' } } });
+      const windows = normalizeSkin(skin);
+      const skins: Record<string, typeof windows> = { console: consoleSkin, windows, aurora: normalizeSkin({ ...skin, colorTheme: 'aurora-night' }) };
+      const skinOf = (id: string) => skins[id] ?? null;
+      const withDefault = { ...shared, defaultSkin: { id: 'console', overrides: { dialog: 'hub-dialog' } } };
+      const withGlobal = { ...withDefault, skin: { id: 'aurora' } };
+      const hubDefault = hubDefaultOf(withDefault as never);
+      const place = { app: 'app', ui: 'home', plugin: 'notes' };
+      const edited = lookAfterChange(look0, { slots: { button: 'terminal' }, hidden: { toolbar: true } }, null);
+      const pluginOver = setScopeOverride(edited, 'plugin:notes', 'button', 'plugin-button');
+      const pluginOff = setScopeSkin(look0, 'plugin:notes', 'off');
+      const ownOn = setUseSkin(pickSkin(look0, 'windows'), true);
+      const following = setInheritSkin(look0, true);
+      const mine = setScopeSkin(setSkinColorTheme(lookAfterChange(ownOn, { slots: { dialog: 'my-dialog' } }, windows), 'plum-noir'), 'plugin:notes', 'on', 'aurora');
+      const adopted = adoptHubDefault(mine, { at: '2026-11-14T23:00:00Z', by: 'skins-cli', reason: 'console look becomes the hub default' });
+      const restored = restoreLookBackup(adopted, '', '2026-11-14T23:30:00Z');
+      const backedTwice = backupLook(backupLook(adopted, { at: 'b2', reason: 'twice' }), { at: 'b3', reason: 'a twin of the newest' });
+      let capped = adopted;
+      for (let i = 0; i < LOOK_BACKUPS_MAX + 2; i++) capped = backupLook(lookAfterChange(capped, { slots: { button: `b${i}` } }, null), { at: `t${i}` });
+      const chromeBad = { toolbar: { interface: 'Bad Id', instances: { main: { bogus: 1 }, 'Bad Id!': { variant: 'icons' } } }, 'tab-group': { instances: 7 }, nope: {} };
+      return {
+        chain: skinScopeChain(place),
+        pointer: { good: hubDefault, none: hubDefaultOf(shared as never), junk: hubDefaultOf({ $axf: 'appearance@1', defaultSkin: { id: 'Bad Id' } } as never), legacyColour: hubDefaultOf({ ...shared, defaultSkin: { id: 'console', overrides: { 'color-theme': 'harbor', dialog: 'd' } } } as never) },
+        chrome: { normalized: consoleSkin.chrome, errors: skinChromeErrors(chromeBad), skinErrors: skinErrors({ ...skin, chrome: chromeBad }), settings: skinChromeSettings(consoleSkin.chrome) },
+        resolve: {
+          noOverride: resolveLookSkin(look0, null, place, hubDefault),
+          noDefault: resolveLookSkin(look0, null, place, null),
+          ownSkinOn: resolveLookSkin(ownOn, null, place, hubDefault),
+          pluginOff: resolveLookSkin(pluginOff, null, place, hubDefault),
+          pluginOverride: resolveLookSkin(pluginOver, null, place, hubDefault),
+          followingHub: resolveLookSkin(following, globalSkinOf(withGlobal as never), place, hubDefault),
+          followingNoHub: resolveLookSkin(following, null, place, hubDefault),
+          notFollowingHub: resolveLookSkin(look0, globalSkinOf(withGlobal as never), place, hubDefault),
+          noDocument: resolveLookSkin(null, null, place, hubDefault),
+          offSkinColourStays: resolveLookSkin(setSkinColorTheme(look0, 'plum-noir'), null, place, hubDefault),
+        },
+        composed: {
+          noOverride: composeLookAt(withDefault as never, look0, skinOf),
+          partialOverride: composeLookAt(withDefault as never, edited, skinOf),
+          pluginOverride: composeLookAt(withDefault as never, pluginOver, skinOf, place),
+          pluginOff: composeLookAt(withDefault as never, pluginOff, skinOf, place),
+          ownSkinOn: composeLookAt(withDefault as never, ownOn, skinOf),
+          followingHub: composeLookAt(withGlobal as never, following, skinOf),
+          unknownDefault: composeLookAt({ ...shared, defaultSkin: { id: 'gone' } } as never, look0, skinOf),
+          hubOnly: composeLookAt(withDefault as never, hubOnlyLook(mine), skinOf),
+        },
+        adopt: {
+          mine, adopted, adoptedTwice: adoptHubDefault(adopted, { at: '2026-11-14T23:05:00Z', by: 'skins-cli' }), alreadyOnFloor: adoptHubDefault(look0, { at: '2026-11-14T23:05:00Z' }),
+          composed: composeLookAt(withDefault as never, adopted, skinOf).doc.slots, undone: undoRestore(adopted),
+          restored, restoredUndone: undoRestore(restored), nothingToRestore: restoreLookBackup(look0, '', '2026-11-14T23:30:00Z'), roundTrip: parseAppLook(JSON.stringify(adopted)),
+          backups: { twice: backedTwice.backups, cap: capped.backups!.map((b) => b.id), newest: lookBackup(adopted), byId: lookBackup(backedTwice, 'b2'), missing: lookBackup(adopted, 'nope') },
+        },
+        shared: {
+          parsed: parseAppearance(JSON.stringify(withDefault)),
+          merged: mergeAppearance(parseAppearance(JSON.stringify(withGlobal)), { defaultSkin: { id: 'windows' } }, 'skins-cli', '2026-11-14T23:00:00Z'),
+          cleared: mergeAppearance(parseAppearance(JSON.stringify(withDefault)), { defaultSkin: null }, 'skins-cli', '2026-11-14T23:00:00Z'),
+          serialized: serializeAppearance(parseAppearance(JSON.stringify(withGlobal))!),
+          combined: combineAppearanceChanges({ defaultSkin: { id: 'a' } }, { skin: null }),
+        },
       };
     })(),
   });
 }
+
+/* ---- look-migration@1 (skins only, Nov 10 2026): the one-run fold of the retired theme / style / layout picks ---- */
+{
+  const skins: Record<string, unknown> = {
+    'hub-default': { layoutTheme: 'classic-ide', colorTheme: 'hub-night', styleTheme: 'hub', assets: { 'behavior-theme': 'standard', button: 'rounded-solid', toolbar: 'standard-icons', typography: 'compact' }, extras: { spacing: 'tight', hidden: { toolbar: true } } },
+    windows: { layoutTheme: 'windows-explorer', colorTheme: 'windows-light', styleTheme: 'windows', assets: { button: 'windows' }, extras: { spacing: 'compact' } },
+    aurora: { layoutTheme: 'focus-top', colorTheme: 'aurora-night', styleTheme: 'hub', assets: {} },
+  };
+  const skinOf = (id: string) => (skins[id] as never) ?? null;
+  const ctx = { skinOf, skinIds: Object.keys(skins), has: () => true, now: '2026-11-10T00:00:00Z', by: 'app' };
+  const snapshot = { slots: { layout: 'focus-top', 'color-theme': 'arctic-daylight', 'style-theme': 'hub', 'behavior-theme': 'standard', 'design-package': 'hub-default', button: 'rounded-solid', toolbar: 'standard-icons', typography: 'compact' }, spacing: 'tight', hidden: { toolbar: true } };
+  const base = newAppLook('app', snapshot);
+  // an own pick of a style or colour theme always came with the recorded precedence override (the old picker wrote both)
+  const own = (slots: Record<string, string>, more: Record<string, unknown> = {}) => {
+    const over = Object.fromEntries(['style-theme', 'color-theme'].filter((t) => slots[t]).map((t) => [t, slots[t]]));
+    const settings = { ...(Object.keys(over).length ? { 'axf.appearance.overrides': over } : {}), ...((more.settings as Record<string, unknown> | undefined) ?? {}) };
+    return { ...base, own: { slots, ...more, ...(Object.keys(settings).length ? { settings } : {}) } };
+  };
+  const cases: Record<string, { look: AppLookDocument; ctx?: Record<string, unknown> }> = {
+    nothing: { look: base },
+    // a skin in force: the picks under it were inert, except a section the skin leaves alone (behaviour) which becomes an override; a style package is not folded yet
+    skinOn: { look: { ...own({ 'color-theme': 'coral-studio', 'behavior-theme': 'brisk', 'style-package': 'amber-signature' }), skin: { use: true, inherit: false, id: 'windows', overrides: { toolbar: 'labeled-actions' } } } },
+    // the old picker applied a package (its themes and extras landed in own), then a colour theme was picked over it
+    package: { look: own({ 'design-package': 'hub-default', layout: 'classic-ide', 'color-theme': 'coral-studio', 'style-theme': 'hub', 'behavior-theme': 'standard', button: 'rounded-solid', toolbar: 'standard-icons', typography: 'compact' }, { spacing: 'tight', hidden: { toolbar: true } }) },
+    // the local note (axf.appearance.design) names the package; the document holds one colour pick
+    designPick: { look: own({ 'color-theme': 'coral-studio' }), ctx: { designPick: 'aurora' } },
+    // one colour pick that is exactly a skin: that skin, no overrides
+    match: { look: own({ 'color-theme': 'aurora-night' }) },
+    // a style pick no skin can carry without changing the screen: kept as the app's own
+    noSkin: { look: own({ 'style-theme': 'glass-orbit' }) },
+    // a skin the app does not have reads as off: nothing to fold onto
+    unknownSkinOn: { look: { ...own({ 'color-theme': 'coral-studio' }), skin: { use: true, inherit: false, id: 'nope', overrides: {} } } },
+    // a package the app lacks and a scale pick: the scale pick rides the matched skin as an override
+    scale: { look: own({ 'design-package': 'gone', 'color-theme': 'aurora-night', density: 'spacious' }) },
+    // the retired precedence rule: the snapshot names Hub Default and a colour slot it did not show (the package's
+    // colour won, a recorded override kept the style); the fold writes what the screen showed and moves the setting
+    precedence: { look: newAppLook('app', { ...snapshot, settings: { 'axf.appearance.overrides': { 'style-theme': 'hub' }, 'axf.banners.group': 'a' } }) },
+    // the same with the pick in own and the override there too: the own pick takes the shown value
+    precedenceOwn: { look: { ...base, own: { slots: { 'design-package': 'hub-default', 'color-theme': 'coral-studio' }, settings: { 'axf.appearance.overrides': { 'color-theme': 'coral-studio' }, 'axf.appearance.design': 'hub-default' } } } },
+  };
+  const fold = Object.fromEntries(Object.entries(cases).map(([name, c]) => {
+    const first = foldLegacyPicks(c.look, { ...ctx, ...(c.ctx ?? {}) });
+    const again = foldLegacyPicks(first.look, { ...ctx, ...(c.ctx ?? {}), now: '2026-12-01T00:00:00Z' });
+    return [name, { before: c.look, picks: legacyPicks(c.look), needs: lookNeedsMigration(c.look), ...first, again: again.look, needsAfter: lookNeedsMigration(first.look) }];
+  }));
+  const values = { 'axf.appearance.design': 'hub-default', 'axf.appearance.overrides': { 'color-theme': 'coral-studio' }, 'axf.look': { space: 2 }, 'axf.look.sliders': 1, 'axf.hub.appearance.follow': false, 'axf.tokens.theme': { accent: '#ff8800' }, 'axf.skin.look': 'kept', 'axf.hide.toolbar': true };
+  const s1 = migrateLookSettings(values, '2026-11-10T00:00:00Z');
+  const applied: Record<string, unknown> = { ...values, ...s1.set };
+  for (const k of s1.clear) delete applied[k];
+  const s2 = migrateLookSettings(applied, '2026-12-01T00:00:00Z');
+  const back = { ...applied, 'axf.appearance.design': 'windows', 'axf.appearance.interface': 'amber' };
+  const s3 = migrateLookSettings(back, '2026-12-02T00:00:00Z');
+  const combined = migrateLook(cases.designPick!.look, { 'axf.appearance.design': 'aurora', 'axf.look': 1 }, ctx);
+  write('look-migration.json', {
+    contract: 'look-migration@1', version: 1,
+    keys: { legacy: 'axf.legacy.look', migrated: 'axf.skin.migrated', retired: ['axf.appearance.design', 'axf.appearance.package', 'axf.appearance.overrides', 'axf.appearance.interface', 'axf.look', 'axf.hub.appearance.follow'], retiredPrefixes: ['axf.look.'] },
+    skins, snapshot, fold,
+    settings: {
+      values, first: s1, needsBefore: settingsNeedMigration(values), applied, again: s2, needsAfter: settingsNeedMigration(applied),
+      back: { values: back, result: s3, backup: parseLegacyLook(s3.set['axf.legacy.look']) },
+      junkBackup: parseLegacyLook('not json'), wrongFrame: parseLegacyLook({ $axf: 'appearance@1', settings: {} }),
+    },
+    combined: { ...combined, again: migrateLook(combined.look, (() => { const v: Record<string, unknown> = { 'axf.appearance.design': 'aurora', 'axf.look': 1, ...combined.settings.set }; for (const k of combined.settings.clear) delete v[k]; return v; })(), ctx) },
+  });
+}
+
+/* ---- skin-switch@1 (Nov 13 2026): use / back-to-skin / restore-default / undo per scope, one undo record ---- */
+{
+  const skins: Record<string, unknown> = {
+    windows: { layoutTheme: 'windows-explorer', colorTheme: 'windows-light', styleTheme: 'windows', assets: { button: 'windows' }, extras: { spacing: 'compact' } },
+    aurora: { layoutTheme: 'focus-top', colorTheme: 'aurora-night', styleTheme: 'hub', assets: {} },
+  };
+  const ctx = { has: (id: string) => id in skins, now: '2026-11-13T00:00:00Z' };
+  const shared = { $axf: 'appearance@1', slots: { layout: 'focus-top', 'color-theme': 'arctic-daylight', 'style-theme': 'hub', button: 'rounded-solid' }, spacing: 'tight', hidden: { toolbar: true } };
+  const look0 = newAppLook('app', snapshotLook(shared as never));
+  // the edits a step may make between two commands (what the picker, control@1 or a scope override does), replayed by the check
+  const edits: Record<string, (look: AppLookDocument, ...args: string[]) => AppLookDocument> = {
+    setLookSlot: (look, slot, id) => setLookSlot(look, slot!, id!),
+    setSkinColorTheme: (look, id, key) => setSkinColorTheme(look, id!, key),
+    setScopeOverride: (look, key, slot, id) => setScopeOverride(look, key!, slot!, id!),
+    setInheritSkin: (look, on) => setInheritSkin(look, on === 'true'),
+  };
+  type Step = { name: string; edit?: { fn: string; args: string[] }[]; global?: Record<string, unknown> | null; command: Record<string, unknown> };
+  const steps: Step[] = [
+    { name: 'useApp', command: { action: 'use', scope: 'app:app', skin: 'windows' } },
+    { name: 'usePlugin', command: { action: 'use', scope: 'plugin:notes', skin: 'aurora' } },
+    { name: 'useHub', command: { action: 'use', scope: 'hub', skin: 'aurora' } },
+    { name: 'backSlot', edit: [{ fn: 'setLookSlot', args: ['button', 'terminal'] }, { fn: 'setLookSlot', args: ['dialog', 'app-dialog'] }, { fn: 'setSkinColorTheme', args: ['plum-noir'] }, { fn: 'setScopeOverride', args: ['plugin:notes', 'dialog', 'plugin-dialog'] }, { fn: 'setScopeOverride', args: ['ui:home', 'button', 'ui-button'] }], global: { id: 'aurora', overrides: { button: 'global-button' }, colorTheme: 'harbor' }, command: { action: 'back-to-skin', scope: 'app:app', slot: 'button' } },
+    { name: 'backColour', command: { action: 'back-to-skin', scope: 'app:app', slot: 'color-theme' } },
+    { name: 'backPluginAll', command: { action: 'back-to-skin', scope: 'plugin:notes' } },
+    { name: 'backHubSlot', command: { action: 'back-to-skin', scope: 'hub', slot: 'button' } },
+    { name: 'backHubAll', command: { action: 'back-to-skin', scope: 'hub' } },
+    { name: 'backAppAll', command: { action: 'back-to-skin', scope: 'app:app' } },
+    { name: 'restoreApp', command: { action: 'restore-default', scope: 'app:app' } },
+    { name: 'undoRestoreApp', command: { action: 'undo', scope: 'app:app' } },
+    { name: 'undoAgain', command: { action: 'undo', scope: 'app:app' } },
+    { name: 'restoreHub', command: { action: 'restore-default', scope: 'hub' } },
+    { name: 'undoRestoreHub', command: { action: 'undo', scope: 'hub' } },
+    { name: 'restorePlugin', command: { action: 'restore-default', scope: 'plugin:notes' } },
+    { name: 'undoRestorePlugin', command: { action: 'undo', scope: 'plugin:notes' } },
+    { name: 'restoreUi', command: { action: 'restore-default', scope: 'ui:home' } },
+    { name: 'useSameApp', command: { action: 'use', scope: 'app:app', skin: 'windows' } },
+    { name: 'useOtherApp', command: { action: 'use', scope: 'app:app', skin: 'aurora' } },
+    { name: 'undoUse', command: { action: 'undo', scope: 'app:app' } },
+    { name: 'unknownSkin', command: { action: 'use', scope: 'ui:home', skin: 'nope' } },
+    { name: 'noSkin', command: { action: 'use', scope: 'hub' } },
+    { name: 'otherApp', command: { action: 'use', scope: 'app:other', skin: 'windows' } },
+    { name: 'badScope', command: { action: 'use', scope: 'planet:mars', skin: 'windows' } },
+    { name: 'badAction', command: { action: 'flip', scope: 'hub' } },
+  ];
+  let cur: { look: AppLookDocument; global: Record<string, unknown> | null } = { look: look0, global: null };
+  const sequence = steps.map((s) => {
+    let look = cur.look;
+    for (const e of s.edit ?? []) look = edits[e.fn]!(look, ...e.args);
+    const before = { look, global: s.global === undefined ? cur.global : s.global };
+    const result = skinSwitch(before as never, s.command, ctx);
+    cur = { look: result.look!, global: result.global as never };
+    const scope = parseSwitchScope(s.command.scope)?.scope ?? '';
+    return { ...s, before, result, view: scope ? skinSwitchState(result.look, result.global, scope, ctx) : null, roundTrip: parseAppLook(JSON.stringify(result.look)) };
+  });
+  const after = (name: string) => sequence.find((s) => s.name === name)!.result;
+  const mixed = after('useHub');
+  const inherit = setInheritSkin(look0, true);
+  write('skin-switch.json', {
+    contract: SKIN_SWITCH_CONTRACT, actions: SKIN_SWITCH_ACTIONS, scopes: SKIN_SWITCH_SCOPES, errors: SKIN_SWITCH_ERRORS, hub: SKIN_SWITCH_HUB,
+    skins, shared, snapshot: look0,
+    parse: Object.fromEntries(['hub', 'global', 'app', 'app:notes', 'ui:home', 'plugin:ai.amberx.notes', 'nope', 'app:Bad Id', 'plugin:', '', 'ui:a/b'].map((s) => [s, parseSwitchScope(s)])),
+    scopeOf: { global: switchScopeOf('global', 'app'), app: switchScopeOf('app', 'app'), appNoId: switchScopeOf('app'), ui: switchScopeOf('ui:home', 'app'), plugin: switchScopeOf('plugin:notes'), junk: switchScopeOf('junk') },
+    scopesOf: { bare: switchScopes(look0), withPlugin: switchScopes(after('usePlugin').look!), none: switchScopes(null) },
+    normalize: {
+      good: normalizeSkinSwitch({ action: 'use', scope: 'app:app', skin: 'windows', slot: 'ignored', at: '2026-11-13T00:00:00Z' }),
+      back: normalizeSkinSwitch({ action: 'back-to-skin', scope: ' plugin:notes ', slot: 'button' }),
+      noSkin: normalizeSkinSwitch({ action: 'use', scope: 'hub' }),
+      badAll: normalizeSkinSwitch({ action: 'flip', scope: 'planet', skin: 'Bad Id', slot: 'Bad Slot' }),
+      junk: normalizeSkinSwitch(7),
+    },
+    sequence,
+    views: {
+      // after the hub-wide skin is set while the app has its own and the plugin its own: who decides where
+      hub: skinSwitchState(mixed.look, mixed.global, 'hub', ctx),
+      app: skinSwitchState(mixed.look, mixed.global, 'app:app', ctx),
+      appBare: skinSwitchState(mixed.look, mixed.global, 'app', ctx),
+      ui: skinSwitchState(mixed.look, mixed.global, 'ui:home', ctx),
+      plugin: skinSwitchState(mixed.look, mixed.global, 'plugin:notes', ctx),
+      otherApp: skinSwitchState(mixed.look, mixed.global, 'app:other', ctx),
+      badScope: skinSwitchState(mixed.look, mixed.global, 'nope', ctx),
+      // an app that follows the hub-wide skin
+      following: skinSwitchState(inherit, mixed.global, 'app:app', ctx),
+      followingPlugin: skinSwitchState(inherit, mixed.global, 'plugin:notes', ctx),
+      followingNoHub: skinSwitchState(inherit, null, 'app:app', ctx),
+      // a skin the app lacks
+      unknownInForce: skinSwitchState(setUseSkin(pickSkin(look0, 'gone'), true), null, 'app:app', ctx),
+      noDocument: skinSwitchState(null, mixed.global, 'app:app', ctx),
+      noDocumentHub: skinSwitchState(null, mixed.global, 'hub', ctx),
+    },
+    noDocument: skinSwitch({ look: null, global: null }, { action: 'use', scope: 'app:app', skin: 'windows' }, ctx),
+    // an older record (Restore before skin-switch@1) still undoes
+    legacyUndo: skinSwitch({ look: restoreAppDefault(after('useApp').look!, '2026-11-12T00:00:00Z'), global: null }, { action: 'undo', scope: 'app:app' }, ctx),
+  });
+}
+
+// console-control@1 (core/engines/console-control.ts; build full-api-and-voice-control, Nov 13 2026): address grammar (parse / format
+// round trips, every refused shape with its wire code), command errors, resolving against one target snapshot (full, trailing,
+// tab value, ambiguous, not_found with nearest, verb checks), search ranking, scroll maths and the answer envelopes.
+{
+  const snapshot = {
+    $axf: CONSOLE_CONTROL_TARGETS_FRAME, view: 'builds', targets: [
+      { address: 'view:builds', kind: 'view', label: 'Builds', keywords: ['orchestrator', 'pipeline'] },
+      { address: 'view:settings', kind: 'view', label: 'Settings' },
+      { address: 'view:builds/tab:orchestrator.sections', kind: 'tab', label: 'Sections', value: 'pipeline' },
+      { address: 'view:builds/tab:orchestrator.sections=pipeline', kind: 'tab', label: 'Pipeline' },
+      { address: 'view:builds/tab:orchestrator.sections=shipped', kind: 'tab', label: 'Shipped' },
+      { address: 'view:builds/tab:orchestrator.sections=pipeline/grid:queue', kind: 'grid', label: 'Queue', value: 'abc' },
+      { address: 'view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc', kind: 'row', label: 'Full API and voice control', keywords: ['fable', 'running'] },
+      { address: 'view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/step:s3', kind: 'step', label: 'Reference engine', detail: 'Full API and voice control' },
+      { address: 'view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/button:save', kind: 'button', label: 'Save' },
+      { address: 'view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:def', kind: 'row', label: 'Skins plugin', virtual: true },
+      { address: 'view:builds/button:save', kind: 'button', label: 'Save', disabled: true },
+      { address: 'view:builds/button:refresh', kind: 'button', label: 'Refresh', keywords: ['reload'] },
+      { address: 'view:builds/button:delete-build', kind: 'button', label: 'Delete build', destructive: true },
+      { address: 'view:settings/tab:axf.settings.tabs=plugins/setting:axf.display.fontScale', kind: 'setting', label: 'Font scale', value: '1', can: ['open', 'state', 'set', 'focus'] },
+      { address: 'plugin:skins', kind: 'plugin', label: 'Skins', value: 'enabled' },
+      { address: 'view:builds/function:build-orchestrator.focus', kind: 'function', label: 'Focus a build' },
+      { address: 'view:builds/scroll:main', kind: 'scroll', label: 'Main pane' },
+      { address: 'nonsense', kind: 'row', label: 'A bad registered address never matches' },
+    ],
+  } satisfies TargetSnapshot;
+  const addresses: Record<string, string | { path: AddressSegment[] }> = {
+    view: 'view:builds', tab: 'view:builds/tab:orchestrator.sections=pipeline', deep: 'view:builds/tab:pipeline/grid:queue/row:abc/step:s3',
+    'upper-kind': 'VIEW:Builds/Tab:x=y', encoded: 'grid:a%2Fb/row:100%25', spaced: '  view:builds / row:abc '.replace(/ \/ /, '/'), object: { path: [{ kind: 'view', id: 'builds' }, { kind: 'button', id: 'save' }] },
+    'short-row': 'row:abc', 'short-step': 'step:s3', 'row-step': 'row:abc/step:s3', 'setting-only': 'setting:axf.display.fontScale', 'subtab': 'view:settings/tab:a=b/subtab:c=d', 'panel-button': 'view:x/panel:p/button:b', 'row-button': 'grid:g/row:r/button:b',
+  };
+  const badAddresses: Record<string, unknown> = {
+    empty: '', missing: null, 'no-colon': 'builds', 'bad-kind': 'screen:builds', 'empty-id': 'view:', 'row-first-is-fine-step-after-row': 'row:a/step:s1',
+    'step-then-row': 'step:s3/row:abc', 'subtab-at-top': 'subtab:x=y', 'row-under-view': 'view:builds/row:abc', 'view-under-tab': 'tab:a=b/view:c', 'too-deep': Array.from({ length: 9 }, (_, i) => `panel:p${i}`).join('/'),
+    'long-id': `view:${'x'.repeat(161)}`, 'object-bad-kind': { path: [{ kind: 'nope', id: 'x' }] }, 'object-no-id': { path: [{ kind: 'view' }] }, 'number': 7,
+  };
+  const tryParse = (a: unknown) => { try { return { ok: true, parts: parseAddress(a), text: formatAddress(parseAddress(a)) }; } catch (e) { return failureOf(e); } };
+  const commands: Record<string, unknown> = {
+    'open-tab': { verb: 'open', address: 'tab:orchestrator.sections=shipped' },
+    'state-no-address': { verb: 'state' },
+    'press-button': { verb: 'press', address: 'button:refresh', by: 'claude', reason: 'reload the list' },
+    'press-function-arg': { verb: 'press', address: 'function:build-orchestrator.focus', value: 'abc' },
+    'set-setting': { verb: 'set', address: 'setting:axf.display.fontScale', value: 1.2 },
+    'set-no-value': { verb: 'set', address: 'setting:axf.display.fontScale' },
+    'scroll-down': { verb: 'scroll', scroll: { dir: 'down' } },
+    'scroll-to': { verb: 'scroll', scroll: { dir: 'to', to: { path: [{ kind: 'row', id: 'abc' }] } }, by: ' me ' },
+    'scroll-to-missing': { verb: 'scroll', scroll: { dir: 'to' } },
+    'scroll-bad-dir': { verb: 'scroll', scroll: { dir: 'sideways', amount: -1, extra: 1 }, value: 1 },
+    'scroll-no-spec': { verb: 'scroll' },
+    'focus-no-address': { verb: 'focus' },
+    'focus-options': { verb: 'focus', address: 'step:s3', options: { expand: true, highlightMs: 500 } },
+    'focus-bad-options': { verb: 'focus', address: 'step:s3', options: { expand: 'yes', highlightMs: 99999, flash: true } },
+    'search': { verb: 'search', query: { q: ' voice ', kinds: ['row', 'row'] } },
+    'search-bad': { verb: 'search', query: { q: '', kinds: ['screen'], limit: 99, sort: 'x' } },
+    'search-no-query': { verb: 'search' },
+    'list': { verb: 'list', address: 'grid:queue' },
+    'plugin-disable': { verb: 'plugin.disable', address: 'plugin:skins', by: 'claude' },
+    'plugin-no-address': { verb: 'plugin.enable' },
+    'bad-verb': { verb: 'explode', address: 'view:builds' },
+    'bad-frame': { $axf: 'control@1', verb: 'state' },
+    'unknown-field': { verb: 'state', address: 'view:builds', target: 'x' },
+    'bad-address': { verb: 'open', address: 'step:s3/row:abc' },
+    'not-an-object': 'open view:builds',
+  };
+  const tryNormalize = (c: unknown) => { try { return normalizeConsoleControl(c); } catch (e) { return failureOf(e); } };
+  const resolveCases: Record<string, string> = {
+    full: 'view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc', 'trailing-row': 'row:abc', 'trailing-step': 'step:s3', 'row-step': 'row:abc/step:s3',
+    'tab-row': 'tab:orchestrator.sections', 'tab-value': 'tab:orchestrator.sections=shipped', 'tab-value-unregistered': 'view:builds/tab:orchestrator.sections=pending',
+    'case-folded': 'ROW:ABC', 'ambiguous-button': 'button:save', 'exact-wins': 'view:builds/button:save', 'not-found': 'row:nope', 'near-miss': 'row:abd', 'near-label': 'button:refesh', 'plugin': 'plugin:skins', 'setting': 'setting:axf.display.fontScale',
+  };
+  const tryResolve = (a: string) => { try { const r = resolveAddress(snapshot, a); return { address: r.target.address, kind: r.target.kind, can: r.can }; } catch (e) { return failureOf(e); } };
+  const verbCases: Record<string, [string, ConsoleControlVerb]> = {
+    'press-disabled': ['view:builds/button:save', 'press'], 'press-step': ['step:s3', 'press'], 'set-row': ['row:abc', 'set'], 'focus-virtual': ['row:def', 'focus'], 'scroll-view': ['view:builds', 'scroll'], 'disable-plugin': ['plugin:skins', 'plugin.disable'], 'press-button-ok': ['button:refresh', 'press'], 'open-setting': ['setting:axf.display.fontScale', 'open'], 'state-scroll': ['scroll:main', 'state'], 'press-missing': ['button:nope', 'press'],
+  };
+  const tryVerb = ([a, v]: [string, ConsoleControlVerb]) => { try { const r = resolveForVerb(snapshot, a, v); return { address: r.target.address, can: r.can }; } catch (e) { return failureOf(e); } };
+  const main = scrollState('scroll:main', 100, 600, 3000);
+  const short = scrollState('scroll:main', 0, 600, 400);
+  const tryStep = (s: Pick<ScrollState, 'top' | 'height' | 'extent'>, spec: { dir: ConsoleControlScrollDir; amount?: number }, line = 0, target: number | null = null) => { try { return scrollStep(s, spec, line, target); } catch (e) { return failureOf(e); } };
+  write('console-control.json', {
+    registry: { kinds: CONSOLE_CONTROL_KINDS, verbs: CONSOLE_CONTROL_VERB_IDS, codes: CONSOLE_CONTROL_CODES, defaultCan: CONSOLE_CONTROL_DEFAULT_CAN },
+    addresses: Object.fromEntries(Object.entries(addresses).map(([k, a]) => [k, tryParse(a)])),
+    badAddresses: Object.fromEntries(Object.entries(badAddresses).map(([k, a]) => [k, tryParse(a)])),
+    tabIds: { row: splitTabId('orchestrator.sections'), valued: splitTabId('orchestrator.sections=shipped'), 'setting-never-splits': splitTabId('a=b', 'setting'), 'empty-value': splitTabId('row=') },
+    commands, errors: Object.fromEntries(Object.entries(commands).map(([k, c]) => [k, consoleControlErrors(c)])), normalize: Object.fromEntries(Object.entries(commands).map(([k, c]) => [k, tryNormalize(c)])),
+    snapshot,
+    resolveCases, resolve: Object.fromEntries(Object.entries(resolveCases).map(([k, a]) => [k, tryResolve(a)])),
+    verbCases, verbs: Object.fromEntries(Object.entries(verbCases).map(([k, c]) => [k, tryVerb(c)])),
+    list: { all: listTargets(snapshot).length, grid: listTargets(snapshot, 'grid:queue').map((t) => t.address), row: listTargets(snapshot, 'row:abc').map((t) => t.address), settings: listTargets(snapshot, 'view:settings').map((t) => t.address), missing: (() => { try { return listTargets(snapshot, 'grid:nope'); } catch (e) { return failureOf(e); } })() },
+    search: { voice: searchTargets(snapshot, { q: 'voice' }), save: searchTargets(snapshot, { q: 'save' }), 'save-buttons-only': searchTargets(snapshot, { q: 'save', kinds: ['button'] }), reload: searchTargets(snapshot, { q: 'reload' }), 'by-id-words': searchTargets(snapshot, { q: 'font scale' }), limited: searchTargets(snapshot, { q: 's', limit: 2 }), none: searchTargets(snapshot, { q: 'zzz' }), blank: searchTargets(snapshot, { q: '  ' }) },
+    nearest: { 'row-abd': nearestTargets(snapshot, parseAddress('row:abd')), 'button-refesh': nearestTargets(snapshot, parseAddress('button:refesh')), 'tab-shiped': nearestTargets(snapshot, parseAddress('tab:orchestrator.sections=shiped')), 'far': nearestTargets(snapshot, parseAddress('row:qqqqqqqq')) },
+    scroll: {
+      states: { main, short, 'clamped-top': scrollState('scroll:main', 9999, 600, 3000), 'bottom': scrollState('scroll:main', 2400, 600, 3000), 'left': scrollState('scroll:x', 10, 100, 500, 40) },
+      steps: {
+        down: tryStep(main, { dir: 'down' }), up: tryStep(main, { dir: 'up' }), 'down-px': tryStep(main, { dir: 'down', amount: 250 }), 'up-half': tryStep(main, { dir: 'up', amount: 0.5 }), 'down-one': tryStep(main, { dir: 'down', amount: 1 }),
+        'page-down': tryStep(main, { dir: 'page-down' }, 32), 'page-up': tryStep(main, { dir: 'page-up' }, 32), 'page-down-no-line': tryStep(main, { dir: 'page-down' }), top: tryStep(main, { dir: 'top' }), bottom: tryStep(main, { dir: 'bottom' }),
+        'to-centred': tryStep(main, { dir: 'to' }, 0, 1500), 'to-start': tryStep(main, { dir: 'to' }, 0, 2900), 'to-missing': tryStep(main, { dir: 'to' }), 'short-down': tryStep(short, { dir: 'down' }), 'short-bottom': tryStep(short, { dir: 'bottom' }),
+        'bad-dir': tryStep(main, { dir: 'sideways' as ConsoleControlScrollDir }),
+      },
+    },
+    focusOptions: { defaults: focusOptions(undefined), given: focusOptions({ select: false, expand: true, highlightMs: 0 }) },
+    results: {
+      press: consoleControlResult({ verb: 'press', address: 'button:refresh', by: 'claude', reason: 'reload' }, { pressed: 'view:builds/button:refresh' }, { at: '2026-11-13T12:00:00.000Z' }),
+      state: consoleControlResult({ verb: 'state', address: 'scroll:main' }, { state: main }),
+      search: consoleControlResult({ verb: 'search' }, { hits: [] }),
+      'object-address': consoleControlResult({ verb: 'focus', address: { path: [{ kind: 'row', id: 'abc' }] } }, { focused: 'view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc' }),
+      'unknown-code': consoleControlFailure('boom', 'x'), denied: consoleControlFailure('denied', 'needs control.console.write', { requires: 'control.console.write' }), 'unknown-error': failureOf(new Error('secret details')),
+    },
+    helpers: { tabId: [tabAddressId('row'), tabAddressId('row', 'v'), tabAddressId('row', null)], child: [childAddress(null, 'view', 'builds'), childAddress('view:builds', 'row', 'a/b')], parent: nearestRegisteredParent(snapshot, parseAddress('view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/button:nope')), 'no-parent': nearestRegisteredParent(snapshot, parseAddress('view:nope/button:x')) },
+  });
+}
+
+// console-control@1 voice intents (core/engines/console-control-voice.mjs; Python twin server/console_control.py voice_intent): phrase → intent → command → reply
+{
+  const phrases = ['scroll down', 'Amber, scroll up a bit please', 'scroll down two pages', 'page down', 'go to the top', 'scroll to the bottom', 'open plugins settings', 'open the pipeline tab',
+    'press run now on the auto-lander toolbar', 'tap the retry button in the auto lander toolbar', "what's on the auto-lander toolbar", 'list the gate rules toolbar', 'show me the builds toolbar',
+    'go to plan studio', 'open settings', 'find dark mode', 'search for snapshot', 'show step 3 of the console control build', 'step three of skins', 'disable plugin skins',
+    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'Lock the console to the axHub skin', 'unlock the console from the axHub skin', 'Override the axHub skin', 'stop overriding the axHub skin', 'put me back', 'Amber, take me back to where I was', 'restore my place', 'what time is it', ''];
+  const intents = Object.fromEntries(phrases.map((p) => [p, voiceIntent(p)]));
+  const hit = 'view:build-orchestrator/grid:builds/row:b1';
+  write('console-control-voice.json', {
+    intents,
+    commands: Object.fromEntries(phrases.filter((p) => intents[p]).map((p) => [p, intentCommand(intents[p]!, intents[p]!.find ? hit : null)])),
+    replies: {
+      scroll: voiceReply({ verb: 'scroll', scroll: { dir: 'down' } }, { ok: true, scroll: { fraction: 0.42, atTop: false, atBottom: false } }),
+      bottom: voiceReply({ verb: 'scroll', scroll: { dir: 'bottom' } }, { ok: true, scroll: { fraction: 1, atTop: false, atBottom: true } }),
+      search: voiceReply({ verb: 'search', query: { q: 'x' } }, { ok: true, hits: [{ label: 'Plugins' }, { label: 'Plugin settings' }] }),
+      none: voiceReply({ verb: 'search', query: { q: 'x' } }, { ok: true, hits: [] }),
+      open: voiceReply({ verb: 'open', address: 'view:settings' }, { ok: true, address: 'view:settings' }, 'Settings'),
+      set: voiceReply({ verb: 'set', value: true }, { ok: true, value: true }, 'Help mode'),
+      disable: voiceReply({ verb: 'plugin.disable' }, { ok: true, effects: { loses: [{ name: 'Crew' }] } }, 'Skins'),
+      confirm: voiceReply({ verb: 'press' }, { ok: false, code: 'confirmation_required', message: 'x' }),
+      noConsole: voiceReply({ verb: 'open' }, { ok: false, code: 'unavailable', message: 'x', openUrl: 'https://c/' }),
+      failed: voiceReply({ verb: 'press' }, { ok: false, code: 'denied', message: 'needs Brett' }),
+      place: voiceReply({ verb: 'press', address: 'panel:console-place' }, { ok: true, address: 'panel:console-place' }),
+    },
+  });
+}
+
+// Skin animations (build skin-animations-swatches-skin-switch): behaviour-theme animation fields, the Animations
+// settings overlay, and the swatch / sweep colour maths.
+{
+  const fluid = { motion: { speed: 'normal', easing: 'spring', reduced: 'system', entrance: 'scale' } };
+  const ripple = { motion: { swatches: 'ripple', skinSwitch: 'sweep', picker: 'pop', animSpeed: 200, animIntensity: 30 } };
+  write('skin-animations.json', {
+    style: { default: behaviorStyle({}), fluid: behaviorStyle(fluid), ripple: behaviorStyle(ripple), reduced: behaviorStyle(fluid, true), still: behaviorStyle({ motion: { animIntensity: 0 } }) },
+    errors: { ok: behaviorErrors(ripple), bad: behaviorErrors({ motion: { swatches: 'spin', animSpeed: 9000, animIntensity: 'lots' } }) },
+    prefs: {
+      set: setAnimationPref({}, 'swatches', 'pop'),
+      speed: setAnimationPref({ swatches: 'pop' }, 'speed', '150'),
+      back: setAnimationPref({ swatches: 'pop', speed: 150 }, 'swatches', 'skin'),
+      bad: setAnimationPref({}, 'picker', 'spin'),
+      unknown: setAnimationPref({}, 'glow', 'on'),
+      clamp: setAnimationPref({}, 'intensity', 500),
+      overlay: withAnimationPrefs(ripple, { swatches: 'wave', intensity: 80 }).motion,
+    },
+    state: { default: animationState({}, {}), own: animationState(ripple, { picker: 'off', speed: 50 }), reduced: animationState(fluid, {}, true) },
+    colours: {
+      mixDark: mixHex('#3366cc', -0.5), mixLight: mixHex('#3366cc', 0.5), notHex: mixHex('var(--fx-accent)', 0.5),
+      shades5: shadesOf('#3366CC', 5), shades4: shadesOf('#3366cc', 4), shadesNotHex: shadesOf('red', 3),
+      skin: skinSwatches({ bg: '#101010', surface: '#202020', surface2: '#202020', accent: '#ff8800', text: '#eeeeee' }), none: skinSwatches(undefined),
+      sweepTap: sweepOrigin({ x: 900, y: 100 }, { w: 1000, h: 800 }), sweepNone: sweepOrigin(null, { w: 1000, h: 800 }), sweepOut: sweepOrigin({ x: -5, y: 2000 }, { w: 1000, h: 800 }),
+    },
+  });
+}
+
+// Toolbar migration (toolbar-list@1 → page-toolbar@1; core/engines/toolbar-migrate.mjs + toolbar-rules.mjs): every starter
+// toolbar migrated with no visible change (signature equal before and after), the grammar parsers, and both shapes' errors.
+{
+  const starters = load('toolbar');
+  const pageToolbar = {
+    variant: 'icons-labels', align: 'start', showSearch: false, scope: 'view:gate', overflow: { when: 'auto', keep: 1 },
+    groups: [
+      { id: 'lander', items: [
+        { id: 'run', icon: 'play', label: 'Run now', action: 'command:gate/lander-run', enabledWhen: ['!paused', 'waiting>0'], badge: 'state:waiting', priority: 200, overflow: 'never' },
+        { id: 'retry', icon: 'refresh', label: 'Retry', action: 'command:gate/lander-retry', args: { build: '$selection.id' }, enabledWhen: 'selection.id' },
+        { id: 'reset', icon: 'trash', label: 'Reset', action: 'command:gate/rules-reset', destructive: true, confirm: 'Reset every rule to the defaults?', priority: 10 },
+        { id: 'pause', icon: 'pause', label: 'Pause', action: 'handler:gate.pause', checked: 'state:paused', visibleWhen: 'status!=off' },
+        { id: 'open', icon: 'settings', label: 'Rules', action: 'control:view:settings/tab:settings.tabs=plugins' },
+        { id: 'legacy', icon: 'home', label: 'Home', action: 'nav:home', badge: 'alerts.unread' },
+      ] },
+    ],
+  };
+  const badToolbar = { variant: 'icons', align: 'start', showSearch: false, scope: 'page:x', overflow: 'sometimes', groups: [{ id: 'g', items: [{ id: 'a', action: 'command:gate', enabledWhen: 'sel count', badge: 'state:', confirm: 7, priority: 5000, overflow: 'x' }, { id: 'a', action: '' }] }, { id: 'h' }] };
+  write('toolbar-migrate.json', {
+    contract: 'page-toolbar@1',
+    starters: Object.fromEntries(starters.map((a) => { const r = migrateToolbar(a); return [a.id, { needed: needsToolbarMigration(a.data), record: toolbarMigrationRecord(a), migrated: r.data, signatureBefore: toolbarSignature(a.data), signatureAfter: toolbarSignature(r.data), errors: toolbarMigrationErrors('toolbar', a.data) }]; })),
+    pageToolbar: { isPage: isPageToolbar(pageToolbar), needed: needsToolbarMigration(pageToolbar), errors: toolbarErrors('toolbar', pageToolbar), stateKeys: toolbarStateKeys(pageToolbar), migrated: migrateToolbar(pageToolbar) },
+    oldShape: { isPage: isPageToolbar(starters[0].data), needed: needsToolbarMigration(starters[0].data) },
+    errors: { bad: toolbarErrors('toolbar', badToolbar), notToolbar: toolbarErrors('button', badToolbar), notObject: toolbarErrors('toolbar', 'nope') },
+    parse: {
+      scope: Object.fromEntries(['app', undefined, 'view:gate', 'plugin:ai.amberx.axf.console.gate', 'page:x', 'view:', 'view', 7].map((s) => [String(s), parseToolbarScope(s)])),
+      action: Object.fromEntries(['file.save', 'nav:home', 'settings.open:appearance', 'swap:layout:next', 'action:file.save', 'command:gate/lander-run', 'command:gate', 'command:/x', 'control:view:settings/tab:settings.tabs=plugins', 'handler:gate.pause', 'handler:', '', '  '].map((s) => [s, parseActionRef(s)])),
+      badge: Object.fromEntries(['alerts.unread', 'counter:alerts.unread', 'state:waiting', 'state:', 'other:x', ''].map((s) => [s, parseBadge(s)])),
+      when: Object.fromEntries(['busy', '!busy', 'selection.count>0', 'status=running', 'status!=off', 'n>=2', 'n<=2', 'n<x', 'sel count', '', ['a', '!b', 'c=1'], Array(9).fill('a')].map((s) => [JSON.stringify(s), parseWhen(s)])),
+    },
+    holds: Object.fromEntries([
+      ['busy', { busy: true }], ['busy', { busy: 0 }], ['!busy', {}], ['selection.count>0', { selection: { count: 2 } }], ['selection.count>0', { selection: { count: 0 } }],
+      ['status=running', { status: 'running' }], ['status!=off', { status: 'off' }], ['n>=2', { n: 2 }], ['n<=2', { n: 3 }], ['list', { list: [] }], ['list', { list: [1] }], [['a', 'b=1'], { a: true, b: 1 }], [['a', 'b=1'], { a: true, b: 2 }],
+    ].map(([w, s]) => [`${JSON.stringify(w)} on ${JSON.stringify(s)}`, whenHolds(parseWhen(w), s)])),
+  });
+}
+
+// Page toolbar engine (page-toolbar@1; core/engines/toolbar-actions.ts): migration of every starter, scope + slot match
+// and the pick, state gating (enabled / visible / badges / toggles / args), overflow plans, invocations, settings ids,
+// readable state. Inputs live in spec/toolbar-actions-cases.ts so the checker replays the same cases.
+write('toolbar-actions.json', toolbarFixtureOutputs(TOOLBAR_FIXTURE_CASES, load('toolbar')));

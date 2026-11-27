@@ -1,0 +1,396 @@
+/**
+ * Self-test for the hub rules the console's hub pages use (hub-pages@1; moved from apps/axhub-web/test.mjs Nov 20 2026) (lib-hub `framework/libs/hub/apps.ts`, harvested from this app
+ * Oct 23 2026): what a reply from the hub means, what is thrown away, and how times and sizes are shown.
+ *
+ *   npx -y tsx apps/console-web/src/hubPages/test.mjs
+ *
+ * Nothing here touches the network: every case is a hand-written reply.
+ */
+import { keepSessionOnFailure, MISSES_SHOWN, sameJson, showReading, shownError } from './core.ts';
+import { autoGrantBody, isAutoPass, isUntilOff, untilOffExtend, waitGroups, AUTO_PRESETS } from './core.ts';
+import { directRunRows, ranUnderPass, ranWithoutApproval, passClock, passCovers, passSecondsLeft, patternList } from './core.ts';
+import { countdownKey, nextSort, replyBase, requestedKey, shownRow, sourceChips, sourceKind, sourceWho, afterPick, approveNowPaths, bashCommand, clipboardFor, clock, errorText, handoffGauges, heldActions, localToUtcMinute, parseRoute, pickOf, waitingCount, waitingTitle, platformOf, relTime, routeHash, safeFilePath, sessionsFor, signInUrl, stepGroups } from './core.ts';
+import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../../../framework/libs/hub/apps.ts';
+
+let checks = 0;
+let failed = 0;
+const ok = (cond, what) => {
+  checks += 1;
+  if (!cond) {
+    failed += 1;
+    console.error(`  ✗ ${what}`);
+  }
+};
+const eq = (got, want, what) => ok(JSON.stringify(got) === JSON.stringify(want), `${what} — got ${JSON.stringify(got)}, wanted ${JSON.stringify(want)}`);
+
+const HUB = 'https://axhub.amberxai.com';
+const SHA = 'a'.repeat(64);
+const buildOf = (over = {}) => ({ version: '0.1.0', build: 12, file: 'notes-0.1.0-b12.apk', size: 7_340_032, sha256: SHA, builtAt: '2026-10-21T18:00:00.000Z', ...over });
+const appOf = (over = {}) => ({ project: 'notes', name: 'Notes', platform: 'android', latest: buildOf(), versions: [buildOf()], ...over });
+const feed = (apps, updatedAt = '2026-10-21T18:05:00.000Z') => JSON.stringify({ updatedAt, apps });
+
+console.log('Hub pages (console) — hub rules');
+
+/* ---------------------------------------------------------------- what a reply means */
+eq(interpretApps(HUB, 401, '').status, 'signed-out', '401 is signed out');
+eq(interpretApps(HUB, 403, '').status, 'not-admin', '403 needs a permission');
+eq(interpretApps(HUB, 500, '').status, 'unreachable', '500 is unreachable');
+ok(interpretApps(HUB, 500, '').error.includes('500'), 'the status is in the error');
+eq(interpretApps(HUB, 200, 'not json').status, 'unreachable', 'a non-JSON body is unreachable');
+eq(interpretApps(HUB, 200, '[]').status, 'unreachable', 'a list instead of an object is unreachable');
+eq(interpretApps(HUB, 200, '{}').apps, [], 'an empty object has no apps');
+
+const good = interpretApps(HUB, 200, feed([appOf()]));
+eq(good.status, 'ok', 'a good reply is ok');
+eq(good.apps.length, 1, 'one app');
+eq(good.updatedAt, '2026-10-21T18:05:00.000Z', 'the catalog time is kept');
+eq(good.apps[0].latest.url, `${HUB}/apps/download/notes/notes-0.1.0-b12.apk`, 'the download link is built from the hub and the file name');
+eq(good.apps[0].earlier, [], 'the latest build is not repeated as an earlier one');
+
+/* ---------------------------------------------------------------- what is thrown away */
+const noName = interpretApps(HUB, 200, feed([appOf({ name: undefined })]));
+eq(noName.apps[0].name, 'notes', 'an app without a name falls back to its project');
+
+eq(interpretApps(HUB, 200, feed([appOf({ project: 'Notes' })])).apps, [], 'a project name that is not lowercase is dropped');
+eq(interpretApps(HUB, 200, feed([appOf({ project: '../etc' })])).apps, [], 'a project name with dots is dropped');
+eq(interpretApps(HUB, 200, feed([appOf({ latest: buildOf({ file: 'evil.sh' }), versions: [] })])).apps, [], 'a file that is not an apk is dropped');
+eq(interpretApps(HUB, 200, feed([appOf({ latest: buildOf({ file: '../../etc/passwd' }), versions: [] })])).apps, [], 'a file name with traversal is dropped');
+eq(interpretApps(HUB, 200, feed([appOf({ latest: buildOf({ size: -5 }), versions: [] })])).apps, [], 'a negative size is dropped');
+eq(interpretApps(HUB, 200, feed([appOf({ latest: buildOf({ size: 9e15 }), versions: [] })])).apps, [], 'an absurd size is dropped');
+
+// A reply that tries to point the download somewhere else: the link is rebuilt, so the attempt is ignored.
+const foreign = interpretApps(HUB, 200, feed([appOf({ latest: buildOf({ url: 'https://evil.example/x.apk' }) })]));
+eq(foreign.apps[0].latest.url, `${HUB}/apps/download/notes/notes-0.1.0-b12.apk`, 'a link in the reply is never used');
+
+const badSha = interpretApps(HUB, 200, feed([appOf({ latest: buildOf({ sha256: 'nope' }) })]));
+eq(badSha.apps[0].latest.sha256, '', 'a malformed hash is left empty');
+eq(shortSha('nope'), '', 'a malformed hash is not shortened');
+eq(shortSha(SHA), 'a'.repeat(12), 'a hash shows its first 12 characters');
+
+/* ---------------------------------------------------------------- caps and tidiness */
+const many = interpretApps(HUB, 200, feed(Array.from({ length: APPS_MAX + 20 }, (_, i) => appOf({ project: `app${i}`, name: `App ${String(i).padStart(3, '0')}` }))));
+eq(many.apps.length, APPS_MAX, `at most ${APPS_MAX} apps`);
+
+const versions = Array.from({ length: VERSIONS_MAX + 4 }, (_, i) => buildOf({ build: 20 - i, file: `notes-0.1.0-b${20 - i}.apk` }));
+const capped = interpretApps(HUB, 200, feed([appOf({ latest: versions[0], versions })]));
+eq(capped.apps[0].earlier.length, VERSIONS_MAX - 1, `at most ${VERSIONS_MAX} builds per app, latest apart`);
+
+const dupes = interpretApps(HUB, 200, feed([appOf(), appOf({ name: 'Notes again' })]));
+eq(dupes.apps.length, 1, 'the same project twice is listed once');
+
+const dupeFiles = interpretApps(HUB, 200, feed([appOf({ versions: [buildOf(), buildOf()] })]));
+eq(dupeFiles.apps[0].earlier.length, 0, 'the same file twice is listed once');
+
+const sorted = interpretApps(HUB, 200, feed([appOf({ project: 'zed', name: 'Zed' }), appOf({ project: 'alpha', name: 'Alpha' })]));
+eq(sorted.apps.map((a) => a.name), ['Alpha', 'Zed'], 'apps are sorted by name');
+
+const noLatest = interpretApps(HUB, 200, feed([appOf({ latest: null, versions: [buildOf()] })]));
+eq(noLatest.apps[0].latest.file, 'notes-0.1.0-b12.apk', 'a missing latest falls back to the newest listed build');
+
+/* ---------------------------------------------------------------- sizes and times */
+eq(formatSize(0), '0 B', 'zero bytes');
+eq(formatSize(900), '900 B', 'bytes');
+eq(formatSize(1024), '1.0 KB', 'kilobytes');
+eq(formatSize(7_340_032), '7.0 MB', 'megabytes');
+eq(formatSize(2.5 * 1024 ** 3), '2.5 GB', 'gigabytes');
+eq(formatSize(-1), '—', 'a nonsense size shows a dash');
+
+const now = Date.parse('2026-10-21T18:00:00.000Z');
+eq(formatWhen(null, now), '—', 'no time shows a dash');
+eq(formatWhen('rubbish', now), '—', 'an unparsable time shows a dash');
+eq(formatWhen('2026-10-21T17:59:30.000Z', now), 'just now', 'seconds ago');
+eq(formatWhen('2026-10-21T17:45:00.000Z', now), '15 min ago', 'minutes ago');
+eq(formatWhen('2026-10-21T14:00:00.000Z', now), '4 h ago', 'hours ago');
+eq(formatWhen('2026-10-19T18:00:00.000Z', now), '2 d ago', 'days ago');
+ok(!formatWhen('2026-09-01T18:00:00.000Z', now).includes('ago'), 'older than a week shows a date');
+eq(formatWhen('2026-10-21T18:00:30.000Z', now), 'just now', 'a time slightly in the future is "just now"');
+
+/* ---------------------------------------------------------------- approvals */
+eq(expiry({ expiresAt: '' }, now).text, '—', 'no expiry shows a dash');
+eq(expiry({ expiresAt: '2026-10-21T17:59:00.000Z' }, now), { text: 'expired', soon: false, expired: true }, 'past its expiry');
+eq(expiry({ expiresAt: '2026-10-21T18:28:00.000Z' }, now), { text: '28 min left', soon: false, expired: false }, 'half an hour left');
+eq(expiry({ expiresAt: '2026-10-21T18:03:00.000Z' }, now), { text: '3 min left', soon: true, expired: false }, 'under five minutes is soon');
+eq(expiry({ expiresAt: '2026-10-21T18:00:20.000Z' }, now).text, '20s left', 'seconds left');
+
+ok(statusNote('signed-out', '').includes('Sign in'), 'signed out asks for a sign-in');
+ok(statusNote('not-admin', '').includes('users page'), 'no permission points at the users page');
+eq(statusNote('unreachable', 'Boom.'), 'Boom.', 'unreachable shows why');
+eq(statusNote('ok', ''), '', 'nothing to say when it worked');
+
+// Where each page's source lives now: one console plugin per hub feature (module axHub, Nov 20 2026). The two pass
+// pages live in VPS Configuration → Passes (the gate plugin, Nov 21 2026), which keeps their view addresses.
+const PLUGIN_OF = { Approvals: 'axhub-approvals', ApprovalDetail: 'axhub-approvals', ApprovalLog: 'axhub-approvals', ApprovalParts: 'axhub-approvals', HeldCall: 'axhub-approvals', GoPass: 'gate/web/HubGoPass.tsx', Passes: 'gate/web/HubPasses.tsx', Apps: 'axhub-apps', Users: 'axhub-users', Handoff: 'axhub-handoff', HubAccount: 'axhub-account', HubView: 'axhub-account' };
+const pageSrc = new URL('../../plugins/', import.meta.url);
+const view = (name) => new URL(PLUGIN_OF[name].includes('/') ? PLUGIN_OF[name] : `${PLUGIN_OF[name]}/web/${name}.tsx`, pageSrc);
+
+/* ---------------------------------------------------------------- the hub's pages (decision #96) */
+{
+  const ID = '0123abcd-0123-4567-89ab-0123456789ab';
+  const RUN = '20261022-143005-ab12';
+  eq(parseRoute(''), { view: 'home', params: {} }, 'no hash is the approvals page');
+  eq(parseRoute('#/approvals'), { view: 'home', params: {} }, '#/approvals is home');
+  eq(parseRoute('#/go-pass'), { view: 'go-pass', params: {} }, '#/go-pass opens the Go pass page (axHub decision #99)');
+  const readText = (await import('node:fs')).readFileSync;
+  ok(readText(new URL('gate/web/menu.ts', pageSrc), 'utf8').includes("action: 'axhub-go-pass.open'") && readText(new URL('gate/web/index.tsx', pageSrc), 'utf8').includes("'axhub-go-pass':"), 'the axHub menu reaches the Go pass page (VPS Configuration → Passes)');
+  {
+    const parts = readText(view('ApprovalParts'), 'utf8');
+    ok(/title="The code that runs"[^>]*collapsible/.test(parts), 'the code that runs has its own collapsible section');
+    ok(parts.includes("Claude's words"), "the caller's description is labelled as theirs");
+    const row = readText(view('Approvals'), 'utf8');
+    ok(/title=\{item\.title\}/.test(row), 'a collapsed row leads with what is being approved');
+    // The open row is lib-approvals' shared details panel (Nov 1 2026: every approval row expandable).
+    ok(/<ApprovalDetailsPanel/.test(row) && /detailsOfHubEntry\(hub\(\), item\)/.test(row), 'an open row shows the shared details panel');
+  }
+  eq(parseRoute('#/approvals?status=pending'), { view: 'home', params: { status: 'pending' } }, 'a filter is kept');
+  eq(parseRoute('#/approvals?status=bogus'), { view: 'home', params: {} }, 'an unknown filter is dropped');
+  eq(parseRoute('#/approvals?status=all'), { view: 'home', params: {} }, '"all" is no filter');
+  eq(parseRoute(`#/approvals/${ID}`), { view: 'approval', params: { id: ID } }, 'one request (the hub redirects /auth/admin/approvals/<id> here)');
+  eq(parseRoute('#/approvals/not-an-id'), { view: 'home', params: {} }, 'a bad id is the list');
+  eq(parseRoute('#/approvals/log'), { view: 'approvals-log', params: {} }, 'the log');
+  eq(parseRoute('#/approvals/log?pass=any'), { view: 'approvals-log', params: { pass: 'any' } }, 'the log, calls under any pass (axHub decision 112)');
+  eq(parseRoute(`#/approvals/log?pass=${ID}`), { view: 'approvals-log', params: { pass: ID } }, 'the log, calls under one pass');
+  eq(parseRoute('#/approvals/log?pass=feed%3Aaxf-console%3Ap1'), { view: 'approvals-log', params: { pass: 'feed:axf-console:p1' } }, 'a console feed pass id');
+  eq(parseRoute('#/approvals/log?pass=%3Cscript%3E'), { view: 'approvals-log', params: {} }, 'a bad pass filter is dropped');
+  eq(parseRoute('#/passes'), { view: 'passes', params: {} }, '#/passes opens the Passes page');
+  eq(parseRoute('#/users'), { view: 'users', params: {} }, 'users');
+  eq(parseRoute('#/account'), { view: 'account', params: {} }, 'account');
+  eq(parseRoute('#/apps'), { view: 'apps', params: {} }, 'apps');
+  eq(parseRoute('#/handoff'), { view: 'handoff', params: {} }, 'handoff list');
+  eq(parseRoute(`#/handoff/${RUN}`), { view: 'handoff-run', params: { id: RUN } }, 'one handoff run');
+  eq(parseRoute(`#/handoff/${RUN}?file=_claude%2Fhandoff%2FHANDOFF.md`), { view: 'handoff-run', params: { id: RUN, file: '_claude/handoff/HANDOFF.md' } }, 'a kit file');
+  eq(parseRoute(`#/handoff/${RUN}?file=..%2Fsecret`), { view: 'handoff-run', params: { id: RUN } }, 'a traversing file is dropped');
+  eq(parseRoute('#/handoff/../../x'), { view: 'home', params: {} }, 'a bad run id is home');
+  eq(parseRoute('#/Settings'), { view: 'home', params: {} }, 'a view name with capitals is home');
+  eq(parseRoute('#/a/b/c'), { view: 'home', params: {} }, 'deep unknown routes are home');
+  eq(parseRoute('#/%E0%A4%A'), { view: 'home', params: {} }, 'a broken escape is home');
+  for (const [view, params] of [['home', {}], ['home', { status: 'postponed' }], ['approval', { id: ID }], ['approvals-log', {}], ['approvals-log', { pass: 'any' }], ['approvals-log', { pass: ID }], ['passes', {}], ['users', {}], ['account', {}], ['handoff', {}], ['handoff-run', { id: RUN }], ['handoff-run', { id: RUN, file: 'a/b.md' }], ['settings', {}]]) {
+    eq(parseRoute(routeHash(view, params)), { view, params }, `${view} ${JSON.stringify(params)} round-trips`);
+  }
+  eq(routeHash('approval', { id: 'x' }), '#/approvals', 'a bad id never goes into the hash');
+  ok(safeFilePath('a/b.md') && !safeFilePath('/etc') && !safeFilePath('a//b') && !safeFilePath('a\\b') && !safeFilePath(''), 'kit file paths');
+
+  eq(signInUrl(HUB, `${HUB}/#/approvals/${ID}`), `${HUB}/auth/login?rd=${encodeURIComponent(`${HUB}/#/approvals/${ID}`)}`, 'sign-in comes back to the same page');
+  eq(signInUrl(HUB, 'https://evil.example/'), `${HUB}/auth/login?rd=${encodeURIComponent(`${HUB}/`)}`, 'sign-in never returns off the hub');
+
+  eq(errorText(409, { error: { message: 'Someone decided it first.' } }), 'Someone decided it first.', "the hub's words come through");
+  eq(errorText(0, null), "Can't reach the hub.", 'no answer');
+  eq(errorText(502, 'x'), 'The hub answered 502.', 'a status without words');
+
+  const now = Date.parse('2026-10-26T12:00:00Z');
+  eq(relTime('2026-10-26T12:10:00Z', now), 'in 10 min', 'in 10 min');
+  eq(relTime('2026-10-26T09:00:00Z', now), '3 h ago', '3 h ago');
+  eq(relTime('2026-10-26T12:00:10Z', now), 'just now', 'just now');
+  eq(relTime('nope', now), '—', 'no time');
+  eq(clock(65_000), '1:05', 'm:ss');
+  eq(clock(3_725_000), '1:02:05', 'h:mm:ss');
+  ok(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(localToUtcMinute('2026-10-27T09:30')), 'a local time becomes the UTC minute the hub takes');
+  eq(localToUtcMinute('tomorrow'), '', 'a bad time is empty');
+
+  eq(platformOf('Mozilla/5.0 (Linux; Android 16; SM-S948B)'), 'android', 'Android');
+  eq(platformOf('Mozilla/5.0 (Windows NT 10.0; Win64; x64)'), 'windows', 'Windows');
+  eq(sessionsFor('android')[0].os, 'android', "this device's sessions come first");
+  eq(sessionsFor('')[0].id, 'claude-code-web', 'otherwise Claude Code on the web first');
+  eq(sessionsFor('', 'moshi').map((x) => x.id), ['android-moshi'], 'search finds Moshi');
+  const moshi = sessionsFor('', 'moshi')[0];
+  ok(clipboardFor(moshi, 'do $(rm -rf ~) it').includes("<<'AXF_HANDOFF_EOF'"), 'a command keeps the prompt in a quoted here-doc');
+  eq(bashCommand('hi'), `claude "$(cat <<'AXF_HANDOFF_EOF'\nhi\nAXF_HANDOFF_EOF\n)"`, 'the ready command');
+  ok(afterPick(moshi, true, false).includes('terminal'), 'what to do after a command pick');
+  ok(afterPick(sessionsFor('', 'android · claude app')[0], false, false).includes("Couldn't reach the clipboard"), 'a blocked clipboard says so');
+
+  const steps = [
+    { id: 'a01', group: 'Assemble', label: 'Clicked', remaining: false, done: true, state: 'done', note: '', at: 0 },
+    { id: 'h01', group: 'Handoff', label: 'Sent', remaining: true, done: true, state: 'done', note: '', at: 0 },
+    { id: 'h02', group: 'Handoff', label: 'Read', remaining: true, done: false, state: 'running', note: '', at: 0 },
+  ];
+  const g0 = handoffGauges(steps, 0, now);
+  eq([g0.total, g0.done, g0.remaining, g0.remDone, g0.live], [3, 2, 2, 1, false], 'not sent yet: counts, not live');
+  ok(g0.status.startsWith('Waiting'), 'waiting for the prompt');
+  const g1 = handoffGauges(steps, now - 120_000, now);
+  eq([g1.live, g1.pace, Math.round(g1.left)], [true, 0.5, 120_000], 'live: pace and time left');
+  eq(handoffGauges(steps.map((s) => ({ ...s, done: true })), now - 60_000, now).status, 'Handoff complete.', 'all done');
+  eq(stepGroups(steps).map((x) => [x.name, x.done, x.steps.length]), [['Assemble', 1, 1], ['Handoff', 1, 2]], 'steps grouped in order');
+
+  // The pages never hold a token and only talk to the hub's own /auth/api routes.
+  const { readFileSync } = await import('node:fs');
+  const here = new URL('.', import.meta.url).pathname;
+  const api = readFileSync(`${here}api.ts`, 'utf8');
+  ok(api.includes("redirect: 'error'") && api.includes("credentials: 'same-origin'") && api.includes('/api/hub-pages/'), "the API client: the console's relay only, no redirects");
+  ok(!api.includes("'X-AxHub-CSRF'") && !api.includes("credentials: 'include'"), 'the page never holds the CSRF value or talks to the hub cross-site');
+  ok(!/Authorization|Bearer/.test(api), 'the API client sends no token');
+  for (const f of ['Approvals', 'ApprovalDetail', 'ApprovalLog', 'Users', 'HubAccount', 'Handoff']) {
+    const src = readFileSync(view(f), 'utf8');
+    ok(src.includes('<HubGate'), `${f} is behind the sign-in gate`);
+    ok(!/<button(?![^>]*className=\{?`?["']?fx-chip)/.test(src), `${f} draws no hand-styled buttons`);
+  }
+  // Approve on the first screen (Brett, Oct 27 2026): the decision buttons sit in the page head, before What it does + the code.
+  const detail = readFileSync(view('ApprovalDetail'), 'utf8');
+  const actionsAt = detail.indexOf('approval-actions'), whatAt = detail.indexOf('<WhatItDoes'), codeAt = detail.indexOf('<CodeSection');
+  ok(actionsAt > 0 && actionsAt < detail.indexOf('</header>') && actionsAt < whatAt && actionsAt < codeAt, 'Approve is in the page head, above the description and the code');
+  ok(/orderActions\(item\.actions\)/.test(detail) && /filter\(\(a\) => a === 'approve'\)/.test(detail), 'Approve comes first among the actions');
+  const navSrc = ['axhub-approvals', 'axhub-apps', 'axhub-users', 'axhub-handoff', 'axhub-account'].map((p) => readFileSync(new URL(`${p}/web/index.tsx`, pageSrc), 'utf8')).join('\n');
+  ok(readFileSync(new URL('gate/web/menu.ts', pageSrc), 'utf8').includes("action: 'axhub-passes.open'"), 'the axHub menu reaches the passes (VPS Configuration → Passes)');
+  for (const v of ['axhub-approvals', 'axhub-approvals-log', 'axhub-users', 'axhub-handoff', 'axhub-account', 'axhub-apps']) ok(navSrc.includes(`view: '${v}' }`), `the axHub nav section reaches ${v}`);
+  // The app catalog is one tap away (Brett, Nov 23 2026: "we need an app catalog, a link in the console, so I can
+  // download all the Android apps"): its own nav section right under Home, and the first entry of the Apps menu.
+  const navAsset = JSON.parse(readFileSync(new URL('../src/assets/nav-menu/default-console-web-nav.json', pageSrc), 'utf8')).data.sections;
+  eq([navAsset[0].items[0].view, navAsset[1].label, navAsset[1].items.length], ['home', 'Apps', 0], 'the nav has an Apps anchor right under Home');
+  const appsSrc = readFileSync(new URL('axhub-apps/web/index.tsx', pageSrc), 'utf8');
+  ok(/nav: \{ label: 'Apps', items: \[\{ id: 'axhub-apps', label: 'Android apps', icon: 'download', view: 'axhub-apps' \}\] \}/.test(appsSrc), 'the app catalog files its nav entry under Apps, named for what it holds');
+  const appsMenu = readFileSync(new URL('axhub-apps/web/menu.ts', pageSrc), 'utf8');
+  ok(/menu: 'apps', order: 1, items: \[\s*\{ id: 'android-apps', label: 'Android apps \(downloads\)', icon: 'download', action: 'nav:axhub-apps' \}/.test(appsMenu), 'and the Apps menu opens with it');
+}
+
+/* ---------------------------------------------------------------- Approve now on every waiting row (Oct 31 2026) */
+{
+  console.log('Approve now, the waiting count, notice picks');
+  const ID = '0f0e0d0c-0b0a-4908-8706-050403020100';
+  const held = (veto = {}) => ({ status: 'held', veto: { runsAt: '2026-10-31T12:00:00Z', secondsLeft: 50, countdownSeconds: 90, ...veto } });
+  // A hub from before decision 104 sends no `actions`: Approve now is still offered next to Deny (Brett's screenshot).
+  eq(heldActions(held()), ['deny', 'approve-now'], 'an older hub (no actions) still gets Approve now next to Deny');
+  eq(heldActions(held({ actions: ['shelve', 'approve-now', 'deny'] })), ['deny', 'approve-now', 'shelve'], "the hub's actions, in the shown order");
+  eq(heldActions(held({ state: 'shelved', actions: ['approve-now', 'deny'] })), ['deny', 'approve-now'], 'a shelved call: Deny + Approve now');
+  eq(heldActions(held({ approvedNow: true, actions: ['deny'] })), ['deny'], 'approved now: only Deny is left');
+  eq(heldActions(held({ approvedNow: true })), ['deny'], 'approved now on an older hub: no second Approve now');
+  eq(heldActions(held({ actions: ['deny', 'launch-missiles'] })), ['deny'], 'unknown actions are dropped');
+  eq(heldActions({ status: 'pending' }), [], 'a request that asks is not held');
+  eq(heldActions({ status: 'ran', veto: { actions: ['deny'] } }), [], 'a call that ran offers nothing');
+  eq(approveNowPaths(ID), [`/auth/api/approvals/${ID}/approve-now`, `/auth/api/approvals/${ID}/approve`], 'Approve now tries /approve-now, then /approve (decision 105)');
+  eq(approveNowPaths('../users'), [], 'no route for something that is not an approval id');
+
+  // The header: the hub's `waiting` is pending only; held calls counting down wait too.
+  eq(waitingCount({ waiting: 0, heldCount: 1, items: [] }), 1, "one held call is 1 waiting (was 'Nothing waiting')");
+  eq(waitingCount({ waiting: 2, heldCount: 1 }), 3, 'pending + held');
+  eq(waitingCount({ waiting: 0, items: [held(), { status: 'pending' }, { status: 'ran', veto: {} }] }), 1, 'no heldCount: held rows on the page count');
+  eq(waitingCount({ waiting: -4, heldCount: Number.NaN, items: [] }), 0, 'nonsense counts are 0');
+  eq(waitingCount(null), 0, 'no grid yet');
+  eq(waitingTitle(0), 'Nothing waiting', '0 → Nothing waiting');
+  eq(waitingTitle(1), '1 waiting', '1 → 1 waiting');
+
+  // A notice's button (`?do=`, decision 105) opens the request with that button picked.
+  eq(pickOf('approve-now'), 'approve-now', 'approve-now is a pick');
+  eq(pickOf('approve'), 'approve', 'approve is a pick');
+  eq(pickOf('rm -rf'), '', 'anything else is no pick');
+  eq(pickOf(undefined), '', 'none');
+  eq(parseRoute(`#/approvals/${ID}?do=approve-now`), { view: 'approval', params: { id: ID, do: 'approve-now' } }, 'the picked button is kept on the route');
+  eq(parseRoute(`#/approvals/${ID}?do=evil`), { view: 'approval', params: { id: ID } }, 'an unknown pick is dropped');
+  eq(routeHash('approval', { id: ID, do: 'deny' }), `#/approvals/${ID}?do=deny`, 'a pick round-trips');
+  eq(routeHash('approval', { id: ID, do: 'x' }), `#/approvals/${ID}`, 'a bad pick is not written');
+
+  // The views: Approve now sits next to Deny as one equal pair, built from framework Buttons, tokens only in the CSS.
+  const { readFileSync } = await import('node:fs');
+  const here = new URL('.', import.meta.url).pathname;
+  const heldSrc = readFileSync(view('HeldCall'), 'utf8');
+  const listSrc = readFileSync(view('Approvals'), 'utf8');
+  const detailSrc = readFileSync(view('ApprovalDetail'), 'utf8');
+  ok(heldSrc.includes("'approve-now': 'Approve now'") && heldSrc.includes('heldActions(item)'), 'held rows: Approve now from heldActions (never Deny alone)');
+  ok(!heldSrc.includes('actionsOf('), "held rows don't use the Deny-only default for a hub without actions");
+  for (const [name, src] of [['HeldCall', heldSrc], ['Approvals', listSrc], ['ApprovalDetail', detailSrc]]) ok(src.includes('axp-axhub-pair'), `${name}: Deny + Approve now are one equal pair`);
+  ok(/>Approve now<\/Button>/.test(listSrc), 'confirm rows say Approve now');
+  ok(listSrc.includes('waitingTitle(waiting)') && listSrc.includes('waitingCount(g)'), 'the header counts held calls too');
+  ok(detailSrc.includes('pickOf(params.do)') && detailSrc.includes('picked={heldPick}'), 'the request page honours the picked button');
+  ok(listSrc.includes('setReplies(') && listSrc.includes('shownRow(') && heldSrc.includes("'Running'"), 'a tap flips the row at once (Running / the reply)');
+  const css = readFileSync(new URL('axhub-approvals/web/axhub-approvals.css', pageSrc), 'utf8');
+  const pairCss = css.split('\n').filter((l) => l.includes('axp-axhub-pair'));
+  ok(pairCss.length > 0 && pairCss.every((l) => !/#[0-9a-f]{3,8}\b|rgb\(|hsl\(/i.test(l)), 'the pair CSS uses no colours of its own');
+  ok(/\.axp-axhub-pair \{[^}]*grid-auto-columns: 1fr/.test(css), 'equal columns: Deny and Approve now are the same size');
+  ok(/h3 \{[^}]*text-overflow: ellipsis/.test(css) && /\.axp-axhub-pair > \.fx-btn \{[^}]*white-space: nowrap/.test(css), 'the title is cut first, never the buttons');
+}
+
+/* ---------------------------------------------------------------- refreshes keep the page (Nov 1 2026) */
+eq([showReading(null, ''), showReading({ items: [] }, ''), showReading(null, 'down')], [true, false, false], 'the loading line only before the first answer');
+eq([shownError(false, 'down', 1), shownError(true, 'down', 1), shownError(true, 'down', MISSES_SHOWN), shownError(true, '', 5)], ['down', '', 'down', ''], 'an error over data shows only after a second miss in a row');
+eq([keepSessionOnFailure('ready', 0), keepSessionOnFailure('ready', 502), keepSessionOnFailure('ready', 429), keepSessionOnFailure('ready', 404), keepSessionOnFailure('loading', 0)], [true, true, true, false, false], 'a session re-read blip keeps a signed-in page; an answer or the first read does not');
+eq([sameJson({ a: 1 }, { a: 1 }), sameJson({ a: 1 }, { a: 2 }), sameJson(null, null)], [true, false, true], 'same JSON = same answer');
+// who asked (axHub decision 109): source column, filter chips, sort keys, the reply shown at once
+{
+  const src = (kind, who, label) => ({ source: { kind, label: label ?? kind, who } });
+  eq(sourceKind(src('headless', 'b1', 'Headless')), 'headless', 'source kind');
+  eq(sourceKind({}), 'unknown', 'no source: unknown');
+  eq(sourceKind(src('martian', 'x')), 'unknown', 'a kind this page does not know: unknown');
+  eq(sourceWho(src('headless', 'approval-source', 'Headless')), 'approval-source', 'who = the build name');
+  eq(sourceWho(src('console', 'Console', 'Console')), '', 'who adds nothing beyond the badge: empty');
+  eq(sourceChips([src('headless', 'a'), src('claude_ai', 'b'), src('headless', 'c'), {}]).map((c) => `${c.label}:${c.count}`), ['Claude.ai:1', 'Headless:2', 'Unknown:1'], 'filter chips in badge order with counts');
+  const T = Date.parse('2026-11-01T01:00:00.000Z');
+  eq(countdownKey({ status: 'held', createdAt: '', expiresAt: '', veto: { secondsLeft: 40 } }, T), 40, 'held: seconds to run');
+  ok(countdownKey({ status: 'held', createdAt: '', expiresAt: '', veto: { secondsLeft: 40, state: 'shelved' } }, T) > 1e9, 'shelved after counting ones');
+  eq(countdownKey({ status: 'pending', showExpires: true, createdAt: '', expiresAt: '2026-11-01T01:10:00.000Z' }, T), 600, 'waiting: seconds to expiry');
+  eq(countdownKey({ status: 'consumed', createdAt: '', expiresAt: '' }, T), Number.POSITIVE_INFINITY, 'decided: last');
+  eq(requestedKey({ createdAt: '2026-11-01T01:00:00.000Z' }), T, 'requested key');
+  eq(requestedKey({ createdAt: 'x' }), 0, 'requested key, bad time');
+  eq(nextSort(null, 'who'), { col: 'who', dir: 1 }, 'first tap sorts up');
+  eq(nextSort({ col: 'who', dir: 1 }, 'who'), { col: 'who', dir: -1 }, 'same column flips');
+  eq(nextSort({ col: 'who', dir: -1 }, 'source'), { col: 'source', dir: 1 }, 'new column starts up');
+  eq(nextSort({ col: 'who', dir: 1 }, null), null, 'null = the hub order');
+  const row = { id: 'a', revision: 3, status: 'pending', title: 'x' };
+  const reply = { id: 'a', revision: 4, status: 'consumed', title: 'x' };
+  eq(shownRow(row, { base: replyBase(row), item: reply }).status, 'consumed', "the hub's reply shows at once");
+  eq(shownRow({ ...row, revision: 4, status: 'consumed' }, { base: replyBase(row), item: reply }).revision, 4, 'the next read of that row wins');
+  eq(shownRow(row, undefined), row, 'no reply: the grid row');
+  eq(shownRow({ ...row, id: 'b' }, { base: replyBase(row), item: reply }).id, 'b', 'a reply never lands on another row');
+}
+
+console.log('Approvals log — calls that ran without an approval (decision 110)');
+{
+  const ran = { id: 'l1', confirmationId: 'c1', qualifiedTool: 'vps.build_start', toolTitle: 'Start a headless build', status: 'ran without approval',
+    summary: 'name=leftovers repo=AmberX-AXF', argumentKeys: ['name', 'repo'], source: 'claude_code', sourceSession: 'Leftovers', callerId: 'cl-1',
+    createdAt: '2026-11-01T01:00:00.000Z', ranAt: '2026-11-01T01:00:02.000Z', resultStatus: 'started', jobId: 'j9', runMs: 1500, decidedBy: 'no approval needed (policy allow)' };
+  ok(ranWithoutApproval(ran), 'ran without approval: inline, no request page');
+  ok(ranWithoutApproval({ status: 'failed without approval' }), 'failed without approval: inline too');
+  ok(!ranWithoutApproval({ status: 'ran' }) && !ranWithoutApproval({ status: 'approved' }) && !ranWithoutApproval({}), 'approved calls keep The request');
+  const rows = Object.fromEntries(directRunRows(ran).map((r) => [r.key, r]));
+  eq(rows.tool.value, 'vps.build_start — Start a headless build', 'tool + its title');
+  eq(rows.arguments.value, 'name=leftovers repo=AmberX-AXF', 'arguments: the hub summary');
+  eq(rows.who.value, 'Claude Code · Leftovers · cl-1', 'who ran it: source, session, caller');
+  eq([rows.when.value, rows.when.time], ['2026-11-01T01:00:02.000Z', true], 'when: the run time, shown as a time');
+  eq(rows.result.value, 'started · job j9 · 1.5 s', 'result: status, job, how long');
+  eq(rows.why.value, 'no approval needed (policy allow)', 'says why there is no approval');
+  const bare = Object.fromEntries(directRunRows({ status: 'failed without approval', service: 'vps', tool: 'build_list', argumentKeys: [], createdAt: '2026-11-01T02:00:00.000Z', errorCode: 'timeout', runMs: 250 }).map((r) => [r.key, r.value]));
+  eq([bare.tool, bare.arguments, bare.result, bare.when], ['vps.build_list', '(no arguments)', 'error · timeout · 250 ms', '2026-11-01T02:00:00.000Z'], 'bare entry: tool from service + tool, no arguments, failed');
+  ok(!('who' in bare), 'empty rows are left out');
+  eq(directRunRows({ status: 'ran without approval', qualifiedTool: 'vps.build_land', command: 'land leftovers', summary: 'x', argumentKeys: ['a'] }).find((r) => r.key === 'arguments').value, 'land leftovers', 'arguments: the command when the hub sent one');
+}
+
+/* ---------------------------------------------------------------- timed passes (axHub decision 112) */
+{
+  eq(passSecondsLeft(1800, 1_000_000, 1_000_000 + 65_000), 1735, 'counts down on the device from the hub\'s seconds left');
+  eq(passSecondsLeft(10, 0, 60_000), 0, 'never below zero');
+  eq(passSecondsLeft(Number.NaN, 0, 0), 0, 'nonsense is ended');
+  eq([passClock(1735), passClock(3729), passClock(5), passClock(0)], ['28:55', '1:02:09', '0:05', 'ended'], 'the clock');
+  eq(passCovers({ service: 'axf-console', tools: ['control_set', 'control_reset'], scope: ['tokens.theme'] }), 'axf-console · control_set, control_reset · scope tokens.theme', 'what a pass covers');
+  eq(passCovers({ service: 'axf-console', tools: ['*'] }), 'axf-console · every tool', '* reads as every tool');
+  eq(patternList(' tokens.theme, tokens.layout  tokens.theme '), ['tokens.theme', 'tokens.layout'], 'patterns from a field');
+  eq(patternList('  '), undefined, 'an empty field is no patterns');
+  const under = { status: 'ran under pass', qualifiedTool: 'axf-console.control_set', summary: 'axf-console.control_set with arguments {"target":"tokens.theme"}', decidedBy: 'pass p1 (web:brett)', passId: 'p1', passGrantedBy: 'web:brett', passExpiresAt: '2026-11-03T15:30:00.000Z', ranAt: '2026-11-03T15:01:00.000Z' };
+  ok(ranUnderPass(under) && ranWithoutApproval(under), 'a call under a pass has no request page: shown inline');
+  ok(!ranUnderPass({ status: 'ran' }), 'an approved call is not under a pass');
+  const rows = Object.fromEntries(directRunRows(under).map((r) => [r.key, r.value]));
+  eq(rows.pass, 'p1 · granted by web:brett · ends 2026-11-03T15:30:00.000Z', 'the pass is named on the row');
+  eq(rows.why, 'pass p1 (web:brett)', 'why it ran: the pass');
+  eq(Object.fromEntries(directRunRows({ ...under, status: 'failed under pass', resultStatus: undefined }).map((r) => [r.key, r.value])).result.split(' · ')[0], 'error', 'failed under a pass reads as an error');
+}
+
+{
+  // Auto-approve (Brett, Nov 9 2026): 1 hour, 2 hours, until I turn it off; waiting requests grouped per build / service.
+  eq(AUTO_PRESETS.map((p) => p.label), ['1 hour', '2 hours', 'Until I turn it off'], 'the three presets');
+  const lim = { min: 1, max: 240 };
+  eq(autoGrantBody('1h', lim), { service: '*', tools: ['*'], minutes: 60, reason: 'Auto-approve for 1 hour' }, '1 hour: every service and tool for 60 min');
+  eq(autoGrantBody('until-off', lim)?.minutes, 240, 'until off starts at the longest pass the hub allows');
+  eq(autoGrantBody('2h', { min: 1, max: 90 }), null, 'a preset over the hub limit is not offered');
+  const p = { service: '*', tools: ['*'], title: 'Auto-approve until turned off', grantedVia: 'web', secondsLeft: 3600, active: true };
+  ok(isAutoPass(p) && isUntilOff(p), 'an every-service pass granted here is Auto-approve, until off by its reason');
+  ok(isAutoPass({ ...p, service: 'axf-console', tools: [], grantedVia: 'feed', title: 'x' }), "the console's all pass (feed) is Auto-approve too");
+  ok(!isAutoPass({ ...p, service: 'axf-console', tools: ['control_set'] }), 'a narrow pass is not');
+  eq(untilOffExtend(p, 240), 240, 'until off: under half left → extend to the longest');
+  eq(untilOffExtend({ ...p, secondsLeft: 200 * 60 }, 240), 0, 'more than half left → nothing yet');
+  eq(untilOffExtend({ ...p, title: 'Auto-approve for 1 hour' }, 240), 0, 'a timed pass is never extended');
+  const g = waitGroups([
+    { id: '1', tool: 'vps.run', code: { service: 'vps' }, source: { kind: 'headless', label: 'Headless', who: 'build-x' } },
+    { id: '2', tool: 'github.merge', code: { service: 'github' } },
+    { id: '3', tool: 'vps.run', source: { kind: 'headless', label: 'Headless', who: 'build-x' } },
+    { id: '4', tool: 'github.comment' },
+  ]);
+  eq(g.map((x) => [x.id, x.rows.map((r) => r.id)]), [['build:build-x', ['1', '3']], ['service:github', ['2', '4']]], 'grouped by build, else by service');
+}
+
+console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
+process.exit(failed === 0 ? 0 : 1);

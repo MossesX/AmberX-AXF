@@ -1,0 +1,449 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-skin-axhub-override-switch-greyed-out",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-14T20:22:05Z",
+ "build": {
+  "id": "skin-axhub-override-switch-greyed-out",
+  "title": "Skin from axHub: Override switch, greyed-out editors with notes",
+  "profile": "all",
+  "category": "",
+  "priority": "P1",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "under 'inherit from axHub only' there'll be an override switch; clicking it automatically turns off axHub mode, you only have one or the other; every screen where you'd change properties is greyed out with a note saying you can't edit this, but click here if you insist, and it will no longer refresh and inherit its data from axHub",
+  "verbatim": true,
+  "at": "2026-11-13T18:56:15.400Z",
+  "source": "",
+  "by": "skin-axhub-override-switch-greyed-out",
+  "addenda": []
+ },
+ "brief": "# Build: skin-axhub-override-switch-greyed-out\n\n## Brett said (verbatim)\nAt: 2026-11-13T18:56:15.400Z\n> under 'inherit from axHub only' there'll be an override switch; clicking it automatically turns off axHub mode, you only have one or the other; every screen where you'd change properties is greyed out with a note saying you can't edit this, but click here if you insist, and it will no longer refresh and inherit its data from axHub\n\n## What to build\nContinue build \"Skin from axHub: Override switch, greyed-out editors with notes\" (skin-axhub-override-switch-greyed-out) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 18:56):\n\"under 'inherit from axHub only' there'll be an override switch; clicking it automatically turns off axHub mode, you only have one or the other; every screen where you'd change properties is greyed out with a note saying you can't edit this, but click here if you insist, and it will no longer refresh and inherit its data from axHub\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (8 left, ~1.3 h):\n[ ] s1 (~10 min) Follow-up to console-skin-axhub-only (the 'Get my skin only from axHub' switch in Settings > Appearance).\n[ ] s2 (~10 min) Under that switch add an 'Override' switch, off by default. The two are mutually exclusive: turning Override on turns 'Inherit from axHub only' off right away, and turning axHub-only back on turns Override off.\n[ ] s3 (~10 min) While axHub-only is on and Override is off, nothing about the skin or its assets can be edited anywhere: every screen, panel, inline editor, UI Manager row and property/token field that would change the skin or an asset is greyed out (disabled, not hidden).\n[ ] s4 (~10 min) Each greyed-out area shows a note: 'This is locked: your skin and assets come from axHub. You can still edit it, but if you do it will no longer refresh or inherit any of its data from axHub.' with a 'Click here to override' link.\n[ ] s5 (~10 min) Clicking the link (or the Override switch) asks for one confirm, then turns Override on (axHub-only off) and unlocks editing. Edited assets are marked as overridden.\n[ ] s6 (~10 min) Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.\n[ ] s7 (~10 min) under 'inherit from axHub only' there'll be an override switch; clicking it automatically turns off axHub mode, you only have one or the other; every screen where you'd change properties is greyed out with a note saying you can't edit this, but click here if you insist, and it will no longer refresh and inherit its data from axHub\n[ ] s8 (~10 min) Tests green, report _claude/builds/reports/skin-axhub-override-switch-greyed-out.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/skin-axhub-override-switch-greyed-out.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step skin-axhub-override-switch-greyed-out <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link skin-axhub-override-switch-greyed-out --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step skin-axhub-override-switch-greyed-out <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note skin-axhub-override-switch-greyed-out \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-skin-axhub-override-switch-greyed-out--sully",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-13T19:33:16.686Z",
+   "endedAt": "2026-11-13T19:54:09.786Z",
+   "exit": 0,
+   "costUsd": 4.1522
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Follow-up to console-skin-axhub-only (the 'Get my skin only from axHub' switch in Settings > Appearance).",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:33:16.686Z",
+   "doneAt": "2026-11-13T19:35:10.208Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Under that switch add an 'Override' switch, off by default. The two are mutually exclusive: turning Override on turns 'Inherit from axHub only' off right away, and turning axHub-only back on turns Override off.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:35:10.208Z",
+   "doneAt": "2026-11-13T19:38:47.101Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "While axHub-only is on and Override is off, nothing about the skin or its assets can be edited anywhere: every screen, panel, inline editor, UI Manager row and property/token field that would change the skin or an asset is greyed out (disabled, not hidden).",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:38:47.101Z",
+   "doneAt": "2026-11-13T19:42:10.608Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Each greyed-out area shows a note: 'This is locked: your skin and assets come from axHub. You can still edit it, but if you do it will no longer refresh or inherit any of its data from axHub.' with a 'Click here to override' link.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:42:10.608Z",
+   "doneAt": "2026-11-13T19:42:14.980Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Clicking the link (or the Override switch) asks for one confirm, then turns Override on (axHub-only off) and unlocks editing. Edited assets are marked as overridden.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:42:14.980Z",
+   "doneAt": "2026-11-13T19:44:00.325Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:44:00.325Z",
+   "doneAt": "2026-11-13T19:48:48.236Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "under 'inherit from axHub only' there'll be an override switch; clicking it automatically turns off axHub mode, you only have one or the other; every screen where you'd change properties is greyed out with a note saying you can't edit this, but click here if you insist, and it will no longer refresh and inherit its data from axHub",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:48:48.236Z",
+   "doneAt": "2026-11-13T19:52:35.692Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Tests green, report _claude/builds/reports/skin-axhub-override-switch-greyed-out.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/skin-axhub-override-switch-greyed-out",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 641,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/641"
+ },
+ "landedCommit": "2bb2c6a7d8447d7912395e249ca39e942732f408",
+ "commits": [
+  "24bba313fbeaab72a150558605a01c84473d8133",
+  "73953cc230b16c480fed47a488656ff8c2df19ba",
+  "030b27b69b83e052b1dffb08bdd1d4d0289a03af",
+  "78027133dae549296abfe4b0813d87f844a4c6d2",
+  "1fa3956ffba0a86958b066c99948b53e90c4c105",
+  "3376e7161c0dba252e5717d8cdbb12010dec2c76",
+  "6f5547058540ec04229a71aea5be07fb635a0b48",
+  "446ef53817df62c5e3700b5dcdd2198edfae54e2"
+ ],
+ "mergedAt": "2026-11-14T20:15:16Z",
+ "landedAt": "2026-11-14T20:15:16Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/help-src/console.py",
+  "_claude/builds/reports/skin-axhub-override-switch-greyed-out.md",
+  "apps/amberx-droid/src/axf/assets/help/framework.json",
+  "apps/axhub-web/src/axf/assets/help/framework.json",
+  "apps/axhub-web/src/axf/core/engines/skin-config-rules.mjs",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/core/settings.ts",
+  "apps/axhub-web/src/axf/libs/plugintheme/index.tsx",
+  "apps/axhub-web/src/axf/libs/settings/index.tsx",
+  "apps/axhub-web/src/axf/react/components/HubSkinLock.tsx",
+  "apps/axhub-web/src/axf/react/components/NavStyleSettings.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/react/studio/AssetStudio.tsx",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/context-menu-designer/web/Designer.tsx",
+  "apps/console-web/plugins/theme-editor/web/ThemeEditor.tsx",
+  "apps/console-web/plugins/theme-manager/web/ThemeManager.tsx",
+  "apps/console-web/server/console_control.py",
+  "apps/console-web/src/assetPicker.tsx",
+  "apps/console-web/src/assets/help/console.json",
+  "apps/console-web/src/axf/assets/help/framework.json",
+  "apps/console-web/src/axf/core/engines/console-control-voice.d.mts",
+  "apps/console-web/src/axf/core/engines/console-control-voice.mjs",
+  "apps/console-web/src/axf/core/engines/skin-config-rules.mjs",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/core/settings.ts",
+  "apps/console-web/src/axf/libs/plugintheme/index.tsx",
+  "apps/console-web/src/axf/libs/settings/index.tsx",
+  "apps/console-web/src/axf/react/components/HubSkinLock.tsx",
+  "apps/console-web/src/axf/react/components/NavStyleSettings.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/react/studio/AssetStudio.tsx",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/console-web/src/control/inventory.json",
+  "apps/console-web/src/hubAppearance.tsx",
+  "apps/molly/src/axf/assets/help/framework.json",
+  "apps/molly/src/axf/core/engines/skin-config-rules.mjs",
+  "apps/molly/src/axf/core/runtime.ts",
+  "apps/molly/src/axf/core/settings.ts",
+  "apps/molly/src/axf/libs/plugintheme/index.tsx",
+  "apps/molly/src/axf/libs/settings/index.tsx",
+  "apps/molly/src/axf/react/components/HubSkinLock.tsx",
+  "apps/molly/src/axf/react/components/NavStyleSettings.tsx",
+  "apps/molly/src/axf/react/index.ts",
+  "apps/molly/src/axf/react/studio/AssetStudio.tsx",
+  "apps/molly/src/axf/ui/axf.css",
+  "apps/walkthrough-studio/src/assets/help/framework.json",
+  "framework/assets/help/framework.json",
+  "framework/catalog/catalog.json",
+  "framework/catalog/status.json",
+  "framework/core/engines/console-control-voice.d.mts",
+  "framework/core/engines/console-control-voice.mjs",
+  "framework/core/runtime.ts",
+  "framework/core/settings.ts",
+  "framework/libs/plugintheme/index.tsx",
+  "framework/libs/settings/index.tsx",
+  "framework/react/components/HubSkinLock.tsx",
+  "framework/react/components/NavStyleSettings.tsx",
+  "framework/react/index.ts",
+  "framework/react/studio/AssetStudio.tsx",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-appearance-lock.mts",
+  "framework/spec/fixtures/console-control-voice.json",
+  "framework/spec/gen-fixtures.mts",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/server/console_control.py",
+    "apps/console-web/src/assetPicker.tsx",
+    "apps/console-web/src/assets/help/console.json",
+    "apps/console-web/src/axf/assets/help/framework.json",
+    "apps/console-web/src/axf/core/engines/console-control-voice.d.mts",
+    "apps/console-web/src/axf/core/engines/console-control-voice.mjs",
+    "apps/console-web/src/axf/core/engines/skin-config-rules.mjs",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/core/settings.ts",
+    "apps/console-web/src/axf/libs/plugintheme/index.tsx",
+    "apps/console-web/src/axf/libs/settings/index.tsx",
+    "apps/console-web/src/axf/react/components/HubSkinLock.tsx",
+    "apps/console-web/src/axf/react/components/NavStyleSettings.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/react/studio/AssetStudio.tsx",
+    "apps/console-web/src/axf/ui/axf.css",
+    "apps/console-web/src/control/inventory.json",
+    "apps/console-web/src/hubAppearance.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/src/axf/assets/help/framework.json",
+    "apps/axhub-web/src/axf/core/engines/skin-config-rules.mjs",
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/core/settings.ts",
+    "apps/axhub-web/src/axf/libs/plugintheme/index.tsx",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx",
+    "apps/axhub-web/src/axf/react/components/HubSkinLock.tsx",
+    "apps/axhub-web/src/axf/react/components/NavStyleSettings.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/react/studio/AssetStudio.tsx",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/src/axf/assets/help/framework.json",
+    "apps/molly/src/axf/core/engines/skin-config-rules.mjs",
+    "apps/molly/src/axf/core/runtime.ts",
+    "apps/molly/src/axf/core/settings.ts",
+    "apps/molly/src/axf/libs/plugintheme/index.tsx",
+    "apps/molly/src/axf/libs/settings/index.tsx",
+    "apps/molly/src/axf/react/components/HubSkinLock.tsx",
+    "apps/molly/src/axf/react/components/NavStyleSettings.tsx",
+    "apps/molly/src/axf/react/index.ts",
+    "apps/molly/src/axf/react/studio/AssetStudio.tsx",
+    "apps/molly/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/console-control-voice.d.mts",
+    "framework/core/engines/console-control-voice.mjs",
+    "framework/core/runtime.ts",
+    "framework/core/settings.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/HubSkinLock.tsx",
+    "framework/react/components/NavStyleSettings.tsx",
+    "framework/react/index.ts",
+    "framework/react/studio/AssetStudio.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-appearance-lock.mts",
+    "framework/spec/fixtures/console-control-voice.json",
+    "framework/spec/gen-fixtures.mts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/catalog.json",
+    "framework/catalog/status.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/plugintheme/index.tsx",
+    "framework/libs/settings/index.tsx"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/help-src/console.py",
+    "_claude/builds/reports/skin-axhub-override-switch-greyed-out.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "context-menu-designer",
+   "files": [
+    "apps/console-web/plugins/context-menu-designer/web/Designer.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "theme-editor",
+   "files": [
+    "apps/console-web/plugins/theme-editor/web/ThemeEditor.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "theme-manager",
+   "files": [
+    "apps/console-web/plugins/theme-manager/web/ThemeManager.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/src/axf/assets/help/framework.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/src/assets/help/framework.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/help/framework.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "check-appearance-lock.mts: 40 checks (13 new)",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "check-skin.mts: 395",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "check-theme, check-controls, check-toolbars, check-console-control and the control inventory: pass",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "tsc: clean",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "The Python voice twin matches the fixture",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "Checked in vite preview on desktop and phone (lock note, confirm, mutual exclusion, unlock)",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 4.1522,
+  "estimated": false,
+  "tokens": {
+   "input": 228,
+   "output": 1541,
+   "cacheRead": 9828677,
+   "cacheWrite": 137567
+  }
+ },
+ "report": "_claude/builds/reports/skin-axhub-override-switch-greyed-out.md",
+ "open": [
+  "s8: Tests green, report _claude/builds/reports/skin-axhub-override-switch-greyed-out.md, THREADS row, commit, push, PR",
+  "UI Review item `r-20261113-ggspz01` is stored in this worktree only: the session had no `AXF_CONSOLE_URL` / `AXF_TOKEN`. Re-send with `--console` from a session that has them, or take new shots.",
+  "Not checked on screen: the Theme manager view (it didn't load in the mocked preview).",
+  "Not built: Override with per-asset inheritance (unedited parts keep following axHub). Override means the app's own look.",
+  "Kotlin twin deferred (PORTING.md)."
+ ]
+}

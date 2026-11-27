@@ -1,0 +1,30 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "version": "1.0.0",
+  "author": "Data store plugin",
+  "id": "data-store-rows",
+  "name": "Data store: one row per namespace",
+  "description": "One list: every namespace is a row with its mode chip, keys, drift and the one next action as a button on the row (Shadow, Cut over or Roll back, each with confirm). Backups shrink to one line with Backup now / Verify at the top.",
+  "tags": [
+    "data-store",
+    "ui-choices:data-store-tab"
+  ],
+  "data": {
+    "layout": "list",
+    "header": "compact",
+    "search": false,
+    "descriptions": true,
+    "levels": true,
+    "defaultLevel": "basic",
+    "view": "rows",
+    "order": [
+      "backups",
+      "status"
+    ],
+    "open": [
+      "status"
+    ],
+    "builtFor": "plugin:data-store"
+  }
+}

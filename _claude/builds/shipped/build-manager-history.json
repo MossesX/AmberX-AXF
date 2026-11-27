@@ -1,0 +1,224 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-build-manager-history",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:25Z",
+ "build": {
+  "id": "build-manager-history",
+  "title": "Build manager: global live tracking, Built history, search, Start build now",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "every session on every machine reports builds to axHub (change-log@1 with build stats: ref, model, estimate, actual tokens/cost, status, heartbeat, surface, host, areas); Build manager shows them live, adds a Built history (cost + time by model/week), a search bar, and a context-menu Start build now (dependency closure, overlap guard, axHub vps.run headless Claude Code, verification). Backfill of everything already built. Branch feat/build-manager-history.",
+  "verbatim": false,
+  "at": "2026-10-21T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Reporting contract: build stats fields in change-log@1 (Node + Python validators + schema)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-21T16:24:00.830Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Shared pricing file + cost from Claude Code transcript usage",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-21T16:24:00.830Z",
+   "doneAt": "2026-10-21T16:24:00.910Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "changes.mjs: open/result/beat flags, PreToolUse progress, heartbeat, subagents, global hooks",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-21T16:24:00.910Z",
+   "doneAt": "2026-10-21T16:24:00.978Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "claude.ai reporting via axhub.memory_write: doc + rules (shared + project) + one-line setup",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-21T16:24:00.978Z",
+   "doneAt": "2026-10-21T16:24:01.047Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Backfill script (idempotent, dry-run) from pending, queue, rebuild log, harvests, Status, git",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-21T16:24:01.047Z",
+   "doneAt": "2026-10-21T16:43:13.177Z",
+   "actualMin": 19,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Run the backfill + live entries for this build and the Fable build (through axHub)",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-21T16:43:14.029Z",
+   "doneAt": "2026-10-21T17:11:28.541Z",
+   "actualMin": 28,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Build manager server: change-log feed, live/built index, hub events + polling",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-21T16:43:13.177Z",
+   "doneAt": "2026-10-21T16:43:13.274Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Built history view: totals by model / week, filters, cost badges",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-21T16:43:13.274Z",
+   "doneAt": "2026-10-21T16:43:13.438Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Search bar + Live shows change entries (elapsed vs estimate, cost, model) + banner",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-21T16:43:13.438Z",
+   "doneAt": "2026-10-21T16:43:13.546Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Orchestrator core: dependency closure, overlap check, reorder, brief",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-21T16:43:13.546Z",
+   "doneAt": "2026-10-21T16:43:13.625Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Orchestrator server: start route, vps.run approval + retries, verification",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-21T16:43:13.625Z",
+   "doneAt": "2026-10-21T16:43:13.792Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Start build now: context menu + row button + approval link/alert",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-21T16:43:13.792Z",
+   "doneAt": "2026-10-21T16:43:13.877Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "Tests: build-manager + codebase-changes (fake axHub, dry run)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-21T16:43:13.877Z",
+   "doneAt": "2026-10-21T16:43:13.954Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Checks: check-theme, console tsc + vite, menu-reach, plugin self-tests",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-21T16:43:13.954Z",
+   "doneAt": "2026-10-21T16:43:14.029Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "Docs, CLAUDE.md Status, PR, CI",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-21T17:11:28.541Z",
+   "doneAt": "2026-10-21T17:11:28.623Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-23T11:41:00.284Z",
+ "landedAt": "2026-10-23T11:41:00.284Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

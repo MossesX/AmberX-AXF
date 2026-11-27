@@ -1,8 +1,10 @@
 """Wake a closed console (console-wake, Nov 3 2026): ask Brett's AmberX phone, through axHub, to open the Dev Console.
 
 axHub's `amberx` device service relays `open_url` to the AmberX app over AXPP (axHub repo, packages/connectors/
-device-relay); the phone opens the URL in Chrome (or the default browser) and, where Android holds back a start from
-the background, posts a high-priority notification that opens it with one tap. The hub refuses any URL outside
+device-relay). The phone opens it in its always-on overlay (the toolbar expands into a full-screen browser, no tap
+needed); with the overlay off it goes to Chrome (or the default browser) and, where Android holds back a start from
+the background, a high-priority notification opens it with one tap. The same tool carries the overlay verbs
+(`?axf-overlay=expand|collapse`, console-commands `overlay`). The hub refuses any URL outside
 Brett's own domains (amberxai.com), and so does the phone.
 
 A "yes" from the phone is not proof a page opened: Android drops a blocked background start without raising anything,
@@ -71,6 +73,18 @@ def outcome(res: dict[str, Any]) -> dict[str, Any]:
     if a.get("held"):
         return {"ok": False, "opened": False, "notified": False, "message": "axHub is holding the request instead of sending it to the phone"}
     opened, notified = a.get("opened") is True, a.get("notified") is not False
+    if a.get("where") == "overlay":
+        # One overlay (Nov 13 2026): the always-on toolbar took it, no notification tap needed.
+        if a.get("verb") == "collapse":
+            ok = a.get("collapsed") is True
+            return {"ok": ok, "opened": False, "notified": False,
+                    "message": "AmberX collapsed the overlay to its toolbar" if ok else "the overlay isn't on screen on the phone"}
+        return {"ok": True, "opened": opened, "notified": False,
+                "message": "AmberX opened it full screen in its overlay" if opened else "AmberX's overlay couldn't open it"}
+    if a.get("where") == "app":
+        # The console app (apps/console-droid) with its overlay off: the app itself came to the front on the page.
+        return {"ok": True, "opened": opened, "notified": False,
+                "message": "The console app opened it full screen" if opened else "The console app couldn't open it"}
     if a.get("overlay") is False and not opened:
         message = "AmberX can't open pages on its own (Display over other apps is off): tap its notification"
     elif opened:
@@ -82,8 +96,31 @@ def outcome(res: dict[str, Any]) -> dict[str, Any]:
     return {"ok": True, "opened": opened, "notified": notified, "message": message}
 
 
+def phone_outcome(local: dict[str, Any]) -> dict[str, Any]:
+    """Phone Connect's answer (axf.phone@1 `hub_tool`) → {ok, opened, notified, how, message, via}, saying only what the
+    phone reported: `opened` when it said the page is on screen, `notified` when it only posted the tap-to-open
+    notification, neither when it has not answered yet (the command stays queued and the console alert goes up)."""
+    ok = bool(local.get("ok"))
+    o = local.get("opened") if isinstance(local.get("opened"), dict) else {}
+    if not o:  # an older plugin without the phone's own account: its "done" is not proof of anything on screen
+        return {"ok": ok, "opened": False, "notified": False, "how": "", "message": str(local.get("output") or ""), "via": "phone"}
+    return {"ok": ok, "opened": ok and o.get("opened") is True, "notified": ok and o.get("notified") is True, "how": str(o.get("how") or ""),
+            "message": str(o.get("message") or local.get("output") or ""), "via": "phone"}
+
+
 def open_url(target: str, browser: str = "chrome") -> dict[str, Any]:
     """→ {ok, opened, notified, message}. Never raises for a hub or phone failure: the command stays queued and the answer says why."""
+    # Phone Connect first (axf.phone@1): a paired, online phone opens it itself; AmberX through axHub otherwise
+    try:
+        import plugin_services
+        phone = plugin_services.get("axf.phone@1")
+        # where: overlay = the console app first (its overlay, or the app itself in front, started from the background);
+        # the browser only when there is no console app on the phone
+        local = phone.hub_tool(TOOL, {"url": target, "where": "overlay", "browser": browser}) if phone is not None and hasattr(phone, "hub_tool") else None
+    except Exception:  # noqa: BLE001 — the hub path below still works
+        local = None
+    if local is not None:
+        return phone_outcome(local)
     url = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/")
     tok = os.environ.get("AXHUB_TOKEN", "")
     if not tok:

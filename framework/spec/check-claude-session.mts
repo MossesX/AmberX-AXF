@@ -16,7 +16,7 @@ const check = (cond: unknown, msg: string) => { if (!cond) { console.error(`FAIL
 console.log('claude-session');
 // ---- the Terminal reads the library's copy (one implementation, no behaviour change)
 for (const k of ['modelName', 'money', 'statusOf', 'steps', 'advance', 'PACE'] as const) check((term as Record<string, unknown>)[k] === (baked as Record<string, unknown>)[k], `Terminal's ${k} is the library's`);
-for (const app of ['console-web', 'amberx-droid']) {
+for (const app of ['console-web']) {
   const src = (p: string) => readFileSync(new URL(p, import.meta.url), 'utf8');
   check(src(`../../apps/${app}/src/axf/libs/claude-session/core.ts`) === src('../libs/claude-session/core.ts'), `${app} bakes the current library`);
 }
@@ -41,7 +41,7 @@ check(lib.filterConversations(items, '  ').length === items.length, 'empty searc
 const ms = lib.chatModels();
 check(ms[0]?.key === 'opus' && ms.map((m) => m.key).join() === 'opus,fable', 'pick list = policy allowed, default first');
 check(lib.chatModelId('sonnet') === 'claude-opus-5-5' && lib.chatModelId('claude-haiku-5-5') === 'claude-opus-5-5', 'Sonnet / Haiku run as Opus');
-check(lib.chatModelId('fable') === 'claude-fable-5-1' && lib.chatModelId('') === '', 'Fable kept; empty = default');
+check(lib.chatModelId('fable') === 'claude-fable-5-2' && lib.chatModelId('') === '', 'Fable kept; empty = default');
 
 // ---- budget
 check(lib.budgetState(1, 0).level === 'off', 'no cap = off');

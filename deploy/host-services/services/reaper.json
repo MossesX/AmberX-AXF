@@ -1,0 +1,16 @@
+{
+  "$axf": "host-service@1",
+  "id": "reaper",
+  "title": "Reaper",
+  "description": "Kills the host's ghosts every 2 minutes: finished claude processes, dead tmux sessions, slot entries and heavy-step locks nothing holds, test servers left on ports. Cron, installed with the console.",
+  "kind": "tick",
+  "cron": "axf-reaper",
+  "adopted": true,
+  "plugin": "console",
+  "runner": "framework/cli/reaper.mjs",
+  "health": {
+    "intervalSec": 120,
+    "staleSec": 900
+  },
+  "log": "/var/log/axf-reaper.log"
+}

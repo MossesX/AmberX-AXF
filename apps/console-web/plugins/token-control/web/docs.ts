@@ -15,7 +15,7 @@ export const GUIDES: Guide[] = [
 \`\`\`
 
 - **op**: \`list\` · \`get\` · \`set\` · \`reset\` · \`add\` · \`remove\` · \`act\`
-- **target**: a token set (\`tokens.theme\`, \`tokens.style\`, \`tokens.layout\`, \`tokens.typography\`, \`tokens.density\`, \`tokens.sizing\`, \`tokens.nav\`, \`tokens.slots\`), AmberX (\`amberx.items\`, \`amberx.lists\`) or the planner (\`planner.plans\`, \`planner.builds\`)
+- **target**: a token set (\`tokens.theme\`, \`tokens.style\`, \`tokens.layout\`, \`tokens.typography\`, \`tokens.density\`, \`tokens.sizing\`, \`tokens.nav\`, \`tokens.instances\` (one tab row's or grid's own grid.* / tabs.* tokens), \`tokens.slots\`), AmberX (\`amberx.items\`, \`amberx.lists\`) or the planner (\`planner.plans\`, \`planner.builds\`)
 - **path**: the token id or the record id
 - **value** / **action** + **input** / **select**: what to set, which verb to run, which filters to list with
 
@@ -62,7 +62,7 @@ MCP: \`amberx_find\`, \`amberx_add\`, \`amberx_update\`, \`amberx_done\`, \`ambe
   {
     id: 'planner',
     title: 'The planner: plans and builds',
-    body: `\`planner.plans\` are Plan Studio plans; \`planner.builds\` are Build orchestrator builds (the one builds store; Pending, the queue and the Build manager follow every change).
+    body: `\`planner.plans\` are Plan Studio 2.0 plans (the planning tree's items of kind plan; a removed one is in the tree's trash and \`act restore\` brings the newest back); \`planner.builds\` are Build orchestrator builds (the one builds store; Pending, the queue and the Build manager follow every change).
 
 \`\`\`sh
 axf plan add "Voice macros" --field category="Apps > AmberX"     # parked: "put it in a plan for later"
@@ -133,6 +133,7 @@ Reads are marked read-only, removes destructive. A failure raises a tool error w
 | run an action | \`console_action {action: "terminal.open"}\` | \`POST /api/console/action {"id": …}\` | \`axf console action terminal.open\` |
 | back / home / close | \`console_back {move: "back"}\` | \`POST /api/console/back\` | \`axf console back\` |
 | reload the page | \`console_refresh {hard?}\` | \`POST /api/console/refresh\` | \`axf console refresh [--hard]\` |
+| see the screen (PNG + state) | \`console_screenshot {address?, selector?}\` | \`POST /api/console/screenshot\` | \`axf console screenshot [--out f.png]\` |
 | where is it | \`console_where\` | \`GET /api/console/where\` | \`axf console where\` |
 | what can it open | \`console_list {kind: "screens", q: "build"}\` | \`GET /api/console/list?kind=screens&q=build\` | \`axf console list screens build\` |
 

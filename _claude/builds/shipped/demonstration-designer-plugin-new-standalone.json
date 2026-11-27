@@ -1,0 +1,122 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-demonstration-designer-plugin-new-standalone",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:09Z",
+ "build": {
+  "id": "demonstration-designer-plugin-new-standalone",
+  "title": "Demonstration Designer plugin (new, standalone)",
+  "profile": "all",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Make a new one. I want a, a, a demonstration designer plugin.",
+  "verbatim": true,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Demonstration Designer plugin (new, standalone)\n\nOrchestrator build id: demonstration-designer-plugin-new-standalone. Tick steps: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step demonstration-designer-plugin-new-standalone <stepId> done.\n\nBrett said: \"Make a new one. I want a demonstration designer plugin.\"\n\n## Purpose\nIt's for PITCHING the product. Keep it dead simple. Main flow = three picks: (1) plugin or topic, (2) length in minutes, (3) narrator voice; then ONE Generate button. Generate writes a pitch script (hook up front, benefits not specs, closing call to action), picks the best screens, and plays a polished demo on real data: highlights, smooth zooms/pans, captions, background music, logo intro/outro. After: optional script tweak, preview, export video (MP4) or share link. Advanced editing (timeline, record-by-doing) stays tucked behind an Advanced section, never in the main flow.\n\n## Build\nNew standalone console plugin 'Demonstration Designer' (own nav entry), replacing the disabled glossary-index one (Brett found it unusable). Pick any screen, plugin or UI element from the live registry. Demos are saved assets, reusable and chainable into longer tours. Harvest useful code from the disabled glossary-index plugin (demos.mjs, walkthrough engine) instead of starting from zero.\n\n## Rules\n- Every UI action and setting has API + voice + MCP/CLI control, and a deep link opens it.\n- Settings in categorized collapsible sections; stock framework controls and asset tokens (check-theme, check-controls pass).\n- 3 UI options to UI Review; tests; short report _claude/builds/reports/demonstration-designer.md.\n- Stay in this one session, no sub-agents; if you can't find something in 3 searches, stop and leave a build note.\n- Commit, then stop so it can be landed with build_land.",
+ "models": [
+  "Fable"
+ ],
+ "accounts": [
+  "account-3"
+ ],
+ "runs": [
+  {
+   "session": "axf-demo-designer--rhonda",
+   "account": "account-3",
+   "model": "Fable",
+   "startedAt": "2026-11-09T02:58:40.689Z",
+   "endedAt": "2026-11-09T04:09:10.225Z",
+   "exit": 0,
+   "costUsd": 29.153
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "New standalone console plugin 'Demonstration Designer' (own nav entry), replacing the disabled glossary-index one. Brett found the old one unusable, so make it simple and obvious. Pick any screen, plugin or UI element from the live registry, then build a demo: steps (open screen, highlight, click/type action, wait), narration text + voice, captions, timing. Record a demo by doing it, edit it on a timeline, preview, play it live on the console or a sandboxed preview, export as video. Demos are saved assets, reusable and chainable into longer tours. Harvest useful code from the disabled glossary-index plugin (demos.mjs, walkthrough engine) instead of starting from zero. RULE: every UI action and setting has API + voice + MCP/CLI control, and a deep link opens it. Settings in categorized collapsible sections; 3 UI options to UI Review; tests; report.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-09T02:58:40.689Z",
+   "doneAt": "2026-11-09T04:07:28.625Z",
+   "actualMin": 69,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Make a new one. I want a, a, a demonstration designer plugin.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s3",
+   "text": "Tests green, report _claude/builds/reports/demonstration-designer-plugin-new-standalone.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/demo-designer",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 405,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/405"
+ },
+ "landedCommit": "4aafd97f1a31edd318e5c14d6aec823946192029",
+ "commits": [],
+ "mergedAt": "2026-11-09T04:16:30Z",
+ "landedAt": "2026-11-09T04:24:06Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261109-eb1a4485",
+   "name": "Demonstration Designer page",
+   "status": "approved",
+   "group": "g-20261109-ffa6e3e5",
+   "url": "/review/r-20261109-eb1a4485"
+  },
+  {
+   "id": "r-20261109-438d0f75",
+   "name": "Demonstration Designer settings",
+   "status": "approved",
+   "group": "g-20261109-ffa6e3e5",
+   "url": "/review/r-20261109-438d0f75"
+  }
+ ],
+ "cost": {
+  "usd": 29.153,
+  "estimated": false,
+  "tokens": {
+   "input": 2162,
+   "output": 1709,
+   "cacheRead": 27619346,
+   "cacheWrite": 541893
+  }
+ },
+ "report": "",
+ "open": [
+  "s2: Make a new one. I want a, a, a demonstration designer plugin.",
+  "s3: Tests green, report _claude/builds/reports/demonstration-designer-plugin-new-standalone.md, THREADS row, commit, push, PR"
+ ]
+}

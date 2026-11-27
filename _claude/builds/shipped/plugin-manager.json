@@ -1,0 +1,56 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-plugin-manager",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:14Z",
+ "build": {
+  "id": "plugin-manager",
+  "title": "Plugin manager + settings tabs for every app (Fable rebuild)",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Every plugin gets a plugin-manager entry (info, enable/disable, view logs, settings). Plugins never ship their own settings screen; they add tabs to the app settings interface. Every app compiled by the build engine ships the settings interface and lib-settings. The Opus version is the console plugin `plugin-manager` (web console only: four views cards/table/detail/dependency graph in four layouts Studio/Mission control/Terminal/Catalog, default context-menu link, dependencies in detail, opens each plugin's UI and settings, logs, files, install & uninstall). Remove it first with its uninstall script (uninstall.mjs --all --publish), then build the cross-port version following plugin-lifecycle@1 (Android kernel + every app the build engine compiles), keeping the UI-editor rules (last save wins per key; reload current values on open/load/focus).",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-21T02:23:02.695Z",
+ "landedAt": "2026-10-21T02:23:02.695Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

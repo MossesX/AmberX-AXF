@@ -134,6 +134,18 @@ ok(r.status_code == 403, "cross-site writes from a signed-in browser are refused
 ok(c.get(f"/api/plugins/{granted_plugin}/x", headers=user(perms=f"console.plugin.{granted_plugin}", via="token")).status_code in (401, 403),
    "a request the hub let through on a bearer header still needs the real token")
 
+# Paired devices (plugins with "deviceRoutes": true, picked from what's loaded): a device's own bearer is not the console
+# token, so the gate must let its routes through to the plugin, which refuses a bad device token itself with a wire
+# error (never the gate's bare 401, which a phone can't tell from a dead link and used to retry forever).
+for prefix in sorted(main.DEVICE_ROUTE_PREFIXES):
+    r = c.post(f"{prefix}hello", json={}, headers={"x-auth-via": "token", "authorization": "Bearer tok_" + "A" * 32, "x-axpp": "axpp@1"})
+    ok(r.status_code != 401 and (r.json().get("error") or {}).get("code") in ("denied", "unpaired", "revoked"),
+       f"{prefix}: a device token passes the wall's token gate and the plugin answers it (a wire error, not a bare 401)")
+    folder = prefix.split("/")[3]
+    ok(c.get(f"/api/plugins/{folder}/x", headers={"x-auth-via": "token", "authorization": "Bearer tok_" + "A" * 32}).status_code == 401,
+       f"{folder}: a device token opens nothing but the device routes")
+ok(not main._device_route("/api/plugins/x/devices") and not main._device_route("/api/state"), "only the mounted device prefixes are exempt")
+
 print("websockets")
 from starlette.websockets import WebSocketDisconnect  # noqa: E402
 ws_paths = ["/api/shell"] + [f"/api/plugins/{f}{r.path}" for f in plugins for r in plugin_routes(f) if type(r).__name__ == "APIWebSocketRoute" and "{" not in r.path][:3]
@@ -152,5 +164,33 @@ ok(wall.ui_role(wall.Caller("u", "user", frozenset({"console.themes"}))) == "the
 ok(wall.ui_role(wall.Caller("u", "user", frozenset({"console.plugin.x"}))) == "user", "user role")
 ok(wall.user_may(wall.Caller("u", "user", frozenset({"console.plugin.*"})), "GET", "/api/plugins/../token/reset") is False, "a dotted plugin path is no grant, even with console.plugin.*")
 ok(wall.user_may(wall.Caller("u", "user", frozenset({"console.plugin.*"})), "GET", "/api/plugins/x%2f..%2ftoken") is False, "an encoded plugin path is no grant")
+
+print("the signed-in admin is the owner, even when the page also sends the token")
+from starlette.requests import Request as _Req  # noqa: E402
+
+
+def req(method: str, headers: dict[str, str]) -> _Req:
+    return _Req({"type": "http", "method": method, "path": "/api/x", "query_string": b"", "server": (HOST, 80),
+                 "headers": [(k.lower().encode(), v.encode()) for k, v in headers.items()]})
+
+
+bearer = {"authorization": f"Bearer {TOKEN}", "host": HOST}
+admin_session = user("admin", role="admin")
+ok(main._token_caller(req("PUT", same({**bearer, **admin_session}))).name == "admin", "token + signed admin session from the console page = the admin")
+ok(main._token_caller(req("PUT", same({**bearer, **admin_session}))).via == "session", "… as a session (owner-only settings key on it)")
+ok(main._token_caller(req("PUT", bearer)) is wall.TOKEN_CALLER, "the token alone stays the token caller (sessions, MCP, voice)")
+ok(main._token_caller(req("PUT", {**bearer, **admin_session, "origin": "https://evil.example"})) is wall.TOKEN_CALLER, "a cross-site write with session headers stays the token caller")
+ok(main._token_caller(req("PUT", same({**bearer, **user("admin", role="admin", signed=False)}))) is wall.TOKEN_CALLER, "unsigned admin headers stay the token caller")
+ok(main._token_caller(req("PUT", same({**bearer, **user("conrad")}))) is wall.TOKEN_CALLER, "a plain user's session with the token stays the token caller")
+import plugin_services  # noqa: E402
+
+ctl = plugin_services.get("control@1")
+if ctl is not None and hasattr(ctl, "owner"):
+    r = req("PUT", same({**bearer, **admin_session}))
+    r.state.axf_user = main._token_caller(r)
+    ok((ctl.owner(r) or {}).get("via") == "console", "control@1 owner(): the signed-in admin with the token = Brett's approval")
+    r2 = req("PUT", bearer)
+    r2.state.axf_user = main._token_caller(r2)
+    ok(ctl.owner(r2) is None, "control@1 owner(): the token alone is no owner approval")
 
 print(f"all {checks} checks passed")

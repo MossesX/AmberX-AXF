@@ -27,11 +27,15 @@
  *   node framework/cli/persist.mjs            where each shared file is read from
  *   node framework/cli/persist.mjs push       copy repo → hub for files the hub doesn't have yet (--force: overwrite)
  *   node framework/cli/persist.mjs pull       copy hub → repo, to commit a snapshot
+ *
+ * readData / writeData / updateData (+ Sync) go through framework/core/data-files.mjs, so a shared file follows its
+ * namespace onto axf-data (data-store@1) when the mode says so; local mode is unchanged.
  */
 import { cpSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BASE_PROFILE, MERGED_PROFILE, RETIRED_PROFILES, resolveProfile } from '../plan/builds-store-core.mjs';
+import * as files from '../core/data-files.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '..', '..');
@@ -69,6 +73,29 @@ export function persistRoot() {
   if (existsSync(projects)) return join(projects, PROJECT_NAME, '_data');
   const old = join(DEFAULT_HUB_PERSIST, PROJECT_NAME);
   return existsSync(old) ? old : null;
+}
+
+// ------------------------------------------------------------------ journal home (builds-journal@1)
+/** The repo folder the journal parts lived in before they moved to the hub (and the spool when the hub is out of reach). */
+export const JOURNAL_REPO_REL = '_claude/builds/journal';
+/**
+ * Where the builds journal lives (framework/spec/BUILDS.md → Journal home), tests (AXF_BUILDS_STORE) aside:
+ *   AXF_BUILDS_JOURNAL=<dir>  that folder (explicit); `off` = the spool
+ *   persistRoot() non-null    <data root>/builds/journal (hub: /projects/amberx-axf/_data/builds/journal)
+ *   otherwise                 <repo>/_claude/builds/journal (spool, git-ignored)
+ * → { dir, mode: 'explicit' | 'hub' | 'spool' }
+ */
+export function journalHome() {
+  const x = process.env.AXF_BUILDS_JOURNAL;
+  if (x && x !== 'off') return { dir: resolve(x), mode: 'explicit' };
+  const root = x === 'off' ? null : persistRoot();
+  if (root) return { dir: join(root, 'builds', 'journal'), mode: 'hub' };
+  return { dir: join(REPO_ROOT, JOURNAL_REPO_REL), mode: 'spool' };
+}
+/** Folders a journal read looks in: the home, then the repo folder (old parts not yet moved, and the spool). */
+export function journalReadDirs() {
+  const h = journalHome(); const repo = join(REPO_ROOT, JOURNAL_REPO_REL);
+  return h.dir === repo ? [h.dir] : [h.dir, repo];
 }
 
 /**
@@ -198,10 +225,41 @@ export function dataPath(rel) {
   return p;
 }
 
-/** The orchestrator tracker of the active profile (a repo file). */
+/**
+ * Profile ids the repo's committed registry (framework/plan/profiles.json) lists; the base profile always counts.
+ * This is the file CI guards (framework/spec/check-profiles.mjs), not the hub's shared-data copy readProfiles reads.
+ */
+export function repoProfileIds() {
+  const ids = new Set([BASE_PROFILE]);
+  try {
+    const reg = JSON.parse(readFileSync(join(REPO_ROOT, PROFILES_REL), 'utf8'));
+    for (const p of Array.isArray(reg?.profiles) ? reg.profiles : []) if (p && PROFILE_ID.test(p.id)) ids.add(resolveProfile(p.id));
+  } catch { /* missing or damaged: only the base */ }
+  return ids;
+}
+
+/**
+ * Whether profile `id` has an orchestrator export inside the repo (_claude/builds/orchestrator.json for the base,
+ * _claude/builds/profiles/<id>/orchestrator.json otherwise). Only a profile the repo registry lists does (Nov 13 2026,
+ * main-ci-red-test-sandbox-profile-export): a profile registered only on the hub (a project's profile such as
+ * test-sandbox, made by project-seed) keeps its export in its shared-data folder, so builds-live never publishes a
+ * folder check-profiles.mjs rejects on main.
+ */
+export function hasRepoExport(id) {
+  id = resolveProfile(id);
+  return id === BASE_PROFILE || repoProfileIds().has(id);
+}
+
+/**
+ * The orchestrator tracker of a profile: a repo file for the base and every repo-registered profile; for a hub-only
+ * profile the same path inside its shared-data folder (framework/plan/profiles/<id>/_claude/builds/orchestrator.json
+ * under the data root), never committed.
+ */
 export function orchestratorPath(id = activeProfile().id) {
   id = resolveProfile(id);
-  return join(REPO_ROOT, id === BASE_PROFILE ? ORCHESTRATOR_REL : `_claude/builds/profiles/${id}/orchestrator.json`);
+  if (id === BASE_PROFILE) return join(REPO_ROOT, ORCHESTRATOR_REL);
+  if (hasRepoExport(id)) return join(REPO_ROOT, `_claude/builds/profiles/${id}/orchestrator.json`);
+  return join(persistRoot() ?? REPO_ROOT, profileRel(id, ORCHESTRATOR_REL));
 }
 
 function copy(from, to, force) {
@@ -211,6 +269,20 @@ function copy(from, to, force) {
   cpSync(from, to, { recursive: true, force });
   return 'copied';
 }
+
+// ── data-store@1 (axf-data): shared data read and written through framework/core/data-files.mjs ─────────────────────
+// Local mode (the default) is exactly readFileSync / writeFileSync on dataPath(rel); in shadow the write is mirrored to
+// axf-data, in cutover it goes there only (async calls). Callers that must keep working with the console down use these.
+/** The shared file's JSON (fallback when missing or damaged). */
+export const readData = (rel, fallback = null) => files.readJson(dataPath(rel), fallback);
+/** Write the shared file (indent 1, trailing newline: the format these files have in the repo). */
+export const writeData = (rel, doc) => files.writeJson(dataPath(rel), doc, 1);
+/** Read → fn → write, with axf-data's rev check in cutover. */
+export const updateData = (rel, fn, fallback = null) => files.updateJson(dataPath(rel), fn, fallback);
+export const readDataSync = (rel, fallback = null) => files.readJsonSync(dataPath(rel), fallback);
+export const writeDataSync = (rel, doc) => files.writeJsonSync(dataPath(rel), doc, 1);
+/** The data-store@1 key a shared file maps to (null = it stays a local file). */
+export const dataKey = (rel) => files.keyFor(dataPath(rel));
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const cmd = process.argv[2] ?? 'status';

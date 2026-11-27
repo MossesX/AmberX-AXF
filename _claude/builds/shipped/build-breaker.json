@@ -1,0 +1,113 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-build-breaker",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:45Z",
+ "build": {
+  "id": "build-breaker",
+  "title": "build-breaker",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "build-breaker",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/build-breaker",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "8f3e548a71e9afafbb1e877687cef11069cf43df",
+ "commits": [
+  "f3e877efd2f33d13981b20dc85df2df5c8a172d9",
+  "c1019fc0690b6bb1339d4aa0bf425bda7a4f611f"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-30T11:36:28Z",
+ "files": [
+  "_claude/THREADS.md",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/build-breaker/asks.mjs",
+  "apps/console-web/plugins/build-breaker/data/asks.jsonl",
+  "apps/console-web/plugins/build-breaker/hooks.mjs",
+  "apps/console-web/plugins/build-breaker/install.mjs",
+  "apps/console-web/plugins/build-breaker/plugin.json",
+  "apps/console-web/plugins/build-breaker/server/__init__.py",
+  "apps/console-web/plugins/build-breaker/test.mjs",
+  "apps/console-web/plugins/build-breaker/uninstall.mjs",
+  "apps/console-web/plugins/build-breaker/web/bb-core.d.mts",
+  "apps/console-web/plugins/build-breaker/web/bb-core.mjs",
+  "apps/console-web/plugins/build-breaker/web/build-breaker.css",
+  "apps/console-web/plugins/build-breaker/web/buildMenu.ts",
+  "apps/console-web/plugins/build-breaker/web/index.tsx",
+  "apps/console-web/plugins/build-breaker/web/menu.ts",
+  "apps/console-web/plugins/build-breaker/web/ui.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-breaker",
+   "files": [
+    "apps/console-web/plugins/build-breaker/asks.mjs",
+    "apps/console-web/plugins/build-breaker/data/asks.jsonl",
+    "apps/console-web/plugins/build-breaker/hooks.mjs",
+    "apps/console-web/plugins/build-breaker/install.mjs",
+    "apps/console-web/plugins/build-breaker/plugin.json",
+    "apps/console-web/plugins/build-breaker/server/__init__.py",
+    "apps/console-web/plugins/build-breaker/test.mjs",
+    "apps/console-web/plugins/build-breaker/uninstall.mjs",
+    "apps/console-web/plugins/build-breaker/web/bb-core.d.mts",
+    "apps/console-web/plugins/build-breaker/web/bb-core.mjs",
+    "apps/console-web/plugins/build-breaker/web/build-breaker.css",
+    "apps/console-web/plugins/build-breaker/web/buildMenu.ts",
+    "apps/console-web/plugins/build-breaker/web/index.tsx",
+    "apps/console-web/plugins/build-breaker/web/menu.ts",
+    "apps/console-web/plugins/build-breaker/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/plugins/README.md"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

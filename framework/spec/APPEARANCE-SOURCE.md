@@ -13,9 +13,136 @@ Project `shared`, path `settings/looks/<app>.json`. Written only by that app, or
 MCP and REST. The format is in one module, `framework/core/engines/skin.ts` + `skin-rules.mjs`.
 
 - `default`: the snapshot of the look the app had when skins landed (`skins.mjs snapshot --all`), so nothing changed.
-- `own`: picks made with no skin on. `skin`: `{ use, id, overrides }`, the Use skin switch, the skin and the picks that
-  beat it. `undo`: the one step Restore to default can take back.
-- Effective look = default + own picks; with Use skin on, that + the skin + its overrides.
+- `own`: picks made with no skin on. `skin`: `{ use, id, overrides, colorTheme? }`, the Use skin switch, the skin, the
+  picks that beat it, and the colour theme switched inside it. `undo`: the one step Restore to default can take back.
+- Effective look = default + own picks; with Use skin on, that + the skin + its overrides + the colour theme picked
+  inside the skin (when one is).
+
+### The colour theme is switched inside the skin (Brett, Nov 9 2026)
+
+> "All the skins control everything. The skins have different sections, but the skins have the color theme in them. You
+> can change the color theme without changing the skin. If you change the color theme, it makes a new skin, don't like
+> that."
+
+The standing rule for every skins build (appearance-skins-colour-themes-only-remove-design-packs, skins-restyle-everything,
+skins-are-a-complete-rework, skins-as-packages-of-slices): **a skin owns everything** (look, layout, behaviour, every
+section and asset type) **and includes a colour theme section; the user switches that section on its own.** Picking a
+colour theme while a skin is in force:
+
+- applies it inside the current skin: the skin id, the skin asset, the list of skins and every other section stay as
+  they were. Nothing is created, copied, forked or renamed; a skin never becomes "<skin> (colour changed)".
+- is kept as the level's `colorTheme` field (`skin.colorTheme` at the app level, `scopes[key].colorTheme` for one
+  screen / plugin, `skin.colorTheme` on the hub-wide skin of appearance@1), never as `overrides["color-theme"]`. Absent
+  = the skin's own colour theme. Settings → Appearance shows no overridden dot for it; "Skin's colours" (`backToSkin
+  ('color-theme')`, `setSkinColorTheme(null)`, `skin.color:default`) goes back to the skin's own.
+- is the same document from every entry point: the picker's select, `rt.swap('color-theme', …)`, `rt.setSkinColorTheme`,
+  the `skin.color:<theme>` action, control@1 `tokens.slots`, `skins.mjs color <app> <theme>` and the REST / MCP route
+  `POST /skins/{app}/color` (`setLookSlot`, `lookAfterChange`, `setSkinColorTheme`, `setScopeOverride` all land there).
+- never leaks: Use skin off shows the app's own colours; another skin starts with its own colour theme; the pick comes
+  back with the skin it was made in. Restore clears it (one undo).
+- A document saved before the rule kept the pick in `overrides["color-theme"]`: it is read as `colorTheme`
+  (`normalizeAppLook`, `globalSkinOf`, `normalizeAppearance`) and draws the same look.
+
+Sections stay separate: the colour theme is one switchable part of the skin, the others (style, layout, behaviour,
+chrome assets, parts, icon pack) are the skin's until a pick overrides that one part. Pinned by `spec/fixtures/skin.json`
+(`colour`) and `spec/check-skin.mts` (engine, runtime, every entry point, legacy documents).
+
+### The Default skin and what the AI may change: skin-config@1 (build skin-configuration-panel, Nov 13 2026)
+
+> Brett: "before AI makes a skin, Brett picks what it may change. The current look is saved as the Default skin."
+
+**The Default skin.** Each app's saved look (`default` above: slots, spacing, hidden chrome, look settings and token
+overrides) is also a skin@1 asset, `default-<app>`, named *Default*, on the hub at `shared/settings/skins/<app>.json`;
+the hub-wide level's is `default-global`, made from the shared appearance@1 document. It is derived, never edited:
+`framework/cli/skins.mjs migrate [--all | <app> | global]` writes it when it is missing or stale and keeps it when it
+matches, so a second run changes nothing (`defaultSkinMigration` → create / update / keep / skip; an app with no look
+document is snapshotted first). It carries `protected: true` and `app`, and can't be deleted (`skinDeleteError`;
+`skins.mjs delete` refuses). **Restore to default stays pointed at it**: `restoreAppDefault` resets to `default`, the
+very look the Default skin is made from, and `skins.mjs restore` brings the skin up to date in the same move. The three
+themes come from the saved slots, else from the app's default design package (`hub-default`). `skins.mjs default <app>`
+shows it; `skins.mjs list` lists every Default skin first with `protected: true`. Engine: `defaultSkinOf`,
+`defaultSkinErrors`, `isDefaultSkin`, `canDeleteSkin` in `core/engines/skin-config-rules.mjs`.
+
+**skin-config@1** (`shared/settings/skin-config/<app>.json`, `global` for the hub-wide level): the permission tree
+Brett sets before the AI writes a skin. Category > group > option, each `allow` (the AI may change it), `lock` (stays as
+the Default skin has it) or `ask` (the AI proposes, Brett decides); the most specific setting wins (option > group >
+category > the document's `default`, which starts at allow). Categories are **every registered type a skin can reach**
+(skin-coverage@1: slot, parts and reference types, in registry order, the registry group as the section) plus the one
+`extras` category the registry declares (`skinConfig.extras`: spacing, look settings and token overrides); nothing names
+a type. A category's groups come from the type's entry and its coverage: `pick` (another asset of the type), `fields`
+(the fields of a new asset the AI may write, nested keys one option each), `parts.<group>` (its style parts per customize
+group), `chrome` (shown or hidden, hideable types). **Limits** are declared on the type's registry entry
+(`skinConfig.limits`): `depth` = how many menu levels the AI may build (1 = flat; `root` names the field whose lists are
+the first level, a context menu's `targets`), `count:<field>` = how many entries an array field may hold; the application
+menu, navigation menu and context menu declare depth 1–4 (default 2), the toolbar `groups` 1–8 (default 4). Engine:
+`skinConfigTree`, `normalizeSkinConfig` / `skinConfigErrors`, `optionMode` / `effectiveConfig`, the panel's moves
+`setConfigMode` / `setConfigLimit` / `setConfigDefault` / `resetSkinConfig`, `measureAsset`, `skinChangeReport` (a generated
+skin against the Default skin, every change with the option that governs it), `mergeWithDefault` (locked changes go back,
+asks are listed, a slot over a limit reverts), `skinConfigBrief` (the AI's plain lines), `skinConfigSchema`. Snapshot
+`schemas/skin-config.json`, JSON Schema `schemas/json/skin-config.schema.json` (`axf schemas`); fixture
+`spec/fixtures/skin-config.json`, check `spec/check-skin-config.mjs`.
+
+### The hub default skin: `defaultSkin` (build console-look-becomes-default-axhub-skin, Nov 14 2026)
+
+> Brett (Nov 14 2026): "Keep the design, all the style, the way the console looks right now, and make it the default
+> axHub look, and then make all the apps inherit it right now."
+
+**The pointer.** The shared appearance@1 document gets a second skin pointer beside the hub-wide `skin`:
+`defaultSkin: { id, overrides?, colorTheme? }` (same shape, `normalizeHubSkin`; `HubSkinPointer`). `id` is a skin@1
+asset (or a design package read as one). The hub-wide `skin` is a level an app opts into with Follow; the hub default
+is the **floor every app stands on without opting in**. Set, cleared and merged like the other fields
+(`AppearanceChange.defaultSkin`, null clears it; `mergeAppearance`; `serializeAppearance` now writes both pointers, so a
+save from the web source no longer drops the hub-wide skin). Absent = no floor: every app draws its own saved look, as
+before this build.
+
+**Resolve order** (`resolveLookSkin(look, global, scope, hubDefault)`; the chain is now `plugin → ui → app → global →
+default`, `SKIN_SCOPE_DEFAULT`, `skinScopeChain` ends in it):
+
+| level | with a hub default |
+| --- | --- |
+| `default` | the hub default skin, always on (`from: 'default'`) |
+| `app` | Use skin on = the app's own skin, as before. Use skin off and not following = *nothing picked here*: the app inherits the floor, never the hub-wide skin (that still takes Follow). The colour theme kept beside its switched-off skin stays with that skin. |
+| `global` | the hub-wide skin while the app follows it; with none to follow, the floor |
+| `ui:` / `plugin:` | as before: on = its own skin, inherit = the parent, off = no skin inside it (an explicit choice: that place stands on the app's saved look, below the floor) |
+
+**Composition with the floor in force** (`composeLookAt`, `hubDefaultOf(shared)`; `skin.from === 'default'`): hub
+default skin (its sections, assets, parts, icon pack, extras, chrome) → hub-level `overrides` and `colorTheme` on the
+pointer → **the app's own picks** (`own.slots`, `own.spacing`, `own.hidden`, `own.settings`: the edits, per the
+skin-axhub-override rule that only what was edited is kept) → `ui:` overrides → `plugin:` overrides (and the colour
+theme the nearest of those picked). So an app with no edits is the console look exactly; an app with edits differs only
+in what it edited. The app's `default` snapshot only fills slots the hub default skin leaves unnamed. With Use skin on,
+the app's own skin composes exactly as today (the floor is not consulted); a `ui:` / `plugin:` scope that is `off` is
+composed without a skin, as today. `lookAfterChange` and `setLookSlot` are unchanged: with Use skin off a pick is the
+app's own, which is what an edit over the floor is. The runtime passes the pointer everywhere it resolves
+(`rt.hubDefaultSkin()`, `skinAt`, `skinScoped`, `pushAppearance`).
+
+**Moving an app onto the floor** (`adoptHubDefault(look, { at, by?, reason?, id? })`, "make all the apps inherit it right
+now"): a backup is taken first (`backupLook`); then Use skin goes off (the picked skin id stays, so Use skin on brings it
+back), the overrides and the colour theme picked under that skin become own picks (they were edits), Follow goes off,
+every `ui:` / `plugin:` scope goes back to inherit, and one undo is left (`action: 'adopt-default'`). Own picks stay.
+An app that already stands on the floor with nothing to move is returned unchanged (no backup, no undo), so running
+it over every app twice is safe.
+
+**Chrome in the skin: `chrome`** (skin@1, `SkinChrome`, `normalizeSkinChrome` / `skinChromeErrors` /
+`skinChromeSettings` in `skin-rules.mjs`, the build engine validates the same lines): `chrome: { <kind>: { interface?,
+instances? } }` for the chrome-settings@1 kinds (tab-group, toolbar, banner, nav-menu, app-menu, context-menu).
+`interface` = the settings interface the kind's dialog renders through (`axf.chrome.settings.<kind>`); `instances` =
+field overrides per instance over the active asset (`axf.chrome.<kind>.<instance>`, only that kind's `CHROME_FIELDS`,
+cleaned as the dialog saves them). It lands in the composed look's settings after `extras.settings`. Where a chrome
+piece is (toolbar bottom, nav left) stays a layout token (`axf.tokens.layout` in `extras.settings`), as today.
+
+**Backups per app: `backups`** (app-look@1, `LookBackup`, `normalizeLookBackup`, `LOOK_BACKUPS_MAX` = 5): before an
+app is moved onto the hub default, what it drew is kept in its own look document as
+`backups: [{ id, at, by, reason, own, skin, scopes }]`, newest first, capped (the oldest falls off; a twin of the newest
+is not added again). It is the same three parts the undo record keeps, so a restore is one move
+(`restoreLookBackup(look, id, at)`, `id` empty = the newest, `lookBackup` reads one): own picks, skin state and scopes
+back as they were, the list kept, one undo left (`action: 'restore-backup'`). `normalizeAppLook` keeps the list through
+every writer; a document without one has no `backups` field.
+
+**Not changed:** `skin-switch@1` (its scopes stay hub / app / ui / plugin; the hub default is set through the shared
+document, s7+ gives it CLI, REST, MCP and voice), the Default skin of skin-config@1 (`default-<app>`: each app's own saved
+look, still what Restore to default goes back to), hub-only mode (`hubOnlyLook` follows the hub-wide skin and, with none,
+now the floor).
 
 An app without a hub source keeps the same document in a setting (`axf.skin.look`), so a new app from a template gets the
 same Settings → Appearance. The sections below describe the shared document, which stays the transport and the source
@@ -53,7 +180,7 @@ print the table; Settings → Appearance → *What a skin covers* shows it.
 level that is not *inherit* decides; its overrides and those of every level nearer the leaf apply (child over parent).
 `global` is the `skin` field of the shared appearance@1 document (`skins.mjs global <skin>`); an app takes it only while
 `skin.inherit` is on (Follow the hub-wide skin; off by default: "by default they're all their own"). `ui:` and `plugin:`
-states live in the app's look document under `scopes` (`{ use: on | off | inherit, id, overrides }`). The runtime draws
+states live in the app's look document under `scopes` (`{ use: on | off | inherit, id, overrides, colorTheme? }`). The runtime draws
 a sub level that resolves differently from the app as a scoped view (`rt.skinScoped(key)`, like an interface scope)
 under `<SkinScope>` on every view root and every plugin root; a skin's `iconPack` lands in `axf.icons.pack.<scopeKey>`
 and its `parts` in the customize sheet. Pure functions: `resolveSkinChain`, `resolveLookSkin`, `composeLookAt`,
@@ -70,7 +197,7 @@ axhub-projects@1). Ids and small values only, never asset bodies or code:
   "slots":   { "color-theme": "arctic-daylight", "style-theme": "glass-orbit", "layout": "focus-top" },
   "spacing": "tight",
   "hidden":  { "toolbar": true },
-  "palette": { "scheme": "light", "bg": "#f2f5f8", "fg": "#14202b", "muted": "#5d6d7c", "card": "#ffffff", "line": "#d6dfe7", "accent": "#1f6feb", "danger": "#d1373f", "ok": "#1a8f5a" },
+  "palette": { "scheme": "light", "bg": "#f2f5f8", "fg": "#14202b", "muted": "#5d6d7c", "card": "#ffffff", "line": "#d6dfe7", "accent": "#1567e6", "danger": "#ce2f38", "ok": "#177e4f" },
   "updatedBy": "axf-console", "updatedAt": "2026-10-21T00:00:00Z"
 }
 ```
@@ -201,6 +328,54 @@ next write by any app (`mergeAppearance` normalizes). Fixture row `retired-slot`
 
 **Default look:** design package `hub-default` (style theme `hub`, colour theme `hub-night`) is the default of the Dev
 Console (GizmoX AI Studio), axHub web and AmberX.
+
+## Skins only: the retired picks and look-migration@1 (Nov 10 2026)
+
+Brett: "We need to remove all the styling and theme and layout stuff. Remove it all because the new thing's going to
+override it." The skin is the only thing that applies look and layout. Engine: `core/engines/skin-rules.mjs`
+(`SKIN_SECTIONS`, `SKIN_SWAPPABLE_SECTION`, `RETIRED_PACKAGE_TYPES`, `SKIN_SCALE_TYPES`, `skinSlotMap`),
+`core/engines/look-migration.mjs`; fixture `spec/fixtures/look-migration.json`, check `spec/check-look-migration.mts`.
+
+1. **A skin has four sections**: colours (`colorTheme`), style (`styleTheme`), layout (`layoutTheme`) and behaviour
+   (`behaviorTheme`, new, optional; `assets['behavior-theme']` still reads). The former theme asset types are the
+   sections' presets, never picked on their own. Only the **colour theme** is still swapped inside a skin
+   (`SKIN_SWAPPABLE_SECTION`: the theme switch, "Next colour theme", `swap:color-theme:*`); the swap is an override of
+   the skin's colours section (`skin.overrides['color-theme']`), "Back to skin" drops it. The scale assets
+   (`typography`, `density`, `sizing`) are the skin's `assets`; spacing and hidden chrome its `extras`.
+2. **Retired settings**: `axf.appearance.design`, `axf.appearance.package`, `axf.appearance.overrides`,
+   `axf.appearance.interface`, `axf.look`, `axf.look.*`, `axf.hub.appearance.follow` (`RETIRED_LOOK_KEYS`,
+   `RETIRED_LOOK_PREFIXES`). The design-package precedence rule above is history: the skin composes its sections. The
+   control@1 token overrides (`axf.tokens.*`) stay: they are skin-level hand tuning, the API's one path to a value.
+3. **Retired picks in a look document**: `own.slots` of a section type, a bundle type (`design-package`,
+   `appearance-package`) or a scale type (`FOLDED_PICK_TYPES`). A style package (one matched set of controls) stays a
+   swappable set until skin@2 (PR #430) makes every style package a skin.
+   **Step one of the fold** resolves the retired precedence rule into the document (`resolveLegacyLook`,
+   `legacyThemesInForce`): the style and colour the screen showed (override over package over slot) are written into
+   the slot that carried them, and every retired setting leaves `default.settings` / `own.settings` into
+   `legacy.settings`, so the document composes to the same screen without the rule.
+4. **The fold (`migrateLook`), once per profile on load**, idempotent, look-preserving, nothing lost:
+   - with a skin on: a pick of a section the skin draws was inert and is dropped; a section or scale pick the skin
+     leaves alone becomes an override; a bundle pick is a label (its members are slots of their own) and is dropped;
+   - with no skin: the package the picks or the local `axf.appearance.design` note name becomes the skin (`package`),
+     with every slot it would draw differently kept as a skin-level override; else the first skin that draws the very
+     same screen (`match`, no snapshot value changed); a skin whose extras would change the spacing, a hidden flag or a
+     look setting is never adopted; when none fits the picks stay the app's own (`kept`, reported) and only a skin
+     pick replaces them from then on. Nothing changes on screen in any case;
+   - the local settings are backed up into `axf.legacy.look` (`look-migration@1`: first value kept, later runs add
+     keys) and cleared; the document gets `legacy.own` (the moved picks) and `migrated { version, at, by }`; the
+     profile gets `axf.skin.migrated`. `normalizeAppLook` keeps both fields through every writer (runtime, skins CLI).
+5. **Today's hub documents** (console on `enterprise-day` with a layout override, axHub with the skin off, Molly and
+   AmberX untouched) fold to nothing but the stamp (pinned in the check).
+6. **The runtime** (`AxfRuntime`, every app with a look document, which is every real app): `ensureLook` runs the
+   local half once per runtime and the document half when a document arrives, saving the folded document back
+   (`migrateLocalLook`, `migrateLookDocument`); `swap` refuses a folded type other than `color-theme` with the skin
+   hint (`swap:design-package:<id>` is `skin.use:<id>`); `applyDesignPackage` is Use skin on with that id;
+   `appliedDesignPackage` is the skin in force; `designOverrides` is empty and `axf.appearance.overrides` is never
+   written; a roll never moves a part of the skin; `applyAppearance` and `skinScoped` take the composed skin's
+   sections as final (no package precedence pass). Settings → Appearance keeps Skin, Colour theme, Visible parts,
+   Navigation menu, Where the skin applies and Restore; the status bar shows the skin and its colour theme. An older
+   source without a look document (the fixture-pinned legacy path, `check-hub-look`, `check-appearance`) keeps the
+   design-package behaviour until those checks move to the skin model (s10 of the build).
 
 ## When axHub is down
 

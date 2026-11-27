@@ -57,7 +57,7 @@ const RULES: Record<SectionType, Rule[]> = {
     { id: 'depth', label: 'Depth', icon: 'layers', test: /^(shadow\.\w+|blur)$/ },
     { id: 'transparency', label: 'Transparency', icon: 'eye', test: /^opacity\w*$/ },
     { id: 'motion', label: 'Motion', icon: 'play', test: /^motion$/ },
-    { id: 'layout', label: 'Layout', icon: 'layout', test: /^wrapGroups$/ },
+    { id: 'layout', label: 'Layout', icon: 'layout', test: /^(wrapGroups|scrollbar)$/ },
   ],
 };
 const humanize = (k: string) => k.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^\w/, (c) => c.toUpperCase());

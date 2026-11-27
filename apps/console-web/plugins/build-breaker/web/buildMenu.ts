@@ -16,7 +16,7 @@ export const BUILD_ENTRIES: BuildEntry[] = [
   { id: 'breaker', label: 'Build Breaker', icon: 'hammer', action: 'nav:build-breaker' },
   { id: 'matrix', label: 'Feature matrix', icon: 'check-circle', action: 'nav:feature-matrix' },
   { id: 'orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' },
-  { id: 'manager', label: 'Build manager', icon: 'play', action: 'build-manager.open' },
+  { id: 'orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'build-orchestrator.open' },
   { id: 'pending', label: 'Pending builds', icon: 'clock', action: 'nav:pending' },
   { id: 'queue', label: 'Build queue', icon: 'play', action: 'nav:build' },
   { id: 'plan', label: 'Plan', icon: 'layers', action: 'nav:plan' },
@@ -25,7 +25,7 @@ export const BUILD_ENTRIES: BuildEntry[] = [
   { id: 'grid', label: 'Changes & features grid', icon: 'list', action: 'changes-grid.open' },
   { id: 'fable', label: 'Fable rebuilds', icon: 'sparkles', action: 'fable-rebuilds.open' },
   { id: 'profiles', label: 'Build profiles', icon: 'layers', action: 'build-profiles.open' },
-  { id: 'branches', label: 'Branches not on main', icon: 'branch', action: 'push-banner.check' },
+  { id: 'merge-queue', label: 'Merge queue', icon: 'branch', action: 'nav:merge-queue' },
   { id: 'main', label: 'Main build status', icon: 'github', action: 'main-build-status.open' },
 ];
 

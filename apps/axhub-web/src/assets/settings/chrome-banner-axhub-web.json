@@ -53,6 +53,7 @@
       "asset": "basic",
       "interface": "developer"
     },
-    "extends": "chrome-banner"
+    "extends": "chrome-banner",
+    "builtFor": "chrome:banner"
   }
 }

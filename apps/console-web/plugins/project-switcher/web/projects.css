@@ -1,0 +1,12 @@
+/* Projects. Theme tokens only, axp-projects prefix; controls are framework components (layout only here). */
+.axp-projects { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); width: 100%; min-width: min(calc(var(--fx-font-size) * 28), 86vw); max-height: 74vh; overflow-y: auto; color: var(--fx-text) }
+.axp-projects__list { list-style: none; margin: 0; padding: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.axp-projects__row { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-lg) }
+.axp-projects__row + .axp-projects__row { border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-projects__row.is-active { box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-accent) }
+.axp-projects__row.is-archived { color: var(--fx-muted) }
+.axp-projects__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.axp-projects__name { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); font-weight: 600 }
+.axp-projects__desc, .axp-projects__counts { margin: 0 }
+.axp-projects__counts { color: var(--fx-muted) }
+.axp-projects__new { padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-md) }
