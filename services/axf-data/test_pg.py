@@ -442,6 +442,41 @@ def test_plugin_documents_are_rows():
             assert t.patchable() and all(s.table.startswith('plugin_') for s in t.lists.values()), t.name
 
 
+def test_watchdog_state_is_rows():
+    """The build watchdogs' state (builds/pipeline/watchdogs*.json, watchdog2/…): maps keyed by build or watchdog are rows,
+    so a push to one build writes one row, not the document."""
+    import tables as TB
+    with PgEnv() as c:
+        st = c.app.state.store
+        stale = {'$axf': 'watchdogs-stale@1', 'lastScan': {'at': 't0', 'n': 2},
+                 'pushes': {'build-a': {'at': 't1', 'action': 'ladder', 'ok': True, 'n': 2}, 'build-b': {'at': 't2', 'action': 'nudge', 'ok': False, 'n': 1}}}
+        c.put('/v1/builds/pipeline/watchdogs-stale.json', content=json.dumps(stale), headers=J(**{'if-none-match': '*'}))
+        assert c.get('/v1/builds/pipeline/watchdogs-stale.json', headers=H()).json() == json.loads(canonical(stale))
+        assert st.fetchone("SELECT table_name FROM keys WHERE ns='builds' AND path='pipeline/watchdogs-stale.json'")['table_name'] == 'plugin_build_orchestrator__pipeline_watchdogs_stale'
+        rows = st.fetchall("SELECT rid, at FROM plugin_build_orchestrator WHERE section = 'pipeline/watchdogs-stale.json#pushes' ORDER BY rid")
+        assert [(r['rid'], r['at']) for r in rows] == [('build-a', 't1'), ('build-b', 't2')], rows
+        before = {r['rid']: r['doc_hash'] for r in st.fetchall("SELECT rid, doc_hash FROM plugin_build_orchestrator WHERE section = 'pipeline/watchdogs-stale.json#pushes'")}
+        p = c.post('/v1/builds/pipeline/watchdogs-stale.json:patch', json={'lists': {'pushes': [
+            {'key': 'build-b', 'item': {'at': 't3', 'action': 'ladder', 'ok': True, 'n': 2}}, {'key': 'build-c', 'ifRev': None, 'item': {'at': 't3', 'n': 1}}, {'key': 'build-a', 'delete': True}]}}, headers=H()).json()
+        assert (p['applied'], p['added']) == (3, 1), p
+        got = c.get('/v1/builds/pipeline/watchdogs-stale.json', headers=H()).json()
+        assert set(got['pushes']) == {'build-b', 'build-c'} and got['pushes']['build-b']['n'] == 2 and got['lastScan'] == stale['lastScan']
+        t = TB.by_name('plugin_build_orchestrator__pipeline_watchdogs_stale')
+        with st.tx() as cur:
+            assert t.get_row(cur, 'pushes', 'build-c') == {'at': 't3', 'n': 1}
+            assert t.get_row(cur, 'pushes', 'build-a') is None
+        # the other watchdog documents land on their own sections of the same table; the pipeline status file never does
+        docs = {'pipeline/watchdogs.json': ({'$axf': 'watchdogs@1', 'passes': 3, 'watches': {'stale': {'runs': 7}, 'sessions': {'runs': 2}}}, 'watches', 2),
+                'pipeline/watchdog2/memory.json': ({'nudges': {'b:building': {'n': 1, 'last': 5}}, 'alerted': {'b': {'at': 5}}}, 'nudges', 1),
+                'pipeline/watchdog2/audits.json': ({'$axf': 'watchdog-audits@1', 'last': {'at': 't'}, 'audits': {'verify': {'id': 'verify', 'ok': False}}}, 'audits', 1)}
+        for path, (doc, lst, n) in docs.items():
+            c.put(f'/v1/builds/{path}', content=json.dumps(doc), headers=J(**{'if-none-match': '*'}))
+            assert c.get(f'/v1/builds/{path}', headers=H()).json() == json.loads(canonical(doc)), path
+            assert st.fetchone('SELECT count(*) AS n FROM plugin_build_orchestrator WHERE section = %s', (f'{path}#{lst}',))['n'] == n, path
+        assert TB.table_for('builds', 'pipeline/orchestrator.json', 'record', 'application/json', b'{"builds": {}}') is None
+        assert before['build-a'] and len(before) == 2
+
+
 def test_plugin_families_and_key_rows():
     """Families of documents (one per agent, chat, user…) are rows reached by the item's id; every other JSON object
     under plugins/ and console/ (and the per-item collections of builds/, ui-review/, sessions/) is one row per key.

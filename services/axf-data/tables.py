@@ -1086,6 +1086,10 @@ PLUGIN_DOCS: list = [
     plugin_doc('build-orchestrator', 'pipeline/merge-banner.json', {'posted': MAP_ROWS}, 'merge banner: one row per posted banner', ns='builds', path='pipeline/merge-banner.json'),
     plugin_doc('build-orchestrator', 'pipeline/routes.json', {'requests': 'id', 'pins': MAP_ROWS}, 'pipeline routes: one row per route request and pin', ns='builds', path='pipeline/routes.json'),
     plugin_doc('build-orchestrator', 'pipeline/accounts-host.json', {'rows': 'name'}, 'pipeline accounts as the host sees them: one row per account', ns='builds', path='pipeline/accounts-host.json'),
+    plugin_doc('build-orchestrator', 'pipeline/watchdogs.json', {'watches': MAP_ROWS}, 'the watchdogs: one row per watchdog (last run, runs, caught); pass counts in store_heads', ns='builds', path='pipeline/watchdogs.json'),
+    plugin_doc('build-orchestrator', 'pipeline/watchdogs-stale.json', {'pushes': MAP_ROWS}, 'stale-build watchdog: one row per build it pushed', ns='builds', path='pipeline/watchdogs-stale.json'),
+    plugin_doc('build-orchestrator', 'pipeline/watchdog2/memory.json', {'nudges': MAP_ROWS, 'alerted': MAP_ROWS}, 'watchdog memory: one row per nudge and per alert', ns='builds', path='pipeline/watchdog2/memory.json'),
+    plugin_doc('build-orchestrator', 'pipeline/watchdog2/audits.json', {'audits': MAP_ROWS}, 'watchdog audits: one row per audit', ns='builds', path='pipeline/watchdog2/audits.json'),
     plugin_doc('phone-connect', 'aliases.json', {'aliases': 'from', 'callers': 'file'}, 'phone aliases: one row per alias and per caller', ns='phone', path='aliases.json'),
     # hub documents (/projects/amberx-axf/_data/<area>/… → console/<area>/…)
     plugin_doc('agent-swarm', 'chats/index.json', {'chats': 'id'}, 'crew chats index: one row per chat', ns='console', path='agent-swarm/chats/index.json'),
