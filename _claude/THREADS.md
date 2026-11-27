@@ -845,58 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-25 11:18 UTC · `pipeline-test-5-documents` → pending, note, removed (all) · console
-- 2026-11-25 11:19 UTC · `pipeline-test-5-four-docs-edits-one` added (0 steps) (all) · console
-- 2026-11-25 11:19 UTC · `pipeline-test-5-four-docs-edits-one` → queued, note (all) · console
-- 2026-11-25 11:20 UTC · `newest-first-orchestrator-plan-studio` note (all) · orchestrator
-- 2026-11-25 11:20 UTC · `pipeline-test-5-four-docs-edits-one` note (all) · orchestrator
-- 2026-11-25 11:31 UTC · `dispatcher-reads-only-account-routing` added (0 steps) (all) · console
-- 2026-11-25 11:32 UTC · `terminal-main-tab-streaming-console-s` s1 undone (all) · orchestrator
-- 2026-11-25 11:32 UTC · `dispatcher-reads-only-account-routing` → queued, note (all) · console
-- 2026-11-25 11:32 UTC · `terminal-main-tab-streaming-console-s` note (all) · orchestrator
-- 2026-11-25 11:33 UTC · `terminal-main-tab-streaming-console-s` note (all) · orchestrator
-- 2026-11-25 11:33 UTC · `terminal-main-tab-streaming-console-s` → archived, note (all) · console
-- 2026-11-25 11:35 UTC · `dispatcher-reads-only-account-routing` note (all) · orchestrator
-- 2026-11-25 11:36 UTC · `plan-tree-multi-select` → archived, note (all) · console
-- 2026-11-25 11:36 UTC · `postgres-audit` → archived, note (all) · console
-- 2026-11-25 11:36 UTC · `token-gate` → archived, note (all) · console
-- 2026-11-25 11:36 UTC · `banner-widget-shapes-plus-change-icon` → archived, note (all) · console
-- 2026-11-25 11:36 UTC · `pass-approval-hook-deep-link-amberx-notification` PR 926, note (all) · orchestrator
-- 2026-11-25 11:36 UTC · `x-search-library` → archived, note (all) · console
-- 2026-11-25 11:37 UTC · `icon-picker-every-banner-settings-widget` → archived, note (all) · console
-- 2026-11-25 11:37 UTC · `orchestrator-shows-only-builds-plan` added (0 steps) (all) · console
-- 2026-11-25 11:38 UTC · `pipeline-fixes-one-one-building-accounts` added (0 steps) (all) · console
-- 2026-11-25 11:39 UTC · `pipeline-fixes-one-one-building-accounts` → queued, note (all) · console
-- 2026-11-25 11:39 UTC · `pipeline-fixes-one-one-building-accounts` → pending, note, removed (all) · console
-- 2026-11-25 11:39 UTC · `orchestrator-shows-only-builds-plan` note, removed (all) · console
-- 2026-11-25 11:39 UTC · `dispatcher-reads-only-account-routing` → pending, note, removed (all) · console
-- 2026-11-25 11:40 UTC · `pipeline-fixes-pending-to-one-queued` added (0 steps) (all) · console
-- 2026-11-25 11:40 UTC · `pipeline-fixes-pending-to-one-queued` → queued, note (all) · console
-- 2026-11-25 11:41 UTC · `pass-approval-hook-deep-link-amberx-notification` → archived, note (all) · console
-- 2026-11-25 11:42 UTC · `one-build-time-always-split-to-fill` → pulling-main (all) · orchestrator
-- 2026-11-25 11:42 UTC · `one-build-time-always-split-to-fill` PR 927, note (all) · orchestrator
-- 2026-11-25 11:42 UTC · `themed-picker-library-dropdowns-2` → pending, note, removed (all) · console
-- 2026-11-25 11:42 UTC · `newest-first-orchestrator-plan-studio` → pending, note, removed (all) · console
-- 2026-11-25 11:43 UTC · `pipeline-test-5-four-docs-edits-one` → pending, note, removed (all) · console
-- 2026-11-25 11:43 UTC · `plan-autoqueue-manifest` note, removed (all) · console
-- 2026-11-25 11:43 UTC · `pipeline-test-3-docs` note, removed (all) · console
-- 2026-11-25 11:43 UTC · `pipeline-sync-live-badges` note, removed (all) · console
-- 2026-11-25 11:43 UTC · `account-failover-gate-pinned-build` note, removed (all) · console
-- 2026-11-25 11:44 UTC · `one-build-time-always-split-to-fill` note, removed (all) · console
-- 2026-11-25 11:44 UTC · `context-menus-plugin-one-true-source` note, removed (all) · console
-- 2026-11-25 11:44 UTC · `flagship-professional-skin-covering-2` note, removed (all) · console
-- 2026-11-25 11:45 UTC · `auto-lander-never-wait-missing-ui-review` note, removed (all) · console
-- 2026-11-25 11:45 UTC · `group-chat-audio-hear-agents-talk-while` note, removed (all) · console
-- 2026-11-25 11:46 UTC · `fix-refreshing-console-jumps-back` note, removed (all) · console
-- 2026-11-25 11:46 UTC · `attach-widgets-to-any-toolbar-banner` note, removed (all) · console
-- 2026-11-25 11:46 UTC · `psync-d-orch-ui` note, removed (all) · console
-- 2026-11-25 11:46 UTC · `psync-a-core-2` note, removed (all) · console
-- 2026-11-25 11:47 UTC · `psync-c-planstudio` note, removed (all) · console
-- 2026-11-25 11:47 UTC · `psync-b-server-lander` note, removed (all) · console
-- 2026-11-25 11:47 UTC · `psync-a-core` note, removed (all) · console
-- 2026-11-25 11:47 UTC · `pipeline-sync-hand-2` note, removed (all) · console
-- 2026-11-25 11:47 UTC · `pipeline-sync-hand` note, removed (all) · console
-- 2026-11-25 11:47 UTC · `one-build-time-always-split-split-id` note, removed (all) · console
 - 2026-11-25 11:47 UTC · `one-true-source-for-every-setting` note, removed (all) · console
 - 2026-11-25 11:47 UTC · `nov-20-fix-list-voice-console-cont` note, removed (all) · console
 - 2026-11-25 11:48 UTC · `move-everything-axhub-web-console` note, removed (all) · console
@@ -1245,6 +1193,58 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-26 23:19 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
 - 2026-11-26 23:19 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
 - 2026-11-26 23:19 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-26 23:21 UTC · `emergency-check-can-these-plugins-` s2 undone (all) · orchestrator
+- 2026-11-26 23:21 UTC · `follow-amber-switch` → fixing, note (all) · watchdog
+- 2026-11-26 23:22 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-26 23:22 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-26 23:24 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-26 23:24 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-26 23:25 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-26 23:26 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-26 23:26 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-26 23:27 UTC · `emergency-check-can-these-plugins-` s4 undone (all) · orchestrator
+- 2026-11-26 23:28 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-26 23:28 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-26 23:28 UTC · `emergency-rip-out-the-7-mb-status-` s5 undone (all) · orchestrator
+- 2026-11-26 23:31 UTC · `crew-profiles` → fixing, note (all) · watchdog
+- 2026-11-26 23:36 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-26 23:36 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-26 23:36 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-26 23:36 UTC · `claude-emergency-access` note (all) · watchdog
+- 2026-11-26 23:36 UTC · `pipeline-fixes-drop-7-mb-status-file` note (all) · watchdog
+- 2026-11-26 23:39 UTC · `fable-check-can-plugins-marked-removal` added (2 steps) (all) · claude-voice
+- 2026-11-26 23:41 UTC · `builds-one-page-done` → fixing, note (all) · watchdog
+- 2026-11-26 23:42 UTC · `fable-check-can-plugins-marked-removal` → queued, note (all) · console
+- 2026-11-26 23:42 UTC · `emergency-finish-7mb-status-file` added (0 steps) (all) · claude-voice
+- 2026-11-27 00:08 UTC · `emergency-finish-7mb-status-file` → splitting (all) · orchestrator
+- 2026-11-27 00:08 UTC · `profile-lists-home-card` → fixing, note (all) · watchdog
+- 2026-11-27 00:09 UTC · `emergency-finish-7mb-status-file` → split, note (all) · orchestrator
+- 2026-11-27 00:18 UTC · `console-wake-finish` → fixing, note (all) · watchdog
+- 2026-11-27 00:28 UTC · `apps-control-surface` → fixing, note (all) · watchdog
+- 2026-11-27 00:38 UTC · `jump-menu-asset` → fixing, note (all) · watchdog
+- 2026-11-27 00:48 UTC · `builds-one-page` → fixing, note (all) · watchdog
+- 2026-11-27 00:58 UTC · `app-voice-commands` → fixing, note (all) · watchdog
+- 2026-11-27 01:08 UTC · `smart-menus` → fixing, note (all) · watchdog
+- 2026-11-27 01:18 UTC · `settings-placement-everywhere` → fixing, note (all) · watchdog
+- 2026-11-27 01:28 UTC · `live-sessions-plugin` → fixing, note (all) · watchdog
+- 2026-11-27 01:38 UTC · `model-thinking-audit` → fixing, note (all) · watchdog
+- 2026-11-27 01:48 UTC · `fable-packager` → fixing, note (all) · watchdog
+- 2026-11-27 01:58 UTC · `handoff-2` → fixing, note (all) · watchdog
+- 2026-11-27 02:08 UTC · `grid-column-hiding` → fixing, note (all) · watchdog
+- 2026-11-27 02:19 UTC · `build-optimizer` → fixing, note (all) · watchdog
+- 2026-11-27 02:28 UTC · `drag-to-tab` → fixing, note (all) · watchdog
+- 2026-11-27 02:38 UTC · `changes-chat-log` → fixing, note (all) · watchdog
+- 2026-11-27 02:49 UTC · `notes-views` → fixing, note (all) · watchdog
+- 2026-11-27 02:59 UTC · `headless-session-efficiency-shared-chain-control` → fixing, note (all) · watchdog
+- 2026-11-27 03:09 UTC · `notes-tasks-sync` → fixing, note (all) · watchdog
+- 2026-11-27 03:19 UTC · `settings-sections-everywhere` → fixing, note (all) · watchdog
+- 2026-11-27 03:29 UTC · `ui-registry-shortcuts` → fixing, note (all) · watchdog
+- 2026-11-27 03:39 UTC · `plan-studio-backfill-12h` → fixing, note (all) · watchdog
+- 2026-11-27 03:49 UTC · `dataset-bar` → fixing, note (all) · watchdog
+- 2026-11-27 03:58 UTC · `ui-asset-designer` → fixing, note (all) · watchdog
+- 2026-11-27 04:09 UTC · `memory-restructure-chunked-claude-md-store-memor` → fixing, note (all) · watchdog
+- 2026-11-27 04:19 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` → fixing, note (all) · watchdog
+- 2026-11-27 04:20 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
 
 ## Token passes (log)
 
