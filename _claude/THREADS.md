@@ -845,10 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-27 18:09 UTC · `design-packages-10` note (all) · watchdog
-- 2026-11-27 18:19 UTC · `axhub-web-app-live-at-axhub-amberxai-com-banner-` → fixing, note (all) · watchdog
-- 2026-11-27 18:19 UTC · `build-orchestrator` note (all) · watchdog
-- 2026-11-27 18:19 UTC · `amberx-appearance-lock` note (all) · watchdog
 - 2026-11-27 18:19 UTC · `build-profiles` note (all) · watchdog
 - 2026-11-27 18:19 UTC · `fresh-look` note (all) · watchdog
 - 2026-11-27 18:28 UTC · `amberx-notes` note (all) · watchdog
@@ -1245,6 +1241,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 19:41 UTC · `ui-review` note (all) · watchdog
 - 2026-11-27 19:41 UTC · `audio-extract` note (all) · watchdog
 - 2026-11-27 19:51 UTC · `settings-compact` → landed, note (all) · watchdog
+- 2026-11-27 19:51 UTC · `ui-all-assets` → landed, note (all) · watchdog
+- 2026-11-27 19:51 UTC · `x.windows` → fixing, note (all) · watchdog
+- 2026-11-27 19:51 UTC · `audio-output-recorder` note (all) · watchdog
+- 2026-11-27 19:51 UTC · `layout-repeating-slots` note (all) · watchdog
 
 ## Token passes (log)
 

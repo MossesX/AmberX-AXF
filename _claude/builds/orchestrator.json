@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T19:51:12.399Z",
+ "updatedAt": "2026-11-27T19:51:37.854Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -49541,7 +49541,7 @@
    "title": "One place changes everything: typography, density and component-sizing assets that every app and plugin reads",
    "category": "Framework",
    "detail": "Brett, Oct 30 2026: 'Any part of the UI that needs to be an asset in order to be changed, make an asset out of it… change it in one place, changes it everywhere. I want the whole framework and all the apps and plugins built on it to follow the same code.' Slimmed by Brett (voice, then 'Run that now' in text): three broad asset types instead of one per piece — typography (text sizes, weights, line spacing), density (spacing, padding, row heights, gaps; compact vs roomy is one pick), component sizing (page heads, list rows, chips, count strips, tables). Each app gets one update to read them; after that every change comes live from axHub. Includes moving the Oct 30 compact frame (axf.css compact block, settings compact CSS, console count strips) and the MCP servers pages (framework/libs/mcp) onto them. Profile: Angel. Android twins deferred.",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -49549,7 +49549,7 @@
    "pr": "#181",
    "mergedAt": "2026-10-31T07:02:46Z",
    "createdAt": "2026-10-30T17:31:49.428Z",
-   "updatedAt": "2026-11-27T19:09:47.363Z",
+   "updatedAt": "2026-11-27T19:51:12.765Z",
    "builtAt": "2026-10-31T09:07:22.007Z",
    "notes": [
     {
@@ -49575,6 +49575,10 @@
     {
      "text": "Watchdog: PR #181 merged 2026-10-31 07:02 and the build never heard: the merge is recorded, CI on 371ba924d7 is next.",
      "at": "2026-11-27T19:09:47.363Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 371ba924d7: landed.",
+     "at": "2026-11-27T19:51:12.765Z"
     }
    ],
    "approvals": [
@@ -50861,7 +50865,7 @@
    "pr": "#191",
    "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-12T03:28:29Z",
+   "updatedAt": "2026-11-27T19:51:32.890Z",
    "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
@@ -50883,6 +50887,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #191 merged 2026-10-31 07:26 and the build never heard: the merge is recorded, CI on 86657f7210 is next.",
+     "at": "2026-11-27T19:51:32.890Z"
     }
    ],
    "approvals": [],
@@ -51200,7 +51208,7 @@
    "pr": "#194",
    "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-12T03:28:31Z",
+   "updatedAt": "2026-11-27T19:51:25.813Z",
    "builtAt": "2026-11-01T02:37:25.448Z",
    "notes": [
     {
@@ -51226,6 +51234,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #194 merged 2026-10-31 07:26 and the build never heard: the merge is recorded, CI on 7603d68c49 is next.",
+     "at": "2026-11-27T19:51:25.813Z"
     }
    ],
    "approvals": [],
@@ -78577,14 +78589,14 @@
    "title": "Windowing engine: tab groups, floating windows, split, minimize",
    "category": "Kernel & engines",
    "detail": "Window schema (types, toolbar rules), tab groups that undock to floating windows, drag tabs between groups and windows, split vertical / horizontal / four-way / custom grid with even distribution (5 → 3+2), minimize to corner title bars (stacked or lined) or a floating toolbar at the cursor, window settings dialog, tree ↔ grid mode.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-27T19:51:18.953Z",
    "builtAt": "",
    "notes": [
     {
@@ -78594,6 +78606,14 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs a merged PR: there is no PR. Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 27 days: no PR reached GitHub and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T19:51:18.953Z"
+    },
+    {
+     "text": "Watchdog: landing for 27 days: no PR reached GitHub and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T19:51:18.953Z"
     }
    ],
    "approvals": [],
