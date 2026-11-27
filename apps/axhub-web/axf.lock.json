@@ -1055,7 +1055,7 @@
     "src/axf/schemas/skin-config.json": "150253609e1e1ecd",
     "src/axf/schemas/stale-row.json": "76f381941cdcc6ff",
     "src/axf/schemas/swarm.json": "35dd72b97f7a4a89",
-    "src/axf/schemas/token-registry.json": "fd3183b215ab9df6",
+    "src/axf/schemas/token-registry.json": "2af6dc5503b37b4f",
     "src/axf/schemas/ui-review.json": "0a34b5e29eb76cca",
     "src/axf/ui/axf.css": "d4429cfbb0275059",
     "src/axf/core/engines/toolbar-widget-rules.d.mts": "684e9695c24e39c3",

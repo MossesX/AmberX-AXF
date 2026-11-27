@@ -57,6 +57,8 @@ class ConformanceTest {
 
     /** Surface transparency (--fx-opacity-<kind> / --fx-backdrop-<kind>): Android twin deferred, framework/spec/PORTING.md. */
     private val DEFERRED_THEME_VAR = Regex("^--fx-(opacity|backdrop)-(dialog|settings|panel|menu|toolbar|banner)$")
+    /** Widget style + shape checks on host entries (toolbar-widgets@1, hostEntry): Android twin deferred, framework/spec/PORTING.md. */
+    private val DEFERRED_VALIDATION_CASES = setOf("toolbar-widget-style-bad", "banner-attach-style-bad")
 
     @Test fun `layout grid matches the reference engine`() {
         for ((id, f) in fixture("layout.json")) {
@@ -260,6 +262,7 @@ class ConformanceTest {
         val cases = File(fixtures, "validation.json").readText().let { ai.amberx.axf.kernel.asset.AxfJson.parseToJsonElement(it) as JsonArray }
         for (c in cases) {
             val o = c.jsonObject
+            if (o.getValue("case").jsonPrimitive.content in DEFERRED_VALIDATION_CASES) continue
             val want = o.getValue("result").jsonObject
             val got = v.validate(o.getValue("raw").jsonObject)
             assertEquals(want.getValue("ok").jsonPrimitive.content.toBoolean(), got.ok, "validate ${o.getValue("case").jsonPrimitive.content} ok")

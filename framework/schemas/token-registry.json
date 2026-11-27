@@ -1,7 +1,7 @@
 {
   "$axf": "token-registry@1",
   "version": 1,
-  "updatedAt": "2026-11-21",
+  "updatedAt": "2026-11-27",
   "tokens": [
     {
       "id": "--fx-accent",
@@ -5751,6 +5751,20 @@
         "target": "tokens.theme",
         "path": "warning"
       }
+    },
+    {
+      "id": "--fx-widget-cap",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: widget cap.",
+      "default": "",
+      "source": "engine:framework/core/engines/toolbar-widgets.ts",
+      "sources": [
+        "engine:framework/core/engines/toolbar-widgets.ts"
+      ]
     },
     {
       "id": "--fx-win-handle",
