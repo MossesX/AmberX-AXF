@@ -19,6 +19,7 @@ import * as live from './live-core.mjs';
 import type { LiveState, Look } from './live-core.mjs';
 import { LiveBadge, LiveMark, LockMark, OrchBadge, SentEditor, readLooks, readOrchMark, type OrchMark } from './live';
 import { BuildPanel } from './build-panel';
+import { ShippedMark, ShippedPanel } from './shipped';
 import * as lc from './layout-core.mjs';
 import { LayoutSwitcher, SectionLayout, showSection, type SectionDef } from './layout';
 import { canListen, isEnd, listenOnce, micLease, speakOut } from './voice';
@@ -175,6 +176,7 @@ function Row({ item, depth, kids, path, state, selected, looks, orchMark }: { it
       <span className={`${B}__meta`}>
         {item.priority && <Chip tone={item.priority === 'P0' ? 'danger' : item.priority === 'P1' ? 'warning' : undefined}>{item.priority}</Chip>}
         {item.status && item.status !== 'draft' && !lv && <span data-status={item.status}><Chip tone={item.status === 'active' ? 'accent' : item.status === 'done' ? 'success' : undefined}>{item.status}</Chip></span>}
+        <ShippedMark item={item} />
         {item.model && <span className={`${B}__n`}>{item.model}</span>}
         {item.minutes > 0 && <span className={`${B}__n`}>{item.minutes} min</span>}
         {prog && prog.total > 0 && <span className={`${B}__n`} title="Steps done">{prog.done}/{prog.total}</span>}
@@ -222,6 +224,7 @@ function Editor({ item, state }: { item: Item; state: State }) {
         <TextField label="Minutes" type="number" value={draft.minutes ? String(draft.minutes) : ''} onChange={(v) => setDraft({ ...draft, minutes: Number(v) || 0 })} />
         <TextField label="Tags" value={draft.tags.join(', ')} onChange={(v) => setDraft({ ...draft, tags: v.split(',').map((t) => t.trim()).filter(Boolean) })} placeholder="comma, separated" />
       </div>
+      <ShippedPanel item={item} />
       {item.links.length > 0 && (
         <ul className={`${B}__links`} aria-label="Links">
           {item.links.map((l) => (
