@@ -80,7 +80,6 @@ Row counts below are live `keys` rows in axf-data (not deleted); sizes are the s
 | `_claude/builds/store.json.live.json`, `.live-outbox.jsonl` | 230 B; journal 185 kB | builds-live.mjs | builds-live.mjs | `build_live_outbox` (new) |
 | `_claude/builds/store.json.exports.json` | 1.5 kB | builds-store.mjs | builds-store.mjs | none: exports are generated from the tables (s3) |
 | `_claude/builds/journal/<yyyy-mm>.jsonl` | 59 MB repo; hub `_data/builds/journal` 1.6 GB; axf-data 13 journals 338 MB + `journal-large` 524 records 1.2 GB | builds-store.mjs | builds-store.mjs (append per write) | `build_journal` (new; one row per event: build id, at, by, op, diff jsonb) |
-| `_claude/builds/orchestrator.json` | 7.6 MB | build-orchestrator | builds-store.mjs export, builds-live.mjs | none: read-only export from `builds` (s3), or dropped if no reader |
 | `_claude/builds/origins.json` | 3.2 MB | builds-store.mjs | builds-store.mjs, builds-live.mjs | `build_origins` (new) |
 | `_claude/builds/shipped/<id>.json` | 398 | build-orchestrator | builds-store.mjs on landing | `build_shipped` (new) — also the index for the duplicate / break check (Brett's Nov 18 note: search by feature, files, plugin, title words) |
 | `_claude/builds/advice.json`, `bugs.json`, `matrices.json` | 595 kB, 7 kB, 76 kB | build-orchestrator | orchestrator.mjs | `build_advice`, `build_bugs`, `build_matrices` (new) |

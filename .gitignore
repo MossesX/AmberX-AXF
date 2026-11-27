@@ -43,3 +43,8 @@ _claude/builds/store.json.live.json
 # builds journal (builds-journal@1): lives on the hub data store (/projects/amberx-axf/_data/builds/journal); the repo
 # folder is only the spool and the old parts until the migration untracks them
 _claude/builds/journal/
+
+# Retired pipeline status file (Nov 25 2026): build status lives in the builds store on Postgres. Never committed again;
+# framework/spec/check-no-pipeline-status-file.mjs fails CI if it comes back.
+_claude/builds/orchestrator.json
+_claude/builds/profiles/*/orchestrator.json
