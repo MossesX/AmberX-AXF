@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10457,
- "updatedAt": "2026-11-27T05:49:58.748Z",
+ "rev": 10458,
+ "updatedAt": "2026-11-27T05:50:57.976Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -372643,7 +372643,7 @@
    "branch": "lander/claude-emergency-access",
    "pr": "933",
    "createdAt": "2026-11-24T21:08:59.649Z",
-   "updatedAt": "2026-11-27T05:49:31.827Z",
+   "updatedAt": "2026-11-27T05:50:42.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -372957,11 +372957,11 @@
        "priorFailures": 0
       }
      },
-     "rev": 8,
+     "rev": 9,
      "createdAt": "2026-11-24T21:10:08.429Z",
-     "updatedAt": "2026-11-27T05:49:43.275Z",
-     "statusAt": "2026-11-27T05:49:31.827Z",
-     "statusBy": "watchdog",
+     "updatedAt": "2026-11-27T05:50:42.160Z",
+     "statusAt": "2026-11-27T05:50:42.078Z",
+     "statusBy": "orchestrator",
      "attempt": 2,
      "statusLog": [
       {
@@ -373004,9 +373004,16 @@
        "by": "watchdog",
        "attempt": 2,
        "why": "retry forward at sending, attempt 2"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T05:50:42.078Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "sending",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/claude-emergency-access--s2",
      "branch": "claude/claude-emergency-access--s2"
@@ -373293,7 +373300,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "let-claude-send-builds-to-emerge-aewn",
-   "rev": 76,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -385586,7 +385593,7 @@
    "branch": "claude/emergency-remove-every-leftover-js--s2",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-27T05:49:31.827Z",
+   "updatedAt": "2026-11-27T05:50:40.491Z",
    "builtAt": "",
    "notes": [
     {
@@ -386804,13 +386811,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 18,
+     "rev": 19,
      "createdAt": "2026-11-25T12:03:52.352Z",
-     "updatedAt": "2026-11-27T05:49:28.763Z",
-     "statusAt": "2026-11-27T05:49:28.548Z",
+     "updatedAt": "2026-11-27T05:50:40.760Z",
+     "statusAt": "2026-11-27T05:50:40.491Z",
      "statusBy": "orchestrator",
-     "attempt": 3,
-     "failedFrom": "sending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -386901,13 +386907,20 @@
        "by": "orchestrator",
        "attempt": 3,
        "why": "launch on hulu0241: refused: emergency-remove-every-leftover-js--s6 already has a live session: lock launching (heartbeat 2026-11-27T05:49:18.896Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-27T05:50:40.491Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "axf-emergency-remove-every-leftover-js--s6--paulie on hulu0241"
       }
      ],
-     "status": "failed",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-remove-every-leftover-js--s6",
      "branch": "claude/emergency-remove-every-leftover-js--s6",
-     "tmux": "axf-emergency-remove-every-leftover-js--s6--gina",
+     "tmux": "axf-emergency-remove-every-leftover-js--s6--paulie",
      "tried": [
       "hulu0241"
      ]
@@ -387014,7 +387027,7 @@
    },
    "kind": "build",
    "planRef": "emergency-remove-every-leftover--7jpc",
-   "rev": 232,
+   "rev": 233,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -389012,7 +389025,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T05:49:35.302Z",
+   "updatedAt": "2026-11-27T05:49:52.364Z",
    "builtAt": "",
    "notes": [
     {
@@ -389450,6 +389463,16 @@
     {
      "text": "Watchdog: step s5 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
      "at": "2026-11-27T05:44:31.539Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:49:31.827Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-27T05:49:31.827Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -389460,8 +389483,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "emergency-rip-out-the-7-mb-status---s7",
-    "brief": "# EMERGENCY: rip out the 7 MB status file: step s7\n\nBuild emergency-rip-out-the-7-mb-status- (Pipeline 2.0), step s7 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-rip-out-the-7-mb-status---s7 (already cut from main) · branch claude/emergency-rip-out-the-7-mb-status---s7.\n\n## Your step\n- Delete the file and guard against its return. git rm the leftover 7 MB pipeline status JSON file (under _claude/builds/ or wherever grep finds it) and any committed copies or exports of it. Remove its entry from framework/schemas/data-store-paths.json and its line in framework/spec/DATA-INVENTORY.md, and add it to .gitignore. Add the CI guard framework/spec/check-no-pipeline-status-file.mjs: it fails if the file exists anywhere in the checkout, if any source file references its name outside the guard itself, or if any tracked runtime .json under _claude/builds exceeds a size cap. Wire it into \n- Tests and report. Add new test files only. framework/spec/check-pipeline-status-rows.mjs: a status write changes one build row and creates no status file; a paged read by status/project returns the right page and totals. apps/console-web/server/tests/test_pipeline_status_summary.py: pipeline_status MCP and REST responses stay under a small byte cap with many builds seeded, honour limit/offset, and no status file appears on disk afterwards. Run the console typecheck, check-builds-store, check-json-data-writes and the server tests, and record the results. Write _claude/builds/reports/emergency-r\n\nFiles: _claude/builds/, framework/schemas/data-store-paths.json, framework/spec/DATA-INVENTORY.md, framework/spec/check-no-pipeline-status-file.mjs, .github/workflows/, .gitignore, framework/spec/check-pipeline-status-rows.mjs, apps/console-web/server/tests/test_pipeline_status_summary.py, _claude/builds/reports/emergency-rip-out-the-7-mb-status-.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "Reel Rhonda",
+    "brief": "# EMERGENCY: rip out the 7 MB status file: step s6\n\nBuild emergency-rip-out-the-7-mb-status- (Pipeline 2.0), step s6 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-rip-out-the-7-mb-status---s6 (already cut from main) · branch claude/emergency-rip-out-the-7-mb-status---s6.\n\n## Your step\nBuild-orchestrator UI: paged status reads. In the plugin's web UI (apps/console-web/plugins/build-orchestrator/ui/ or its .tsx views; not server/, not pipeline.mjs), update the orchestrator tabs and the fill-status view to request status by tab/status/project with limit/offset and load more on scroll or page. They must tolerate both the current response and one carrying limit/offset/total, and never fetch or hold the whole status document. Remove any client code that reads a status file URL. Use framework controls and tokens only. Run the console typecheck, then commit.\n\nFiles: apps/console-web/plugins/build-orchestrator/ui/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 25: one job only. Delete the leftover 7 MB pipeline status JSON file and patch the console so nothing reads or writes it; build status lives only in the builds store on Postgres.\n\nScope (nothing else from the old pipeline-fixes build):\n1. Find every reader/writer of the pipeline status JSON file (framework/cli/builds-store.mjs, framework/core/data-files.mjs, apps/console-web/server/data_store.py, the pipeline_status MCP tool + REST route in apps/console-web/server/mcp_server.py, build-orchestrator server routes, lander, watchdog, dispatcher).\n2. Status writes become per-build row updates through data-store@1 (Postgres builds store). No whole-file read/write anywhere.\n3. Status reads (pipeline_status, orchestrator tabs, fill status) query Postgres by status/project with paging; pipeline_status returns a small summary, never 7 MB.\n4. Delete the file and any code path that recreates it; add a guard that fails CI if it reappears.\n5. Tests + typecheck green, land on main.\nEvery step on Fable. Queue, accounts, lander and cancel fixes stay in their own later builds.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -390430,7 +390453,7 @@
    },
    "kind": "build",
    "planRef": "emergency-rip-out-the-7-mb-statu-qsmm",
-   "rev": 228,
+   "rev": 230,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
