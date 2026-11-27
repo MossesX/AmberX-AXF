@@ -32,6 +32,7 @@ ok(reg.settings.find((s) => s.key === 'builds.alwaysNamedAgent')?.locked === tru
   ok(g('builds.autoQueuePending')?.default === false && g('builds.autoQueuePending').owner === true, 'Auto-queue pending builds: owner-only, off by default');
   ok(g('builds.maxParallelPerBuild')?.default === 3 && g('builds.maxParallelPerBuild').owner === 'raise' && g('builds.maxParallelPerBuild').max === 12, 'Max parallel steps per build: 3, only Brett raises'); }
 { const f = reg.settings.find((s) => s.key === 'builds.fableUpgradeApproval'); ok(f?.owner === true && f.default === false && f.kind === 'toggle', 'Fable upgrades need my approval: owner-only toggle, off by default (Brett, Nov 4 2026)'); }
+{ const f = reg.settings.find((s) => s.key === 'builds.claudeEmergency'); ok(f?.owner === true && f.default === true && f.kind === 'toggle' && f.group === 'builds', 'Claude can send builds to emergency: owner-only toggle, on by default (Brett, Nov 24 2026)'); }
 ok(reg.settings.find((s) => s.key === 'followAmber.enabled')?.shared === 'Follow Amber', 'Follow Amber is the shared switch');
 const more = loadRegistry({ extra: [{ groups: [{ id: 'x', label: 'Extra' }], settings: [{ key: 'x.flag', group: 'x', label: 'Flag', kind: 'toggle', default: false }, { key: 'bad', kind: 'toggle', default: 'no' }] }] });
 ok(more.settings.some((s) => s.key === 'x.flag') && !more.settings.some((s) => s.key === 'bad'), 'open registry: a data entry adds a setting, an invalid one is dropped');
@@ -48,6 +49,7 @@ ok(throwsCode(() => setSettings({ 'noWait.enabled': true }, { owner: BRETT, env:
 ok(throwsCode(() => setSettings({ 'noWait.enabled': true }, { owner: { via: 'axhub', name: 'brett' }, env: CLEAN }), 'denied'), 'only console / local count as owner');
 ok(throwsCode(() => setSettings({ 'noWait.enabled': true }, { owner: { via: 'session', name: 'brett' }, env: CLEAN }), 'denied'), 'a made-up via is not an owner');
 ok(view().values['noWait.enabled'] === false, 'still off after every refusal');
+ok(view().values['builds.claudeEmergency'] === true && throwsCode(() => setSettings({ 'builds.claudeEmergency': false }, { owner: null, env: CLEAN }), 'denied') && throwsCode(() => setSettings({ 'builds.claudeEmergency': false }, { owner: BRETT, env: SESSION }), 'denied') && view().values['builds.claudeEmergency'] === true, 'Claude can send builds to emergency: on by default, a session cannot switch it');
 ok(throwsCode(() => setSettings({ 'builds.alwaysNamedAgent': false }, { owner: BRETT, env: CLEAN }), 'denied'), 'locked: not even the owner');
 ok(view().values['builds.budgetDailyUsd'] === 0 && view().values['builds.budgetPerBuildUsd'] === 0, 'no budget cap until a number is saved (0 = no cap)');
 { // build-budget@1 enforces these two: the screen must show the default the engine uses, and 0 (no cap) is the owner's

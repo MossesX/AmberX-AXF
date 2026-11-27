@@ -93,6 +93,7 @@ r = put({"noWait.enabled": True})
 ok(r.status_code == 403 and "owner-only" in r.json().get("message", ""), "console token → No wait refused (403)")
 ok(not all_pass(), "no pass after the refusal")
 ok(put({"builds.launchWithoutAsking": True}).status_code == 403, "launch without asking is owner-only")
+ok(put({"builds.claudeEmergency": False}).status_code == 403, "Claude can send builds to emergency is owner-only: the console token is refused")
 ok(put({"builds.budgetPerBuildUsd": 100}).status_code == 200, "setting a budget cap where there is none is a lowering")
 ok(put({"builds.budgetPerBuildUsd": 400}).status_code == 403, "raising a budget cap needs Brett")
 ok(put({"builds.budgetPerBuildUsd": 0}).status_code == 403, "so does removing it (0 = no cap)")
@@ -147,7 +148,7 @@ def wall_session(name: str = "admin", role: str = "admin", sig_ok: bool = True) 
 
 
 ADMIN = wall_session()
-OWNER_KEYS = {"builds.launchWithoutAsking": (True, False), "builds.fableUpgradeApproval": (True, False), "builds.uiReviewGate": None,
+OWNER_KEYS = {"builds.launchWithoutAsking": (True, False), "builds.fableUpgradeApproval": (True, False), "builds.claudeEmergency": (True, False), "builds.uiReviewGate": None,
               "builds.defaultModel": None, "noWait.includeIrreversible": (True, False), "noWait.autoOffAtNight": None}
 for spec in get()["settings"]:
     k = spec["key"]
