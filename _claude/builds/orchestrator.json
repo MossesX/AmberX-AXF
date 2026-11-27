@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T04:53:06.944Z",
+ "updatedAt": "2026-11-27T04:57:28.545Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14263,7 +14263,7 @@
    "branch": "claude/emergency-remove-every-leftover-js--s5",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-27T04:52:29.115Z",
+   "updatedAt": "2026-11-27T04:56:46.127Z",
    "builtAt": "",
    "notes": [
     {
@@ -14465,6 +14465,10 @@
     {
      "text": "Watchdog: step s5 retried at ready, attempt 2 on hulu0241.",
      "at": "2026-11-27T04:49:28.909Z"
+    },
+    {
+     "text": "Watchdog: step s4 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-27T04:54:29.024Z"
     }
    ],
    "approvals": [
@@ -14494,7 +14498,7 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "Janitor Joey",
+    "by": "Greenlight Gina",
     "brief": "# EMERGENCY: Remove every leftover JSON data file and everything that uses it: step s4\n\nBuild emergency-remove-every-leftover-js (Pipeline 2.0), step s4 of 7. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-remove-every-leftover-js--s4 (already cut from main) · branch claude/emergency-remove-every-leftover-js--s4.\n\n## Your step\nConsole server: in apps/console-web/server (not the plugins), replace every json.dump / JSON data file read and write with server/data_store.py per-row calls; remove any local-file fallback, shadow or dual-write branch and any JSON backup writer so Postgres is the only store; delete the data files. Do not edit data_store.py's public API. Update the server tests. Commit.\n\nFiles: apps/console-web/server/. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nPostgres is the one store. Delete every JSON data file the database already covers, plus every reader and writer of it. No dual writes, no JSON backups.\n\nWhy: the move to Postgres left the old JSON files running alongside the database. The 7 MB pipeline status file alone pushed terabytes through axf-data and loaded the server. Switch everything over; never run both.\n\nScope: about 133 files under apps/console-web/plugins still json.dump data files. Plugins include claude-handoff, plugin-manager, builds-page, agent-manager (gittools, hubtools, toolkit, llm), feature-matrix, output-recorder (whisper_job, transcripts), claude-badge (usage_host), chat-viewer (store, tts_worker, audio), crew-live, console-terminal, maintenance (hub, maint engine, profiles), agent-swarm, agent-voice, session-checkin, theme-editor, gate (routes), claude-session (hub), molly-guide, agent-slots, plugin-commands, amberx-listeners, plus framework/ and deploy/ writers.\n\nSteps:\n1. Inventory every JSON data file and each reader and writer (framework/, apps/console-web/, deploy/, services/axf-data/). Mark each one: already in Postgres, not yet in Postgres, or true config.\n2. Already in Postgres: switch reads and writes to data-store@1 per-row calls, then delete the file and its writer.\n3. Not in Postgres yet: add the table in services/axf-data, migrate the data once, switch the code over, then delete the file.\n4. True config or export files stay only if listed in framework/spec/DATA-INVENTORY.md with a reason.\n5. Remove the entries from framework/schemas/data-store-paths.json and the manifest data list. Lower the check-json-data-writes baseline to the kept config only, and make CI fail on any new JSON data write.\n6. Never read or write a whole document for one change. Every update touches one row.\n7. Run the tests, write the report, open the PR.\n\nLeave alone: the pipeline status file. The running build pipeline-fixes-drop-7-mb-status-file already removes it.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
@@ -15582,7 +15586,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s4",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T04:51:44.254Z",
+   "updatedAt": "2026-11-27T04:56:51.302Z",
    "builtAt": "",
    "notes": [
     {
@@ -15816,6 +15820,18 @@
     {
      "text": "Watchdog: step s4 retried at ready, attempt 5 on hulu0241.",
      "at": "2026-11-27T04:49:28.909Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at ready, attempt 5 on hulu0241.",
+     "at": "2026-11-27T04:54:29.024Z"
+    },
+    {
+     "text": "Watchdog: step s4 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T04:54:29.024Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s1--earl, shared account login)",
+     "at": "2026-11-27T04:56:38.338Z"
     }
    ],
    "approvals": [],
@@ -15826,8 +15842,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "emergency-check-can-these-plugins---s4",
-    "brief": "# EMERGENCY CHECK: Can these plugins go? (report only, no deletes): step s4\n\nBuild emergency-check-can-these-plugins- (Pipeline 2.0), step s4 of 11. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-check-can-these-plugins---s4 (already cut from main) · branch claude/emergency-check-can-these-plugins---s4.\n\n## Your step\nREPORT ONLY, no deletes and no code changes. Audit plugins builds-page, main-build-status, merge-queue-view and fable-rebuilds (apps/console-web/plugins/<plugin>/). For each, read plugin.json (capabilities, dataDir, routes, commands, nav, banner chips or status widgets, settings tab, notify.json) and grep the whole repo outside its own folder for its folder name, ids, view addresses (e.g. view:merge-queue), capabilities, route prefix, MCP tool names, setting keys, data paths and Postgres tables: framework/ (builds store, landing line, console-control registry, check scripts), apps/, deploy/ (lander), services/axf-data, .github/workflows, CLAUDE.md and _claude/ rule markers. Write only _claude/builds/reports/plugin-removal-check/04-builds.md: one row per plugin (plugin, verdict SAFE / MOVE FIRST / KEEP, what depends on it with file:line, what to move and where), plus short evidence. Commit that one file.\n\nFiles: _claude/builds/reports/plugin-removal-check/04-builds.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nFable audits every plugin on the removal lists and reports which are safe to remove and which are still used. Changes nothing.\n\nBrett: run this check first, before any removal build. REPORT ONLY. Do not delete or change any plugin.\n\nFor each plugin below, find every import, call, route, MCP tool, nav link, setting, data file and Postgres table that other code depends on: framework/, apps/console-web/, deploy/, services/, the AmberX app, CI checks. Mark it:\n- SAFE: nothing kept depends on it\n- MOVE FIRST: a kept screen uses a piece of it (name the piece and where it should live)\n- KEEP: still needed (say why)\n\nPlugins:\nfeature-matrix, session-checkin, codebase-changes, agent-slots, ai-assistant, feature-assist, claude-handoff, build-breaker, builds-page, main-build-status, merge-queue-view, shipped-features, whats-shipped, notes-browser, notes-tasks, todo-manager, theme-editor, theme-manager, skin-editor, skin-gallery, plugin-manager, plugin-update, plugins-menu, changes-grid, demonstration-designer, fable-rebuilds, molly-guide, glossary-index, ref-links, md-studio, voice-notes, axhub-handoff, activity, basic-filter, status-styles, snapshot-manager, project-wizard, context-menu-designer.\n\nOutput: write _claude/builds/reports/plugin-removal-check.md with one table (plugin, verdict, what depends on it, what to move). Open a PR with only that report. No code changes.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "emergency-check-can-these-plugins---s3",
+    "brief": "# EMERGENCY CHECK: Can these plugins go? (report only, no deletes): step s3\n\nBuild emergency-check-can-these-plugins- (Pipeline 2.0), step s3 of 11. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/emergency-check-can-these-plugins---s3 (already cut from main) · branch claude/emergency-check-can-these-plugins---s3.\n\n## Your step\nREPORT ONLY, no deletes and no code changes. Audit plugins ai-assistant, feature-assist, feature-matrix and build-breaker (apps/console-web/plugins/<plugin>/). For each, read plugin.json (capabilities such as axf.llm@1 and who provides it, dataDir, routes, commands, settings tab, nav, notify.json) and grep the whole repo outside its own folder for its folder name, ids, capabilities, route prefix, MCP tool names, setting keys, data paths and Postgres tables: framework/, apps/ (console-web src and server, every other plugin via plugin_services, other apps), deploy/, services/axf-data, .github/workflows (tests that run a plugin's test file), CLAUDE.md and _claude/ rule markers. Write only _claude/builds/reports/plugin-removal-check/03-assist.md: one row per plugin (plugin, verdict SAFE / MOVE FIRST / KEEP, what depends on it with file:line, what to move and where), plus short evidence. Commit that one file.\n\nFiles: _claude/builds/reports/plugin-removal-check/03-assist.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nFable audits every plugin on the removal lists and reports which are safe to remove and which are still used. Changes nothing.\n\nBrett: run this check first, before any removal build. REPORT ONLY. Do not delete or change any plugin.\n\nFor each plugin below, find every import, call, route, MCP tool, nav link, setting, data file and Postgres table that other code depends on: framework/, apps/console-web/, deploy/, services/, the AmberX app, CI checks. Mark it:\n- SAFE: nothing kept depends on it\n- MOVE FIRST: a kept screen uses a piece of it (name the piece and where it should live)\n- KEEP: still needed (say why)\n\nPlugins:\nfeature-matrix, session-checkin, codebase-changes, agent-slots, ai-assistant, feature-assist, claude-handoff, build-breaker, builds-page, main-build-status, merge-queue-view, shipped-features, whats-shipped, notes-browser, notes-tasks, todo-manager, theme-editor, theme-manager, skin-editor, skin-gallery, plugin-manager, plugin-update, plugins-menu, changes-grid, demonstration-designer, fable-rebuilds, molly-guide, glossary-index, ref-links, md-studio, voice-notes, axhub-handoff, activity, basic-filter, status-styles, snapshot-manager, project-wizard, context-menu-designer.\n\nOutput: write _claude/builds/reports/plugin-removal-check.md with one table (plugin, verdict, what depends on it, what to move). Open a PR with only that report. No code changes.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -15890,8 +15906,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-27T04:47:27.046Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
      "uid": "st-mww38q3o1nja8o",
      "createdAt": "2026-11-25T12:16:48.420Z"
@@ -20212,7 +20228,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s5",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T04:48:13.002Z",
+   "updatedAt": "2026-11-27T04:55:42.306Z",
    "builtAt": "",
    "notes": [
     {
@@ -20498,6 +20514,38 @@
     {
      "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s5--joey, shared account login)",
      "at": "2026-11-27T04:48:13.002Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T04:49:28.909Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s5--joey: brief only · start 11.8K tokens ($0.06) · cost $0.21 · 4 turns · 6 tools, MCP none",
+     "at": "2026-11-27T04:50:49.815Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.21",
+     "at": "2026-11-27T04:51:05.584Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s2--gina, shared account login)",
+     "at": "2026-11-27T04:51:42.888Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T04:54:29.024Z"
+    },
+    {
+     "text": "Watchdog: step s5 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-27T04:54:29.024Z"
+    },
+    {
+     "text": "Headless run axf-emergency-rip-out-the-7-mb-status---s2--gina: brief only · start 11.7K tokens ($0.05) · cost $0.51 · 8 turns · 6 tools, MCP none",
+     "at": "2026-11-27T04:55:28.946Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.51",
+     "at": "2026-11-27T04:55:42.306Z"
     }
    ],
    "approvals": [],
@@ -20557,8 +20605,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-27T04:54:28.882Z",
      "note": "",
      "uid": "st-mwwq2iwo1msd97",
      "createdAt": "2026-11-25T22:55:50.328Z"
