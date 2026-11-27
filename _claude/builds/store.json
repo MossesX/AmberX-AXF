@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10470,
- "updatedAt": "2026-11-27T18:59:39.284Z",
+ "rev": 10471,
+ "updatedAt": "2026-11-27T19:09:36.941Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -23856,7 +23856,7 @@
    "title": "Fresh look: new default style theme + fresh appearance package",
    "category": "App",
    "detail": "Brett, Oct 26 2026: rebuild the default style theme (the UI looked bad) and save the new look as a full appearance package named fresh. New fresh style theme, fresh-light/fresh-dark colour themes, fresh-day-night switch, made the default in the framework and every web app; fresh package per app.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "fresh-look",
@@ -23864,7 +23864,7 @@
    "pr": "#120",
    "mergedAt": "2026-10-27T22:25:38Z",
    "createdAt": "2026-10-27T04:05:32.031Z",
-   "updatedAt": "2026-11-27T18:59:18.914Z",
+   "updatedAt": "2026-11-27T18:59:53.252Z",
    "builtAt": "2026-10-27T04:05:32.031Z",
    "notes": [
     {
@@ -23898,6 +23898,10 @@
     {
      "text": "Watchdog: merged and CI is green on c455fd8cfd: landed.",
      "at": "2026-11-27T18:59:18.914Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-27T18:59:53.252Z"
     }
    ],
    "approvals": [],
@@ -23921,9 +23925,9 @@
     "ci": "success",
     "ciAt": "2026-11-27T18:59:18.914Z",
     "ciRun": "commit@c455fd8cfdbffef17db2c3357ef1020314ad3e8c",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+    "verifiedAt": "2026-11-27T18:59:53.252Z",
+    "verifyHow": "deploy",
+    "verifyLog": "No verify command: CI green on the merge commit is the verify."
    },
    "shipped": {
     "id": "sm-fresh-look",
@@ -23940,7 +23944,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -24427,7 +24431,7 @@
    "title": "Build orchestrator plugin (Fable/Opus steps, approval at model switches, repo tracker)",
    "category": "Plugin",
    "detail": "Console plugin apps/console-web/plugins/build-orchestrator + tracker _claude/builds/orchestrator.json. Brett, Oct 27 2026.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "build-orchestrator",
@@ -24435,7 +24439,7 @@
    "pr": "#122",
    "mergedAt": "2026-10-27T18:17:28Z",
    "createdAt": "2026-10-27T16:39:39.618Z",
-   "updatedAt": "2026-11-27T18:59:08.730Z",
+   "updatedAt": "2026-11-27T18:59:57.789Z",
    "builtAt": "2026-10-27T16:39:39.618Z",
    "notes": [
     {
@@ -24473,6 +24477,10 @@
     {
      "text": "Watchdog: merged and CI is green on 83a480f0dd: landed.",
      "at": "2026-11-27T18:59:08.730Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-27T18:59:57.789Z"
     }
    ],
    "approvals": [],
@@ -24496,9 +24504,9 @@
     "ci": "success",
     "ciAt": "2026-11-27T18:59:08.730Z",
     "ciRun": "commit@83a480f0dd09f4c276d5c931b611917ead294341",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+    "verifiedAt": "2026-11-27T18:59:57.789Z",
+    "verifyHow": "deploy",
+    "verifyLog": "No verify command: CI green on the merge commit is the verify."
    },
    "shipped": {
     "id": "sm-build-orchestrator",
@@ -24515,7 +24523,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -24912,7 +24920,7 @@
    "title": "AmberX: fix the messed-up look, lock the look switch, Get the look from axHub switch",
    "category": "App",
    "detail": "Brett, Oct 27 2026: AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "amberx-appearance-lock",
@@ -24920,7 +24928,7 @@
    "pr": "#126",
    "mergedAt": "2026-10-27T19:22:41Z",
    "createdAt": "2026-10-27T19:05:30.186Z",
-   "updatedAt": "2026-11-27T18:59:13.783Z",
+   "updatedAt": "2026-11-27T19:00:11.245Z",
    "builtAt": "2026-10-27T19:23:01.118Z",
    "notes": [
     {
@@ -24958,6 +24966,10 @@
     {
      "text": "Watchdog: merged and CI is green on 6f87efc9ee: landed.",
      "at": "2026-11-27T18:59:13.783Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-27T19:00:11.245Z"
     }
    ],
    "approvals": [],
@@ -24981,9 +24993,9 @@
     "ci": "success",
     "ciAt": "2026-11-27T18:59:13.783Z",
     "ciRun": "commit@6f87efc9ee441c5cc15db144289c4915bff714e5",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+    "verifiedAt": "2026-11-27T19:00:11.245Z",
+    "verifyHow": "deploy",
+    "verifyLog": "No verify command: CI green on the merge commit is the verify."
    },
    "shipped": {
     "id": "sm-amberx-appearance-lock",
@@ -25000,7 +25012,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -32657,7 +32669,7 @@
    "title": "AmberX voice notes, lists, tasks + AI router",
    "category": "AmberX app",
    "detail": "Brett Oct 27 2026: voice-controlled notes in lists/sub-lists (Plugins root: one list per plugin, made automatically), sort/transcribe/rename/move, task manager + todo, AI parsing with Claude plan/API switch + any LLM through AmberX own server, integrated web component, voice command section from the codebase, tabs. Data shared on axHub with Voice notes/Voice Vault. Sub-agents allowed (Brett).",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
@@ -32665,7 +32677,7 @@
    "pr": "#144",
    "mergedAt": "2026-10-28T02:20:51Z",
    "createdAt": "2026-10-28T00:32:03.143Z",
-   "updatedAt": "2026-11-27T18:28:59.553Z",
+   "updatedAt": "2026-11-27T19:09:31.085Z",
    "builtAt": "2026-10-28T02:35:09.837Z",
    "notes": [
     {
@@ -32691,6 +32703,10 @@
     {
      "text": "Watchdog: PR #144 merged 2026-10-28 02:20 and the build never heard: the merge is recorded, CI on fe52642a75 is next.",
      "at": "2026-11-27T18:28:59.553Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on fe52642a75: landed.",
+     "at": "2026-11-27T19:09:31.085Z"
     }
    ],
    "approvals": [],
@@ -32711,9 +32727,9 @@
     "pr": 144,
     "sha": "fe52642a75545ab2f83ce6560cea3469096653d1",
     "mergedAt": "2026-10-28T02:20:51Z",
-    "ci": "none",
-    "ciAt": "",
-    "ciRun": "",
+    "ci": "success",
+    "ciAt": "2026-11-27T19:09:31.085Z",
+    "ciRun": "commit@fe52642a75545ab2f83ce6560cea3469096653d1",
     "verifiedAt": "",
     "verifyHow": "",
     "verifyLog": ""
@@ -33064,7 +33080,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
