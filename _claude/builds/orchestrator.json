@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T20:30:28.701Z",
+ "updatedAt": "2026-11-27T20:30:49.769Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125074,7 +125074,7 @@
    "pr": "#601",
    "mergedAt": "2026-11-16T19:09:18Z",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-16T19:42:13Z",
+   "updatedAt": "2026-11-27T20:30:29.162Z",
    "builtAt": "2026-11-16T19:41:08.651Z",
    "notes": [
     {
@@ -125196,6 +125196,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #601 merged 2026-11-16 19:09 and the build never heard: the merge is recorded, CI on d46ec0f788 is next.",
+     "at": "2026-11-27T20:30:29.162Z"
     }
    ],
    "approvals": [],
@@ -166896,7 +166900,7 @@
    "mergedAt": "2026-11-17T02:07:47Z",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-20T00:07:39Z",
+   "updatedAt": "2026-11-27T20:30:34.315Z",
    "builtAt": "2026-11-16T23:35:36.106Z",
    "notes": [
     {
@@ -166994,6 +166998,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #704 merged 2026-11-17 02:07 and the build never heard: the merge is recorded, CI on 7015af4b81 is next.",
+     "at": "2026-11-27T20:30:34.315Z"
     }
    ],
    "approvals": [
@@ -176466,7 +176474,7 @@
    "mergedAt": "2026-11-16T23:54:53Z",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-17T04:37:58.933Z",
+   "updatedAt": "2026-11-27T20:30:39.363Z",
    "builtAt": "2026-11-17T04:37:58.933Z",
    "notes": [
     {
@@ -176564,6 +176572,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #775 merged 2026-11-16 23:54 and the build never heard: the merge is recorded, CI on 89b25b4ea0 is next.",
+     "at": "2026-11-27T20:30:39.363Z"
     }
    ],
    "approvals": [],
