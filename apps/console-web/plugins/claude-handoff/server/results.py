@@ -26,6 +26,8 @@ import time
 from pathlib import Path
 from typing import Any
 
+import data_store
+
 FORMAT = "claude-handoff-results@1"
 KEEP = 10
 MAX_FILE = 400_000
@@ -124,13 +126,10 @@ def _mkdir(p: Path) -> None:
 
 
 def _write(p: Path, data: bytes) -> None:
-    _mkdir(p.parent)
-    tmp = p.with_name(f".{p.name}.{os.getpid()}.tmp")
-    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, FILE_MODE)
-    with os.fdopen(fd, "wb") as f:
-        f.write(data)
-    os.chmod(tmp, FILE_MODE)
-    os.replace(tmp, p)
+    """One file of a run through data-store@1 (a row on axf-data; group-readable when the namespace is still a folder)."""
+    if not data_store.remote_mode(p):
+        _mkdir(p.parent)
+    data_store.write_bytes(p, data, mode=FILE_MODE, dir_mode=None)
 
 
 def _write_json(p: Path, data: Any) -> None:
@@ -138,10 +137,7 @@ def _write_json(p: Path, data: Any) -> None:
 
 
 def _read_json(p: Path, default: Any) -> Any:
-    try:
-        return json.loads(p.read_text("utf-8"))
-    except Exception:  # noqa: BLE001
-        return default
+    return data_store.read_json(p, default)
 
 
 def kit_files(kit: Path) -> list[tuple[str, bytes]]:
@@ -191,8 +187,9 @@ def publish(folder: Path, *, at_ms: int, project: str, repo: str, commit: str, r
             run: dict[str, Any] | None = None, run_id: str | None = None, key_hash: str = "") -> dict[str, Any]:
     """Write one assembly's results, add it to the index (newest first) and drop runs past the last KEEP."""
     run_id = run_id if run_id and ID_RE.match(run_id) else new_id(at_ms)
-    _mkdir(folder)
-    _mkdir(folder / "runs" / run_id / "progress")  # the hub and the new account's Claude write step files here
+    if not data_store.remote_mode(folder / "index.json"):
+        _mkdir(folder)
+        _mkdir(folder / "runs" / run_id / "progress")  # the hub and the new account's Claude write step files here
     base = folder / "runs" / run_id
     files = kit_files(kit)
     for rel, data in files:
@@ -240,7 +237,13 @@ def _update_index(folder: Path, record: dict[str, Any]) -> None:
     runs_dir = folder / "runs"
     for r in drop:
         kept.discard(r.get("id"))
-    # remove run folders that are no longer listed (only our own id-shaped folders, never through a symlink)
+    # remove runs that are no longer listed (only our own id-shaped ones, row by row; never through a symlink)
+    if data_store.remote_mode(folder / "index.json"):
+        for rel in data_store.list_files(runs_dir):
+            rid = rel.split("/", 1)[0]
+            if ID_RE.match(rid) and rid not in kept:
+                data_store.remove(runs_dir / rel)
+        return
     if runs_dir.is_dir() and not runs_dir.is_symlink():
         for d in runs_dir.iterdir():
             if ID_RE.match(d.name) and d.name not in kept and d.is_dir() and not d.is_symlink():

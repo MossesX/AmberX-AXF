@@ -9,6 +9,7 @@ Data only in .axf-console/plugins/claude-handoff/ (state, config, claude.ai list
 """
 from __future__ import annotations
 
+import calendar
 import hashlib
 import json
 import os
@@ -25,6 +26,7 @@ from pydantic import BaseModel, Field
 from . import results as hub_results
 
 import console_context as cx
+import data_store
 
 FOLDER = "claude-handoff"
 HERE = Path(__file__).resolve().parent.parent
@@ -52,20 +54,12 @@ def _data() -> Path:
 
 
 def _read(p: Path, default: Any) -> Any:
-    try:
-        return json.loads(p.read_text("utf-8"))
-    except Exception:  # noqa: BLE001
-        return default
+    """One record through data-store@1 (server/data_store.py): a row on axf-data, never a file of the plugin's own."""
+    return data_store.read_json(p, default)
 
 
 def _write(p: Path, data: Any) -> None:
-    p.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-    tmp = p.with_name(f".{p.name}.{os.getpid()}.tmp")
-    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(fd, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
-        f.write("\n")
-    os.replace(tmp, p)
+    data_store.write_json(p, data, indent=2)
 
 
 def _now_ms() -> int:
@@ -107,8 +101,12 @@ def _collect_console() -> None:
     """The console container's own ~/.claude (its Claude Code terminal tab) counts as a machine, at most every 10 min."""
     if not _config().get("collectConsole", True):
         return
-    stamp = _data() / "machines" / "console.json"
-    if stamp.exists() and time.time() - stamp.stat().st_mtime < 600:
+    last = _read(_data() / "machines" / "console.json", None)
+    try:
+        age = time.time() - calendar.timegm(time.strptime(str((last or {}).get("collectedAt", ""))[:19], "%Y-%m-%dT%H:%M:%S"))
+    except ValueError:
+        age = 600.0
+    if 0 <= age < 600:
         return
     try:
         _node("collect", "--host", "console", timeout=30)
@@ -360,11 +358,11 @@ def _session_notes_path() -> Path:
 def get_session() -> dict[str, Any]:
     """The Handoff Session: its saved notes (None = the default gaps) and the last summary made on this console."""
     saved = _read(_session_notes_path(), {})
-    md = _data() / "session.md"
+    md = data_store.read_text(_data() / "session.md", "")
     return {"notes": saved.get("notes") if isinstance(saved, dict) else None,
             "threads": (saved.get("threads") if isinstance(saved, dict) else "") or "",
             "savedAt": (saved.get("savedAt") if isinstance(saved, dict) else "") or "",
-            "markdown": md.read_text("utf-8") if md.is_file() else ""}
+            "markdown": md}
 
 
 @router.post("/session")
@@ -495,8 +493,10 @@ def put_config(req: ConfigReq) -> dict[str, Any]:
 def get_machines() -> dict[str, Any]:
     d = _data() / "machines"
     out = []
-    for p in sorted(d.glob("*.json")) if d.exists() else []:
-        m = _read(p, {})
+    for name in data_store.list_files(d):
+        if "/" in name or not name.endswith(".json"):
+            continue
+        m = _read(d / name, {})
         if isinstance(m, dict) and m.get("host"):
             out.append({"host": m["host"], "collectedAt": m.get("collectedAt"), "files": len(m.get("files") or []), "hooks": len(((m.get("settings") or {}).get("hooks")) or []), "secrets": m.get("secrets") or []})
     return {"machines": out}
@@ -543,8 +543,7 @@ def delete_machine(host: str) -> dict[str, Any]:
         raise HTTPException(400, "bad host")
     p = _data() / "machines" / f"{host}.json"
     with _lock:
-        existed = p.exists()
-        p.unlink(missing_ok=True)
+        existed = data_store.remove(p)
     return {"ok": True, "removed": existed}
 
 
@@ -573,10 +572,20 @@ def _fid(section: str, path: str) -> str:
 
 
 def _entry(section: str, label: str, path: Path, made: str, by: str, shown: str | None = None) -> dict[str, Any]:
-    st = path.stat() if path.is_file() and not path.is_symlink() else None
     rel = shown or str(path)
-    return {"id": _fid(section, rel), "section": section, "label": label, "path": rel, "made": made, "by": by,
-            "exists": st is not None, "bytes": st.st_size if st else 0, "modifiedAt": int(st.st_mtime * 1000) if st else None}
+    out = {"id": _fid(section, rel), "section": section, "label": label, "path": rel, "made": made, "by": by}
+    if section in ("data", "hub") and data_store.remote_mode(path):  # a row on axf-data: no file to stat
+        raw = data_store.read_bytes(path)
+        return {**out, "exists": raw is not None, "bytes": len(raw or b""), "modifiedAt": None}
+    st = path.stat() if path.is_file() and not path.is_symlink() else None
+    return {**out, "exists": st is not None, "bytes": st.st_size if st else 0, "modifiedAt": int(st.st_mtime * 1000) if st else None}
+
+
+def _data_files(base: Path) -> list[Path]:
+    """The files under one of the plugin's data folders: its rows on axf-data once the namespace is there."""
+    if data_store.remote_mode(base / "state.json"):
+        return [base / rel for rel in data_store.list_files(base)]
+    return _walk(base)
 
 
 def _walk(base: Path) -> list[Path]:
@@ -602,7 +611,7 @@ def file_list() -> list[dict[str, Any]]:
             continue
         items.append(_entry("kit", p.name, p, "makes", "Publish / Assemble prompt (handoff.mjs build), committed to GitHub", str(p.relative_to(root))))
     names = {"state.json": "Reminder + last publish (the server)", "config.json": "Settings → Plugins → Claude handoff", "claude-ai.json": "claude.ai items (Tools → Claude handoff)"}
-    for p in _walk(data):
+    for p in _data_files(data):
         rel = p.relative_to(data)
         if rel.parts[0] == "preview":
             by = "Preview / Installer preview (handoff.mjs build --out)"
@@ -621,7 +630,7 @@ def file_list() -> list[dict[str, Any]]:
     if res is not None:
         by = "Each assembly: axHub's results browser (/handoff), the last 10 runs"
         items.append(_entry("hub", "index.json", res / "index.json", "makes", by, "axHub: _shared/_data/handoff/index.json"))
-        for p in sorted((res / "runs").glob("*/run.json")) if (res / "runs").is_dir() else []:
+        for p in [res / "runs" / r for r in data_store.list_files(res / "runs") if r.count("/") == 1 and r.endswith("/run.json")]:
             items.append(_entry("hub", f"{p.parent.name}/run.json", p, "makes", f"{by} (kit copies in files/)", f"axHub: _shared/_data/handoff/runs/{p.parent.name}/run.json"))
     settings = Path.home() / ".claude" / "settings.json"
     items.append(_entry("machine", "settings.json", settings, "edits", "handoff.mjs hooks install adds one SessionStart hook (this machine)", "~/.claude/settings.json"))
@@ -661,9 +670,15 @@ def read_file(id: str) -> dict[str, Any]:
     it, path = _locate(id)
     if path is None:
         return {**it, "text": None, "remote": True}
-    if not path.is_file() or path.is_symlink():
+    if it["section"] in ("data", "hub") and data_store.remote_mode(path):
+        raw = data_store.read_bytes(path)
+        if raw is None:
+            return {**it, "text": None, "missing": True}
+        raw = raw[:TEXT_MAX]
+    elif not path.is_file() or path.is_symlink():
         return {**it, "text": None, "missing": True}
-    raw = path.read_bytes()[:TEXT_MAX]
+    else:
+        raw = path.read_bytes()[:TEXT_MAX]
     text = raw.decode("utf-8", errors="replace")
     if it["section"] == "machine" and path.name == "settings.json":
         # only this plugin's entry matters here, and env values may be secrets: show names, never values
