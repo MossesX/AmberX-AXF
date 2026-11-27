@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-27T19:32:03.612Z",
+ "updatedAt": "2026-11-27T19:51:12.399Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -48779,7 +48779,7 @@
    "title": "Settings redesign: short lists you tap into, dropdowns instead of button walls, tight spacing (starts the whole-app de-clutter)",
    "category": "Console",
    "detail": "Brett, Oct 30 2026 (voice, then 'Go' in text): the app takes up way too much space; Settings is a wall of buttons. Packs only reskin; fix how the screens are built. Agreed plan: settings as short lists you tap into (like phone settings), dropdowns instead of rows of buttons, tight spacing everywhere; start with Settings and show before/after screenshots. Profile: Angel. Layouts stay as they are (Brett: 'Nah' to new layouts). Web first; Android twin of the settings renderer recorded as deferred (Android hold).",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -48787,7 +48787,7 @@
    "pr": "#175",
    "mergedAt": "2026-10-30T16:37:18Z",
    "createdAt": "2026-10-30T13:01:42.736Z",
-   "updatedAt": "2026-11-27T19:09:41.842Z",
+   "updatedAt": "2026-11-27T19:51:06.529Z",
    "builtAt": "2026-10-30T13:06:41.972Z",
    "notes": [
     {
@@ -48809,6 +48809,10 @@
     {
      "text": "Watchdog: PR #175 merged 2026-10-30 16:37 and the build never heard: the merge is recorded, CI on 6a8ec6e954 is next.",
      "at": "2026-11-27T19:09:41.842Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 6a8ec6e954: landed.",
+     "at": "2026-11-27T19:51:06.529Z"
     }
    ],
    "approvals": [],
@@ -51349,7 +51353,7 @@
    "pr": "#182",
    "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T18:21:59.378Z",
-   "updatedAt": "2026-11-12T03:28:33Z",
+   "updatedAt": "2026-11-27T19:41:25.287Z",
    "builtAt": "2026-11-01T02:34:24.794Z",
    "notes": [
     {
@@ -51375,6 +51379,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #182 merged 2026-10-31 07:26 and the build never heard: the merge is recorded, CI on 6b0b9714d6 is next.",
+     "at": "2026-11-27T19:41:25.287Z"
     }
    ],
    "approvals": [],
@@ -51635,7 +51643,7 @@
    "pr": "#184",
    "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-30T17:59:21.357Z",
-   "updatedAt": "2026-11-12T03:28:34Z",
+   "updatedAt": "2026-11-27T19:41:31.188Z",
    "builtAt": "2026-11-01T02:36:07.629Z",
    "notes": [
     {
@@ -51661,6 +51669,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #184 merged 2026-10-31 07:26 and the build never heard: the merge is recorded, CI on 073b035c68 is next.",
+     "at": "2026-11-27T19:41:31.188Z"
     }
    ],
    "approvals": [],
@@ -52036,7 +52048,7 @@
    "pr": "#185",
    "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T18:21:11.429Z",
-   "updatedAt": "2026-11-12T03:28:35Z",
+   "updatedAt": "2026-11-27T19:41:12.405Z",
    "builtAt": "2026-10-30T19:00:33.461Z",
    "notes": [
     {
@@ -52058,6 +52070,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #185 merged 2026-10-31 07:26 and the build never heard: the merge is recorded, CI on 89930ac6cf is next.",
+     "at": "2026-11-27T19:41:12.405Z"
     }
    ],
    "approvals": [],
@@ -52462,7 +52478,7 @@
    "pr": "#187",
    "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-30T21:56:25.813Z",
-   "updatedAt": "2026-11-12T03:28:37Z",
+   "updatedAt": "2026-11-27T19:41:36.608Z",
    "builtAt": "2026-11-01T02:36:25.826Z",
    "notes": [
     {
@@ -52488,6 +52504,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #187 merged 2026-10-31 07:26 and the build never heard: the merge is recorded, CI on faccf9b02e is next.",
+     "at": "2026-11-27T19:41:36.608Z"
     }
    ],
    "approvals": [],
@@ -56691,7 +56711,7 @@
    "title": "Enterprise design + hot-swappable branding: branding engine, design packages, behaviour themes, 700+ generated brand assets, AmberX app + GizmoX console refactor",
    "category": "Design & branding",
    "detail": "Brett, Oct 27 2026: only refactor the console, the AmberX app (amberx.amberxai.com), the plugins currently installed and switched on in Plugin switches, and every banner plugin to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
@@ -56699,7 +56719,7 @@
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
    "mergedAt": "2026-10-29T03:49:47Z",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-11-27T19:31:56.809Z",
+   "updatedAt": "2026-11-27T19:32:24.527Z",
    "builtAt": "2026-10-30T18:10:39.641Z",
    "notes": [
     {
@@ -56781,6 +56801,10 @@
     {
      "text": "Watchdog: merged and CI is green on 24227d9669: landed.",
      "at": "2026-11-27T19:31:56.809Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-27T19:32:24.527Z"
     }
    ],
    "approvals": [
@@ -58468,7 +58492,7 @@
    "title": "AmberX: hands-free listening on screen + in background, ActiveX-style detection overlay (level graph, dB, quick settings)",
    "category": "AI & voice",
    "detail": "Brett, Oct 27 2026 (claude.ai): 'It only detects words when I press speak' in AmberX (apps/amberx-droid). Cause: the native wake listener runs only while 'Watch axHub in the background' is on (default off) and pauses while the app is on screen. Fix: hands-free listening is its own setting (default on), works on screen and in the background, independent of axHub monitoring; optional always-armed (no wake phrase). Plus a detection overlay like ActiveX: floating draggable window over other apps with a moving audio-level line graph, decibel number, what was heard, and quick settings (listening on/off, always armed, hide). Colours from the app's theme tokens. Profile refactor, Opus (Brett's pick). Android exception: AmberX shell is allowed (rule Oct 25).",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
@@ -58476,7 +58500,7 @@
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/141",
    "mergedAt": "2026-10-28T00:27:04Z",
    "createdAt": "2026-10-27T23:42:02.902Z",
-   "updatedAt": "2026-11-27T19:31:24.728Z",
+   "updatedAt": "2026-11-27T19:32:31.686Z",
    "builtAt": "2026-10-28T19:08:50.137Z",
    "notes": [
     {
@@ -58510,6 +58534,10 @@
     {
      "text": "Watchdog: merged and CI is green on eaba8c587b: landed.",
      "at": "2026-11-27T19:31:24.728Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-27T19:32:31.686Z"
     }
    ],
    "approvals": [],
@@ -62017,7 +62045,7 @@
    "title": "Refactor: everything left to build, one build (Oct 28 2026)",
    "category": "Refactor",
    "detail": "Brett, Oct 28 2026 15:26: \"Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions.\"\n\nOne build holding every unfinished step in the Refactor profile (17 source builds, now archived with a note pointing here). Run it in ONE new session; one Fable phase, then one Opus phase (one model switch).\n\nRules for this build:\n- The feature matrix (_claude/builds/profiles/refactor/matrices.json, matrix \"refactor-all\") is the scope. Kept items are the steps below; skipped items stay in the matrix and are not built. Ticking a skipped item = add it as a step (feature-matrix Apply, once built).\n- Carry on from the existing branches and PRs; don't redo finished steps. Open PRs: basic-filter #155 (CI green, merge approval sent), windows-terminal #158, amberx-handsfree #141, enterprise-branding PR #128 + interface-roller PR #129 (stacked; Opus work on opus/enterprise-branding).\n- Enterprise-branding's refactor runs first in the Opus phase, so every plugin built after it lands on the refactored console. Every UI in this build is held to framework/spec/DESIGN-LANGUAGE.md, not just the §13 scope.\n- Patches stays paused; skip Patches in every re-bake. Android only in apps/amberx-droid.\n- Kept: 30 h 50 min (11 h 45 min Fable). Skipped by default: 10 h 25 min.\n\nSource branches: amberx-handsfree: claude/amberx-handsfree https://github.com/MossesX/AmberX-AXF/pull/141; apply-all-levels-fable: -; approval-costs: -; arch-foundation: fable/arch-foundation; axhub-github-write: -; basic-filter: claude/basic-filter #155; enterprise-branding: fable/enterprise-branding; feature-matrix: -; interface-roller: fable/interface-roller; pending-grid-view: claude/pending-grid-view; postponed-gestures: -; share-search: -; style-package-fable: fable/style-package; tools-plugin: -; trim-asset: claude/trim-asset; veto-window: -; windows-terminal: claude/windows-terminal #158\n\nMatrix page (Brett ticks keep/skip on his phone): https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS — artifact db doc matrix/refactor-all. Before each step, read it (db_get) and follow its keep/skip; if applyRequestedAt is newer than the last step, re-sync matrices.json and add/skip steps to match.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "refactor-all",
@@ -62025,7 +62053,7 @@
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
    "mergedAt": "2026-10-29T03:49:47Z",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-11-27T19:31:50.540Z",
+   "updatedAt": "2026-11-27T19:32:37.990Z",
    "builtAt": "2026-10-29T07:38:54.593Z",
    "notes": [
     {
@@ -62087,6 +62115,10 @@
     {
      "text": "Watchdog: merged and CI is green on 24227d9669: landed.",
      "at": "2026-11-27T19:31:50.540Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-27T19:32:37.990Z"
     }
    ],
    "approvals": [
@@ -63844,7 +63876,7 @@
    "title": "Mosses builds in the AI assistant: Edit/Write/Bash in the /axf git checkout + push/PR tools (token stays in the host)",
    "category": "assistant",
    "detail": "Brett Oct 28 21:08: Mosses could not build; the Claude Code provider hard-blocked Edit/Write/Bash. Picked: live /axf folder, Bash free there, Refactor profile. Build agents get Edit/Write/MultiEdit/Bash in the CLI provider (admins only) plus repo_git_push / repo_open_pr run by the console with GITHUB_TOKEN.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -63852,7 +63884,7 @@
    "pr": "#164",
    "mergedAt": "2026-10-29T04:01:03Z",
    "createdAt": "2026-10-29T03:53:16.640Z",
-   "updatedAt": "2026-11-27T19:31:35.908Z",
+   "updatedAt": "2026-11-27T19:32:45.374Z",
    "builtAt": "2026-10-29T03:53:16.932Z",
    "notes": [
     {
@@ -63878,6 +63910,10 @@
     {
      "text": "Watchdog: merged and CI is green on 4bf11fee77: landed.",
      "at": "2026-11-27T19:31:35.908Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-27T19:32:45.374Z"
     }
    ],
    "approvals": [],
@@ -63959,7 +63995,7 @@
    "title": "No sub-agents in the AI assistant (Task/Agent denied) + fix build mode crash (env scrub flag)",
    "category": "assistant",
    "detail": "Brett Oct 29 01:41: Disable sub agents in assistant. 01:56: Mosses chats crash with Claude Code exited with code 1 (CLAUDE_CODE_SUBPROCESS_ENV_SCRUB needs managed settings); the flag set by mosses-build-tools is removed.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -63967,7 +64003,7 @@
    "pr": "#167",
    "mergedAt": "2026-10-29T06:15:14Z",
    "createdAt": "2026-10-29T05:57:18.585Z",
-   "updatedAt": "2026-11-27T19:31:43.792Z",
+   "updatedAt": "2026-11-27T19:32:53.346Z",
    "builtAt": "2026-10-29T05:57:18.706Z",
    "notes": [
     {
@@ -63993,6 +64029,10 @@
     {
      "text": "Watchdog: merged and CI is green on 051b9ca2ec: landed.",
      "at": "2026-11-27T19:31:43.792Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-27T19:32:53.346Z"
     }
    ],
    "approvals": [],
@@ -70967,14 +71007,14 @@
    "title": "Porting spec + conformance fixtures",
    "category": "Kernel & engines",
    "detail": "framework/spec: PORTING.md plus generated fixtures every port must reproduce exactly (theme vars, layouts, component styles, UAC). The Android kernel passes them.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-27T19:41:18.740Z",
    "builtAt": "",
    "notes": [
     {
@@ -70984,6 +71024,14 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs a merged PR: there is no PR. Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 27 days: no PR reached GitHub and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T19:41:18.740Z"
+    },
+    {
+     "text": "Watchdog: landing for 27 days: no PR reached GitHub and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T19:41:18.740Z"
     }
    ],
    "approvals": [],
