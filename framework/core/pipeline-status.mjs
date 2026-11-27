@@ -56,7 +56,12 @@ export const holdsActive = (b) => !!b && b.flow === FLOW && !b.deleted && (ACTIV
  */
 export const isEmergency = (b) => !!b && !!b.emergency && typeof b.emergency === 'object' && !!str(b.emergency.at);
 /** The tag as stored: { at, by } or null. */
-export const normEmergency = (e) => (e && typeof e === 'object' && !Array.isArray(e) && str(e.at) ? { at: str(e.at, 40), by: str(e.by, 80) } : null);
+export const EMERGENCY_VIA = ['person', 'console-token'];
+export const normEmergency = (e) => (e && typeof e === 'object' && !Array.isArray(e) && str(e.at) ? {
+  at: str(e.at, 40), by: str(e.by, 80),
+  // who sent it and why (Nov 24 2026): 'person' = Brett's own signed-in click, 'console-token' = a Claude session he told to
+  ...(EMERGENCY_VIA.includes(e.via) ? { via: e.via } : {}), ...(str(e.askedBy) ? { askedBy: str(e.askedBy, 80) } : {}), ...(str(e.reason) ? { reason: str(e.reason, 400) } : {}),
+} : null);
 /**
  * Hand builds (Brett, Nov 23 2026): a session started by hand (axHub vps.build_start, a console launch) gets a record
  * the moment it starts, tagged `hand: { at, by }`. It is one step whose session is already running, so it enters the

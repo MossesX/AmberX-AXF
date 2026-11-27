@@ -249,6 +249,20 @@
       },
       "push": true,
       "priority": "high"
+    },
+    {
+      "id": "build-emergency-by-claude",
+      "label": "FYI: Claude sent a build to emergency",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator (POST /pipeline/emergency)",
+      "description": "FYI each time a Claude session (the console token: MCP, REST, the CLI, voice) sends a build to the emergency slots: the build, who asked and why. The same is logged on the build. Nothing to do; to stop Claude sending builds to emergency, switch off \"Claude can send builds to emergency\" in Settings → Plugins → Claude settings → Builds.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:emergency-by-claude:"
+      },
+      "push": true,
+      "priority": "normal"
     }
   ]
 }

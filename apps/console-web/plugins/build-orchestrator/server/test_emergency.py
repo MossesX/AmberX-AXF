@@ -1,13 +1,15 @@
-"""Send to emergency is Brett's own signed-in console only (Nov 20 2026): the console's two ways in.
+"""Send to emergency: Brett's own signed-in click, or a Claude session with the console token that says who asks and
+why (Brett, Nov 24 2026). The console's two ways in.
 
   python3 apps/console-web/plugins/build-orchestrator/server/test_emergency.py
 
-1. Build orchestrator: POST /pipeline/emergency {id}.
+1. Build orchestrator: POST /pipeline/emergency {id, reason?, askedBy?}. Brett's click needs no reason. The console
+   token (MCP, REST commands, the CLI, voice) needs a reason and a name (body or X-Axhub-Session / AXF_AGENT header),
+   else 400; with the Claude setting builds.claudeEmergency off it gets 403; a hub user who is not an admin gets 403.
+   A token send is logged on the build (emergency: {by, via, askedBy, reason, at} + a note) and raises one FYI.
 2. Plan Studio 2.0: POST /emergency {id} (found by its plan-tree@1 capability, never by folder name; skipped when that
-   plugin is not installed).
-Both take the request only from a signed-in hub admin's session with no agent header. The console token (what MCP, REST
-commands, voice and every session hold), a non-admin and a request naming an agent get 403 and nothing is tagged or
-granted. Runs the real CLIs against a scratch builds store, slots folder and plan tree.
+   plugin is not installed): Brett's signed-in click only.
+Runs the real CLIs against a scratch builds store, slots folder and plan tree.
 """
 from __future__ import annotations
 
@@ -83,20 +85,76 @@ with tempfile.TemporaryDirectory() as d:
 
     # ---- Build orchestrator: POST /pipeline/emergency
     send = srv.pipeline_emergency
-    for name, req in [
-        ("the console token (MCP, REST commands, voice, sessions)", Req("token", {"id": "rush"})),
-        ("a hub user who is not an admin", Req("session", {"id": "rush"}, admin=False)),
-        ("a request naming an agent", Req("session", {"id": "rush"}, headers={"X-Axhub-Session": "agent:Vinny"})),
-        ("a request from another source", Req("session", {"id": "rush"}, headers={"X-Axhub-Source": "mcp"})),
+    import console_context
+    import plugin_services
+    alerts: list[dict] = []
+    console_context.raise_alert = lambda a: alerts.append(a) or a
+    setting: dict = {}
+
+    class Settings:
+        def get(self) -> dict:
+            return {"ok": True, "values": dict(setting)}
+
+    had = plugin_services._services.pop("axf.claude-settings@1", None)
+    check(srv.claude_emergency_on(), "no Claude settings plugin = Claude may send (the default)")
+    plugin_services.provide("axf.claude-settings@1", Settings(), folder="test-settings")
+    check(srv.claude_emergency_on(), "builds.claudeEmergency missing = on")
+
+    why_ok = {"reason": "Prod is down and Brett said ram it through", "askedBy": "agent:Vinny"}
+    code, why = call(send, Req("session", {"id": "rush", **why_ok}, admin=False))
+    check(code == 403 and "neither" in str(why), "orchestrator: a hub user who is not an admin is refused with 403")
+    for name, req, field in [
+        ("no reason", Req("token", {"id": "rush", "askedBy": "agent:Vinny"}), "reason"),
+        ("a blank reason", Req("token", {"id": "rush", "reason": "   ", "askedBy": "agent:Vinny"}), "reason"),
+        ("a reason that is not text", Req("token", {"id": "rush", "reason": {"a": 1}, "askedBy": "agent:Vinny"}), "reason"),
+        ("no name in the body or a header", Req("token", {"id": "rush", "reason": "Prod is down"}), "askedBy"),
+        ("an agent on Brett's session with no reason", Req("session", {"id": "rush"}, headers={"X-Axhub-Session": "agent:Vinny"}), "reason"),
+        ("another source with no reason", Req("session", {"id": "rush"}, headers={"X-Axhub-Source": "mcp"}), "reason"),
     ]:
         code, why = call(send, req)
-        check(code == 403 and "Only Brett" in str(why), f"orchestrator: {name} is refused with 403")
-    check("emergency" not in build("rush") and grants() == [], "orchestrator: after every refusal nothing is tagged and nothing is granted")
+        check(code == 400 and str(why).startswith(f"{field} is missing"), f"orchestrator: the console token with {name} gets 400 naming {field} ({code} {why})")
+    setting["builds.claudeEmergency"] = False
+    check(not srv.claude_emergency_on(), "builds.claudeEmergency false = off")
+    code, why = call(send, Req("token", {"id": "rush", **why_ok}))
+    check(code == 403 and "builds.claudeEmergency" in str(why) and "Settings" in str(why), f"orchestrator: the setting off = 403 saying where to switch it on ({why})")
+    check(srv.pipeline_emergency_list(Req("token"))["claudeCanSend"] is False, "the list says Claude can't send while the setting is off")
+    check("emergency" not in build("rush") and grants() == [] and alerts == [], "orchestrator: after every refusal nothing is tagged, granted or notified")
     code, res = call(send, Req("session", {"id": "rush"}))
-    check(code == 200 and res["ok"] and res["emergency"]["by"] == "Brett" and not res["already"], "orchestrator: Brett's signed-in click sends it")
-    check(build("rush")["emergency"]["by"] == "Brett" and grants() == ["rush"], "orchestrator: the build is tagged emergency and holds the emergency slot grant")
+    check(code == 200 and res["ok"] and res["emergency"]["by"] == "Brett" and res["emergency"]["via"] == "person" and not res["already"], "orchestrator: Brett's signed-in click sends it, no reason needed, even with the setting off")
+    check(build("rush")["emergency"]["by"] == "Brett" and "reason" not in build("rush")["emergency"] and grants() == ["rush"] and alerts == [], "orchestrator: the build is tagged emergency and holds the emergency slot grant; no FYI for Brett's own click")
     code, res = call(send, Req("session", {"id": "rush"}, headers={"X-Axhub-Session": "console"}))
     check(code == 200 and res["already"], "orchestrator: the console's own header is fine; sending twice changes nothing")
+
+    # the console token (a Claude session): allowed with who asks and why, logged and notified once
+    setting["builds.claudeEmergency"] = True
+    code, res = call(send, Req("token", {"id": "calm", **why_ok}))
+    tag = build("calm")["emergency"]
+    check(code == 200 and res["ok"] and not res["already"] and res["emergency"] == tag, f"orchestrator: the console token with a reason and a name sends it ({code} {res})")
+    check(tag["via"] == "console-token" and tag["by"] == "agent:Vinny" and tag["askedBy"] == "agent:Vinny" and tag["reason"] == why_ok["reason"] and tag["at"], f"the build carries emergency: by, via, askedBy, reason, at {tag}")
+    note = build("calm")["notes"][-1]["text"]
+    check("agent:Vinny" in note and why_ok["reason"] in note and grants() == ["rush", "calm"], f"the send is a note on the build with who asked and why; the slot grant is on file ({note})")
+    check(len(alerts) == 1 and alerts[0]["source"] == "pipeline" and alerts[0]["key"] == "pipeline:emergency-by-claude:calm" and alerts[0]["title"] == "calm sent to emergency"
+          and "agent:Vinny" in alerts[0]["body"] and why_ok["reason"] in alerts[0]["body"], f"one FYI goes to the alert hub: the build, who asked and why {alerts}")
+    types = json.loads((HERE.parent / "notify.json").read_text())["types"]
+    t = next(x for x in types if x["id"] == srv.EMERGENCY_NOTIFY)
+    check(t["match"]["source"] == alerts[0]["source"] and alerts[0]["key"].startswith(t["match"]["keyPrefix"]) and t["push"] is True and t["priority"] == "normal"
+          and not any(x is not t and x["match"]["source"] == "pipeline" and len(x["match"].get("keyPrefix") or "") >= len(t["match"]["keyPrefix"]) and alerts[0]["key"].startswith(x["match"].get("keyPrefix") or "") for x in types),
+          "notify.json declares build-emergency-by-claude: an FYI that may reach the phone, and the alert's key lands on it")
+    code, res = call(send, Req("token", {"id": "calm", **why_ok}))
+    check(code == 200 and res["already"] and len(alerts) == 1, "sending it again changes nothing and sends no second FYI")
+    asyncio.run(srv.pipeline_emergency_clear(Req("token", {"id": "calm"})))
+    code, res = call(send, Req("session", {"id": "calm", "reason": "The header names who asks"}, headers={"X-Axhub-Session": "agent:Sully"}))
+    check(code == 200 and res["emergency"]["via"] == "console-token" and res["emergency"]["askedBy"] == "agent:Sully" and len(alerts) == 2, f"askedBy falls back to the X-Axhub-Session header; an agent on Brett's session is not Brett's click ({res})")
+    asyncio.run(srv.pipeline_emergency_clear(Req("token", {"id": "calm"})))
+    code, res = call(send, Req("token", {"id": "calm", "reason": "Named by AXF_AGENT"}, headers={"AXF_AGENT": "Rune"}))
+    check(code == 200 and res["emergency"]["askedBy"] == "Rune", "askedBy falls back to the AXF_AGENT header")
+    asyncio.run(srv.pipeline_emergency_clear(Req("token", {"id": "calm"})))
+    check("emergency" not in build("calm") and grants() == ["rush"], "calm is an ordinary build again")
+    p = subprocess.run(["node", str(srv.EMERGENCY_SEND), "calm"], cwd=ROOT, capture_output=True, text=True, timeout=60, input=json.dumps({"via": "person"}), env=dict(os.environ))
+    check(p.returncode == 3 and "emergency" not in build("calm"), "the send write takes via 'person' only with the approver the server sets for Brett's click")
+    plugin_services._services.pop("axf.claude-settings@1", None)
+    if had is not None:
+        plugin_services._services["axf.claude-settings@1"] = had
     code, why = call(send, Req("session", {"id": "nope"}))
     check(code == 400 and "no build" in str(why), "orchestrator: Brett, but no such build: 400")
     code, why = call(send, Req("session", {"id": "Bad Id"}))
@@ -151,4 +209,4 @@ with tempfile.TemporaryDirectory() as d:
         parked = plans.park("Do it later", "A parked idea", by="test")
         check(parked["ok"] and parked["item"]["status"] == "parked" and parked["item"]["kind"] == "plan" and not any(b["id"] == "do-it-later" for b in json.loads(store.read_text())["builds"]), "plans@1 park: a parked plan, never a build")
 
-print(f"send to emergency (console only): {n} checks passed")
+print(f"send to emergency: {n} checks passed")

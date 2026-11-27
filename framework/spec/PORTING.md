@@ -461,7 +461,9 @@ Emergency builds (Nov 20 2026, build emergency-slots): the engine adds `isEmerge
 `emergency: { at, by }` tag), `emergencyBuilds` (the dispatcher's emergency lane, oldest tag first) and
 `landing.mainPull` (the re-pull of main before a merge); `activeBuild` leaves emergency builds out. Fixture case
 `emergency`. **Kotlin twin deferred**: no Android surface dispatches or lands builds; AmberX shows the `emergency`
-flag it is given on a build row.
+flag it is given on a build row. Nov 24 2026 (build claude-emergency-access): `normEmergency` also keeps the optional
+`via` ('person' | 'console-token'), `askedBy` and `reason` (a Claude session may send a build to emergency, logged with
+who asked and why); a tag without them is unchanged, so the fixtures are too. Same deferred gap.
 
 ## Deferred: status-table@1 (Nov 19 2026)
 

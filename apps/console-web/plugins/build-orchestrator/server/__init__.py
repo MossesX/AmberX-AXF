@@ -742,16 +742,28 @@ async def pipeline_unqueue(request: Request) -> dict[str, Any]:
 
 
 EMERGENCY_CLI = ROOT / "framework" / "cli" / "emergency-builds.mjs"
-EMERGENCY_ONLY_BRETT = ("Only Brett sends a build to emergency, from his own signed-in console (Build orchestrator or Plan Studio 2.0). "
-                        "The console token, MCP, voice and sessions cannot.")
+EMERGENCY_SEND = Path(__file__).resolve().parent / "emergency-send.mjs"  # the send write (store + slot grant)
+EMERGENCY_SETTING = "builds.claudeEmergency"  # Claude setting, owner-only; a missing key = on
+EMERGENCY_NOTIFY = "build-emergency-by-claude"  # notify-types@1 (notify.json)
+EMERGENCY_ASKER_HEADERS = ("x-axhub-session", "x-axf-agent", "axf-agent", "axf_agent")
+EMERGENCY_NOT_YOURS = ("Only Brett (his own signed-in console) or a Claude session with the console token sends a build to emergency. "
+                       "This sign-in is neither.")
+EMERGENCY_OFF = ("Claude sending builds to emergency is switched off. Brett switches it on in the console: Settings → Plugins → "
+                 "Claude settings → Builds → \"Claude can send builds to emergency\" (builds.claudeEmergency). "
+                 "His own signed-in click on Send to emergency still works.")
 
 
-def _emergency(*args: str, approver: str = "") -> dict[str, Any]:
-    """Run framework/cli/emergency-builds.mjs. `approver` (Brett's click) is the only way AXF_APPROVER is ever set."""
+def _emergency(*args: str, approver: str = "", cli: Path = EMERGENCY_CLI, stdin: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Run framework/cli/emergency-builds.mjs (or the send write, `cli`). `approver` (Brett's click) is the only way
+    AXF_APPROVER is ever set."""
     env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
     if approver:
         env.update(AXF_APPROVER=approver, AXF_APPROVER_VIA="console")
-    proc = subprocess.run(["node", str(EMERGENCY_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60, env=env)
+    try:
+        proc = subprocess.run(["node", str(cli), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60, env=env,
+                              input=json.dumps(stdin) if stdin is not None else None)
+    except subprocess.TimeoutExpired:
+        raise HTTPException(503, "emergency took longer than 60 s (the host is busy); try again")
     out = proc.stdout.strip().splitlines()
     try:
         res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
@@ -762,24 +774,79 @@ def _emergency(*args: str, approver: str = "") -> dict[str, Any]:
     return res
 
 
+def claude_emergency_on() -> bool:
+    """The Claude setting builds.claudeEmergency (axf.claude-settings@1). On unless it is set to false: a missing key,
+    a missing provider or a read that fails all mean on (the default)."""
+    svc = plugin_services.get("axf.claude-settings@1")
+    if svc is None:
+        return True
+    try:
+        values = (svc.get() or {}).get("values") or {}
+    except Exception:  # noqa: BLE001 — a settings read that fails is the default, not a refusal
+        return True
+    return values.get(EMERGENCY_SETTING) is not False
+
+
+def _emergency_text(v: Any, limit: int) -> str:
+    return " ".join(str(v).split())[:limit] if isinstance(v, (str, int, float)) and not isinstance(v, bool) else ""
+
+
+def _emergency_fyi(res: dict[str, Any]) -> None:
+    """One FYI for a build a Claude session sent to emergency: into the alert hub, which asks axf.notify@1 where it
+    goes (type build-emergency-by-claude). A notification that fails never undoes the send."""
+    tag = res.get("emergency") or {}
+    try:
+        import console_context as cx
+        cx.raise_alert({"source": "pipeline", "severity": "info", "key": f"pipeline:emergency-by-claude:{res.get('id')}",
+                        "title": f"{res.get('id')} sent to emergency"[:200],
+                        "body": f"Asked by {tag.get('askedBy') or tag.get('by')} (a Claude session). Why: {tag.get('reason')}"[:600],
+                        "link": "view:build-orchestrator", "meta": {"type": EMERGENCY_NOTIFY, "build": res.get("id"), "askedBy": tag.get("askedBy"), "via": tag.get("via")}})
+    except Exception:  # noqa: BLE001
+        pass
+
+
 @router.get("/pipeline/emergency")
 def pipeline_emergency_list(request: Request) -> dict[str, Any]:
-    """The emergency builds (sent by Brett: they skip the line, build in the 2 emergency slots and land first), each
-    with its status and whether its slot grant is on file. `canSend` = this request is Brett's own signed-in console."""
-    return {**_emergency("list"), "canSend": bool(brett_click(request))}
+    """The emergency builds (they skip the line, build in the 2 emergency slots and land first), each with who sent it
+    and whether its slot grant is on file. canSend: this request is Brett's own click (no reason needed); claudeCanSend:
+    a console-token caller may send one with {reason, askedBy} (the Claude setting builds.claudeEmergency)."""
+    return {**_emergency("list"), "canSend": bool(brett_click(request)), "claudeCanSend": claude_emergency_on()}
 
 
 @router.post("/pipeline/emergency")
 async def pipeline_emergency(request: Request) -> dict[str, Any]:
-    """{id}: send a Pipeline 2.0 build to emergency. Brett only, from his own signed-in console session: the console
-    token (MCP, REST commands, voice) and every session are refused with 403. The build is tagged emergency, skips the
-    one-active-build line, builds in the emergency slot pool (2 places beside the orchestrator's) and lands first."""
-    who = brett_click(request)
-    if not who:
-        raise HTTPException(403, EMERGENCY_ONLY_BRETT)
+    """{id, reason?, askedBy?}: send a Pipeline 2.0 build to emergency. The build is tagged
+    `emergency: {by, via, askedBy, reason, at}`, skips the one-active-build line, builds in the emergency slot pool
+    (2 places beside the orchestrator's) and lands first.
+
+    - Brett's own signed-in click (via 'person'): no reason needed.
+    - The console token (MCP, REST commands, the CLI, voice; via 'console-token'; Brett, Nov 24 2026): allowed while
+      the Claude setting builds.claudeEmergency is on (403 when off), with a non-empty `reason` and `askedBy` (the
+      session or agent; falls back to the X-Axhub-Session / AXF_AGENT headers), else 400 naming the missing field.
+      Logged on the build as a note and one FYI goes to Brett (notify type build-emergency-by-claude).
+    - A signed-in hub user who is not an admin: 403."""
     body = await _json_body(request)
-    readcache.invalidate("build-orchestrator:table:")
-    return _emergency("send", _build_id(body.get("id")), approver=who)
+    bid = _build_id(body.get("id"))
+    reason = _emergency_text(body.get("reason"), 400)
+    who = brett_click(request)
+    if who:
+        return _emergency(bid, approver=who, cli=EMERGENCY_SEND, stdin={"via": "person", "reason": reason})
+    user = getattr(request.state, "axf_user", None)
+    if user is not None and getattr(user, "via", "token") == "session" and not getattr(user, "admin", False):
+        raise HTTPException(403, EMERGENCY_NOT_YOURS)
+    if not claude_emergency_on():
+        raise HTTPException(403, EMERGENCY_OFF)
+    asked = _emergency_text(body.get("askedBy"), 80)
+    for h in EMERGENCY_ASKER_HEADERS:
+        asked = asked or _emergency_text(request.headers.get(h) or "", 80)
+    if not reason:
+        raise HTTPException(400, "reason is missing: say why this build goes to emergency (it is logged on the build and sent to Brett)")
+    if not asked:
+        raise HTTPException(400, "askedBy is missing: name the session or agent that asks (or send the X-Axhub-Session header)")
+    res = _emergency(bid, cli=EMERGENCY_SEND, stdin={"via": "console-token", "askedBy": asked, "reason": reason})
+    if not res.get("already"):
+        _emergency_fyi(res)
+    return res
 
 
 @router.post("/pipeline/emergency/clear")
