@@ -37,19 +37,8 @@
   },
   "data": {
     "shared": [
-      "framework/plan/pending.json",
-      "framework/plan/plan.json",
-      "framework/plan/build-queue.json",
-      "framework/plan/profiles.json",
-      "framework/plan/projects.json",
       "framework/plan/media/",
-      "framework/catalog/status.json",
-      "framework/catalog/libraries.json",
-      "framework/schemas/project-rules.json",
-      "tracker.json",
-      "sessions/",
-      "changes/",
-      "build-rules/"
+      "tracker.json"
     ]
   },
   "owners": [
