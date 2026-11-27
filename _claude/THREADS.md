@@ -845,122 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-26 22:41 UTC · `jump-menu-asset` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `settings-placement-everywhere` added (6 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `live-sessions-plugin` added (6 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `model-thinking-audit` added (8 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `handoff-2` added (11 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `fable-packager` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `grid-column-hiding` added (6 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `drag-to-tab` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `build-optimizer` added (9 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `changes-chat-log` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `notes-views` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` added (7 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `headless-session-efficiency-shared-chain-control` added (16 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `memory-restructure-chunked-claude-md-store-memor` added (9 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `orchestrator-gate` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `notes-tasks-sync` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `md-studio` added (14 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `ui-registry-shortcuts` added (13 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `settings-sections-everywhere` added (7 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `plan-studio-backfill-12h` added (12 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `ui-asset-designer` added (40 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `dataset-bar` added (8 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `approval-row-buttons` added (2 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `builds-one-page-done` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `smart-menus` added (7 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `agent-jobs` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `amberx-approvals-fix` added (6 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `session-history` added (7 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `amberx-live-audio` added (6 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `build-docs-walkthroughs` added (8 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `three-layouts-per-screen` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `follow-amber-flash` added (4 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `hub-runs-approved` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `builds-one-page` added (16 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `chat-viewer` added (8 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `console-android-app-tabs` added (7 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `build-pipeline-v2` added (15 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `amber-chat-asset` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `style-override-rule` added (8 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `maintenance-redundancy-scan` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `orchestrator-dup-check` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `approve-button-fix` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `readme-rule-every-build` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `full-api-control` added (9 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `glossary-walkthrough-generator-investor-demos` added (6 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `real-time-slot-tracking-stale-data-reaper` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `fix-owner-check-bug-dead-start-button` added (4 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `terminal-header-responsive` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `account-failover-notify` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `ui-api-parity-rule` added (7 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `account-health-failover` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `orchestrator-api-rule-in-every-brief-plan-studio` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `tabs-api-control` added (4 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `plan-studio-receives-a-valid-shipped-feature-man` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` added (6 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `appearance-skins-colour-themes-only-remove-design-packs` added (5 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `prompt-caching-and-batch-api-support-in-the-buil` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `right-click-a-queued-build-to-assign-it-to-a-spe` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `orchestrator-self-check-when-stuck-verify-each-a` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `orchestrator-settings-api-account-limits-and-rou` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `account-failover-chain-subscription-next-subscri` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `split-builds-pages-build-manager-pending-complet` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `split-builds-pages-build-manager-pending-complet-3` added (11 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `urgent-terminal-pops-up-every-time-the-console-o` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `orchestrator-and-build-manager-search-bar-collap` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `vps-orchestrator-only-rule-vps-settings-console` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `home-page-build-queue-card-opens-the-orchestrato` added (4 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `test-button-on-every-claude-account-subscription` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `per-account-queues-long-press-a-queued-build-to` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `one-source-of-truth-for-claude-accounts-the-orch` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `activity-monitor-plugin-live-plain-english-log-o` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `assign-an-employee-to-every-role-action-type-and` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `fix-it-yourself-rule-in-every-brief-and-session` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `build-statuses-tell-the-truth-orchestrator-list` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `search-bar-plugin-snappable-search-asset-globe-e` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `failed-launches-auto-retry-on-another-working-ac` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `search-bar-plugin-add-on-search-builds-session-h` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `project-manager-every-project-its-own-console-in` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `self-healing-build-folders-auto-clear-stale-git` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `one-amberx-build-notification-veto-approval-befo` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `resolve-merge-conflicts-and-land-running-builds` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `claude-accounts-manager-plugin-one-ordered-list` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `account-order-switch-custom-drag-and-drop-order` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `inline-element-editing-plugin-right-click-any-el` added (13 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `amberx-open-url-tapping-the-command-waiting-noti` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `merge-queue-batching-orchestrator-combines-ready` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `conversation-rag-index-every-voice-chat-session` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `conversation-rag-amendment-store-only-short-key` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `skin-checker-flags-anything-that-breaks-a-profes` added (13 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `resolve-conflicts-and-land-pr-449-account-order` added (7 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `orchestrator-checks-each-build-against-main-righ` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `resolve-conflicts-and-land-460-456-457-459-342` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `finish-and-land-the-git-status-board-every-ready` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `make-hulu-actually-take-builds-dispatcher-counts` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `api-accounts-need-no-approval-builds-route-there` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `orchestrator-merge-first-switch-separate-merger` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `stall-watchdog-detect-when-nothing-is-building-a` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `auto-requeue-builds-whose-session-stops-early-go` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `per-agent-api-control-switch-in-each-employee-s` added (3 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `skin-configuration-panel-before-ai-makes` added (9 steps) (all) · foreign-write
-- 2026-11-26 22:41 UTC · `skins-plugin-own-removable-console` added (20 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `projects-own-everything-per-project` added (5 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` added (2 steps) (all) · foreign-write
 - 2026-11-26 22:41 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` added (3 steps) (all) · foreign-write
@@ -1245,6 +1129,122 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 05:10 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
 - 2026-11-27 05:10 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
 - 2026-11-27 05:10 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:12 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:13 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:13 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:13 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:13 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:13 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:14 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:14 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-27 05:14 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-27 05:15 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:15 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:16 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:18 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:19 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-27 05:19 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-27 05:19 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-27 05:19 UTC · `emergency-remove-every-leftover-js` s5 undone, s6 undone, note (all) · watchdog
+- 2026-11-27 05:20 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:21 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:21 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:21 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:23 UTC · `emergency-check-can-these-plugins-` s5 undone (all) · orchestrator
+- 2026-11-27 05:23 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:24 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-27 05:24 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-27 05:25 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-27 05:25 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-27 05:26 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:29 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-27 05:29 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-27 05:29 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:30 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:30 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:32 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:35 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:35 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:37 UTC · `emergency-check-can-these-plugins-` s6 undone (all) · orchestrator
+- 2026-11-27 05:37 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:37 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:38 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:41 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:42 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:43 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:44 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:44 UTC · `claude-emergency-access` s1 undone (all) · orchestrator
+- 2026-11-27 05:44 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:44 UTC · `emergency-check-can-these-plugins-` s6 undone, note (all) · watchdog
+- 2026-11-27 05:45 UTC · `claude-emergency-access` → building (all) · orchestrator
+- 2026-11-27 05:45 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:46 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-27 05:47 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:47 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:48 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:48 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-27 05:48 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-27 05:49 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-27 05:49 UTC · `emergency-remove-every-leftover-js` s5 undone, note (all) · watchdog
+- 2026-11-27 05:49 UTC · `claude-emergency-access` note (all) · watchdog
+- 2026-11-27 05:50 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:51 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:51 UTC · `claude-emergency-access` s1 undone (all) · orchestrator
+- 2026-11-27 05:54 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-27 05:54 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-27 05:54 UTC · `claude-emergency-access` note (all) · watchdog
+- 2026-11-27 05:55 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:55 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:55 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:55 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:57 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:57 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 05:58 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 05:58 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:58 UTC · `emergency-rip-out-the-7-mb-status-` s6 undone (all) · orchestrator
+- 2026-11-27 05:59 UTC · `emergency-remove-every-leftover-js` s6 undone (all) · orchestrator
+- 2026-11-27 05:59 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-27 05:59 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-27 05:59 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 05:59 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 06:00 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 06:01 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 06:01 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 06:01 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 06:02 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 06:02 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 06:03 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 06:03 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 06:04 UTC · `emergency-remove-every-leftover-js` s3 undone (all) · orchestrator
+- 2026-11-27 06:04 UTC · `emergency-remove-every-leftover-js` s7 undone (all) · orchestrator
+- 2026-11-27 06:04 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-27 06:04 UTC · `emergency-check-can-these-plugins-` s9 undone, note (all) · watchdog
+- 2026-11-27 06:04 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-27 06:05 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 06:05 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 06:05 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 06:06 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 06:06 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-27 06:07 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 06:07 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 06:07 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 06:08 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-27 06:08 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-27 06:09 UTC · `emergency-remove-every-leftover-js` note (all) · orchestrator
+- 2026-11-27 06:09 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-27 06:09 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-27 06:09 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
+- 2026-11-27 06:09 UTC · `claude-emergency-access` note (all) · watchdog
+- 2026-11-27 06:10 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 06:10 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 06:11 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 06:11 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
+- 2026-11-27 06:13 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 06:13 UTC · `claude-emergency-access` s1 undone (all) · orchestrator
+- 2026-11-27 06:14 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
+- 2026-11-27 06:14 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
+- 2026-11-27 06:14 UTC · `claude-emergency-access` note (all) · watchdog
+- 2026-11-27 06:14 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
 
 ## Token passes (log)
 
