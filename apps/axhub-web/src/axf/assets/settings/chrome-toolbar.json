@@ -3,8 +3,8 @@
   "type": "settings",
   "id": "chrome-toolbar",
   "name": "Toolbar settings (default)",
-  "version": "1.0.0",
-  "description": "The shared default settings interface for every toolbar (chrome-settings@1): how the Settings dialog you reach by right-clicking one is laid out. The app toolbar and every plugin toolbar (lib-toolbars). Every app gets its own copy (chrome-toolbar-<app>) that follows this one until edited; this default is what the dialog uses unless an app picks its copy.",
+  "version": "1.1.0",
+  "description": "The shared default settings interface for every toolbar (chrome-settings@1): how the Settings dialog you reach by right-clicking one is laid out. The app toolbar and every plugin toolbar (lib-toolbars). The Widgets tab lists the widgets attached to this toolbar (toolbar-widgets@1) with their banner widget style, shape, order and Detach, and attaches more. Every app gets its own copy (chrome-toolbar-<app>) that follows this one until edited; this default is what the dialog uses unless an app picks its copy.",
   "author": "AmberX AXF",
   "tags": [
     "default",
@@ -23,6 +23,12 @@
         "label": "Look",
         "icon": "palette",
         "order": 10
+      },
+      {
+        "id": "widgets",
+        "label": "Widgets",
+        "icon": "layers",
+        "order": 15
       },
       {
         "id": "behaviour",
@@ -51,7 +57,8 @@
       "look": "simple",
       "behaviour": "basic",
       "asset": "basic",
-      "interface": "developer"
+      "interface": "developer",
+      "widgets": "simple"
     },
     "builtFor": "chrome:toolbar"
   }

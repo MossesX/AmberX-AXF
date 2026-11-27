@@ -1,0 +1,11 @@
+{
+  "$axf": "toolbar-widgets-voice@1",
+  "description": "AmberX voice phrases for toolbar widgets (toolbar-widgets@1). They are console-control voice intents (framework/core/engines/console-control-voice.mjs, Python twin server/console_control.py voice_intent): each phrase becomes a press on function:toolbar.widget with value <toolbar>:<widget>:<op>, the console action every other surface uses (REST /api/plugins/toolbar-widgets/widgets…, MCP toolbar_widgets_*, axf toolbar widgets …). The toolbar and the widget are named in words; the console resolves them (matchToolbarInstance, findToolbarWidget).",
+  "owner": "Toolbar widgets",
+  "commands": [
+    { "id": "toolbar.widget.attach", "action": "toolbar.widget:<toolbar>:<widget>:add", "phrases": ["attach the <widget> widget to the <toolbar> toolbar", "add the <widget> to the <toolbar> toolbar", "put the <widget> on the <toolbar> toolbar", "add the <widget> to the <toolbar> toolbar at the start"] },
+    { "id": "toolbar.widget.detach", "action": "toolbar.widget:<toolbar>:<widget>:remove", "phrases": ["detach the <widget> from the <toolbar> toolbar", "remove the <widget> widget from the <toolbar> toolbar", "take the <widget> off the <toolbar> toolbar"] },
+    { "id": "toolbar.widget.move", "action": "toolbar.widget:<toolbar>:<widget>:<start|end>", "phrases": ["move the <widget> to the end of the <toolbar> toolbar", "put the <widget> at the start of the <toolbar> toolbar"] },
+    { "id": "toolbar.widget.style", "action": "toolbar.widget:<toolbar>:<widget>:<icon|compact|normal|wide>", "phrases": ["make the <widget> on the <toolbar> toolbar icon only", "make the <widget> on the <toolbar> toolbar wide"] }
+  ]
+}

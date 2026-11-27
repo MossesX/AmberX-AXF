@@ -2731,6 +2731,14 @@
               "tag": "",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "cx.toolbarwidgets",
+              "title": "Toolbar widgets: attach any widget to any toolbar, banner style (any banner widget style + shape), snap, never overlap; right-click / long-press Attach widget\u2026 / Style\u2026 / Move / Detach, drag and drop between toolbars, the toolbar settings Widgets tab; REST, MCP, CLI and voice",
+              "note": "toolbar-widgets@1 (framework/core/engines/toolbar-widgets.ts, fixture toolbar-widgets.json, check-toolbar-widgets.mts); React ToolbarWidgetSlot / ToolbarWidgets / toolbarWidgetDrop (drop-target@1); console-control toolbar:<id>/widget:<type:id>; plugin apps/console-web/plugins/toolbar-widgets (REST /api/plugins/toolbar-widgets/widgets\u2026, MCP toolbar_widgets_*), CLI axf toolbar widgets \u2026, voice intents; Kotlin twin deferred (PORTING.md) (axf-plugin:toolbar-widgets)",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
             }
           ]
         }

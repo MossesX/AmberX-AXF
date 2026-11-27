@@ -1,0 +1,336 @@
+{
+  "schema": "host-services@1",
+  "version": 1,
+  "manifest": "host-service@1",
+  "state": "host-service-state@1",
+  "error": "host-error@1",
+  "mode": "host-service-mode@1",
+  "list": "host-service-list@1",
+  "kinds": [
+    "tick",
+    "daemon"
+  ],
+  "statuses": [
+    "up",
+    "degraded",
+    "down",
+    "unknown"
+  ],
+  "unitStates": [
+    "active",
+    "reloading",
+    "inactive",
+    "failed",
+    "activating",
+    "deactivating",
+    "unknown"
+  ],
+  "unitActions": [
+    "start",
+    "stop",
+    "restart",
+    "run"
+  ],
+  "runResults": [
+    "ok",
+    "error",
+    "skipped",
+    "timeout"
+  ],
+  "sudoAs": [
+    "root"
+  ],
+  "settingTypes": [
+    "boolean",
+    "integer",
+    "number",
+    "string",
+    "enum"
+  ],
+  "modes": [
+    "container",
+    "shadow",
+    "host"
+  ],
+  "modeEvents": [
+    "start-shadow",
+    "back-to-container",
+    "cut-over",
+    "step-back",
+    "roll-back"
+  ],
+  "modeTransitions": {
+    "start-shadow": [
+      "container",
+      "shadow"
+    ],
+    "back-to-container": [
+      "shadow",
+      "container"
+    ],
+    "cut-over": [
+      "shadow",
+      "host"
+    ],
+    "step-back": [
+      "host",
+      "shadow"
+    ],
+    "roll-back": [
+      "host",
+      "container"
+    ]
+  },
+  "modeGuards": {
+    "minShadowMs": 1800000,
+    "minRuns": 3,
+    "maxDrift": 0
+  },
+  "cutoverTiers": [
+    {
+      "tier": 1,
+      "name": "gateway",
+      "why": "nothing else is reachable without it",
+      "services": [
+        "host-api"
+      ]
+    },
+    {
+      "tier": 2,
+      "name": "publishers",
+      "why": "everything else reads what they keep current (main, the hub)",
+      "services": [
+        "builds-live",
+        "hub-sync"
+      ]
+    },
+    {
+      "tier": 3,
+      "name": "independent loops",
+      "why": "no console coupling beyond their own data folder",
+      "services": [
+        "maintenance",
+        "shipped-features"
+      ]
+    },
+    {
+      "tier": 4,
+      "name": "host actions",
+      "why": "they start sessions and run fixes, so the publishers go first",
+      "services": [
+        "systems-check",
+        "agent-swarm"
+      ]
+    },
+    {
+      "tier": 5,
+      "name": "rest",
+      "why": "anything a later build adds and does not place",
+      "services": []
+    }
+  ],
+  "driftKinds": [
+    "effect-differs",
+    "result-differs",
+    "host-error",
+    "container-error",
+    "host-missing",
+    "container-missing"
+  ],
+  "drift": "host-shadow-drift@1",
+  "errors": {
+    "host_service_down": {
+      "http": 503,
+      "console": "down",
+      "when": "the unit is not active, its socket refused or timed out, or the host API itself cannot be reached (service = 'host-api')"
+    },
+    "unknown_service": {
+      "http": 404,
+      "console": "caller",
+      "when": "no manifest with that id"
+    },
+    "unknown_action": {
+      "http": 404,
+      "console": "caller",
+      "when": "the manifest declares no such action and it is not a unit action"
+    },
+    "unknown_setting": {
+      "http": 404,
+      "console": "caller",
+      "when": "the manifest declares no such setting"
+    },
+    "invalid_body": {
+      "http": 400,
+      "console": "caller",
+      "when": "not JSON, a bad frame, an argument outside its declared type or range"
+    },
+    "invalid_manifest": {
+      "http": 500,
+      "console": "caller",
+      "when": "a manifest on disk fails validation; the host API lists the service as down with this code"
+    },
+    "unauthorized": {
+      "http": 401,
+      "console": "caller",
+      "when": "loopback call without the bearer token, or a wrong one (the socket is authorised by its file mode)"
+    },
+    "confirm_required": {
+      "http": 428,
+      "console": "confirm",
+      "when": "the action is marked confirm and the body has no valid confirm token"
+    },
+    "forbidden_command": {
+      "http": 403,
+      "console": "caller",
+      "when": "a service asked the host to run a command outside its sudo whitelist; logged and refused"
+    },
+    "mode_refused": {
+      "http": 409,
+      "console": "caller",
+      "when": "the action is not allowed in the service's current migration mode (container = the host copy is off)"
+    },
+    "busy": {
+      "http": 409,
+      "console": "retry",
+      "when": "the action or tick is already running (its lock is held)"
+    },
+    "timeout": {
+      "http": 504,
+      "console": "retry",
+      "when": "the service did not answer within health.timeoutMs"
+    },
+    "internal": {
+      "http": 500,
+      "console": "retry",
+      "when": "anything else; message carries a request id"
+    }
+  },
+  "defaults": {
+    "user": "axf-host",
+    "group": "axf-host",
+    "socketDir": "/run/axf-host",
+    "apiSocket": "/run/axf-host/api.sock",
+    "socketMode": "0660",
+    "loopbackHost": "127.0.0.1",
+    "loopbackPort": 7788,
+    "fallbackUrl": "http://host.docker.internal:7788",
+    "apiPrefix": "/v1",
+    "unitPrefix": "axf-",
+    "manifestGlob": "deploy/host-services/services/*.json",
+    "stateDir": "_data/host-services",
+    "modeFile": "_data/host-services/mode.json",
+    "logDir": "/var/log",
+    "hostApiId": "host-api",
+    "healthIntervalSec": 30,
+    "healthTimeoutMs": 5000,
+    "staleSec": 180,
+    "envApi": "AXF_HOST_API",
+    "envFallback": "AXF_HOST_API_FALLBACK",
+    "envToken": "AXF_HOST_TOKEN"
+  },
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "auth": "none",
+      "answers": "the host API itself: { ok, service: host-api, at, version }"
+    },
+    {
+      "method": "GET",
+      "path": "/services",
+      "auth": "token",
+      "answers": "host-service-list@1: every service (host-service-state@1) with its manifest"
+    },
+    {
+      "method": "GET",
+      "path": "/services/{id}",
+      "auth": "token",
+      "answers": "host-service-state@1 + manifest"
+    },
+    {
+      "method": "GET",
+      "path": "/services/{id}/health",
+      "auth": "token",
+      "answers": "the service's own health answer (daemon: forwarded; tick: the last run)"
+    },
+    {
+      "method": "POST",
+      "path": "/services/{id}/unit/{start|stop|restart|run}",
+      "auth": "token",
+      "answers": "{ ok, unit, state } after systemctl; run = start a tick now"
+    },
+    {
+      "method": "POST",
+      "path": "/services/{id}/actions/{action}",
+      "auth": "token",
+      "answers": "{ ok, result, at, durationMs }; body { args, by, reason, confirm? }"
+    },
+    {
+      "method": "GET",
+      "path": "/services/{id}/settings",
+      "auth": "token",
+      "answers": "{ settings, declared } current values + the manifest's declarations"
+    },
+    {
+      "method": "PUT",
+      "path": "/services/{id}/settings",
+      "auth": "token",
+      "answers": "{ ok, settings } merged key by key (last save wins); body { set: {…}, by, reason }"
+    },
+    {
+      "method": "GET",
+      "path": "/services/{id}/logs?lines=&since=",
+      "auth": "token",
+      "answers": "{ lines: [{ at, line }] } from journalctl -u <unit>"
+    },
+    {
+      "method": "GET",
+      "path": "/services/{id}/mode",
+      "auth": "token",
+      "answers": "the service's entry of host-service-mode@1"
+    },
+    {
+      "method": "PUT",
+      "path": "/services/{id}/mode",
+      "auth": "token",
+      "answers": "{ ok, mode, changes } body { to: container|shadow|host, by, reason, confirm? } (s5)"
+    },
+    {
+      "method": "GET",
+      "path": "/mode",
+      "auth": "token",
+      "answers": "host-service-mode@1: the whole document"
+    },
+    {
+      "method": "POST",
+      "path": "/services/{id}/shadow",
+      "auth": "token",
+      "answers": "{ ok, drift } the console reports what its in-container copy did (shadow mode); the host API compares with the host run and logs host-shadow-drift@1"
+    },
+    {
+      "method": "GET",
+      "path": "/services/{id}/shadow?since=",
+      "auth": "token",
+      "answers": "{ runs, drift: [host-shadow-drift@1] } the shadow log"
+    },
+    {
+      "method": "POST",
+      "path": "/services/{id}/rollback",
+      "auth": "token",
+      "answers": "{ ok, steps } mode → container, unit stopped, timer disabled, cron restored; body { by, reason, why }"
+    }
+  ],
+  "idPattern": "^[a-z0-9][a-z0-9-]{0,40}$",
+  "unitPattern": "^axf-[a-z0-9][a-z0-9-]{0,60}\\.(service|timer)$",
+  "pluginPattern": "^(console|[a-z0-9][a-z0-9-]{0,60})$",
+  "pathPattern": "^/[A-Za-z0-9._/-]*$",
+  "limits": {
+    "textMax": 600,
+    "titleMax": 120,
+    "sudoMax": 40,
+    "actionsMax": 60,
+    "settingsMax": 80,
+    "logLinesMax": 2000,
+    "argsMax": 20
+  }
+}

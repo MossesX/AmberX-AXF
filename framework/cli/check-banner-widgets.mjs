@@ -4,6 +4,8 @@
  * asset's `attach` list), so it shows up in the Widgets picker and takes the person's size, hide and overflow choices.
  *
  *   1. fails on a hard-coded chip: `fx-banner__item` or `fx-banner__side` outside the framework's own banner components;
+ *      a toolbar widget (`fx-toolbar__widget`, toolbar-widgets@1) wears the banner item frame and comes through the toolbar's
+ *      own registry (rt.attachToToolbar, the toolbar asset's `widgets`, axf.toolbar.<id>.widgets), so it is not a hard-coded chip;
  *   2. warns on an attachToBanner call with no `widget:` hint (it still works, its picker name is the asset's name).
  *
  *   node framework/cli/check-banner-widgets.mjs [--json]
@@ -14,7 +16,7 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-const OWNERS = new Set(['framework/react/components/Banner.tsx', 'framework/react/components/BannerWidgets.tsx', 'framework/react/components/BannerStrip.tsx']);
+const OWNERS = new Set(['framework/react/components/Banner.tsx', 'framework/react/components/BannerWidgets.tsx', 'framework/react/components/BannerStrip.tsx', 'framework/react/components/ToolbarWidgetSlot.tsx']);
 const SKIP = new Set(['node_modules', 'dist', 'axf', '.git', 'build']);
 
 function walk(dir, out = []) {
@@ -36,7 +38,7 @@ for (const f of files) {
   const rel = relative(ROOT, f).replaceAll('\\', '/');
   const text = readFileSync(f, 'utf8');
   text.split('\n').forEach((line, i) => {
-    if (!OWNERS.has(rel) && /fx-banner__(item|side)\b/.test(line)) failures.push({ file: rel, line: i + 1, why: 'hard-coded banner chip: attach it with rt.attachToBanner({ type, id, at, origin, widget: { label } })' });
+    if (!OWNERS.has(rel) && /fx-banner__(item|side)\b/.test(line) && !/fx-toolbar__widget\b/.test(line)) failures.push({ file: rel, line: i + 1, why: 'hard-coded banner chip: attach it with rt.attachToBanner({ type, id, at, origin, widget: { label } })' });
     if (/\.attachToBanner\(\{/.test(line) && !/widget:/.test(line)) warnings.push({ file: rel, line: i + 1, why: 'no `widget:` hint: give it a label and a size for the Widgets picker' });
   });
 }

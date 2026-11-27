@@ -664,6 +664,9 @@
                         "widgets": {
                           "$ref": "#/$defs/mode"
                         },
+                        "shape": {
+                          "$ref": "#/$defs/mode"
+                        },
                         "collapsible": {
                           "$ref": "#/$defs/mode"
                         },
@@ -3940,6 +3943,9 @@
                           "$ref": "#/$defs/mode"
                         },
                         "divider": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "shape": {
                           "$ref": "#/$defs/mode"
                         }
                       }

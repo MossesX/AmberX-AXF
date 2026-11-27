@@ -410,6 +410,48 @@
         "title": "This settings window",
         "text": "Opens the choice of which settings interface every settings window of this kind uses, the shared default or a custom copy. It changes the settings window, not the chrome.",
         "kind": "button"
+      },
+      {
+        "target": "shape",
+        "title": "Shape",
+        "text": "Where you set “Shape”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "widget",
+        "title": "Widget",
+        "text": "Where you set “Widget”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "side",
+        "title": "Side",
+        "text": "Where you set “Side”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "banner-widget-style",
+        "title": "Banner widget style",
+        "text": "Where you set “Banner widget style”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "attach",
+        "title": "Attach",
+        "text": "Shows “Attach”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "put-widgets-back",
+        "title": "Put widgets back",
+        "text": "Shows “Put widgets back”.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []

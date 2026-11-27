@@ -96,7 +96,7 @@ export function waitingOn(id, sources = {}) {
     if (hit && open) add({ kind: 'ui', id: u.id, title: u.name || u.title || u.id, why: 'In UI Review', route: 'ui-review', highlight: u.name || u.title || '' });
   }
   for (const p of sources.plans ?? []) {
-    if (p.build?.id === id) add({ kind: 'plan', id: p.id, title: p.title, why: 'Plan linked to it', route: 'plan-studio', highlight: p.title });
+    if (p.build?.id === id) add({ kind: 'plan', id: p.id, title: p.title, why: 'Plan linked to it', route: 'plan-studio-2', highlight: p.title });
   }
   return rows;
 }

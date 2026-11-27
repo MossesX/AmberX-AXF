@@ -325,6 +325,7 @@ jobs:
             (cd framework && npm install --no-audit --no-fund --silent)
             npx -y tsx framework/spec/check-alerts.mts
             npx -y tsx framework/spec/check-widgets.mts
+            npx -y tsx framework/spec/check-toolbar-widgets.mts      # toolbar-widgets@1: attach, detach, reorder, banner widget style + shape, snap-not-overlap fit order, fixtures/toolbar-widgets.json
             npx -y tsx framework/spec/check-tapconfirm.mts            # toolbar tap-to-confirm: touch arms then runs, mouse/pen/keyboard click once, re-arm, window, per-toolbar settings
             npx -y tsx framework/spec/check-toolbar-actions.mts       # page-toolbar@1: migration with no visible change, scope + slot pick, state gating, overflow plans, invocations, API state; fixtures/toolbar-actions.json
             npx -y tsx framework/spec/check-page-toolbars.mts         # every plugin page toolbar asset: page-scoped, every button bound and wired, drawn by its page, reachable by deep link, REST, MCP, CLI and voice
@@ -441,6 +442,8 @@ jobs:
             python apps/console-web/plugins/claude-session/test.py  # axf-plugin:claude-session
             python apps/console-web/plugins/follow-amber/test.py  # axf-plugin:follow-amber
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
+            python apps/console-web/plugins/toolbar-widgets/server/test_toolbar_widgets.py  # toolbar widgets REST: every route → its console-control command, Detach needs confirm, bad input 400, REST = MCP = CLI  # axf-plugin:toolbar-widgets
+            node apps/console-web/plugins/toolbar-widgets/test.mjs  # toolbar widgets CLI + voice: ops → console-control commands, phrases → toolbar.widget grammar  # axf-plugin:toolbar-widgets
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools
             python apps/console-web/plugins/host-services/test.py  # host-services plugin routes (MCP commands): down state, confirm on destructive presses  # axf-plugin:host-services
             python apps/console-web/server/tests/test_host_services.py  # host services, console half: client down state + endpoint order, REST + plugin routes (confirm on destructive presses), live host API, health@1 items, capability

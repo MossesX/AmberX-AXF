@@ -203,7 +203,9 @@ export class SettingsRegistry {
 
   /** Forget a value (back to its default). */
   clear(key: string): void {
-    const fresh = readValues(this.storageKey);
+    // the same merge as set(): storage wins per key, in-memory values storage never saw stay (a session without
+    // storage, or a headless runtime, must not lose every other setting when one is cleared)
+    const fresh = { ...this.values, ...readValues(this.storageKey) };
     delete fresh[key];
     this.values = fresh;
     delete this.secrets[key];

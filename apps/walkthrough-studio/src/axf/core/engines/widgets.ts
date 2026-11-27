@@ -35,9 +35,24 @@ export interface HostSpec {
 
 const hostRegistry = new Map<string, HostSpec>();
 
+/**
+ * Host instances (toolbar-widgets@1, Nov 16 2026): a chrome kind the app shows many of (toolbars: the app's, a page's, a
+ * workspace's) hosts widgets per instance. The host id is `<type>@<instance>` (`toolbar@settings-toolbar`), and the
+ * type's spec answers for every instance. The app's own instance (`app`) is the bare type, so the banner's and the app
+ * toolbar's saved arrangements keep their keys.
+ */
+export const HOST_INSTANCE_SEP = '@';
+export const HOST_APP_INSTANCE = 'app';
+export const instanceHost = (host: string, instance?: string | null): string => (!instance || instance === HOST_APP_INSTANCE ? host : `${host}${HOST_INSTANCE_SEP}${instance}`);
+export function splitHost(h: string): { host: string; instance: string } {
+  const i = h.indexOf(HOST_INSTANCE_SEP);
+  return i < 0 ? { host: h, instance: HOST_APP_INSTANCE } : { host: h.slice(0, i), instance: h.slice(i + 1) || HOST_APP_INSTANCE };
+}
+
 /** Register (or replace) a host. The two framework hosts come from asset-types.json; libraries may add more. */
 export function registerHost(h: HostSpec): void { hostRegistry.set(h.host, { ...h, types: [...h.types], sides: [...h.sides] }); }
-export function hostSpec(host: string): HostSpec | undefined { return hostRegistry.get(host); }
+/** The spec of a host, or of a host instance (`toolbar@x` answers as `toolbar`). */
+export function hostSpec(host: string): HostSpec | undefined { return hostRegistry.get(host) ?? (host.includes(HOST_INSTANCE_SEP) ? hostRegistry.get(splitHost(host).host) : undefined); }
 export function hostSpecs(): HostSpec[] { return [...hostRegistry.values()]; }
 export function isHost(type: string): boolean { return hostRegistry.has(type); }
 
@@ -252,6 +267,19 @@ export const PROGRESS_WIDTH: Record<'compact' | 'regular' | 'wide', number> = { 
 export function progressWidth(w: unknown): number { return PROGRESS_WIDTH[w as keyof typeof PROGRESS_WIDTH] ?? PROGRESS_WIDTH.regular; }
 /** Theme switch: the color theme to swap to from the active one (dark while light is active or neither; light while dark is). */
 export function themeSwitchNext(active: unknown, light: unknown, dark: unknown): string { return active === dark ? String(light) : String(dark); }
+/**
+ * Theme switch pair: the light / dark pair a switch toggles inside. Its own pair while the colour theme in force is one
+ * of the two; otherwise the first other switch's pair that holds the colour theme in force (a look such as the AmberX
+ * design packages brings its own day / night themes, and the banner's switch must stay inside them instead of jumping
+ * to an unrelated theme); otherwise its own pair.
+ */
+export function themeSwitchPair(active: unknown, own: { light?: unknown; dark?: unknown }, others: ReadonlyArray<{ light?: unknown; dark?: unknown }> = []): { light: string; dark: string } {
+  const pair = (p: { light?: unknown; dark?: unknown }) => ({ light: String(p?.light ?? ''), dark: String(p?.dark ?? '') });
+  const mine = pair(own);
+  if (typeof active !== 'string' || !active || active === mine.light || active === mine.dark) return mine;
+  const hit = others.find((p) => p && (p.light === active || p.dark === active) && p.light && p.dark && p.light !== p.dark);
+  return hit ? pair(hit) : mine;
+}
 /** Image address a logo/avatar may show: https, http, data:image or an app path (starts with / or ./), else null. */
 export function imageSrc(src: unknown): string | null {
   const s = typeof src === 'string' ? src.trim() : '';

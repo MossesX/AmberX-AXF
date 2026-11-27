@@ -10,6 +10,8 @@
  *   <PageToolbar />                       the toolbar of the enclosing view (main slot); nothing when the page has none
  *   <PageToolbar slot="auto-lander" />    one of several on the page
  *   <PageToolbar fallback={<div …>}>     keep the handwritten bar until the page has an asset
+ *   <PageToolbar view="x"><input …/></PageToolbar>   the page's own fields ride on the shared bar (and stay drawn, as a
+ *                                         plain group, when the page has no asset or no runtime yet)
  *   <PageToolbar assetId="editor-classic" label="Page toolbar" />   a named asset (what AssetToolbar does)
  * `children` fill the search spot when the asset says showSearch (or sit at the end of the bar).
  */
@@ -19,6 +21,7 @@ import type { ToolbarData } from '../../core/types';
 import type { ResolvedToolbar, ResolvedToolbarButton } from '../../core/engines/toolbar-actions';
 import { registerLiveToolbar, usePageToolbar, type PageToolbarHook } from '../pageToolbar';
 import { Icon } from './Icon';
+import { ToolbarWidgetSlot, useToolbarWidgetOverflow, useToolbarWidgets } from './ToolbarWidgetSlot';
 
 export interface PageToolbarProps {
   /** the view (default: the enclosing console-control scope's view) */
@@ -29,21 +32,21 @@ export interface PageToolbarProps {
   assetId?: string | null;
   /** accessible name (default: the asset's name) */
   label?: string;
-  /** drawn instead when the page has no toolbar asset */
+  /** drawn instead when the page has no toolbar asset (default: the children, so a page's fields never disappear) */
   fallback?: ReactNode;
   /** the search box or extra controls */
   children?: ReactNode;
   className?: string;
 }
 
-export function PageToolbar({ view, slot, assetId, label, fallback = null, children, className = '' }: PageToolbarProps) {
+export function PageToolbar({ view, slot, assetId, label, fallback, children, className = '' }: PageToolbarProps) {
   const hook = usePageToolbar(view, slot, assetId);
   const { toolbar } = hook;
   const hookRef = useRef(hook);
   hookRef.current = hook;
   // announce the live toolbar under its settings id (the API lists, reads and presses it through the same hook)
   useEffect(() => (toolbar ? registerLiveToolbar(toolbar.id, { hook: () => hookRef.current, view: hook.page.view ?? null }) : undefined), [toolbar?.id, hook.page.view]); // eslint-disable-line react-hooks/exhaustive-deps
-  if (!toolbar) return <>{fallback}</>;
+  if (!toolbar) return <>{fallback !== undefined ? fallback : children ? <div className={`fx-row fx-row--wrap ${className}`.trim()} role="group" aria-label={label}>{children}</div> : null}</>;
   return <PageToolbarView hook={hook} toolbar={toolbar} label={label} className={className}>{children}</PageToolbarView>;
 }
 
@@ -53,6 +56,9 @@ function PageToolbarView({ hook, toolbar: t, label, className, children }: { hoo
   const out = toolbarStyle(t.look as ToolbarData);
   const variant = t.look.variant;
   useFit(bar, hook, t);
+  // toolbar-widgets@1: the widgets attached to this toolbar (its asset, plugins, the person), banner style, at its ends
+  const widgets = useToolbarWidgets(t.id);
+  const widgetOverflow = useToolbarWidgetOverflow(bar, widgets, true);
   useEffect(() => {
     if (!more) return undefined;
     const close = (e: Event) => { if (!(e.target instanceof Node) || !bar.current?.contains(e.target)) setMore(false); };
@@ -75,6 +81,7 @@ function PageToolbarView({ hook, toolbar: t, label, className, children }: { hoo
         data-fx-ctx-target="toolbar"
         data-fx-ctx-payload={t.id}
       >
+        <ToolbarWidgetSlot instance={t.id} side="start" label={name} resolved={widgets} overflow={widgetOverflow} />
         {t.groups.filter((g) => g.visible && g.buttons.some((b) => b.visible && t.bar.some((x) => x.key === b.key))).map((g) => (
           <div key={g.id} className="fx-toolbar__group" role="group" aria-label={g.label ?? undefined} data-axf-provider={g.provider ?? undefined}>
             {g.buttons.filter((b) => t.bar.some((x) => x.key === b.key)).map((b) => <PageToolbarButton key={b.key} button={b} variant={variant} onPress={() => void hook.press(b)} />)}
@@ -103,6 +110,7 @@ function PageToolbarView({ hook, toolbar: t, label, className, children }: { hoo
           </div>
         )}
         {children}
+        <ToolbarWidgetSlot instance={t.id} side="end" label={name} resolved={widgets} overflow={widgetOverflow} />
       </div>
     </div>
   );
@@ -124,7 +132,7 @@ export function PageToolbarButton({ button: b, variant, onPress }: { button: Res
       onClick={onPress}
     >
       {variant !== 'labels' && <Icon name={b.enabled ? b.icon : 'lock'} size={16} />}
-      {variant !== 'icons' && <span>{b.label}</span>}
+      {variant !== 'icons' && <span className="fx-toolbtn__label">{b.label}</span>}
       {b.badge && <span className="fx-toolbtn__badge" aria-hidden="true">{b.badge}</span>}
     </button>
   );

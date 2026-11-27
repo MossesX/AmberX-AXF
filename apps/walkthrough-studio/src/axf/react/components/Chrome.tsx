@@ -10,6 +10,7 @@ import { HelpModeButton } from './Help';
 import { LiveSearch } from './Search';
 import type { ViewMap } from '../AppShell';
 import { WidgetView } from './Widgets';
+import { ToolbarWidgetBody, toolbarWidgetAddress, toolbarWidgetItemProps } from './ToolbarWidgetSlot';
 import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import type { PlacedAttachment } from '../../core/engines/widgets';
 import type { CompiledMenuItem } from '../../core/engines/appmenu';
@@ -100,7 +101,13 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const arrange = useArrange('toolbar', widgets);
   const brand = useBrandPlace('toolbar');
   const brandHost = brandHostProps(brand);
-  const drawWidget = (w: PlacedAttachment, i: number) => arrange.item(w, i, 'fx-toolbar__widget', { 'data-axf-toolbar-widget': w.key, 'data-axf-origin': w.origin }, <WidgetView type={w.type} id={w.id} host="toolbar" />);
+  // toolbar-widgets@1: each widget in the banner widget frame (size, show, cap, shape) with its console-control address
+  const resolvedWidgets = rt.toolbarInstanceWidgets('app');
+  const resolvedOf = (key: string) => Object.values(resolvedWidgets.sides).flat().find((r) => r.key === key);
+  const drawWidget = (w: PlacedAttachment, i: number) => {
+    const r = resolvedOf(w.key);
+    return arrange.item(w, i, `fx-banner__item fx-toolbar__widget${r?.shape ? ' fx-shaped' : ''}`, { 'data-axf-toolbar-widget': w.key, 'data-axf-origin': w.origin, 'data-axf-target': toolbarWidgetAddress('app', w.key), ...(r ? toolbarWidgetItemProps(r) : {}) }, r ? <ToolbarWidgetBody w={r} /> : <WidgetView type={w.type} id={w.id} host="toolbar" />);
+  };
   // `collapsible` toolbars fold to a thin handle; the fold is a per-device setting (axf.toolbar.collapsed).
   const collapsible = tb.data.collapsible === true;
   const collapsed = rt.toolbarCollapsed();
@@ -237,18 +244,26 @@ export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: strin
 /**
  * Sections with the same eyebrow are one section (DESIGN-LANGUAGE §11: one level, grouped by eyebrow), so plugins
  * that file their page under "Voice" join the asset's own "Voice" section instead of repeating the eyebrow. Order:
- * first appearance wins; unlabelled sections stay separate.
+ * first appearance wins; unlabelled sections stay separate. The first section's own items keep their order; items that
+ * join it later (plugins, which install in whatever order their chunks arrive) follow them sorted by label, so the
+ * menu reads the same on every load.
  */
 export function mergeNavSections<S extends { label?: string | null; items: NavItem[] }>(sections: S[]): S[] {
   const out: S[] = [];
   const byLabel = new Map<string, S>();
+  const own = new Map<S, number>();
   for (const s of sections) {
     const key = s.label ? s.label.trim().toLowerCase() : '';
     const hit = key ? byLabel.get(key) : undefined;
     if (hit) { hit.items = withChildren(hit.items, s.items); continue; }
     const copy = { ...s, items: [...s.items] };
     out.push(copy);
+    own.set(copy, copy.items.length);
     if (key) byLabel.set(key, copy);
+  }
+  for (const s of out) {
+    const n = own.get(s) ?? s.items.length;
+    if (s.items.length - n > 1) s.items = [...s.items.slice(0, n), ...s.items.slice(n).sort((a, b) => a.label.localeCompare(b.label))];
   }
   return out;
 }

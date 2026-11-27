@@ -44,6 +44,9 @@ export function cleanPhrase(text) {
 }
 
 const strip = (s) => s.replace(/^(the|a|an|my)\s+/, '').replace(/\s+(screen|page|view)$/, '').trim();
+/** A toolbar named in words → its settings id as the grammar takes it ("the main" → main, "UI review" → ui-review). */
+const toolbarWords = (s) => strip(s).replace(/\s+/g, '-').replace(/[^a-z0-9._-]/g, '') || 'app';
+const widgetIntent = (toolbar, widget, op) => ({ verb: 'press', address: 'function:toolbar.widget', value: `${toolbarWords(toolbar)}:${strip(widget).replace(/:/g, ' ')}:${op}` });
 const num = (w) => (/^\d+$/.test(w) ? Number(w) : NUMBERS[w] ?? null);
 
 /**
@@ -98,6 +101,11 @@ export function voiceIntent(text) {
   if ((m = /^set (?:the )?(.+?) (?:to|at) (.+)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2].trim() };
   if ((m = /^(?:turn|switch) (?:the )?(.+?) (on|off)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2] === 'on' };
 
+  // toolbar widgets (toolbar-widgets@1): the console action toolbar.widget:<toolbar>:<widget>:<op> (the console resolves both names)
+  if ((m = /^(?:move|put)(?: the)? (.+?)(?: widget)? (?:to|at) the (start|end) of(?: the)? (.+?) toolbar$/.exec(p))) return widgetIntent(m[3], m[1], m[2]);
+  if ((m = /^(?:attach|add|put|pin)(?: the)? (.+?)(?: widget)? (?:to|on|onto)(?: the)? (.+?) toolbar(?: at the (start|end))?$/.exec(p))) return widgetIntent(m[2], m[1], m[3] ?? 'add');
+  if ((m = /^(?:detach|remove|take)(?: the)? (.+?)(?: widget)? (?:from|off)(?: of)?(?: the)? (.+?) toolbar$/.exec(p))) return widgetIntent(m[2], m[1], 'remove');
+  if ((m = /^make(?: the)? (.+?)(?: widget)? (?:on|in)(?: the)? (.+?) toolbar (icon only|icon|compact|normal|wide)$/.exec(p))) return widgetIntent(m[2], m[1], m[3] === 'icon only' ? 'icon' : m[3]);
   // page toolbars (page-toolbar@1): a button named with its toolbar, and what a toolbar holds
   if ((m = /^(?:press|click|tap|hit|push)(?: on)?(?: the)? (.+?)(?: button)? (?:on|in|of)(?: the)? (.+?) toolbar$/.exec(p))) return { verb: 'press', find: { q: `${strip(m[2])} ${strip(m[1])}`, kinds: ['button'] }, toolbar: strip(m[2]) };
   if ((m = /^(?:what(?:'s| is) on|what does .+ hold on|list|show(?: me)?|read(?: me)?)(?: the)? (.+?) toolbar$/.exec(p))) return { verb: 'list', find: { q: strip(m[1]), kinds: ['toolbar'] } };

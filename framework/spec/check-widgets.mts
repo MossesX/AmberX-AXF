@@ -8,10 +8,11 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
-import { BANNER_WIDGET_WIDTH, bannerWidgetCapCss, bannerWidgetEmpty, bannerWidgetNumber, bannerWidgetView, findBannerWidget, normalizeBannerWidgetPrefs, overflowWidgets, patchBannerWidget } from '../core/engines/bannerwidgets';
+import { BANNER_WIDGET_PRIORITY, BANNER_WIDGET_SHOWS, BANNER_WIDGET_SIZES, BANNER_WIDGET_WIDTH, bannerWidgetCapCss, bannerWidgetEmpty, bannerWidgetNumber, bannerWidgetView, findBannerWidget, normalizeBannerWidgetPrefs, overflowWidgets, patchBannerWidget } from '../core/engines/bannerwidgets';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, moveOnHost, normalizeArrangement, placeOnHost, placeToolbarWidgets, snapIndex, progressPercent, searchBarConfig, statusOn, themeSwitchNext, themeSwitchPair, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { validateAsset } from '../core/validate';
-import { AxfRuntime } from '../core/runtime';
+import { ARRANGE_KEY, AxfRuntime } from '../core/runtime';
+import { HOST_ENTRY_WIDGET, TOOLBAR_WIDGETS_KEY, TOOLBAR_WIDGET_OPS, addToolbarWidget, fitToolbar, foldArrangement, hostEntryErrors, hostShapeErrors, matchToolbarInstance, moveToolbarWidget, normalizeToolbarWidgetSlots, normalizeWidgetStyle, parseToolbarWidgetArgs, parseToolbarWidgetShapeArgs, patchToolbarWidget, removeToolbarWidget, resolveToolbarWidgets, toolbarInstanceOfKey, type ToolbarWidgetSlot } from '../core/engines/toolbar-widgets';
 
 const root = new URL('../', import.meta.url).pathname;
 const read = (f: string) => JSON.parse(readFileSync(join(root, 'spec/fixtures', f), 'utf8'));
@@ -93,6 +94,72 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   for (const [name, c] of Object.entries<any>(f.attachValidation)) eq(validateHostAttachments(c.host, c.list), c.errors, `attach validation ${name}`);
 }
 
+// toolbar-widgets.json (toolbar-widgets@1, core/engines/toolbar-widgets.ts): replay every golden output through the engine
+{
+  const f = read('toolbar-widgets.json');
+  const spec = JSON.parse(readFileSync(join(root, 'schemas/asset-types.json'), 'utf8'));
+  eq(HOST_ENTRY_WIDGET, spec.hostEntry.widget, 'the rules file mirrors asset-types.json → hostEntry.widget');
+  eq(HOST_ENTRY_WIDGET.sizes, [...BANNER_WIDGET_SIZES], 'hostEntry sizes = the banner widget sizes');
+  eq(HOST_ENTRY_WIDGET.shows, [...BANNER_WIDGET_SHOWS], 'hostEntry shows = the banner widget shows');
+  eq(HOST_ENTRY_WIDGET.priority, BANNER_WIDGET_PRIORITY, 'hostEntry priority = the banner widget priority');
+  ok(spec.types.toolbar.optional_fields.shape && spec.types.banner.optional_fields.shape, 'both hosts document their shape default');
+  eq([...TOOLBAR_WIDGET_OPS], f.ops, 'widget ops');
+  for (const [k, v] of Object.entries<any>(f.instanceOfKey)) eq(toolbarInstanceOfKey(k), v, `instance of key ${k}`);
+  eq(normalizeToolbarWidgetSlots(f.normalize.raw), f.normalize.slots, 'normalize slots');
+  eq(normalizeWidgetStyle(f.normalize.style.in), f.normalize.style.out, 'normalize style');
+  eq(normalizeToolbarWidgetSlots('[{"type":"clock","id":"digital-12h","at":"end"}]'), f.normalize.slotsJson, 'slots saved as JSON text');
+  const exists = new Set<string>(f.exists);
+  const has = (t: string, id: string) => exists.has(`${t}:${id}`);
+  for (const [name, c] of Object.entries<any>(f.resolve)) eq(resolveToolbarWidgets({ toolbar: c.toolbar, extra: c.extra ?? [], slots: normalizeToolbarWidgetSlots(c.slots), style: normalizeWidgetStyle(c.style), arrange: c.arrange ?? null, has }, WIDGET_TYPES), c.out, `resolve ${name}`);
+  // the contract's promises, read off the golden outputs
+  const r = f.resolve['person-slots'].out;
+  ok(r.hidden.some((w: any) => w.key === 'clock:digital-12h'), 'a slot can hide an asset widget');
+  ok(r.sides.start.some((w: any) => w.key === 'avatar:account' && w.origin === 'person' && w.shape === 'hexagon' && w.shapeFrom === 'slot'), 'a person adds a widget with its own shape');
+  ok(r.sides.end.some((w: any) => w.key === 'status:online' && w.shape === 'pill' && w.shapeFrom === 'host' && w.attrs['data-fx-wsize'] === 'compact'), 'a plugin chip takes the host chip shape and its hint size');
+  eq(f.resolve['asset-only'].out.sides.start.map((w: any) => w.key), ['clock:digital-12h'], 'asset entries keep their place with no slots (nothing moves)');
+  eq(f.resolve['asset-only'].out.hidden.map((w: any) => w.key), ['counter:alerts'], 'a hint can hide a widget until the person ticks it');
+  eq(f.resolve['legacy-arrange'].out.sides.start.map((w: any) => w.key), ['status:online'], 'the legacy arrangement is honoured as a layer');
+  eq(f.resolve['slot-over-arrange'].out.sides.start.map((w: any) => w.key), ['clock:digital-12h'], 'a slot with a side beats the legacy arrangement');
+  eq(f.resolve['style-under-slot'].out.sides.end.find((w: any) => w.key === 'status:online').view.size, 'wide', 'the person\'s per-widget choice beats the toolbar style');
+  eq(f.resolve['toolbar-style'].out.sides.end.find((w: any) => w.key === 'status:online').view.size, 'icon', 'the toolbar style beats the entry hint');
+  eq(f.resolve['no-toolbar'].out, { sides: { start: [], end: [] }, hidden: [] }, 'no toolbar: nothing, run-time and slots included');
+  eq(f.resolve['added-missing-asset'].out.sides.start, [], 'a slot for a missing asset or a non-widget type is skipped');
+  eq(f.resolve['empty-toolbar'].out, { sides: { start: [], end: [] }, hidden: [] }, 'an empty toolbar resolves to nothing');
+  eq(f.resolve['old-asset-no-widgets'].out, { sides: { start: [], end: [] }, hidden: [] }, 'an old toolbar asset with no widgets field stays valid and resolves to nothing');
+  for (const size of BANNER_WIDGET_SIZES) for (const show of BANNER_WIDGET_SHOWS) {
+    const c = f.resolve[`style-${size}-${show}`];
+    const w = [...c.out.sides.start, ...c.out.sides.end][0];
+    eq([w.view.size, w.shape, w.attrs['data-fx-shape']], [size, c.toolbar.widgets[0].shape, c.toolbar.widgets[0].shape], `banner widget style ${size} / ${show} with its shape on a toolbar`);
+    // the banner's own rule: an icon-only widget on `auto` shows its icon; every other pick is kept as made
+    eq(w.view.show, show === 'auto' && size === 'icon' ? 'icon' : show, `show ${show} at size ${size} on a toolbar`);
+  }
+  for (const [name, c] of Object.entries<any>(f.fit)) eq(fitToolbar(c.plan, c.available), c.fit, `fit ${name}`);
+  const fits = Object.values<any>(f.fit).map((c) => c.fit);
+  ok(fits.every((x) => Object.values<number>(x.sides).every((w) => w >= 0)), 'sides never go negative');
+  eq(f.fit.w600.fit.flex < 400 && f.fit.w600.fit.overflow.length === 0, true, 'the flexible piece shrinks before anything leaves');
+  eq(f.fit.w420.fit.flex, 160, 'the flexible piece stops at its minimum');
+  eq(f.fit.w420.fit.overflow[0], 'search', 'lowest priority leaves first');
+  ok(!f.fit.w120.fit.overflow.includes('avatar') && f.fit.w120.fit.scroll && f.fit.w120.fit.snap.length > 0, 'a widget that may not leave stays; a bar still too wide scrolls with snap points');
+  eq(f.fit['no-more-menu-w330'].fit.overflow, [], 'no ⋯ menu: straight to scrolling');
+  let s: ToolbarWidgetSlot[] = [];
+  const tb = f.resolve['person-slots'].toolbar, cpu = f.resolve['person-slots'].extra[0];
+  const drawnOf = (list: ToolbarWidgetSlot[]) => resolveToolbarWidgets({ toolbar: tb, extra: [cpu], slots: list, has }, WIDGET_TYPES).sides;
+  const steps: ((x: ToolbarWidgetSlot[]) => ToolbarWidgetSlot[])[] = [
+    (x) => addToolbarWidget(x, 'avatar', 'account', 'start', WIDGET_TYPES), (x) => addToolbarWidget(x, 'badge', 'new', 'start', WIDGET_TYPES), (x) => addToolbarWidget(x, 'avatar', 'account', 'top', WIDGET_TYPES),
+    (x) => patchToolbarWidget(x, 'avatar:account', { size: 'icon', shape: 'hexagon', priority: 3 }), (x) => patchToolbarWidget(x, 'status:online', { hidden: true }), (x) => patchToolbarWidget(x, 'status:online', { hidden: null }),
+    (x) => patchToolbarWidget(x, 'avatar:account', { shape: null, priority: null }), (x) => addToolbarWidget(x, 'avatar', 'account', 'end', WIDGET_TYPES), (x) => moveToolbarWidget(x, drawnOf(x), 'status:online', 'start', 0),
+    (x) => moveToolbarWidget(x, drawnOf(x), 'clock:nope', 'start', 0), (x) => removeToolbarWidget(x, 'avatar:account'),
+  ];
+  f.edits.forEach((e: any, i: number) => { s = steps[i]!(s); eq(s, e.slots, `edit: ${e.step}`); });
+  eq(foldArrangement(f.fold.slots, f.fold.arrange), f.fold.out, 'legacy arrangement folds into slots (a placed slot wins, bad sides skipped)');
+  for (const [k, v] of Object.entries<any>(f.parse)) eq(parseToolbarWidgetArgs(k.split(':')), v, `parse ${k}`);
+  for (const [k, v] of Object.entries<any>(f.parseShape)) eq(parseToolbarWidgetShapeArgs(k.split(':')), v, `parse shape ${k}`);
+  const rows = [{ id: 'ui-review.sections', label: 'UI Review sections' }, { id: 'settings-toolbar', label: 'Settings toolbar' }];
+  for (const [k, v] of Object.entries<any>(f.match)) eq(matchToolbarInstance(rows, k === '(empty)' ? '' : k), v, `match ${k}`);
+  for (const [k, c] of Object.entries<any>(f.entryErrors)) eq(hostEntryErrors('data.widgets[0]', c.entry), c.errors, `entry errors ${k}`);
+  for (const [k, c] of Object.entries<any>(f.shapeErrors)) eq(hostShapeErrors(c.shape), c.errors, `shape errors ${k}`);
+}
+
 // validation.json: the TS validator and the CLI build engine agree on every case (incl. the host attachment ones)
 {
   const cli = await import('../cli/build-engine.mjs') as { validateAsset: (raw: unknown) => { ok: boolean; errors: string[] } };
@@ -131,6 +198,31 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   rt.attachToToolbar({ type: 'clock', id: 'digital-24h', at: 'end', origin: 'p4' });
   rt.attachToBanner({ type: 'badge', id: 'new', at: 'left', origin: 'p4' });
   eq(rt.toolbarWidgets().end.map((p) => p.key), ['clock:digital-24h'], 'toolbar widget attached');
+  // toolbar-widgets@1: per-instance hosts, the person's slots, the legacy arrangement folded in (nothing moves)
+  const appBefore = rt.toolbarWidgets();
+  rt.attachToToolbar({ type: 'status', id: 'online', at: 'end', origin: 'p4', widget: { label: 'CPU' } }, 'settings-toolbar');
+  eq(rt.toolbarWidgets(), appBefore, 'a widget attached to another toolbar instance leaves the app toolbar alone');
+  eq(rt.toolbarInstanceWidgets('settings-toolbar').sides.end.map((p) => `${p.key}@${p.origin}`), ['status:online@p4'], 'a toolbar with no asset of its own still draws what was attached to it');
+  eq(rt.toolbarInstanceWidgets('settings-toolbar').sides.start, [], 'and nothing of the app toolbar\'s own');
+  rt.settings.set(ARRANGE_KEY('toolbar'), JSON.stringify({ 'clock:digital-24h': { at: 'start', order: 0 } }));
+  eq(rt.toolbarWidgets().start.map((p) => p.key), ['clock:digital-24h'], 'the legacy app-toolbar arrangement still places the widget');
+  ok(rt.addToolbarWidget('app', 'avatar', 'account', 'end'), 'add a widget to the app toolbar');
+  eq(rt.settings.get(ARRANGE_KEY('toolbar')), null, 'the legacy arrangement is retired once folded in');
+  eq(rt.toolbarWidgets().start.map((p) => p.key), ['clock:digital-24h'], 'nothing moved: the clock kept the side the arrangement gave it');
+  eq(rt.toolbarWidgets().end.map((p) => `${p.key}@${p.origin}`), ['avatar:account@person'], 'the added widget is drawn at the end');
+  ok(rt.setToolbarWidget('app', 'clock:digital-24h', { hidden: true }), 'hide a plugin widget through a slot');
+  eq(rt.toolbarWidgets().start.length, 0, 'hidden widgets are not drawn');
+  eq(rt.toolbarInstanceWidgets('app').hidden.map((w) => w.key), ['clock:digital-24h'], 'but listed as hidden');
+  ok(rt.setToolbarWidgetStyle('app', { size: 'icon' }), 'a toolbar default style');
+  eq(rt.toolbarInstanceWidgets('app').sides.end[0]!.view.size, 'icon', 'the style applies to every widget on it');
+  ok(rt.setToolbarWidgetStyle(null, { shape: 'squircle' }), 'an app-wide default shape');
+  eq(rt.toolbarInstanceWidgets('app').sides.end[0]!.shape, 'squircle', 'the app-wide shape reaches the widget');
+  ok(!rt.addToolbarWidget('app', 'clock', 'nope', 'end'), 'an unregistered asset is refused');
+  ok(!rt.addToolbarWidget('Bad Instance!', 'avatar', 'account', 'end'), 'a bad instance id is refused');
+  rt.resetToolbarWidgets('app');
+  eq([rt.settings.get(TOOLBAR_WIDGETS_KEY('app')), rt.toolbarWidgets().end.length, rt.toolbarWidgets().start.map((p) => p.key)], [null, 1, []], 'reset: slots and style gone, the plugin clock back where the asset put it');
+  rt.setToolbarWidgetStyle(null, { shape: null });
+  rt.detachFromToolbar('p4', 'settings-toolbar');
   rt.detachAll('p4');
   eq(rt.toolbarWidgets().end.length + rt.banner().placed.left.length, 0, 'detachAll clears every host');
   eq(rt.hostAttachments('banner').map((a) => `${a.type}:${a.id}@${a.origin}`), ['button:rounded-solid@p3', 'badge:missing@p3'], 'only the (never shown) bad p3 entries remain (p4 replaced badge:new, then detachAll removed it)');
