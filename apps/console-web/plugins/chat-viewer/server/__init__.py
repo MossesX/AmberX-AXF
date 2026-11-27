@@ -45,6 +45,8 @@ from . import ingest
 from . import schema as S
 from .store import Store
 
+import data_store
+
 router = APIRouter()
 FOLDER = "chat-viewer"
 MAX_UPLOAD = 1024 * 1024 * 1024  # 1 GB export zip
@@ -99,10 +101,7 @@ def _merge(base: dict[str, Any], over: dict[str, Any]) -> dict[str, Any]:
 
 
 def settings() -> dict[str, Any]:
-    try:
-        saved = json.loads((data_dir() / "settings.json").read_text())
-    except (OSError, ValueError):
-        saved = {}
+    saved = data_store.read_json(data_dir() / "settings.json", {})
     return _merge(DEFAULTS, saved if isinstance(saved, dict) else {})
 
 
@@ -337,20 +336,12 @@ def get_settings() -> dict[str, Any]:
 
 @router.put("/settings")
 def put_settings(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
-    try:
-        saved = json.loads((data_dir() / "settings.json").read_text())
-    except (OSError, ValueError):
-        saved = {}
+    saved = data_store.read_json(data_dir() / "settings.json", {})
     if body.get("reset"):
         saved = {}
     else:
         saved = _merge(saved, _clean_settings(body))
-    p = data_dir() / "settings.json"
-    p.parent.mkdir(parents=True, exist_ok=True)
-    tmp = p.with_suffix(".tmp")
-    tmp.write_text(json.dumps(saved, indent=1))
-    tmp.chmod(0o600)
-    tmp.replace(p)
+    data_store.write_json(data_dir() / "settings.json", saved, indent=1)
     return {"settings": settings()}
 
 

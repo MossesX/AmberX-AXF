@@ -29,6 +29,7 @@
  * AXF_MAINT_MERGED_PRS=1,2,3 adds merged PR numbers (tests; the console passes GitHub's list when it has one).
  * AXF_MAINT_NO_REPLAN=1 skips the re-plan (tests).
  */
+import * as files from '../../../../../framework/core/data-files.mjs';
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -52,8 +53,9 @@ const RETIRED_REPORT = '_claude/builds/reports/kill-patches-pilot.md';
 export const RUN_ID = /^pc-\d{8}-\d{6}-[a-z0-9]{4}$/;
 
 const now = () => new Date().toISOString();
-const readJson = (f, d = null) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-const writeJson = (f, j) => { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(j, null, 1)}\n`); renameSync(t, f); };
+// data-store@1: plans, runs and settings are one row each (framework/core/data-files.mjs); archive copies stay files.
+const readJson = (f, d = null) => { try { return files.readJsonSync(f, null) ?? d; } catch { return d; } };
+const writeJson = (f, j) => files.writeJsonSync(f, j, 1);
 export const dataDir = () => join(process.env.AXF_MAINT_DATA_DIR || join(REPO_ROOT, '.axf-console', 'plugins', 'maintenance'), 'profile-cleanup');
 const plansDir = () => join(dataDir(), 'plans');
 const runsDir = () => join(dataDir(), 'runs');
@@ -221,7 +223,7 @@ export const readRun = (run) => (RUN_ID.test(run) ? readJson(join(runsDir(), `${
 
 export function listRuns(limit = 20) {
   const ids = new Set();
-  for (const d of [plansDir(), runsDir()]) { try { for (const f of readdirSync(d)) if (f.endsWith('.json')) ids.add(f.slice(0, -5)); } catch { /* none yet */ } }
+  for (const d of [plansDir(), runsDir()]) { try { for (const f of files.listSync(d)) if (f.endsWith('.json')) ids.add(f.slice(0, -5)); } catch { /* none yet */ } }
   return [...ids].filter((r) => RUN_ID.test(r)).sort().reverse().slice(0, limit).map((run) => {
     const p = readPlan(run); const r = readRun(run);
     return { run, at: p?.at ?? r?.at ?? '', mode: p?.mode ?? r?.mode ?? '', by: r?.by ?? '', totals: p?.totals ?? null,

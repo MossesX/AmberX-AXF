@@ -16,7 +16,8 @@ from pathlib import Path
 from typing import Any
 
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import storage
+
+import data_store
 
 KINDS = ("note", "todo", "task")
 RULES = ("required", "optional", "hidden")
@@ -218,7 +219,7 @@ class Store:
     # ---- load / save
     def _load(self) -> dict[str, Any]:
         if self.data is None:
-            raw = storage.read_json(self.path, {})
+            raw = data_store.read_json(self.path, {})
             raw = raw if isinstance(raw, dict) else {}
             lists = [x for x in raw.get("lists", []) if isinstance(x, dict) and isinstance(x.get("id"), int)]
             ids = {x["id"] for x in lists}
@@ -234,7 +235,7 @@ class Store:
         return self.data
 
     def _save(self) -> None:
-        storage.write_json(self.path, self.data)
+        data_store.write_json(self.path, self.data)
 
     def _id(self) -> int:
         d = self._load()

@@ -18,7 +18,8 @@ from fastapi import APIRouter, Body, HTTPException
 
 import console_context as cx
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import storage
+
+import data_store
 
 router = APIRouter()
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,59}$")
@@ -35,7 +36,7 @@ def data_dir() -> Path:
 
 
 def _write(p: Path, value: Any) -> None:
-    storage.write_json(p, value)  # atomic, 0600, folder 0700 (axf_server.storage)
+    data_store.write_json(p, value)  # data-store@1: one record
 
 
 def asset_types() -> set[str]:

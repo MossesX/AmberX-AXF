@@ -23,7 +23,9 @@ from fastapi import APIRouter, Body, HTTPException
 
 import console_context as cx
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import github, storage
+from axf_server import github
+
+import data_store
 
 router = APIRouter()
 
@@ -75,7 +77,7 @@ class Monitor:
 
     # ---- config
     def config(self) -> dict[str, Any]:
-        c = storage.read_json(data_dir() / "config.json", {})
+        c = data_store.read_json(data_dir() / "config.json", {})
         watch = c.get("watch") if isinstance(c, dict) else None
         if not isinstance(watch, list) or not watch or any(check_watch(w) for w in watch):
             watch = DEFAULT_WATCH
@@ -97,7 +99,7 @@ class Monitor:
             if bad:
                 raise HTTPException(400, f"entry {i + 1}: {bad}")
             clean.append(w)
-        storage.write_json(data_dir() / "config.json", {"$axf": "main-build-status-config@1", "watch": clean})
+        data_store.write_json(data_dir() / "config.json", {"$axf": "main-build-status-config@1", "watch": clean})
         with self._lock:
             self._cache = None
         return self.config()

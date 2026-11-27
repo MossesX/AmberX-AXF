@@ -8,6 +8,7 @@ export async function onInstall(ctx) {
   const cfg = join(ctx.dataDir, 'config.json');
   if (!existsSync(cfg)) {
     // The server fills in every default on first read; this marks the install and keeps the file private from the start.
+    // axf-data: not data (the owner-only file that holds the provider keys on this machine, seeded empty)
     writeFileSync(cfg, JSON.stringify({ $axf: 'ai-assistant-config@1', schema: 1, setupComplete: false, profiles: {} }, null, 2));
     chmodSync(cfg, 0o600);
     ctx.log('seeded config.json (run the setup wizard in Settings → Plugins → AI assistant)');

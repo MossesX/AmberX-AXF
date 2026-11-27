@@ -23,7 +23,8 @@ from fastapi import APIRouter, Body, HTTPException
 
 import console_context as cx
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import storage
+
+import data_store
 
 router = APIRouter()
 
@@ -126,7 +127,7 @@ def clean_preset(body: Any) -> dict[str, Any]:
 
 
 def read_config() -> dict[str, Any]:
-    c = storage.read_json(data_dir() / "config.json", {})
+    c = data_store.read_json(data_dir() / "config.json", {})
     try:
         return clean_config({k: v for k, v in c.items() if k != "$axf"}) if isinstance(c, dict) else {"$axf": "status-styles@1"}
     except HTTPException:
@@ -134,7 +135,7 @@ def read_config() -> dict[str, Any]:
 
 
 def read_presets() -> list[dict[str, Any]]:
-    doc = storage.read_json(data_dir() / "presets.json", {})
+    doc = data_store.read_json(data_dir() / "presets.json", {})
     rows = doc.get("presets") if isinstance(doc, dict) else None
     out: list[dict[str, Any]] = []
     for p in rows if isinstance(rows, list) else []:
@@ -146,7 +147,7 @@ def read_presets() -> list[dict[str, Any]]:
 
 
 def write_presets(rows: list[dict[str, Any]]) -> None:
-    storage.write_json(data_dir() / "presets.json", {"$axf": "status-style-presets@1", "presets": rows})
+    data_store.write_json(data_dir() / "presets.json", {"$axf": "status-style-presets@1", "presets": rows})
 
 
 @router.get("/config")
@@ -157,7 +158,7 @@ def get_config() -> dict[str, Any]:
 @router.put("/config")
 def put_config(body: Any = Body(...)) -> dict[str, Any]:
     clean = {"$axf": "status-styles@1"} if isinstance(body, dict) and body.get("reset") is True else clean_config(body)
-    storage.write_json(data_dir() / "config.json", clean)
+    data_store.write_json(data_dir() / "config.json", clean)
     return {"config": read_config(), "presets": read_presets()}
 
 

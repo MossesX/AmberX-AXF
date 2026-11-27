@@ -17,7 +17,8 @@
  *   node listener.mjs record                        add a history entry (JSON on stdin: heard, command, reply, ok, mode, reason)
  *   --json · --by <who>
  */
-import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
+import { appendFileSync, chmodSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DEFAULTS, FOLDER, FRAME, HISTORY_MAX, HISTORY_MODES, ListenerError, applyPatch, filterHistory, normalizeHistoryEntry, hear, initialState, normalizePhrases, normalizeSettings, stateLine, switched } from './core.mjs';
@@ -31,12 +32,12 @@ const HISTORY = () => join(DATA_DIR, 'history.jsonl');
 /** A state older than this is stale: no console is listening right now. */
 export const STATE_STALE_MS = 90_000;
 
-const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
+// data-store@1: state, settings and history lines go through framework/core/data-files.mjs (rows on axf-data).
+const readJson = (f) => { try { return dataFiles.readJsonSync(f, null); } catch { return null; } };
 function writeJson(f, v) {
-  mkdirSync(dirname(f), { recursive: true, mode: 0o700 });
-  const tmp = `${f}.${process.pid}.tmp`;
-  writeFileSync(tmp, JSON.stringify(v, null, 2), { mode: 0o600 });
-  renameSync(tmp, f);
+  if (!dataFiles.keyFor(f)) mkdirSync(dirname(f), { recursive: true, mode: 0o700 });
+  dataFiles.writeJsonSync(f, v);
+  try { chmodSync(f, 0o600); } catch { /* the row is on axf-data: no local file */ }
 }
 
 /* ------------------------------------------------------------------ settings */
@@ -79,18 +80,18 @@ export function writeState(report) {
 
 export function readHistory(opts = {}) {
   let lines = [];
-  try { lines = readFileSync(HISTORY(), 'utf8').split('\n'); } catch { /* none yet */ }
+  try { lines = (dataFiles.readTextSync(HISTORY(), '') ?? '').split('\n'); } catch { /* none yet */ }
   const raw = [];
   for (const l of lines) { if (!l.trim()) continue; try { raw.push(JSON.parse(l)); } catch { /* a torn line */ } }
   return filterHistory(raw, opts);
 }
 export function appendHistory(entry) {
   const e = normalizeHistoryEntry({ at: Date.now(), ...entry });
-  mkdirSync(DATA_DIR, { recursive: true, mode: 0o700 });
-  appendFileSync(HISTORY(), `${JSON.stringify(e)}\n`, { mode: 0o600 });
+  dataFiles.appendJsonlSync(HISTORY(), e); // one row per line
+  try { chmodSync(HISTORY(), 0o600); } catch { /* the rows are on axf-data: no local file */ }
   // keep the newest HISTORY_MAX
-  const all = readFileSync(HISTORY(), 'utf8').split('\n').filter((l) => l.trim());
-  if (all.length > HISTORY_MAX + 100) { const tmp = `${HISTORY()}.${process.pid}.tmp`; writeFileSync(tmp, `${all.slice(-HISTORY_MAX).join('\n')}\n`, { mode: 0o600 }); renameSync(tmp, HISTORY()); }
+  const all = (dataFiles.readTextSync(HISTORY(), '') ?? '').split('\n').filter((l) => l.trim());
+  if (all.length > HISTORY_MAX + 100) dataFiles.writeTextSync(HISTORY(), `${all.slice(-HISTORY_MAX).join('\n')}\n`);
   return e;
 }
 

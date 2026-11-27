@@ -421,6 +421,7 @@ export function alertsFor(fixes, { fyi = 'batch', at = new Date().toISOString() 
 /** Send one alert: the console's alerts API (docker exec on the host), or AXF_WATCHDOG_NOTIFY_LOG (tests: one JSON line each). */
 export function sendAlert(a, env = process.env) {
   const { fixes, ...alert } = a;
+  // axf-data: not data (a test seam: alerts go to the file the test names instead of the console)
   if (env.AXF_WATCHDOG_NOTIFY_LOG) { try { writeFileSync(env.AXF_WATCHDOG_NOTIFY_LOG, `${JSON.stringify(alert)}\n`, { flag: 'a' }); return true; } catch { return false; } }
   try { return makeConsole(env)('POST', '/api/alerts', alert) != null; } catch { return false; }
 }

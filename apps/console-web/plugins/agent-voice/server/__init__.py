@@ -39,7 +39,8 @@ from fastapi.responses import Response
 import console_context as cx
 import plugin_services
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import storage
+
+import data_store
 
 router = APIRouter()
 _lock = threading.Lock()
@@ -83,7 +84,7 @@ def _keys_path() -> Path:
 
 
 def load_store() -> dict[str, Any]:
-    raw = storage.read_json(_store_path(), {})
+    raw = data_store.read_json(_store_path(), {})
     if not isinstance(raw, dict):
         raw = {}
     profiles = raw.get("profiles") if isinstance(raw.get("profiles"), dict) else {}
@@ -96,11 +97,11 @@ def load_store() -> dict[str, Any]:
 
 
 def save_store(s: dict[str, Any]) -> None:
-    storage.write_json(_store_path(), s, ensure_ascii=False)
+    data_store.write_json(_store_path(), s, ensure_ascii=False)
 
 
 def _keys() -> dict[str, str]:
-    raw = storage.read_json(_keys_path(), {})
+    raw = data_store.read_json(_keys_path(), {})
     return {k: v for k, v in (raw.items() if isinstance(raw, dict) else []) if k in PROVIDERS and isinstance(v, str) and v}
 
 
@@ -262,7 +263,7 @@ def put_key(provider: str, body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     with _lock:
         k = _keys()
         k[provider] = key
-        storage.write_json(_keys_path(), k)
+        data_store.write_json(_keys_path(), k)
     return {"ok": True}
 
 
@@ -272,7 +273,7 @@ def delete_key(provider: str) -> dict[str, Any]:
     with _lock:
         k = _keys()
         k.pop(provider, None)
-        storage.write_json(_keys_path(), k)
+        data_store.write_json(_keys_path(), k)
     return {"ok": True}
 
 

@@ -21,6 +21,8 @@ from urllib.parse import urlsplit
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import storage
 
+import data_store
+
 FORMAT = "change-log@1"
 KINDS = ("build", "edit", "remove", "fix", "other")
 STEP_STATES = ("queued", "running", "done", "failed", "skipped")
@@ -673,7 +675,7 @@ class Store:
         p = self.path_of(cid)
         if p.is_symlink() or not p.is_file():
             return None
-        e = storage.read_json(p, None)
+        e = data_store.read_json(p, None)
         return e if isinstance(e, dict) and e.get("id") == cid else None
 
     def put(self, raw: dict[str, Any]) -> dict[str, Any]:
@@ -691,7 +693,7 @@ class Store:
             storage.private_dir(m, dir_mode)
         if p.is_symlink():
             raise ValueError("refusing a symlink")
-        storage.write_json(p, e, mode=file_mode, dir_mode=None, trailing_newline=True)
+        data_store.write_json(p, e, mode=file_mode, dir_mode=None, trailing_newline=True)
         with self._lock:
             self._scanned = 0.0
         return e
@@ -720,7 +722,7 @@ class Store:
                             if old and old[0] == st.st_mtime_ns and old[1] == st.st_size:
                                 seen[key] = old
                                 continue
-                            e = storage.read_json(f, None)
+                            e = data_store.read_json(f, None)
                             if isinstance(e, dict) and e.get("id") == f.name[:-5]:
                                 ok, _ = normalize(e)
                                 if ok:

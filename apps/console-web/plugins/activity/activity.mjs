@@ -22,6 +22,7 @@
  * The hook never blocks Claude Code: it always exits 0, quickly, whatever happens. Prompts are cut short and anything
  * that looks like a token or password is hidden before it's written.
  */
+import * as files from '../../../../framework/core/data-files.mjs';
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, unlinkSync, writeFileSync, lstatSync, copyFileSync, chmodSync, chownSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { homedir, userInfo } from 'node:os';
@@ -53,7 +54,8 @@ const validId = (id) => /^[A-Za-z0-9_.:@/+-]{1,160}$/.test(String(id ?? '')) && 
 
 function readItem(id) {
   const p = join(reportsDir(), safeName(id));
-  try { if (lstatSync(p).isSymbolicLink()) return null; return JSON.parse(readFileSync(p, 'utf8')); } catch { return null; }
+  try { if (lstatSync(p).isSymbolicLink()) return null; } catch { /* no local file: the row is on axf-data, or there is none */ }
+  try { return files.readJsonSync(p, null); } catch { return null; }
 }
 
 export function write(patch) {
@@ -71,9 +73,8 @@ export function write(patch) {
   mkdirSync(dir, { recursive: true, mode: 0o700 });
   const p = join(dir, safeName(it.id));
   try { if (lstatSync(p).isSymbolicLink()) throw new Error('refusing a symlink'); } catch (e) { if (e.code !== 'ENOENT') throw e; }
-  const tmp = `${p}.${process.pid}.tmp`;
-  writeFileSync(tmp, JSON.stringify(it), { mode: 0o600 });
-  renameSync(tmp, p);
+  files.writeJsonSync(p, it, 0); // data-store@1: one row per reported item
+  try { chmodSync(p, 0o600); } catch { /* the row is on axf-data: no local file */ }
   return it;
 }
 
@@ -231,9 +232,9 @@ export function closeChildren(sid, known = []) {
   const ids = new Set((Array.isArray(known) ? known : []).filter((x) => typeof x === 'string' && x.startsWith(`claude:${sid}:`)));
   try {
     const pre = safeName(`claude:${sid}:`).replace(/\.json$/, '');
-    for (const f of readdirSync(reportsDir())) {
+    for (const f of files.listSync(reportsDir())) {
       if (!f.startsWith(pre) || !f.endsWith('.json')) continue;
-      try { const id = JSON.parse(readFileSync(join(reportsDir(), f), 'utf8'))?.id; if (typeof id === 'string' && id.startsWith(`claude:${sid}:`)) ids.add(id); } catch { /* not readable */ }
+      try { const id = files.readJsonSync(join(reportsDir(), f), null)?.id; if (typeof id === 'string' && id.startsWith(`claude:${sid}:`)) ids.add(id); } catch { /* not readable */ }
     }
   } catch { /* a drop folder others can't list: the known ones are enough */ }
   let n = 0;
@@ -256,14 +257,15 @@ export function noteHookEvent(event, { user = who(), settings = join(homedir(), 
   const dir = hooksDir();
   const p = join(dir, `${user}.json`);
   let prev = {};
-  try { if (!lstatSync(p).isSymbolicLink()) prev = JSON.parse(readFileSync(p, 'utf8')); } catch { /* first one */ }
+  let link = false;
+  try { link = lstatSync(p).isSymbolicLink(); } catch { /* no local file */ }
+  if (!link) { try { prev = files.readJsonSync(p, {}) ?? {}; } catch { /* first one */ } }
   const recheck = event === 'UserPromptSubmit' || !Array.isArray(prev.missing);
   const st = { $axf: 'activity-hooks@1', user, settings, missing: recheck ? hooksStatus(settings).missing : prev.missing,
     events: { ...(prev.events ?? {}), [event]: now }, updatedAt: now };
   mkdirSync(dir, { recursive: true, mode: 0o700 });
-  const tmp = `${p}.${process.pid}.tmp`;
-  writeFileSync(tmp, JSON.stringify(st), { mode: 0o600 });
-  renameSync(tmp, p);
+  files.writeJsonSync(p, st, 0); // data-store@1: one row per user
+  try { chmodSync(p, 0o600); } catch { /* the row is on axf-data: no local file */ }
   return st;
 }
 
@@ -304,6 +306,7 @@ function saveSettings(file, data) {
   mkdirSync(dirname(file), { recursive: true });
   if (existsSync(file)) copyFileSync(file, `${file}.bak`);
   const tmp = `${file}.${process.pid}.tmp`;
+  // axf-data: not data (Claude Code's own ~/.claude/settings.json on this machine)
   writeFileSync(tmp, `${JSON.stringify(data, null, 2)}\n`);
   renameSync(tmp, file);
 }
@@ -407,13 +410,13 @@ async function main() {
     }
     case 'list': {
       const dir = reportsDir();
-      const items = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => { try { return JSON.parse(readFileSync(join(dir, f), 'utf8')); } catch { return null; } }).filter(Boolean) : [];
+      const items = files.listSync(dir).filter((f) => f.endsWith('.json')).map((f) => { try { return files.readJsonSync(join(dir, f), null); } catch { return null; } }).filter(Boolean);
       if (flags.json) return console.log(JSON.stringify(items, null, 2));
       console.log(items.length ? items.map((x) => `${x.state.padEnd(9)} ${x.id}  ${x.title}`).join('\n') : `nothing reported (${dir})`);
       return;
     }
     case 'remove': {
-      const p = join(reportsDir(), safeName(pos[0])); if (existsSync(p)) unlinkSync(p); return;
+      const p = join(reportsDir(), safeName(pos[0])); if (files.existsAnySync(p)) files.removeSync(p); return;
     }
     case 'hooks': {
       const file = settingsFile(flags); const sub = pos[0] ?? 'status';

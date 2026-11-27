@@ -56,6 +56,8 @@ from fastapi.concurrency import run_in_threadpool
 
 import plugin_services
 
+import data_store
+
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
 ROOT = Path(__file__).resolve().parents[5]  # the repo root
@@ -85,27 +87,20 @@ def _data() -> Path:
 
 
 def _seen() -> dict[str, Any]:
-    try:
-        v = json.loads((_data() / "seen.json").read_text())
-        return v if isinstance(v, dict) else {}
-    except (OSError, ValueError):
-        return {}
+    v = data_store.read_json(_data() / "seen.json", {})
+    return v if isinstance(v, dict) else {}
 
 
 def _remember(name: str, login: dict[str, str]) -> None:
     seen = _seen()
     if seen.get(name) == login:
         return
-    _data().mkdir(parents=True, exist_ok=True)
-    (_data() / "seen.json").write_text(json.dumps({**seen, name: login}, indent=1))
+    data_store.write_json(_data() / "seen.json", {**seen, name: login}, indent=1, mode=0o644)
 
 
 def _raw_config() -> dict[str, Any]:
-    try:
-        v = json.loads((_data() / "workers.json").read_text())
-        return v if isinstance(v, dict) else {}
-    except (OSError, ValueError):
-        return {}
+    v = data_store.read_json(_data() / "workers.json", {})
+    return v if isinstance(v, dict) else {}
 
 
 def route(op: str, payload: dict[str, Any]) -> Any:
@@ -142,10 +137,7 @@ def _save_config(new: dict[str, Any], who: str, owner: bool) -> dict[str, Any]:
         if raised and not owner:
             raise HTTPException(403, f"Raising a spend cap is Brett's own click in the console ({'; '.join(raised)[:300]}). Lowering one is fine.")
         cfg = route("normalize", {"config": new})
-        _data().mkdir(parents=True, exist_ok=True)
-        tmp = _data() / f"workers.json.{os.getpid()}.tmp"
-        tmp.write_text(json.dumps(cfg, indent=1))
-        tmp.replace(_data() / "workers.json")
+        data_store.write_json(_data() / "workers.json", cfg, indent=1, mode=0o644)
     _forget_read()
     return cfg
 

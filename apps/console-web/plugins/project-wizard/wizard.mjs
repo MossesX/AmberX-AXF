@@ -24,6 +24,7 @@
  * folders a "folder" source may come from; default the workspace and this repo), AXF_VPS_HOST/AXF_VPS_USER (VPS git
  * over SSH; without them /srv/git on this machine is used when it exists), AXF_VPS_GIT_DIR (default /srv/git).
  */
+import * as files from '../../../../framework/core/data-files.mjs';
 import { spawnSync } from 'node:child_process';
 import { chmodSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, realpathSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
@@ -45,7 +46,8 @@ const USER_RE = /^[a-z_][a-z0-9_-]{0,31}$/;
 const HOST_RE = /^[A-Za-z0-9.-]{1,253}$/;
 const ANSI = /\x1b\[[0-9;]*m/g;
 const slugOf = (s) => String(s ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 63);
-const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
+// data-store@1: the project list is a record on axf-data (framework/core/data-files.mjs); a repo's own files stay files.
+const readJson = (f) => { try { return files.readJsonSync(f, null); } catch { return null; } };
 const str = (v, max = 300) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 const fail = (msg) => { throw Object.assign(new Error(msg), { user: true }); };
 
@@ -88,10 +90,7 @@ const STORE = () => process.env.AXF_WIZARD_STORE || join(REPO_ROOT, '.axf-consol
 const LEGACY_STORE = () => (process.env.AXF_WIZARD_STORE ? '' : join(REPO_ROOT, '.axf-console', 'project-wizard.json'));
 export function loadStore() { return readJson(STORE()) ?? (LEGACY_STORE() ? readJson(LEGACY_STORE()) : null) ?? { $axf: 'project-wizard@1', projects: {} }; }
 function saveStore(s) {
-  mkdirSync(dirname(STORE()), { recursive: true });
-  const tmp = `${STORE()}.${process.pid}.${Date.now()}.tmp`;
-  writeFileSync(tmp, JSON.stringify(s, null, 2) + '\n', { mode: 0o600 });
-  renameSync(tmp, STORE());
+  files.writeJsonSync(STORE(), s);
   try { chmodSync(STORE(), 0o600); } catch { /* best effort */ }
   if (LEGACY_STORE()) rmSync(LEGACY_STORE(), { force: true });
 }
@@ -594,6 +593,7 @@ export async function link({ name, url }) {
   const { validateProjectManifest, loadRules, formatProjectValidation } = await import(join(CLI, 'project.mjs'));
   const v = validateProjectManifest(m, loadRules(), { exists: (rel) => existsSync(join(p.dir, rel)) });
   if (!v.ok) fail(formatProjectValidation(v, 'project.manifest.json'));
+  // axf-data: not data (the project repository's own committed project.manifest.json)
   writeFileSync(mf, JSON.stringify(m, null, 2) + '\n');
   let pushed = true;
   try { commitAndPush(p.dir, ['project.manifest.json'], `Record the Claude.ai project for ${p.display}`, { github: p.github, vps: !!p.vps }); } catch (e) { pushed = false; }

@@ -43,6 +43,8 @@ from fastapi.concurrency import run_in_threadpool
 import plugin_services
 import wall
 
+import data_store
+
 router = APIRouter()
 FOLDER = "approvals-banner"
 ROOT = Path(__file__).resolve().parents[5]
@@ -77,11 +79,8 @@ def hub_base() -> str:
 def _log(entry: dict[str, Any]) -> None:
     """One line per decision relayed (never the cookie); a log that can't be written never stops a tap."""
     try:
-        d = _data()
-        d.mkdir(parents=True, exist_ok=True)
-        with (d / "relay.jsonl").open("a") as f:
-            f.write(json.dumps({"at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **entry}) + "\n")
-    except OSError:
+        data_store.append_jsonl(_data() / "relay.jsonl", {"at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **entry})
+    except (OSError, data_store.DataStoreError):
         pass
 
 

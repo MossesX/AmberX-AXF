@@ -1,4 +1,5 @@
 /** Lifecycle hooks (plugin-lifecycle@1) for the Systems check. Everything stays inside ctx.dataDir. */
+import * as files from '../../../../framework/core/data-files.mjs';
 import { existsSync, mkdirSync, writeFileSync, chmodSync } from 'node:fs';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -6,9 +7,9 @@ import { spawnSync } from 'node:child_process';
 export async function onInstall(ctx) {
   mkdirSync(join(ctx.dataDir, 'whatsnew'), { recursive: true, mode: 0o700 });
   const f = join(ctx.dataDir, 'settings.json');
-  if (!existsSync(f)) {
-    writeFileSync(f, JSON.stringify({ $axf: 'systems-check-settings@1', ai: { systems: false, whatsnew: false }, whatsNewBanner: true }, null, 2));
-    chmodSync(f, 0o600);
+  if (!files.existsAnySync(f)) {
+    files.writeJsonSync(f, { $axf: 'systems-check-settings@1', ai: { systems: false, whatsnew: false }, whatsNewBanner: true }); // data-store@1: the settings record
+    try { chmodSync(f, 0o600); } catch { /* the row is on axf-data: no local file */ }
     ctx.log('seeded settings.json (AI off; turn it on in Settings → Plugins → Systems check once the AI assistant and Mosses are installed)');
   } else ctx.log('kept the existing settings.json');
 }

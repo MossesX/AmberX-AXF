@@ -19,6 +19,7 @@
  *   node apps/console-web/plugins/gate/build-rules-runner.mjs runs [--rule id] [--build id] [--limit n] [--json]
  * Exit: 0 every rule passed, was fixed or skipped · 1 a rule failed · 2 usage.
  */
+import * as files from '../../../../framework/core/data-files.mjs';
 import { spawnSync } from 'node:child_process';
 import { appendFileSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -121,8 +122,7 @@ export const runsFile = (dir = BR.storeDir()) => join(dir, RUNS_FILE);
 /** Append run lines to runs.jsonl and the gate History. */
 export function writeRuns(runs, { dir = BR.storeDir(), gate = null } = {}) {
   if (!runs.length) return;
-  mkdirSync(dir, { recursive: true });
-  appendFileSync(runsFile(dir), runs.map((r) => `${JSON.stringify(r)}\n`).join(''));
+  for (const r of runs) files.appendJsonlSync(runsFile(dir), r); // data-store@1: one row per run line
   const g = gate || createStore();
   for (const r of runs) {
     try { record(g, { at: r.at, by: r.by, kind: 'build-rule', action: r.result, id: r.id, after: { build: r.build, phase: r.phase, result: r.result, detail: String(r.detail).slice(0, 400), ...(r.fix ? { fixer: r.fix.fixer, changed: r.fix.changed } : {}) }, reason: { title: `${r.id}: ${r.result}${r.build ? ` (${r.build})` : ''}`, description: String(r.detail).slice(0, 600) } }); }
@@ -133,7 +133,7 @@ export function writeRuns(runs, { dir = BR.storeDir(), gate = null } = {}) {
 /** Run lines newest first, filtered by rule, build, result, since; at most `limit`. */
 export function readRuns({ dir = BR.storeDir(), rule = '', build = '', result = '', since = '', limit = 100 } = {}) {
   let lines = [];
-  try { lines = readFileSync(runsFile(dir), 'utf8').split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean); } catch { /* none yet */ }
+  try { lines = (files.readTextSync(runsFile(dir), '') ?? '').split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean); } catch { /* none yet */ }
   return lines.filter((r) => (!rule || r.id === rule) && (!build || r.build === build) && (!result || r.result === result) && (!since || r.at >= since)).reverse().slice(0, Math.max(1, Math.min(2000, Number(limit) || 100)));
 }
 

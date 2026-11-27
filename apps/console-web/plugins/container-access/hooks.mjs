@@ -1,13 +1,14 @@
 /** Lifecycle hooks (plugin-lifecycle@1) for Container access. Everything stays inside ctx.dataDir. */
+import * as files from '../../../../framework/core/data-files.mjs';
 import { existsSync, mkdirSync, writeFileSync, chmodSync } from 'node:fs';
 import { join } from 'node:path';
 
 export async function onInstall(ctx) {
   mkdirSync(join(ctx.dataDir, 'batches'), { recursive: true, mode: 0o700 });
   const f = join(ctx.dataDir, 'settings.json');
-  if (!existsSync(f)) {
-    writeFileSync(f, JSON.stringify({ $axf: 'container-access-settings@1', reach: 'all', allow: [], protect: [] }, null, 2));
-    chmodSync(f, 0o600);
+  if (!files.existsAnySync(f)) {
+    files.writeJsonSync(f, { $axf: 'container-access-settings@1', reach: 'all', allow: [], protect: [] }); // data-store@1: the settings record
+    try { chmodSync(f, 0o600); } catch { /* the row is on axf-data: no local file */ }
     ctx.log('seeded settings.json (every container except the protected list is reachable)');
   } else ctx.log('kept the existing settings.json');
   ctx.log('on the VPS, run deploy/install-console.sh once so the Docker socket proxy starts');

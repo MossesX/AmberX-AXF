@@ -12,7 +12,8 @@ import time
 from pathlib import Path
 from typing import Any
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import storage
+
+import data_store
 
 ROOT = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[5])).resolve()
 DATA = Path(os.environ.get("AXF_CONTAINER_ACCESS_DIR", ROOT / ".axf-console" / "plugins" / "container-access"))
@@ -74,11 +75,11 @@ def reachable(c: dict[str, Any], settings: dict[str, Any]) -> bool:
 
 # ---------------------------------------------------------------- files
 def _write_json(p: Path, data: Any) -> None:
-    storage.write_json(p, data)  # atomic, 0600, folder 0700 (axf_server.storage)
+    data_store.write_json(p, data)  # data-store@1: one record
 
 
 def _read_json(p: Path, default: Any) -> Any:
-    return storage.read_json(p, default)
+    return data_store.read_json(p, default)
 
 
 DEFAULTS: dict[str, Any] = {"$axf": "container-access-settings@1", "reach": "all", "allow": [], "protect": [],
@@ -124,7 +125,7 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
 def audit(entry: dict[str, Any]) -> dict[str, Any]:
     e = {"at": int(time.time() * 1000), **entry}
     with _lock:
-        storage.append_jsonl(AUDIT, e, rotate_at=AUDIT_MAX, ensure_ascii=False)
+        data_store.append_jsonl(AUDIT, e, rotate_at=AUDIT_MAX, ensure_ascii=False)
     return e
 
 

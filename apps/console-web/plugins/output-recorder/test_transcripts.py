@@ -12,6 +12,7 @@ import tempfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent.parent / "server"))  # data_store: the layer every record goes through
 spec = importlib.util.spec_from_file_location("recorder_transcripts", HERE / "server" / "transcripts.py")
 T = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = T

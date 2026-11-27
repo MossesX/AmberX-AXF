@@ -10,6 +10,8 @@ import re
 from pathlib import Path
 from typing import Any
 
+import data_store
+
 FOLDER_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 MODES = ("start", "open", "off")
 PLUGINS_DIR = Path(__file__).resolve().parents[2]
@@ -106,28 +108,19 @@ class Store:
         self.report_file = data_dir / "lazy-report.json"
 
     def get(self) -> dict[str, Any]:
-        try:
-            return normalize(json.loads(self.file.read_text()))
-        except (OSError, ValueError):
-            return normalize({})
+        return normalize(data_store.read_json(self.file, {}))
 
     def put(self, cfg: dict[str, Any]) -> dict[str, Any]:
         cfg = normalize(cfg)
-        self.dir.mkdir(parents=True, exist_ok=True)
-        tmp = self.file.with_suffix(".tmp")
-        tmp.write_text(json.dumps(cfg, indent=2) + "\n")
-        tmp.replace(self.file)
+        data_store.write_json(self.file, cfg, indent=2, trailing_newline=True, mode=0o644)
         return cfg
 
     def reset(self) -> dict[str, Any]:
-        self.file.unlink(missing_ok=True)
+        data_store.remove(self.file)
         return self.get()
 
     def report(self) -> dict[str, Any] | None:
-        try:
-            return json.loads(self.report_file.read_text())
-        except (OSError, ValueError):
-            return None
+        return data_store.read_json(self.report_file, None)
 
     def save_report(self, body: Any) -> None:
         if not isinstance(body, dict) or not isinstance(body.get("plugins"), list):
@@ -135,5 +128,4 @@ class Store:
         rows = [r for r in body["plugins"][:500] if isinstance(r, dict) and FOLDER_RE.match(str(r.get("folder", "")))]
         keep = {"at": str(body.get("at", ""))[:40], "startup": body.get("startup") if isinstance(body.get("startup"), dict) else None,
                 "bootMs": body.get("bootMs") if isinstance(body.get("bootMs"), (int, float)) else None, "plugins": rows}
-        self.dir.mkdir(parents=True, exist_ok=True)
-        self.report_file.write_text(json.dumps(keep) + "\n")
+        data_store.write_json(self.report_file, keep, indent=None, trailing_newline=True, mode=0o644)

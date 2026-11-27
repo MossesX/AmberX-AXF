@@ -94,6 +94,8 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 import plugin_services
 
+import data_store
+
 router = APIRouter()
 FOLDER = "console-commands"
 RUNNER = Path(__file__).resolve().parent.parent / "console.mjs"
@@ -363,10 +365,7 @@ def _settings_file() -> Path:
 
 
 def settings() -> dict[str, Any]:
-    try:
-        raw = json.loads(_settings_file().read_text())
-    except (OSError, ValueError):
-        raw = {}
+    raw = data_store.read_json(_settings_file(), {})
     return clean_settings(raw if isinstance(raw, dict) else {})
 
 
@@ -385,8 +384,7 @@ def clean_settings(raw: dict[str, Any]) -> dict[str, Any]:
 
 def save_settings(change: dict[str, Any]) -> dict[str, Any]:
     s = clean_settings({**settings(), **(change or {})})
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    _settings_file().write_text(json.dumps(s, indent=2) + "\n")
+    data_store.write_json(_settings_file(), s, indent=2, trailing_newline=True, mode=0o644)
     return s
 
 
@@ -404,9 +402,8 @@ def remember_catalog(audience: str, catalog: dict[str, Any]) -> None:
         _catalogs[audience] = catalog
     if not same:
         try:
-            DATA_DIR.mkdir(parents=True, exist_ok=True)
-            _catalog_file(audience).write_text(json.dumps(catalog))
-        except OSError:
+            data_store.write_json(_catalog_file(audience), catalog, indent=None, mode=0o644)
+        except (OSError, data_store.DataStoreError):
             pass
 
 
@@ -415,8 +412,8 @@ def remembered_catalog(audience: str) -> dict[str, Any] | None:
         if audience in _catalogs:
             return _catalogs[audience]
     try:
-        cat = json.loads(_catalog_file(audience).read_text())
-    except (OSError, ValueError):
+        cat = data_store.read_json(_catalog_file(audience), None)
+    except data_store.DataStoreError:
         return None
     if isinstance(cat, dict) and cat.get("items"):
         with _lock:

@@ -13,7 +13,8 @@ from typing import Any
 
 import console_context as cx
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import storage
+
+import data_store
 
 _lock = threading.RLock()
 
@@ -23,7 +24,7 @@ def data_dir() -> Path:
 
 
 def _write(p: Path, data: Any) -> None:
-    storage.write_json(p, data, indent=1)  # atomic, 0600, folder 0700 (axf_server.storage)
+    data_store.write_json(p, data, indent=1)  # data-store@1: one record
 
 
 DEFAULTS: dict[str, Any] = {"$axf": "terminal-settings@1", "idleMinutes": 60, "moshKeepMinutes": 30, "fontSize": 14, "copyOnSelect": False,
@@ -86,7 +87,7 @@ def clean_profile(p: Any) -> dict[str, Any]:
 
 
 def settings() -> dict[str, Any]:
-    raw = storage.read_json(data_dir() / "settings.json", {})
+    raw = data_store.read_json(data_dir() / "settings.json", {})
     if not isinstance(raw, dict):
         raw = {}
     out = {**DEFAULTS, **raw, "vps": {**DEFAULTS["vps"], **(raw.get("vps") or {})}}
@@ -161,7 +162,7 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
             elif not re.match(r"^sk-ant-oat01-[A-Za-z0-9_-]{20,}$", tok):
                 raise ValueError("that isn't a Claude Code token (run `claude setup-token`; it starts with sk-ant-oat01-)")
             else:
-                storage.write_text(f, tok)  # atomic, 0600
+                data_store.write_text(f, tok)  # atomic, 0600
         _write(data_dir() / "settings.json", s)
         return settings()
 
@@ -225,7 +226,7 @@ def log(entry: dict[str, Any]) -> None:
     e = {"at": int(time.time() * 1000), **entry}
     p = data_dir() / "sessions.jsonl"
     with _lock:
-        storage.append_jsonl(p, e, rotate_at=2_000_000)
+        data_store.append_jsonl(p, e, rotate_at=2_000_000)
 
 
 def read_log(limit: int = 200) -> list[dict[str, Any]]:

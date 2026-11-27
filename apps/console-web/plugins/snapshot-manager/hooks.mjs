@@ -1,13 +1,14 @@
 /** Lifecycle hooks (plugin-lifecycle@1) for Snapshot Manager. Everything stays inside ctx.dataDir. */
+import * as files from '../../../../framework/core/data-files.mjs';
 import { existsSync, mkdirSync, writeFileSync, chmodSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 export async function onInstall(ctx) {
   mkdirSync(join(ctx.dataDir, 'snaps'), { recursive: true, mode: 0o700 });
   const f = join(ctx.dataDir, 'settings.json');
-  if (!existsSync(f)) {
-    writeFileSync(f, JSON.stringify({ $axf: 'snapshot-settings@1', keepDays: 30, maxGb: 5, maxSnapshotMb: 1024, exclude: ['node_modules', '__pycache__', '.cache', '.pnpm-store', '.venv', '.gradle', '.turbo'] }, null, 2));
-    chmodSync(f, 0o600);
+  if (!files.existsAnySync(f)) {
+    files.writeJsonSync(f, { $axf: 'snapshot-settings@1', keepDays: 30, maxGb: 5, maxSnapshotMb: 1024, exclude: ['node_modules', '__pycache__', '.cache', '.pnpm-store', '.venv', '.gradle', '.turbo'] }); // data-store@1: the settings record
+    try { chmodSync(f, 0o600); } catch { /* the row is on axf-data: no local file */ }
     ctx.log('seeded settings.json (keep 30 days, cap 5 GB, node_modules and caches skipped)');
   } else ctx.log('kept the existing settings.json');
 }

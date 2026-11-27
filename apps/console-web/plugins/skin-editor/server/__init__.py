@@ -22,6 +22,8 @@ from fastapi import APIRouter, Body, HTTPException
 import console_context as cx
 import axf_framework  # noqa: F401 — framework/python on sys.path
 
+import data_store
+
 router = APIRouter()
 
 FRAME = "skin-snapshot@1"
@@ -51,10 +53,8 @@ def _dict(body: Any) -> dict[str, Any]:
 
 
 def _write(path: Path, doc: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(f".{os.getpid()}.tmp")
-    tmp.write_text(json.dumps(doc, indent=2) + "\n", "utf-8")
-    tmp.replace(path)
+    """One record through data-store@1: a session, the current pointer or an exported skin is a row of its own."""
+    data_store.write_json(path, doc, indent=2, trailing_newline=True, mode=0o644)
 
 
 # ---------------------------------------------------------------- the registry (read side)
@@ -338,6 +338,11 @@ def default_base() -> dict[str, Any]:
 
 # ---------------------------------------------------------------- storage
 
+def _records(folder: Path) -> list[str]:
+    """The .json records directly inside one of the plugin's data folders, by name."""
+    return sorted(n for n in data_store.list_files(folder) if "/" not in n and n.endswith(".json"))
+
+
 def _session_path(key: str) -> Path:
     return data_dir() / "sessions" / (re.sub(r"[^a-z0-9._-]+", "_", key.lower()) + ".json")
 
@@ -345,15 +350,11 @@ def _session_path(key: str) -> Path:
 def load_session(key: str, label: str = "", create: bool = False) -> dict[str, Any]:
     ui = ui_of_key(key, label)
     p = _session_path(key)
-    if p.is_file():
-        try:
-            doc = json.loads(p.read_text("utf-8"))
-            if isinstance(doc, dict) and isinstance(doc.get("chain"), list) and doc["chain"]:
-                if label and not doc["ui"].get("label"):
-                    doc["ui"]["label"] = label
-                return doc
-        except (OSError, ValueError):
-            pass
+    doc = data_store.read_json(p, None)
+    if isinstance(doc, dict) and isinstance(doc.get("chain"), list) and doc["chain"]:
+        if label and not doc["ui"].get("label"):
+            doc["ui"]["label"] = label
+        return doc
     if not create:
         raise HTTPException(404, f"no skin session for {key}: pick it first")
     at = now_iso()
@@ -384,22 +385,17 @@ def summary(doc: dict[str, Any]) -> dict[str, Any]:
 
 
 def current_key() -> str:
-    try:
-        return str(json.loads((data_dir() / "current.json").read_text("utf-8")).get("key", ""))
-    except (OSError, ValueError):
-        return ""
+    cur = data_store.read_json(data_dir() / "current.json", {})
+    return str(cur.get("key", "")) if isinstance(cur, dict) else ""
 
 
 def all_sessions() -> list[dict[str, Any]]:
     out = []
     folder = data_dir() / "sessions"
-    for f in sorted(folder.glob("*.json")) if folder.is_dir() else []:
-        try:
-            doc = json.loads(f.read_text("utf-8"))
-            if isinstance(doc, dict) and doc.get("chain"):
-                out.append(doc)
-        except (OSError, ValueError):
-            continue
+    for name in _records(folder):
+        doc = data_store.read_json(folder / name, None)
+        if isinstance(doc, dict) and doc.get("chain"):
+            out.append(doc)
     return sorted(out, key=lambda d: d.get("updatedAt", ""), reverse=True)
 
 
@@ -539,10 +535,10 @@ def _not_found(sid: Any) -> dict[str, Any]:
 def get_skins() -> dict[str, Any]:
     out = []
     folder = data_dir() / "skins"
-    for f in sorted(folder.glob("*.json")) if folder.is_dir() else []:
-        try:
-            a = json.loads(f.read_text("utf-8"))
-        except (OSError, ValueError):
+    for name in _records(folder):
+        f = folder / name
+        a = data_store.read_json(f, None)
+        if not isinstance(a, dict):
             continue
         settings = ((a.get("data") or {}).get("extras") or {}).get("settings") or {}
         n = sum(len(v.get("*", {})) for k, v in settings.items() if k.startswith("axf.tokens.") and isinstance(v, dict)) + len(settings.get(SKIN_VARS_KEY) or {})
@@ -552,18 +548,16 @@ def get_skins() -> dict[str, Any]:
 
 @router.get("/skins/{id}")
 def get_skin(id: str) -> dict[str, Any]:
-    p = _skin_path(id)
-    if not p.is_file():
+    a = data_store.read_json(_skin_path(id), None)
+    if a is None:
         raise HTTPException(404, "no such skin")
-    return json.loads(p.read_text("utf-8"))
+    return a
 
 
 @router.delete("/skins/{id}")
 def delete_skin(id: str) -> dict[str, Any]:
-    p = _skin_path(id)
-    if not p.is_file():
+    if not data_store.remove(_skin_path(id)):
         raise HTTPException(404, "no such skin")
-    p.unlink()
     return {"ok": True}
 
 

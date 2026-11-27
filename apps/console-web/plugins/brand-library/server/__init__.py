@@ -24,7 +24,8 @@ from fastapi import APIRouter, Body, HTTPException
 
 import console_context as cx
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import storage
+
+import data_store
 
 router = APIRouter()
 TYPES = ("logo-mark", "animated-logo", "icon-pack", "branding")
@@ -199,5 +200,5 @@ def get_config() -> dict[str, Any]:
 def put_config(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     with _lock:
         c = clean_config(body, clean_config(_read(data_dir() / "config.json")))
-        storage.write_json(data_dir() / "config.json", c)  # atomic, 0600, folder 0700
+        data_store.write_json(data_dir() / "config.json", c)  # atomic, 0600, folder 0700
     return c

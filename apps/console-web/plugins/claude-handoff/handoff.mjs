@@ -19,13 +19,14 @@
  * Data (machines/<host>.json, claude-ai.json, config.json, session.json + session.md): AXF_HANDOFF_DATA, else <repo>/.axf-console/plugins/claude-handoff.
  */
 import { spawnSync } from 'node:child_process';
-import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { chmodSync, copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir, hostname } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   DEFAULT_CONTEXT, DEFAULT_SESSION_NOTES, HOST_RE, KIT_DIR, SESSION_FILE, buildKit, openChanges, openPending, projectFacts, sessionMd, sessionPrompt, sessionThreads, secretNames, collectUserScope, defaultClaudeAi, diffSources, fingerprint, machineError, repoSources,
 } from './handoff-core.mjs';
+import * as files from '../../../../framework/core/data-files.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const SCRIPT = join(HERE, 'handoff.mjs');
@@ -33,12 +34,14 @@ export const ROOT = resolve(process.env.AXF_ROOT || join(HERE, '../../../..'));
 export const DATA = resolve(process.env.AXF_HANDOFF_DATA || join(ROOT, '.axf-console/plugins/claude-handoff'));
 const DEFAULT_CONSOLE = 'https://console.amberxai.com';
 
-const readJson = (p) => { try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return null; } };
+// data-store@1: the plugin's records (one row per machine, the config, the claude.ai list, the session notes) go through
+// framework/core/data-files.mjs onto axf-data's tables; a path outside the console's data folders (--out, the send-later
+// queue in ~/.axf-handoff on another machine) is a plain local file whatever the mode.
+const readJson = (p) => { try { return files.readJsonSync(p, null); } catch { return null; } };
 function writeJson(p, data, mode = 0o600) {
   mkdirSync(dirname(p), { recursive: true, mode: 0o700 });
-  const tmp = `${p}.${process.pid}.tmp`;
-  writeFileSync(tmp, `${JSON.stringify(data, null, 2)}\n`, { mode });
-  renameSync(tmp, p);
+  files.writeJsonSync(p, data);
+  try { chmodSync(p, mode); } catch { /* the row is on axf-data: no local file */ }
 }
 const git = (args, cwd = ROOT) => {
   const r = spawnSync('git', ['-c', 'safe.directory=*', ...args], { cwd, encoding: 'utf8', timeout: 30000 });
@@ -50,8 +53,7 @@ const git = (args, cwd = ROOT) => {
 export function loadMachines(dir = DATA) {
   const out = {};
   const d = join(dir, 'machines');
-  if (!existsSync(d)) return out;
-  for (const n of readdirSync(d).sort()) {
+  for (const n of files.listSync(d)) {
     if (!n.endsWith('.json')) continue;
     const m = readJson(join(d, n));
     if (m && !machineError(m)) out[m.host] = m;
@@ -77,7 +79,7 @@ export function loadConfig(dir = DATA) {
 /** The saved Handoff Session summary: this console's, else the one the last published kit carried, else none. */
 export function loadSession(root = ROOT, dir = DATA) {
   for (const p of [join(dir, 'session.md'), join(root, KIT_DIR, SESSION_FILE)]) {
-    try { const t = readFileSync(p, 'utf8'); if (t.trim()) return t; } catch { /* next */ }
+    try { const t = files.readTextSync(p, ''); if (t.trim()) return t; } catch { /* next */ }
   }
   return '';
 }
@@ -219,7 +221,8 @@ export async function session({ root = ROOT, dir = DATA, save = false, now = new
   const markdown = sessionMd({ P, now, changes, pending, prs: pr.prs, prsNote: pr.note, notes: sessionNotes(dir), threads: sessionThreadNotes(dir) });
   if (save) {
     mkdirSync(dir, { recursive: true, mode: 0o700 });
-    writeFileSync(join(dir, 'session.md'), markdown, { mode: 0o600 });
+    files.writeTextSync(join(dir, 'session.md'), markdown);
+    try { chmodSync(join(dir, 'session.md'), 0o600); } catch { /* on axf-data */ }
   }
   return {
     markdown, prompt: sessionPrompt(markdown), savedAt: save ? now : '',
@@ -285,6 +288,7 @@ function saveSettings(file, data) {
   mkdirSync(dirname(file), { recursive: true });
   if (existsSync(file)) copyFileSync(file, `${file}.bak`);
   const tmp = `${file}.${process.pid}.tmp`;
+  // axf-data: not data (Claude Code's own ~/.claude/settings.json on this machine)
   writeFileSync(tmp, `${JSON.stringify(data, null, 2)}\n`);
   renameSync(tmp, file);
 }

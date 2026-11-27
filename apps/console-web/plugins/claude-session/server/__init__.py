@@ -33,6 +33,8 @@ import plugin_services
 
 from . import hub, recording
 
+import data_store
+
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
 TAG = "agent-pick@1"
@@ -91,17 +93,14 @@ def store() -> Iterator[dict[str, Any]]:
     with open(f.with_suffix(".lock"), "w") as lk:
         fcntl.flock(lk, fcntl.LOCK_EX)
         try:
-            data = _norm(json.loads(f.read_text()) if f.exists() else {})
-        except (OSError, ValueError):
+            data = _norm(data_store.read_json(f, {}))
+        except (OSError, ValueError, AttributeError):
             data = _norm({})
         before = json.dumps(data, sort_keys=True)
         yield data
         _lapse(data)
         if json.dumps(data, sort_keys=True) != before:
-            tmp = f.with_suffix(f".tmp-{os.getpid()}")
-            tmp.write_text(json.dumps(data, indent=1) + "\n")
-            os.chmod(tmp, 0o600)
-            tmp.replace(f)
+            data_store.write_json(f, data, indent=1, trailing_newline=True)
 
 
 def read() -> dict[str, Any]:

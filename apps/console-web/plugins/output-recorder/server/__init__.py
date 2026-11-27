@@ -23,6 +23,8 @@ import plugin_services
 
 from . import transcripts as T
 
+import data_store
+
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
 HEALTH_ID = "session-transcripts"
@@ -57,10 +59,7 @@ def load_state() -> dict[str, Any]:
 
 
 def save_state(st: dict[str, Any]) -> None:
-    data_dir().mkdir(parents=True, exist_ok=True)
-    tmp = _state_file().with_suffix(".tmp")
-    tmp.write_text(json.dumps(st))
-    os.replace(tmp, _state_file())
+    data_store.write_json(_state_file(), st, indent=None, mode=0o644)
 
 
 def enabled() -> bool:

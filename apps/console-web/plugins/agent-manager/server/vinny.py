@@ -37,9 +37,10 @@ from typing import Any, Callable
 
 import plugin_services
 
-from axf_server import storage
 
 from . import hubtools, store
+
+import data_store
 
 TAG = "vinny-commands@1"
 VINNY = "vinny"
@@ -266,13 +267,13 @@ def _shared(p: Path) -> bool:
 
 
 def _read(name: str, default: Any) -> Any:
-    return storage.read_json(data_dir() / name, default)
+    return data_store.read_json(data_dir() / name, default)
 
 
 def _write(name: str, data: Any) -> None:
     d = data_dir()
     fm, dm = (0o660, 0o2770) if _shared(d) else (0o600, 0o700)
-    storage.write_json(d / name, data, ensure_ascii=False, mode=fm, dir_mode=dm)
+    data_store.write_json(d / name, data, ensure_ascii=False, mode=fm, dir_mode=dm)
 
 
 def load() -> dict[str, Any]:

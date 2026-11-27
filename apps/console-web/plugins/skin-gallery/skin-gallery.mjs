@@ -19,6 +19,7 @@
  * Scopes: hub | app | app:<id> | ui:<view> | plugin:<id>; default app (the acting app's own level). The acting app is
  * --app (default axf-console): its look document keeps the one undo record. Add --json for machine output.
  */
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
@@ -71,14 +72,13 @@ export function state(scope = 'app', app = DEFAULT_APP) {
 
 function writeShared(global, by) {
   const f = sharedFile();
-  const doc = JSON.parse(readFileSync(f, 'utf8'));
+  const doc = dataFiles.readJsonSync(f, null);
+  if (!doc) throw new Error(`no shared look at ${f}`);
   if (global) doc.skin = { id: global.id, ...(Object.keys(global.overrides ?? {}).length ? { overrides: global.overrides } : {}), ...(global.colorTheme ? { colorTheme: global.colorTheme } : {}) };
   else delete doc.skin;
   doc.updatedBy = by;
   doc.updatedAt = new Date().toISOString();
-  const tmp = `${f}.${process.pid}.tmp`;
-  writeFileSync(tmp, `${JSON.stringify(doc)}\n`);
-  renameSync(tmp, f);
+  dataFiles.writeJsonSync(f, doc, 0); // data-store@1: the shared look record
 }
 
 /** One skin-switch@1 command for the acting app; saves what changed and returns the scope's new state. */
@@ -119,7 +119,7 @@ export const SETTINGS_DEFAULTS = { bannerChip: true, defaultScope: 'app', undoSe
 const settingsFile = () => resolve(process.env.AXF_SKIN_GALLERY_DIR || resolve(ROOT, '.axf-console/plugins/skin-gallery'), 'settings.json');
 
 export function readSettings() {
-  try { return { ...SETTINGS_DEFAULTS, ...JSON.parse(readFileSync(settingsFile(), 'utf8')) }; } catch { return { ...SETTINGS_DEFAULTS }; }
+  try { return { ...SETTINGS_DEFAULTS, ...(dataFiles.readJsonSync(settingsFile(), null) ?? {}) }; } catch { return { ...SETTINGS_DEFAULTS }; }
 }
 
 /** Set one or more settings; every value is checked, an unknown key or a bad value changes nothing. */
@@ -134,8 +134,7 @@ export function writeSettings(patch) {
     else throw Object.assign(new Error(`no setting "${k}": bannerChip, defaultScope, undoSeconds, previewView`), { code: 'bad-setting' });
   }
   const f = settingsFile();
-  if (!existsSync(resolve(f, '..'))) mkdirSync(resolve(f, '..'), { recursive: true });
-  writeFileSync(f, `${JSON.stringify(next, null, 1)}\n`);
+  dataFiles.writeJsonSync(f, next, 1);
   return next;
 }
 

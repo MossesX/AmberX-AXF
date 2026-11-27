@@ -25,8 +25,8 @@ NAME and a TIMESTAMP and conform to ONE schema. No exceptions."
   with no group given, `<session/build/source> - <YYYY-MM-DD HH:mm>`. CLIs take source + sender from `--source` /
   `--by type:id`, else from the Claude Code session running them (`CLAUDECODE`; headless when unattended).
 - **Served** as ui-review-item@1 too (`GET items`, `GET shots`); the page converts to its working shape in `conform.mjs`.
-- **Migration**: `review.mjs migrate` (dry-run report) → `review.mjs migrate --apply` (backs both files up as
-  `*.pre-schema-<time>`); names from titles (else screen / file name), timestamps from submittedAt / takenAt (else the
+- **Migration**: `review.mjs migrate` (dry-run report) → `review.mjs migrate --apply` (rewrites both records in the
+  data store, no backup copies); names from titles (else screen / file name), timestamps from submittedAt / takenAt (else the
   file time), queue items grouped by build / day, screenshots keep their groups (else Screenshots' title-prefix rule).
   The server runs it on start (through node) and keeps the report as `schema-migration.md`; `POST migrate {apply}`.
   `review.mjs check` = every stored record conforms.

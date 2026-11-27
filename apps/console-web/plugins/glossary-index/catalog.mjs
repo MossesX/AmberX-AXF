@@ -29,6 +29,7 @@
  *
  * No model, no network, no tokens. The orchestrator's post-build hook runs `build` so the catalog follows every build.
  */
+import * as files from '../../../../framework/core/data-files.mjs';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
@@ -464,20 +465,19 @@ export function checkCatalog(fresh = buildCatalog(), ratchet = readRatchet()) {
   return { ok: !errors.length, errors, total: fresh.total, generic: generic.length, allowed: ratchet.generic };
 }
 
-export function loadCatalog() { try { return existsSync(CATALOG_FILE) ? readJson(CATALOG_FILE) : null; } catch { return null; } }
+export function loadCatalog() { try { return files.readJsonSync(CATALOG_FILE, null); } catch { return null; } }
 
 /** Build and save the catalog when anything moved; the change list is kept for "what's new in the glossary". */
 export function writeCatalog({ reason = 'manual', build = '' } = {}) {
   const c = buildCatalog();
   const prev = loadCatalog();
   if (prev?.hash === c.hash) return { wrote: false, catalog: prev, diff: { added: [], removed: [], changed: [] } };
-  mkdirSync(DATA_DIR, { recursive: true });
-  writeFileSync(CATALOG_FILE, `${JSON.stringify(c)}\n`);
+  files.writeJsonSync(CATALOG_FILE, c, 0); // data-store@1: the catalog record
   const diff = diffCatalogs(prev, c);
   let log = [];
-  try { log = existsSync(CHANGES_FILE) ? readJson(CHANGES_FILE) : []; } catch { log = []; }
+  try { log = files.readJsonSync(CHANGES_FILE, []) ?? []; } catch { log = []; }
   log.unshift({ at: c.generatedAt, reason, build, total: c.total, added: diff.added.slice(0, 200), removed: diff.removed.slice(0, 200), changed: diff.changed.slice(0, 200), counts: { added: diff.added.length, removed: diff.removed.length, changed: diff.changed.length } });
-  writeFileSync(CHANGES_FILE, `${JSON.stringify(log.slice(0, 50), null, 1)}\n`);
+  files.writeJsonSync(CHANGES_FILE, log.slice(0, 50), 1);
   return { wrote: true, catalog: c, diff };
 }
 
@@ -527,6 +527,7 @@ async function main(argv) {
     const c = buildCatalog();
     const old = readRatchet();
     const generic = Math.min(c.generic, Number.isFinite(old.generic) ? old.generic : c.generic);
+    // axf-data: not data (the committed coverage ratchet in the plugin's folder, a repo file)
     writeFileSync(RATCHET_FILE, `${JSON.stringify({ $axf: 'glossary-coverage@1', description: 'How many glossary entries may still fall back to a generated summary (their source has no description). Only goes down: node catalog.mjs --update-ratchet.', generic }, null, 2)}\n`);
     console.log(`glossary: ratchet ${generic}`);
     return 0;
@@ -551,7 +552,7 @@ async function main(argv) {
     console.log(JSON.stringify({ ...e, linkedFrom: linksTo(cat.entries, e.id) }, null, 2));
     return 0;
   }
-  if (cmd === 'changes') { console.log(existsSync(CHANGES_FILE) ? readFileSync(CHANGES_FILE, 'utf8') : '[]'); return 0; }
+  if (cmd === 'changes') { console.log(files.readTextSync(CHANGES_FILE, '[]')); return 0; }
   console.error('usage: catalog.mjs build [--reason r] [--build id] | --check | --update-ratchet | stats | search <q> | get <id> | changes | --json');
   return 2;
 }

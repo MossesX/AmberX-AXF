@@ -34,7 +34,8 @@ from typing import Any, Callable
 import plugin_services
 
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import storage
+
+import data_store
 
 ACTIVE = ("queued", "running", "waiting")
 PUSH = ("off", "all", "done", "failed")
@@ -144,7 +145,7 @@ class Completer:
 
     def _seen(self) -> dict[str, dict[str, Any]]:
         try:
-            d = json.loads((self.dir / "seen.json").read_text("utf-8"))
+            d = data_store.read_json(self.dir / "seen.json", None)
             return {k: v for k, v in d.items() if isinstance(k, str) and isinstance(v, dict)} if isinstance(d, dict) else {}
         except (OSError, ValueError):
             return {}
@@ -153,7 +154,7 @@ class Completer:
         if len(d) > MAX_SEEN:
             d = dict(list(d.items())[-MAX_SEEN:])
         self.dir.mkdir(parents=True, exist_ok=True)
-        storage.write_json(self.dir / "seen.json", d, indent=None, dir_mode=None)
+        data_store.write_json(self.dir / "seen.json", d, indent=None, dir_mode=None)
 
     # ---------------- watching
 
@@ -203,15 +204,13 @@ class Completer:
         else:
             try:
                 folder = d / "inbox" / n["at"][:4] / n["at"][5:7]
-                folder.mkdir(parents=True, exist_ok=True)
                 p = folder / f"{n['id']}.json"
-                tmp = p.with_suffix(".tmp")
-                tmp.write_text(json.dumps(n), "utf-8")
-                os.chmod(tmp, 0o664)  # the hub reads it (same group, setgid tree)
-                os.replace(tmp, p)
+                if not data_store.remote_mode(p):
+                    folder.mkdir(parents=True, exist_ok=True)
+                data_store.write_json(p, n, indent=None, mode=0o664, dir_mode=None)  # one row per notification; as a file the hub reads it (same group, setgid tree)
                 res["hub"] = "sent"
-            except OSError as e:
-                res["hub"] = f"couldn't write to axHub: {e.strerror or e}"
+            except (OSError, data_store.DataStoreError) as e:
+                res["hub"] = f"couldn't write to axHub: {getattr(e, 'strerror', None) or e}"
         try:
             failed = it["state"] in ("failed", "stale")
             link = it.get("url") if str(it.get("url") or "").startswith("https://") else "settings:activity"

@@ -24,6 +24,7 @@
  * made today (made if new); no group = '<session/build/source> - <YYYY-MM-DD HH:mm>'. Ask Brett for the name first
  * (offer a default like 'Breakroom check - Oct 31 8:20 PM'); headless sessions name the group after their build.
  */
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
@@ -34,8 +35,8 @@ import * as cf from './web/conform.mjs';
 import { caller, dataDir, submitLocal } from './review.mjs';
 
 const IMG = /\.(png|jpe?g|webp)$/i;
-const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-const writeJson = (f, v) => { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp`; writeFileSync(t, JSON.stringify(v, null, 1)); renameSync(t, f); };
+const readJson = (f, d) => { try { return dataFiles.readJsonSync(f, null) ?? d; } catch { return d; } };
+const writeJson = (f, v) => dataFiles.writeJsonSync(f, v, 1); // data-store@1 (framework/core/data-files.mjs)
 export const shotsDir = () => join(dataDir(), 'screenshots');
 const indexFile = () => join(shotsDir(), 'index.json');
 /** screenshots/index.json → working records (ui-review-item@1 screenshots → the Screenshots tab's shape) + groups. */

@@ -58,6 +58,9 @@ git("init", "-q", "--bare", "-b", "main", str(BARE))
 git("push", "-q", str(BARE), "main", cwd=ROOT)
 git("remote", "add", "origin", "https://github.com/MossesX/test-handoff.git", cwd=ROOT)
 
+sys.path.insert(0, str(REPO / "apps/console-web/server"))
+import data_store  # noqa: E402 — the data layer reads its registry from the real checkout, before AXF_ROOT is the scratch repo
+
 RESULTS = Path(tempfile.mkdtemp(prefix="axf-handoff-results-"))
 os.environ.update({"AXF_HANDOFF_RESULTS": str(RESULTS), "AXF_WALL_HUB": "https://hub.example.com", "AXF_ROOT": str(ROOT), "AXF_HANDOFF_DATA": str(DATA), "AXF_HANDOFF_NO_THREAD": "1", "GITHUB_TOKEN": "test-token",
                    "AXF_LIFECYCLE_PUSH_URL": str(BARE), "AXF_LIFECYCLE_BRANCH": "main", "HOME": str(HOME)})

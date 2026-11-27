@@ -149,9 +149,7 @@ def summary(snap: dict[str, Any] | None = None) -> dict[str, Any]:
 # ------------------------------------------------------------------ runs
 
 def _runs_dir(kind: str) -> Path:
-    d = data_dir() / kind
-    d.mkdir(parents=True, exist_ok=True)
-    return d
+    return data_dir() / kind
 
 
 def _held() -> dict[str, Any]:
@@ -178,8 +176,8 @@ def run_state(p: dict[str, Any], held: dict[str, Any] | None = None) -> dict[str
 def list_runs(limit: int = 30) -> list[dict[str, Any]]:
     held = _held()
     plans = []
-    for f in sorted(_runs_dir("plans").glob("*.json"), key=lambda f: f.stat().st_mtime, reverse=True)[:limit]:
-        p = maint.read_json(f)
+    for name in sorted(maint.record_names(data_dir() / "plans"), reverse=True)[:limit]:  # ids start with their time: newest first
+        p = maint.read_json(data_dir() / "plans" / name)
         if isinstance(p, dict) and p.get("id"):
             plans.append(run_state(p, held))
     return plans

@@ -33,7 +33,8 @@ from fastapi import APIRouter, Request
 import console_context as cx
 import plugin_services
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import storage
+
+import data_store
 
 router = APIRouter()
 _lock = threading.Lock()
@@ -70,7 +71,7 @@ def classify(ok: bool, error: str) -> str:
 def _save(res: dict[str, Any]) -> None:
     p = data_dir() / "status.json"
     with _lock:
-        storage.write_json(p, res, indent=None)  # atomic, 0600, folder 0700 (axf_server.storage)
+        data_store.write_json(p, res, indent=None)  # data-store@1: one record
 
 
 def run_test() -> dict[str, Any]:
@@ -265,7 +266,7 @@ def read_usage(refresh: bool = False) -> dict[str, Any]:
         _usage.update(at=now, value=value)
         if accounts:
             with _lock:
-                storage.write_json(data_dir() / "usage.json", value, indent=None)
+                data_store.write_json(data_dir() / "usage.json", value, indent=None)
         return {**value, "cached": False, "age": 0}
 
 

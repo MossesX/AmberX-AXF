@@ -3,8 +3,8 @@
  * Feature matrix CLI + store (feature-matrix@1). Every build profile keeps its matrices next to its orchestrator
  * tracker, a repo file that claude-sync keeps in step with the hub and that the claude.ai page and other sessions
  * read: main framework = `_claude/builds/matrices.json`, other profiles `_claude/builds/profiles/<id>/matrices.json`.
- * Every save is also mirrored into the plugin's data folder through persist (on the VPS that is the hub's projects
- * tree), and is the fallback when the project file is missing. The draft (feature-matrix@0) is read and converted on
+ * Each profile's matrices are one record in the data store (data-store@1, through framework/core/data-files.mjs): no
+ * mirror copy and no fallback file. The draft (feature-matrix@0) is read and converted on
  * load; the first save writes it as feature-matrix@1. The page shows every profile's matrices as ONE dataset.
  *
  *   node apps/console-web/plugins/feature-matrix/matrix.mjs                list (one line per matrix, every profile)
@@ -20,6 +20,7 @@
  *   --json on any command prints one JSON line (the console server uses this).
  * Env: AXF_FM_DIR=<dir> keeps every profile's file as <dir>/<profile>.json (tests); AXF_ORCH_FILE = the tracker.
  */
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -30,8 +31,9 @@ import { activeProfile, baseDataPath, dataPath, orchestratorPath, readProfiles }
 
 export const FOLDER = 'feature-matrix';
 export const DATA_REL = `.axf-console/plugins/${FOLDER}`;
-const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
-const writeJson = (f, v) => { mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(v, null, 1)}\n`); renameSync(tmp, f); };
+// data-store@1: the plugin's records go through framework/core/data-files.mjs (rows on axf-data).
+const readJson = (f) => { try { return dataFiles.readJsonSync(f, null); } catch { return null; } };
+const writeJson = (f, v) => dataFiles.writeJsonSync(f, v, 1);
 const withProfile = (id, fn) => { const prev = process.env.AXF_BUILD_PROFILE; process.env.AXF_BUILD_PROFILE = id; try { return fn(); } finally { if (prev === undefined) delete process.env.AXF_BUILD_PROFILE; else process.env.AXF_BUILD_PROFILE = prev; } };
 
 export const profileIds = () => readProfiles().profiles.map((p) => p.id);
@@ -41,15 +43,14 @@ export function matricesFile(profile = activeId()) {
   if (process.env.AXF_FM_DIR) return join(process.env.AXF_FM_DIR, `${profile}.json`);
   return join(dirname(orchestratorPath(profile)), 'matrices.json');
 }
-/** Where the plugin's mirror of a profile's file lives (the plugin data folder, on the hub when /projects is mounted). */
-export const mirrorFile = (profile) => (process.env.AXF_FM_DIR ? join(process.env.AXF_FM_DIR, 'mirror', `${profile}.json`) : baseDataPath(`${DATA_REL}/matrices/${profile}.json`));
 const reportsFile = () => (process.env.AXF_FM_DIR ? join(process.env.AXF_FM_DIR, 'reports.json') : baseDataPath(`${DATA_REL}/reports.json`));
 export const trackerFile = (profile) => (process.env.AXF_ORCH_FILE && profile === activeId() ? process.env.AXF_ORCH_FILE : orchestratorPath(profile));
 
 // ---- the tables a build lives in (raw files: the plugin never imports another plugin's code)
 export function readTables(profile) {
   return withProfile(profile, () => {
-    const orch = readJson(trackerFile(profile));
+    // the pipeline status file is read as it always was: build pipeline-fixes-drop-7-mb-status-file owns it and its readers
+    let orch = null; try { orch = JSON.parse(readFileSync(trackerFile(profile), 'utf8')); } catch { /* none */ }
     const pending = readJson(dataPath('framework/plan/pending.json'));
     const plan = readJson(dataPath('framework/plan/plan.json'));
     const queue = readJson(dataPath('framework/plan/build-queue.json'));
@@ -59,7 +60,7 @@ export function readTables(profile) {
 
 /** One profile's matrices (feature-matrix@1; the draft is converted in memory). */
 export function loadProfile(profile) {
-  const raw = readJson(matricesFile(profile)) ?? readJson(mirrorFile(profile));
+  const raw = readJson(matricesFile(profile));
   if (!raw) return fm.emptyState();
   const st = raw.$axf === fm.SCHEMA ? fm.normalizeState(raw) : dr.fromDraft(raw, readTables(profile).builds);
   return st;
@@ -67,7 +68,6 @@ export function loadProfile(profile) {
 export function saveProfile(profile, state) {
   const errors = fm.validate(state); if (errors.length) throw new Error(`refused: ${errors.slice(0, 3).join('; ')}`);
   writeJson(matricesFile(profile), state);
-  try { writeJson(mirrorFile(profile), state); } catch { /* the mirror is a copy; the project file is the record */ }
 }
 /** Every profile's matrices as one dataset (a matrix's id carries its profile). */
 export function loadAll() {

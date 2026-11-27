@@ -1,4 +1,5 @@
 /** Lifecycle hooks (plugin-lifecycle@1). Every file the plugin writes stays inside ctx.dataDir. */
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { cpSync, existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
@@ -10,10 +11,10 @@ export function migrateOld(ctx, oldDir = join(dirname(ctx.dataDir), 'design-pack
   if (!existsSync(oldDir)) return [];
   const moved = [];
   for (const n of readdirSync(oldDir)) { const to = join(ctx.dataDir, n); if (!existsSync(to)) { cpSync(join(oldDir, n), to, { recursive: true }); moved.push(n); } }
-  writeFileSync(join(ctx.dataDir, 'migrated.json'), JSON.stringify({ from: oldDir, files: moved, at: new Date().toISOString() }));
+  dataFiles.writeJsonSync(join(ctx.dataDir, 'migrated.json'), { from: oldDir, files: moved, at: new Date().toISOString() }, 0);
   rmSync(oldDir, { recursive: true, force: true });
   const state = process.env.AXF_STATE || join(ctx.root, '.axf-console/state.json');
-  try { const s = JSON.parse(readFileSync(state, 'utf8')); if (s.plugins && 'design-packs' in s.plugins) { delete s.plugins['design-packs']; writeFileSync(state, JSON.stringify(s, null, 2)); } } catch { /* no state yet */ }
+  try { const s = dataFiles.readJsonSync(state, null); if (s?.plugins && 'design-packs' in s.plugins) { delete s.plugins['design-packs']; dataFiles.writeJsonSync(state, s); } } catch { /* no state yet */ }
   return moved;
 }
 

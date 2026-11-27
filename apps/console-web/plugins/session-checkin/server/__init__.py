@@ -150,6 +150,7 @@ def pricing(req: PricingReq) -> dict[str, Any]:
         models = {k: {**(cur.get("models") or {}).get(k, {}), **v} for k, v in data["models"].items()}
         data = {**cur, **data, "models": {**(cur.get("models") or {}), **models}}
     tmp = target.with_suffix(".tmp")
+    # axf-data: not data (the repo's committed model-pricing@1 config file, shared with the changes hooks and the Build manager)
     tmp.write_text(json.dumps(data, indent=2) + "\n")
     tmp.replace(target)
     return {"ok": True, "pricing": data}

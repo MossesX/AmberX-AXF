@@ -76,6 +76,7 @@ def _tmp_json(value: Any, suffix: str = ".json") -> Path:
     d = data_dir() / "tmp"
     d.mkdir(parents=True, exist_ok=True)
     f = d / f"in-{os.getpid()}-{threading.get_ident()}{suffix}"
+    # axf-data: not data (a temp input file for one Node tool call, removed after it)
     f.write_text(value if isinstance(value, str) else json.dumps(value))
     return f
 
