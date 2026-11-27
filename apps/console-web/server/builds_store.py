@@ -8,10 +8,10 @@ Every Python reader of the builds asks here instead of opening `_claude/builds/s
     builds_store.rev()             its rev (-1 when it can't be read)
     builds_store.marker()          what changes when the store does (rev, or the file's size and mtime): for caches
 
-Where it comes from is the data-store@1 mode of the `builds/store.json` key (framework/core/data-store-mode.mjs):
-cutover / rollback = the axf-data tables (Postgres), and never the checkout's stale file, which nothing writes after
-the cut; local / shadow (a fresh checkout, a project not moved yet) = the file, as framework/cli/builds-store.mjs
-reads it. AXF_BUILDS_STORE points at a test store, as it does for the Node side. Reads are shared for CACHE_S.
+This checkout's store is the axf-data tables (Postgres) only: the path map's `store.mode: cutover` puts the
+`builds/store.json` key there, and the checkout's old file is never read instead (DataStoreError reads as None). A file
+is read only for a store that is not this checkout's: AXF_BUILDS_STORE (a test store, as for the Node side) or another
+root (a test root, a project's own repo). Reads are shared for CACHE_S.
 """
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ _cache: dict[str, tuple[float, Any]] = {}
 
 
 def store_file(root: Path | None = None) -> Path:
-    """The local file (test store, scratch data dir, else the checkout's): only read before the cut."""
+    """The file of a store that is not on the tables (test store, scratch data dir, another root)."""
     if os.environ.get("AXF_BUILDS_STORE"):
         return Path(os.environ["AXF_BUILDS_STORE"])
     d = os.environ.get("AXF_DATA_DIR")

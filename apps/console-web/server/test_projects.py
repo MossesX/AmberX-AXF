@@ -62,7 +62,13 @@ try:
     check("server: plugin data goes to projects/<id>", projects.dir(data / "plug") == data / "plug" / "projects" / tid)
     node("select", "amberx-axf", env=env)
     check("server: back to AmberX AXF", projects.active()["id"] == "amberx-axf" and projects.dir(data / "plug") == data / "plug")
-    check("server: a build's project", (projects.of_build(next(iter(projects.build_profiles()), "")) or {}).get("id") == "amberx-axf")
+    # a scratch builds store: this checkout's store is the axf-data tables (builds_store.py), which a test never reads
+    (data / "store.json").write_text(json.dumps({"rev": 1, "builds": [{"id": "b-test", "profiles": ["all"]}]}))
+    os.environ["AXF_BUILDS_STORE"] = str(data / "store.json")
+    try:
+        check("server: a build's project", (projects.of_build("b-test") or {}).get("id") == "amberx-axf")
+    finally:
+        os.environ.pop("AXF_BUILDS_STORE", None)
     node("delete", tid, "--confirm", tid, env=env)
     check("server: deleted project gone", all(p["id"] != tid for p in projects.registry()["projects"]))
 finally:

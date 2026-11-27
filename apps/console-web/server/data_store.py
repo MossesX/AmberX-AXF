@@ -9,16 +9,15 @@ builds keep running. That's what I need."
     ds.private_dir(path)             ds.plugin(folder).read_json("items.json", [])   (a plugin's lifecycle dataDir)
     ds.key_for(path)                 the data-store@1 key a file maps to (None = it always stays local)
 
-Every call takes the same arguments as storage.* and answers the same way. What happens underneath depends on the
-mode of the key's namespace (framework/core/data-store-mode.mjs, the document at <data>/data-store/mode.json):
+Every call takes the same arguments as storage.* and answers the same way. Postgres is the one store (Brett, Nov 25
+2026): a path the map gives a key is read and written on axf-data only, one key (one row) per call.
 
-  local     storage.* on the file, nothing else (the default: no behaviour change until a namespace is moved)
-  shadow    the file first (its answer is the caller's answer), then the same write to axf-data; reads come from the
-            file and a background check compares its hash with axf-data's. A difference or a failed mirror write is a
-            data-drift@1 line in <data>/data-store/drift/<ns>.jsonl, never an error for the caller
-  cutover   axf-data only. Writes re-read the etag and retry on a conflict; if axf-data can't be reached a read falls
-            back to the local read-only copy (logged) and a write raises DataStoreError('unavailable')
+  cutover   axf-data only. Writes re-read the etag and retry on a conflict; if axf-data can't be reached a read or a
+            write raises DataStoreError('unavailable'): there is no local copy to fall back to, no shadow, no dual write
   rollback  reads from axf-data, writes raise DataStoreError('read_only') until the rollback finishes
+  local     only for a path the map keeps local (`to: null`: spools, caches, the layer's own mode switch) or a path no
+            rule maps: storage.* on the file. With a map that has no `store.mode` (an older checkout) a namespace the
+            mode document (<data>/data-store/mode.json) has not moved is local too; `shadow` there reads as cutover
 
 Paths map to keys through framework/schemas/data-store-paths.json (the migration map as rules). axf-data is reached at
 AXF_DATA_URL with AXF_DATA_TOKEN (conf/env/console.env from deploy/install-data.sh). No token or body is ever logged.
@@ -28,9 +27,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-import queue
 import re
-import threading
 import time
 import urllib.error
 import urllib.parse
@@ -159,9 +156,14 @@ def mode_doc() -> dict:
     return _mode_cache["doc"]
 
 
+STORE_MODE = str((_PATHS.get("store") or {}).get("mode") or "")  # data-store-paths.json: "cutover" = Postgres is the one store
+
+
 def mode_of(key: str) -> str:
     """The key's mode: a key-level override on its namespace entry (exact path or the longest prefix ending in '/'; the
-    path is relative to the namespace id, so `builds/store.json` → `store.json`), else the namespace entry, else the store."""
+    path is relative to the namespace id, so `builds/store.json` → `store.json`), else the namespace entry, else the store.
+    The map's `store.mode: cutover` makes every mapped key cutover unless the mode document holds it in rollback; shadow
+    (the old dual write) is gone and reads as cutover."""
     doc = mode_doc()
     nsid = nsid_of(key)
     e = (doc.get("namespaces") or {}).get(nsid) or {}
@@ -173,7 +175,9 @@ def mode_of(key: str) -> str:
         if hit and len(p) > len(best) and isinstance(k, dict):
             best, m = p, str(k.get("mode") or "")
     m = m or e.get("mode") or doc.get("mode") or "local"
-    return m if m in MODES else "local"
+    if m == "shadow" or (STORE_MODE == "cutover" and m != "rollback"):
+        return "cutover"
+    return m if m in ("local", "cutover", "rollback") else "local"
 
 
 # ── axf-data over HTTP ────────────────────────────────────────────────────────────────────────────────────────────────
@@ -285,14 +289,10 @@ def set_remote(r: Remote) -> None:
     REMOTE = r
 
 
-# ── drift (shadow) ────────────────────────────────────────────────────────────────────────────────────────────────────
+# ── drift ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 def _now() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime()) + f".{int(time.time() * 1000) % 1000:03d}Z"
-
-
-def _hash16(body: bytes) -> str:
-    return hashlib.sha256(body).hexdigest()[:16]
 
 
 def canonical(v: Any) -> str:
@@ -315,43 +315,8 @@ def log_drift(op: str, key: str, kind: str, local: dict | None, remote: dict | N
     return e
 
 
-_checks: queue.Queue = queue.Queue(maxsize=256)
-
-
-def _checker() -> None:
-    while True:
-        key, local_hash = _checks.get()
-        try:
-            r = REMOTE.get(key)
-            if r is None:
-                log_drift("read", key, "missing-remote", {"etag": f"0-{local_hash}"}, None)
-            elif r[0]["etag"].split("-", 1)[-1] != local_hash:
-                log_drift("read", key, "etag", {"etag": f"0-{local_hash}"}, {"rev": r[0]["rev"], "etag": r[0]["etag"]})
-        except DataStoreError as e:
-            log_drift("read", key, "write-failed", {"etag": f"0-{local_hash}"}, None, f"{e.code}: {e}")
-        except Exception:  # noqa: BLE001 — a background compare never takes the server down
-            pass
-        finally:
-            _checks.task_done()
-
-
 def drain() -> None:
-    """Wait for the shadow compares queued so far (tests, and the CLI before it reports drift)."""
-    if _checker_started.is_set():
-        _checks.join()
-
-
-_checker_started = threading.Event()
-
-
-def _compare_later(key: str, body: bytes) -> None:
-    if not _checker_started.is_set():
-        _checker_started.set()
-        threading.Thread(target=_checker, name="data-store-shadow", daemon=True).start()
-    try:
-        _checks.put_nowait((key, _hash16(body)))
-    except queue.Full:
-        pass  # sampling: a busy console checks what it can
+    """Kept for callers of the old shadow mode (background compares): nothing is queued any more."""
 
 
 def _record_body(text_or_bytes: bytes) -> tuple[bytes, str] | None:
@@ -382,24 +347,16 @@ def _route(path: str | os.PathLike[str]) -> tuple[str | None, str]:
 def _read_bytes(path: str | os.PathLike[str]) -> bytes | None:
     key, mode = _route(path)
     if mode in ("cutover", "rollback"):
-        try:
-            if kind_of(key) == "journal":
-                entries = REMOTE.read_all(key)
-                return None if entries is None else "".join(json.dumps(e) + "\n" for e in entries).encode("utf-8")
-            r = REMOTE.get(key)
-            return None if r is None else r[1]
-        except DataStoreError as e:
-            if e.code != "unavailable":
-                raise
-            log_drift("read", key, "write-failed", None, None, f"axf-data unreachable in {mode}: served the local read-only copy")
+        # axf-data only: DataStoreError('unavailable') is the caller's, never a stale local file instead
+        if kind_of(key) == "journal":
+            entries = REMOTE.read_all(key)
+            return None if entries is None else "".join(json.dumps(e) + "\n" for e in entries).encode("utf-8")
+        r = REMOTE.get(key)
+        return None if r is None else r[1]
     try:
-        data = Path(path).read_bytes()
+        return Path(path).read_bytes()
     except OSError:
         return None
-    if mode == "shadow" and kind_of(key) != "journal":
-        body = _record_body(data) if kind_of(key) == "record" else None
-        _compare_later(key, body[0] if body else data)
-    return data
 
 
 def read_json(path: str | os.PathLike[str], default: Any) -> Any:
@@ -435,14 +392,7 @@ def _write(path: str | os.PathLike[str], raw: bytes, local: Callable[[], Path]) 
         body, ct = _remote_body(key, raw)
         REMOTE.put_latest(key, body, ct)
         return Path(path)
-    out = local()
-    if mode == "shadow":
-        body, ct = _remote_body(key, raw)
-        try:
-            REMOTE.put_latest(key, body, ct)
-        except DataStoreError as e:
-            log_drift("write", key, "write-failed", {"etag": f"0-{_hash16(body)}"}, None, f"{e.code}: {e}")
-    return out
+    return local()
 
 
 def write_bytes(path: str | os.PathLike[str], data: bytes, **kw: Any) -> Path:
@@ -469,43 +419,27 @@ def append_jsonl(path: str | os.PathLike[str], entry: Any, **kw: Any) -> None:
         REMOTE.append(key, [entry], idem=uuid.uuid4().hex)
         return
     storage.append_jsonl(path, entry, **kw)
-    if mode == "shadow":
-        try:
-            REMOTE.append(key, [entry], idem=uuid.uuid4().hex)
-        except DataStoreError as e:
-            log_drift("append", key, "append-failed", None, None, f"{e.code}: {e}")
 
 
 def remote_mode(path: str | os.PathLike[str]) -> bool:
-    """True when the file's namespace is in cutover or rollback (axf-data is the store, the file is a backup)."""
+    """True when the file's namespace is in cutover or rollback (axf-data is the store; there is no file)."""
     return _route(path)[1] in ("cutover", "rollback")
 
 
 def mirror(path: str | os.PathLike[str], raw: bytes) -> None:
-    """For callers that keep their own local write (modes, owners): in shadow, the same bytes to axf-data."""
-    key, mode = _route(path)
-    if mode != "shadow":
-        return
-    body, ct = _remote_body(key, raw)
-    try:
-        REMOTE.put_latest(key, body, ct)
-    except DataStoreError as e:
-        log_drift("write", key, "write-failed", {"etag": f"0-{_hash16(body)}"}, None, f"{e.code}: {e}")
+    """Kept for callers of the old shadow mode: there is no dual write any more, so this does nothing. A caller that
+    still writes its own local file must write through write_bytes / write_json instead."""
+    del path, raw
 
 
 def exists(path: str | os.PathLike[str]) -> bool:
     if remote_mode(path):
-        key = key_for(path)
-        try:
-            return REMOTE.get(key) is not None
-        except DataStoreError as e:
-            if e.code != "unavailable":
-                raise
+        return REMOTE.get(key_for(path)) is not None
     return Path(path).is_file()
 
 
 def remove(path: str | os.PathLike[str]) -> bool:
-    """Delete a file (a tombstone on axf-data in cutover; mirrored in shadow). False when it wasn't there."""
+    """Delete a file (a tombstone on axf-data in cutover). False when it wasn't there."""
     key, mode = _route(path)
     if mode == "rollback":
         raise DataStoreError("read_only", f"{nsid_of(key)} is rolling back", 423)
@@ -522,15 +456,9 @@ def remove(path: str | os.PathLike[str]) -> bool:
         return remote_delete()
     try:
         Path(path).unlink()
-        was = True
+        return True
     except FileNotFoundError:
-        was = False
-    if mode == "shadow":
-        try:
-            remote_delete()
-        except DataStoreError as e:
-            log_drift("write", key, "write-failed", None, None, f"delete: {e.code}: {e}")
-    return was
+        return False
 
 
 def list_files(directory: str | os.PathLike[str]) -> list[str]:
@@ -541,16 +469,12 @@ def list_files(directory: str | os.PathLike[str]) -> list[str]:
         ns, _, rest = probe.partition("/")
         prefix = rest[: -len("__probe__.md")]
         out, after = [], ""
-        try:
-            while True:
-                r = REMOTE.json("GET", ns, q={"prefix": prefix, "after": after, "limit": 1000})
-                out += [i["path"][len(prefix):] for i in r["items"]]
-                if not r.get("next"):
-                    return sorted(out)
-                after = r["next"]
-        except DataStoreError as e:
-            if e.code != "unavailable":
-                raise
+        while True:
+            r = REMOTE.json("GET", ns, q={"prefix": prefix, "after": after, "limit": 1000})
+            out += [i["path"][len(prefix):] for i in r["items"]]
+            if not r.get("next"):
+                return sorted(out)
+            after = r["next"]
     if not d.is_dir():
         return []
     return sorted(p.relative_to(d).as_posix() for p in d.rglob("*") if p.is_file())
@@ -564,13 +488,7 @@ def sqlite_hydrate(path: str | os.PathLike[str]) -> bool:
     key, f = key_for(path), Path(path)
     tag = Path(f"{f}.axf-etag")
     have = tag.read_text().strip() if tag.is_file() else ""
-    try:
-        r = REMOTE.get(key)
-    except DataStoreError as e:
-        if e.code != "unavailable":
-            raise
-        log_drift("read", key, "write-failed", None, None, "axf-data unreachable: opened the local copy")
-        return False
+    r = REMOTE.get(key)  # unavailable is the caller's: never open a stale working copy instead
     if r is None or r[0]["etag"] == have:
         return False
     f.parent.mkdir(parents=True, exist_ok=True)
@@ -584,8 +502,8 @@ def sqlite_hydrate(path: str | os.PathLike[str]) -> bool:
 
 
 def sqlite_upload(path: str | os.PathLike[str], conn: Any) -> bool:
-    """After a write transaction on a blob-sqlite file: in shadow / cutover, a consistent copy (VACUUM INTO) to axf-data.
-    A newer copy found there is logged as drift and overwritten; in shadow any failure is drift only."""
+    """After a write transaction on a blob-sqlite file: in cutover, a consistent copy (VACUUM INTO) to axf-data. A newer
+    copy found there is logged as drift and overwritten; any other failure is the caller's."""
     key, mode = _route(path)
     if not key or mode == "local":
         return False
@@ -602,20 +520,14 @@ def sqlite_upload(path: str | os.PathLike[str], conn: Any) -> bool:
     tag = Path(f"{f}.axf-etag")
     have = tag.read_text().strip() if tag.is_file() else ""
     try:
-        try:
-            r = REMOTE.put(key, raw, "application/vnd.sqlite3", if_match=have) if have else json.loads(REMOTE._send("PUT", urllib.parse.quote(key), headers={"content-type": "application/vnd.sqlite3"}, body=raw, q={"force": 1})[2])
-        except DataStoreError as e:
-            if e.code != "conflict":
-                raise
-            log_drift("write", key, "etag", {"etag": have}, {"rev": e.extra.get("rev"), "etag": e.extra.get("etag")}, "a newer copy was on axf-data: overwritten")
-            r = json.loads(REMOTE._send("PUT", urllib.parse.quote(key), headers={"content-type": "application/vnd.sqlite3"}, body=raw, q={"force": 1})[2])
-        tag.write_text(r["etag"])
-        return True
+        r = REMOTE.put(key, raw, "application/vnd.sqlite3", if_match=have) if have else json.loads(REMOTE._send("PUT", urllib.parse.quote(key), headers={"content-type": "application/vnd.sqlite3"}, body=raw, q={"force": 1})[2])
     except DataStoreError as e:
-        if mode == "shadow":
-            log_drift("write", key, "write-failed", None, None, f"{e.code}: {e}")
-            return False
-        raise
+        if e.code != "conflict":
+            raise
+        log_drift("write", key, "etag", {"etag": have}, {"rev": e.extra.get("rev"), "etag": e.extra.get("etag")}, "a newer copy was on axf-data: overwritten")
+        r = json.loads(REMOTE._send("PUT", urllib.parse.quote(key), headers={"content-type": "application/vnd.sqlite3"}, body=raw, q={"force": 1})[2])
+    tag.write_text(r["etag"])
+    return True
 
 
 class PluginData:

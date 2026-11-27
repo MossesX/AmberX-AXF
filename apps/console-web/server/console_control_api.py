@@ -28,6 +28,7 @@ from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse
 
 import console_control as cc
+import data_store
 
 VERBS = ("open", "state", "press", "set", "scroll", "focus", "search", "list", "plugin.enable", "plugin.disable")
 SCROLL_DIRS = ("up", "down", "page-up", "page-down", "top", "bottom", "to")  # = CONSOLE_CONTROL_SCROLL_DIRS
@@ -134,10 +135,8 @@ def audit(cmd: dict[str, Any], r: dict[str, Any], by: str, audience: str, policy
     line = {k: v for k, v in line.items() if v not in (None, "")}
     try:
         with _audit_lock:
-            DATA_DIR.mkdir(parents=True, exist_ok=True)
-            with AUDIT_FILE.open("a", encoding="utf-8") as f:
-                f.write(json.dumps(line, ensure_ascii=False) + "\n")
-    except OSError:
+            data_store.append_jsonl(AUDIT_FILE, line, ensure_ascii=False)  # one journal line (data-store@1), a file only where the map keeps it local
+    except (OSError, data_store.DataStoreError):
         pass
     try:
         import console_context

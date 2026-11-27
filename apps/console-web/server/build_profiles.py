@@ -5,14 +5,19 @@ tracker, the Build orchestrator's tracker). The Node side (framework/cli/profile
 owns the registry and every write; this module only answers "which file does the active profile read?" for the
 server's own direct reads (pending file for alerts, plan media, plugin readers through console_context.data_path).
 test_build_profiles.py checks it against the Node resolver.
+
+A hub copy the data layer maps (data-store@1 console/framework/plan/…, Postgres) is the copy: it is read through
+data_store.py and the checkout's file is never read instead. Only a hub folder the map keeps local, or no hub at all,
+resolves on files as before.
 """
 from __future__ import annotations
 
-import json
 import os
 import re
 from pathlib import Path
 from typing import Any, Callable
+
+import data_store
 
 PROFILES_REL = "framework/plan/profiles.json"
 PROFILES_DIR_REL = "framework/plan/profiles/"
@@ -51,16 +56,24 @@ class BuildProfiles:
         self.root = Path(root)
         self.persist_root = persist_root
 
-    def _base(self, rel: str) -> Path:
-        """Plain location: the hub copy when it exists, else the repo copy (what the server always did)."""
+    def _hub(self, rel: str) -> Path | None:
+        """The hub copy of `rel` when it exists: on axf-data for a mapped hub (no file beside it), else on disk."""
         pr = self.persist_root()
         hub = Path(pr) / rel if pr else None
-        return hub if hub and hub.exists() else self.root / rel
+        if hub is None:
+            return None
+        if data_store.key_for(hub):
+            return hub  # the data layer's key is the copy, present or not: never the checkout's file instead
+        return hub if hub.exists() else None
+
+    def _base(self, rel: str) -> Path:
+        """Plain location: the hub copy, else the repo copy."""
+        return self._hub(rel) or self.root / rel
 
     def registry(self) -> dict[str, Any]:
         try:
-            reg = json.loads(self._base(PROFILES_REL).read_text("utf-8"))
-        except (OSError, ValueError):
+            reg = data_store.read_json(self._base(PROFILES_REL), {})
+        except data_store.DataStoreError:
             reg = {}
         listed = [p for p in (reg.get("profiles") if isinstance(reg, dict) else None) or [] if isinstance(p, dict) and PROFILE_ID.match(str(p.get("id", "")))]
         items = [p for p in listed if p["id"] not in RETIRED_PROFILES]
@@ -97,6 +110,4 @@ class BuildProfiles:
         if prof["base"]:
             return self._base(rel)
         prel = f"{PROFILES_DIR_REL}{prof['id']}/{rel}"
-        pr = self.persist_root()
-        hub = Path(pr) / prel if pr else None
-        return hub if hub and hub.exists() else self.root / prel
+        return self._hub(prel) or self.root / prel

@@ -2,14 +2,16 @@
 
 The console's copy of a loop calls ``container_runs(id)`` at the top of every pass and skips the pass when the service
 is in ``host`` mode (the host runner does the work); in ``container`` and ``shadow`` it runs as before. Twin of
-framework/cli/host-mode.mjs. The mode file is <shared data>/host-services/mode.json; AXF_HOST_MODE_FILE overrides it.
-A missing or unreadable file is ``container``: nothing has moved.
+framework/cli/host-mode.mjs. The mode document is <shared data>/host-services/mode.json, read through the console's data
+layer (data-store@1 console/host-services/mode.json on axf-data; no file beside it); AXF_HOST_MODE_FILE overrides it.
+A missing or unreadable document is ``container``: nothing has moved.
 """
 from __future__ import annotations
 
-import json
 import os
 from pathlib import Path
+
+import data_store
 
 ROOT = Path(os.environ.get("AXF_ROOT") or Path(__file__).resolve().parents[3])
 MODES = ("container", "shadow", "host")
@@ -36,7 +38,7 @@ def mode_file() -> Path:
 def host_mode(service_id: str) -> str:
     """container | shadow | host for one service."""
     try:
-        doc = json.loads(mode_file().read_text())
+        doc = data_store.read_json(mode_file(), {})
         m = ((doc.get("services") or {}).get(service_id) or {}).get("mode")
         return m if m in MODES else "container"
     except Exception:
@@ -51,7 +53,7 @@ def container_runs(service_id: str) -> bool:
 def modes() -> dict:
     """Every service's mode (for status lines and the Plugin Manager)."""
     try:
-        doc = json.loads(mode_file().read_text())
+        doc = data_store.read_json(mode_file(), {})
         return {k: (v or {}).get("mode", "container") for k, v in (doc.get("services") or {}).items()}
     except Exception:
         return {}

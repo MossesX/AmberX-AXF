@@ -47,9 +47,10 @@ import hmac as _hmac  # noqa: E402
 
 import axf_framework  # noqa: E402,F401  (framework/python on sys.path: axf_server, axf_libs)
 import wall  # noqa: E402  (server/wall.py: who is calling behind axHub's sign-in wall, on axf_server.wall)
-from axf_server import github, storage  # noqa: E402
+from axf_server import github  # noqa: E402
 from axf_server.console_client import TokenFile  # noqa: E402
 import readcache  # noqa: E402  (server/readcache.py: one shared cache per read source + a cap on node spawns)
+import data_store  # noqa: E402  (server/data_store.py: the console's data on axf-data, data-store@1)
 
 readcache.install_spawn_guard()
 
@@ -160,14 +161,23 @@ _subscribers: set[asyncio.Queue[dict[str, Any]]] = set()
 
 
 def _load_state() -> None:
-    saved = storage.read_json(STATE, {})
+    """The console's state row (console/state.json on axf-data): the open project and each plugin's on/off. The terminal
+    lines are this process's ring buffer and are not stored (an old row's `terminal` is ignored)."""
+    try:
+        saved = data_store.read_json(STATE, {})
+    except data_store.DataStoreError as e:
+        print(f"[console] state: axf-data unreachable ({e.code}); starting with defaults", flush=True)
+        saved = {}
     if isinstance(saved, dict):
-        _state.update(saved)
+        _state.update({k: saved[k] for k in ("project", "plugins") if k in saved})
 
 
 def _save_state() -> None:
-    # atomic + 0600 (axf_server.storage); the folder keeps its mode (.axf-console is made by the installer)
-    storage.write_json(STATE, {"project": _state["project"], "terminal": _state["terminal"][-500:], "plugins": _state.get("plugins", {})}, dir_mode=None if STATE.parent.is_dir() else storage.PRIVATE_DIR)
+    """One row: the project and the plugin switches (data-store@1; never a file beside it)."""
+    try:
+        data_store.write_json(STATE, {"project": _state["project"], "plugins": _state.get("plugins", {})})
+    except data_store.DataStoreError as e:
+        log("console", f"state not saved: axf-data {e.code}", "warn")
 
 
 def log(channel: str, text: str, level: str = "info") -> None:
@@ -678,24 +688,37 @@ async def projects_act(request: Request) -> Any:
 
 
 @app.get("/plan-media/{name}")
-def plan_media_file(name: str) -> FileResponse:
+def plan_media_file(name: str) -> Response:
+    """A plan media file: a blob on axf-data (data-store@1 plan_media) when the data layer maps it, else the file."""
     media = _plan_media_dir()
     f = (media / name).resolve()
-    if not str(f).startswith(str(media)) or not f.is_file():
+    if not str(f).startswith(str(media) + os.sep):
         raise HTTPException(404, "not found")
-    return FileResponse(f)
+    if not data_store.remote_mode(f):
+        if not f.is_file():
+            raise HTTPException(404, "not found")
+        return FileResponse(f)
+    try:
+        body = data_store.read_bytes(f)
+    except data_store.DataStoreError as e:
+        raise HTTPException(503, f"plan media: axf-data {e.code}")
+    if body is None:
+        raise HTTPException(404, "not found")
+    import mimetypes  # noqa: PLC0415
+    return Response(body, media_type=mimetypes.guess_type(f.name)[0] or "application/octet-stream")
 
 
 # Home cards (card@1 + home-layout@1, framework/core/engines/card-rules.mjs): each signed-in user's Home layout (their
-# cards, order, sizes, hidden ones, dismissed suggestions) kept on axHub at /projects/<project>/_data/home-cards/<user>.json
-# where /projects is mounted (the repo's .axf-console/home-cards/ otherwise). The console token and hub admins are the
-# owner. The engine normalises the layout on both sides; the server only keeps it.
+# cards, order, sizes, hidden ones, dismissed suggestions) as one key per user on axf-data (data-store@1
+# console/home-cards/<user>.json, the `home_cards` table: a row per card), never a file. The console token and hub admins
+# are the owner. The engine normalises the layout on both sides; the server only keeps it.
 HOME_LAYOUT_MAX = 256 * 1024
 
 
 def _home_dir() -> tuple[Path, str]:
-    root = _persist_root()
-    return ((root / "home-cards"), "hub") if root else ((ROOT / ".axf-console" / "home-cards"), "local")
+    """The path the data layer maps to the user's key (the hub data folder's home-cards/, as axHub lays it out)."""
+    root = _persist_root() or data_store._roots()["projects"] / _project_name() / "_data"  # noqa: SLF001
+    return root / "home-cards", "hub"
 
 
 def _home_user(request: Request) -> str:
@@ -710,11 +733,10 @@ def _home_user(request: Request) -> str:
 def home_layout_get(request: Request) -> dict[str, Any]:
     d, where = _home_dir()
     user = _home_user(request)
-    f = d / f"{user}.json"
     try:
-        layout = json.loads(f.read_text()) if f.is_file() else None
-    except (OSError, ValueError):
-        layout = None
+        layout = data_store.read_json(d / f"{user}.json", None)
+    except data_store.DataStoreError as e:
+        raise HTTPException(503, f"the Home layout can't be read: axf-data {e.code}")
     return {"layout": layout if isinstance(layout, dict) else None, "user": user, "where": where}
 
 
@@ -732,10 +754,10 @@ async def home_layout_put(request: Request) -> dict[str, Any]:
         raise HTTPException(400, "layout must be a home-layout@1 object")
     d, where = _home_dir()
     user = _home_user(request)
-    d.mkdir(parents=True, exist_ok=True)
-    tmp = d / f".{user}.json.tmp"
-    tmp.write_text(json.dumps({**layout, "savedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}, indent=1))
-    tmp.replace(d / f"{user}.json")
+    try:
+        data_store.write_json(d / f"{user}.json", {**layout, "savedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}, indent=1)
+    except data_store.DataStoreError as e:
+        raise HTTPException(503, f"the Home layout wasn't saved: axf-data {e.code}")
     return {"ok": True, "user": user, "where": where}
 
 
