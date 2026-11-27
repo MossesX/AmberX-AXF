@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10465,
- "updatedAt": "2026-11-27T06:46:04.228Z",
+ "rev": 10466,
+ "updatedAt": "2026-11-27T06:46:33.451Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -372643,7 +372643,7 @@
    "branch": "claude/claude-emergency-access--s5",
    "pr": "#933",
    "createdAt": "2026-11-24T21:08:59.649Z",
-   "updatedAt": "2026-11-27T06:45:49.073Z",
+   "updatedAt": "2026-11-27T06:46:26.100Z",
    "builtAt": "",
    "notes": [
     {
@@ -372905,6 +372905,18 @@
     {
      "text": "Headless run axf-claude-emergency-access--s5--lenny: brief only · start 11.3K tokens ($0.05) · cost $0.96 · 11 turns · 6 tools, MCP none",
      "at": "2026-11-27T06:45:38.601Z"
+    },
+    {
+     "text": "Headless run axf-claude-emergency-access--s3--joey: brief only · start 12.1K tokens ($0.06) · cost $0.57 · 10 turns · 6 tools, MCP none",
+     "at": "2026-11-27T06:45:59.554Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 2 runs, $1.04",
+     "at": "2026-11-27T06:46:10.515Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.96",
+     "at": "2026-11-27T06:46:18.081Z"
     }
    ],
    "approvals": [],
@@ -373471,9 +373483,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 13,
+     "rev": 14,
      "createdAt": "2026-11-24T21:10:08.429Z",
-     "updatedAt": "2026-11-27T06:45:16.605Z",
+     "updatedAt": "2026-11-27T06:46:26.241Z",
      "statusAt": "2026-11-27T06:45:16.512Z",
      "statusBy": "orchestrator",
      "attempt": 3,
@@ -373551,7 +373563,8 @@
      "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/claude-emergency-access--s4",
-     "branch": "claude/claude-emergency-access--s4"
+     "branch": "claude/claude-emergency-access--s4",
+     "tmux": "axf-claude-emergency-access--s4--paulie"
     },
     {
      "id": "s5",
@@ -373732,7 +373745,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "let-claude-send-builds-to-emerge-aewn",
-   "rev": 174,
+   "rev": 178,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -387891,7 +387904,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s11",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T06:45:50.277Z",
+   "updatedAt": "2026-11-27T06:46:07.904Z",
    "builtAt": "",
    "notes": [
     {
@@ -388817,6 +388830,10 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $0.59",
      "at": "2026-11-27T06:45:50.277Z"
+    },
+    {
+     "text": "Headless run axf-emergency-check-can-these-plugins---s11--lenny: brief only · start 13.0K tokens ($0.07) · cost $0.59 · 7 turns · 6 tools, MCP none",
+     "at": "2026-11-27T06:46:07.904Z"
     }
    ],
    "approvals": [],
@@ -390558,7 +390575,7 @@
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 385,
+   "rev": 386,
    "deleted": false,
    "deletedAt": "",
    "pending": {

@@ -845,10 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-26 22:42 UTC · `console-app-text-way-too-big-system-font` note (all) · watchdog
-- 2026-11-26 22:42 UTC · `deep-links-to-plugin-s-settings-don-t` note (all) · watchdog
-- 2026-11-26 22:42 UTC · `queue-stall-detector-vps-spots-queued` note (all) · watchdog
-- 2026-11-26 22:42 UTC · `load-spike-alarm-vps-detects-cpu-load` note (all) · watchdog
 - 2026-11-26 22:42 UTC · `server-safe-mode-one-emergency-button` note (all) · watchdog
 - 2026-11-26 22:44 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
 - 2026-11-26 22:45 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · orchestrator
@@ -1245,6 +1241,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 06:44 UTC · `claude-emergency-access` note (all) · watchdog
 - 2026-11-27 06:45 UTC · `claude-emergency-access` note (all) · orchestrator
 - 2026-11-27 06:45 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 06:46 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-27 06:46 UTC · `emergency-check-can-these-plugins-` note (all) · orchestrator
+- 2026-11-27 06:46 UTC · `claude-emergency-access` note (all) · orchestrator
+- 2026-11-27 06:46 UTC · `claude-emergency-access` note (all) · orchestrator
 
 ## Token passes (log)
 
