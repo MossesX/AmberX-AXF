@@ -76,6 +76,35 @@ def test_patch_document():
         assert len(c.get('/v1/builds/journal/2026-11?since=0', headers=H()).json()['entries']) == 1
 
 
+def test_patch_rows_of_maps_lists_and_deletes():
+    """The document twin of the row patch (tables.py): map lists, a root list, whole-number keys and `delete: true`
+    give the document the row engine reads back."""
+    import tables as TB
+    t = TB.by_name('plugin_agent_swarm__state')
+    p = TB.check_patch({'lists': {'agents': [{'key': 'gina', 'delete': True}, {'key': 'ross', 'item': {'status': 'on'}}],
+                                  'messages': [{'key': 'm1', 'delete': True}, {'key': 'm3', 'ifRev': None, 'item': {'id': 'm3'}}]}}, t)
+    doc = {'x': 1, 'agents': {'gina': {'rev': 2}, 'joey': {}}, 'messages': [{'id': 'm1'}, {'id': 'm2'}]}
+    assert TB.apply_patch_doc(doc, t, p['head'], p['lists']) == {'x': 1, 'agents': {'joey': {}, 'ross': {'status': 'on'}}, 'messages': [{'id': 'm2'}, {'id': 'm3'}]}
+    assert TB.doc_revs(doc, 'agents', t.lists['agents'], ['gina', 'nope']) == {'gina': {'rev': 2}}
+    assert TB.rev_conflicts([{'key': 'gina', 'ifRev': 1, 'delete': True}], {'gina': {'rev': 2}}) == [{'key': 'gina', 'ifRev': 1, 'rev': 2}]
+    mq = TB.by_name('plugin_push_banner__merge_queue')
+    p = TB.check_patch({'lists': {'waiting': [{'key': '12', 'delete': True}, {'key': '15', 'item': {'pr': 15, 'title': 'B'}}]}}, mq)
+    assert TB.apply_patch_doc({'waiting': [{'pr': 12}, {'pr': 15}]}, mq, None, p['lists']) == {'waiting': [{'pr': 15, 'title': 'B'}]}
+    for bad in ({'lists': {'waiting': [{'key': '12', 'item': {'pr': 13}}]}}, {'lists': {'waiting': [{'key': '12', 'delete': True, 'item': {'pr': 12}}]}},
+                {'lists': {'waiting': [{'key': '12', 'delete': 'yes'}]}}, {'lists': {'nope': []}}):
+        try:
+            TB.check_patch(bad, mq)
+            raise AssertionError(f'accepted {bad}')
+        except ValueError:
+            pass
+    # every registered table has a name of its own, and no table claims the pipeline status file
+    assert len({x.name for x in TB.TABLES}) == len(TB.TABLES)
+    for ns, path in (('builds', 'orchestrator.json'), ('builds', 'profiles/p/orchestrator.json'), ('console', 'framework/plan/profiles/p/_claude/builds/orchestrator.json'), ('plugins', 'x/orchestrator.json')):
+        assert TB.table_for(ns, path, 'record', 'application/json', b'{}') is None, (ns, path)
+    assert TB.table_for('plugins', 'any-plugin/items/a.json', 'record', 'application/json', b'{}').name == 'plugin_docs'
+    assert TB.table_for('console', 'nightly.json', 'record', 'application/json', b'{}').name == 'console_docs'
+
+
 class Env:
     def __enter__(self):
         self.tmp = tempfile.TemporaryDirectory()
