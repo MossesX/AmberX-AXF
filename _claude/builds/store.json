@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10480,
- "updatedAt": "2026-11-27T19:51:37.854Z",
+ "rev": 10481,
+ "updatedAt": "2026-11-27T20:30:28.701Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -14023,7 +14023,7 @@
    "pr": "#358",
    "mergedAt": "2026-11-06T00:33:19Z",
    "createdAt": "2026-10-23T00:40:17.479Z",
-   "updatedAt": "2026-11-12T11:01:18.651Z",
+   "updatedAt": "2026-11-27T20:00:39.936Z",
    "builtAt": "2026-10-23T00:40:17.479Z",
    "notes": [
     {
@@ -14041,10 +14041,25 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #358 merged 2026-11-06 00:33 and the build never heard: the merge is recorded, CI on c79d45b798 is next.",
+     "at": "2026-11-27T20:00:39.936Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "landed": {
+    "pr": 358,
+    "sha": "c79d45b798b0914782b6325adb4c1041050418d6",
+    "mergedAt": "2026-11-06T00:33:19Z",
+    "ci": "none",
+    "ciAt": "",
+    "ciRun": "",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
+   },
    "shipped": {
     "id": "sm-ai-keys",
     "rev": 1,
@@ -14060,7 +14075,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -26053,14 +26068,14 @@
    "title": "Output terminal",
    "category": "Kernel & engines",
    "detail": "One append-only log every install, import, hot swap and kit fallback writes to; auto-scrolling pane as a floating window, dock tab or dialog; follows the console API live over SSE.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-27T20:00:20.322Z",
    "builtAt": "",
    "notes": [
     {
@@ -26070,10 +26085,26 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs a merged PR: there is no PR. Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 27 days: no PR reached GitHub and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T20:00:20.322Z"
+    },
+    {
+     "text": "Watchdog: landing for 27 days: no PR reached GitHub and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T20:00:20.322Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-27T20:00:20.322Z",
+    "why": "landing for 27 days: no PR reached GitHub and nothing moved it",
+    "head": "",
+    "step": "",
+    "exit": null
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -26083,7 +26114,7 @@
    },
    "kind": "epic",
    "planRef": "x.terminal",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -26111,14 +26142,14 @@
    "title": "Android framework modules",
    "category": "Android port",
    "detail": "axf-platform-android, axf-assets, axf-ui (Compose components, kits, element explorer, windows), axf-nav, axf-data, axf-network, axf-devtools, axf-testing. Published as ai.amberx.axf:<module>:0.2.0.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-27T20:10:26.791Z",
    "builtAt": "",
    "notes": [
     {
@@ -26128,10 +26159,26 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs a merged PR: there is no PR. Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 27 days: no PR reached GitHub and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T20:10:26.791Z"
+    },
+    {
+     "text": "Watchdog: landing for 27 days: no PR reached GitHub and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T20:10:26.791Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-27T20:10:26.791Z",
+    "why": "landing for 27 days: no PR reached GitHub and nothing moved it",
+    "head": "",
+    "step": "",
+    "exit": null
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -26141,7 +26188,7 @@
    },
    "kind": "epic",
    "planRef": "x.android.modules",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -26169,14 +26216,14 @@
    "title": "Android showcase app (apps/console)",
    "category": "Android port",
    "detail": "The first Android app: the console views on the Android port (tracker, catalog, libraries, boilerplates, element explorer). Builds a ~20 MB debug APK in CI.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-27T20:20:10.057Z",
    "builtAt": "",
    "notes": [
     {
@@ -26186,10 +26233,26 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs a merged PR: there is no PR. Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 27 days: no PR reached GitHub and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T20:20:10.057Z"
+    },
+    {
+     "text": "Watchdog: landing for 27 days: no PR reached GitHub and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T20:20:10.057Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-27T20:20:10.057Z",
+    "why": "landing for 27 days: no PR reached GitHub and nothing moved it",
+    "head": "",
+    "step": "",
+    "exit": null
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -26199,7 +26262,7 @@
    },
    "kind": "epic",
    "planRef": "x.android.showcase",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -26228,14 +26291,14 @@
    "title": "Web port: core + React components",
    "category": "Web port",
    "detail": "framework/core + framework/react + framework/ui/axf.css: the original port, plain React 18 + TypeScript, no router.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-27T20:30:15.957Z",
    "builtAt": "",
    "notes": [
     {
@@ -26245,10 +26308,26 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs a merged PR: there is no PR. Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Fixing: the push failed (landing for 27 days: no PR reached GitHub and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-27T20:30:15.957Z"
+    },
+    {
+     "text": "Watchdog: landing for 27 days: no PR reached GitHub and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-27T20:30:15.957Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-27T20:30:15.957Z",
+    "why": "landing for 27 days: no PR reached GitHub and nothing moved it",
+    "head": "",
+    "step": "",
+    "exit": null
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -26258,7 +26337,7 @@
    },
    "kind": "epic",
    "planRef": "x.web.core",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -42002,7 +42081,7 @@
    "title": "Settings redesign: short lists you tap into, dropdowns instead of button walls, tight spacing (starts the whole-app de-clutter)",
    "category": "Console",
    "detail": "Brett, Oct 30 2026 (voice, then 'Go' in text): the app takes up way too much space; Settings is a wall of buttons. Packs only reskin; fix how the screens are built. Agreed plan: settings as short lists you tap into (like phone settings), dropdowns instead of rows of buttons, tight spacing everywhere; start with Settings and show before/after screenshots. Profile: Angel. Layouts stay as they are (Brett: 'Nah' to new layouts). Web first; Android twin of the settings renderer recorded as deferred (Android hold).",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -42010,7 +42089,7 @@
    "pr": "#175",
    "mergedAt": "2026-10-30T16:37:18Z",
    "createdAt": "2026-10-30T13:01:42.736Z",
-   "updatedAt": "2026-11-27T19:51:06.529Z",
+   "updatedAt": "2026-11-27T19:54:59.623Z",
    "builtAt": "2026-10-30T13:06:41.972Z",
    "notes": [
     {
@@ -42036,6 +42115,10 @@
     {
      "text": "Watchdog: merged and CI is green on 6a8ec6e954: landed.",
      "at": "2026-11-27T19:51:06.529Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-27T19:54:59.623Z"
     }
    ],
    "approvals": [],
@@ -42059,9 +42142,9 @@
     "ci": "success",
     "ciAt": "2026-11-27T19:51:06.529Z",
     "ciRun": "commit@6a8ec6e954c2ff3b044dc9d1a639a63e8ac8f8a7",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+    "verifiedAt": "2026-11-27T19:54:59.623Z",
+    "verifyHow": "deploy",
+    "verifyLog": "No verify command: CI green on the merge commit is the verify."
    },
    "shipped": {
     "id": "sm-settings-compact",
@@ -42214,7 +42297,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -42821,7 +42904,7 @@
    "title": "One place changes everything: typography, density and component-sizing assets that every app and plugin reads",
    "category": "Framework",
    "detail": "Brett, Oct 30 2026: 'Any part of the UI that needs to be an asset in order to be changed, make an asset out of it… change it in one place, changes it everywhere. I want the whole framework and all the apps and plugins built on it to follow the same code.' Slimmed by Brett (voice, then 'Run that now' in text): three broad asset types instead of one per piece — typography (text sizes, weights, line spacing), density (spacing, padding, row heights, gaps; compact vs roomy is one pick), component sizing (page heads, list rows, chips, count strips, tables). Each app gets one update to read them; after that every change comes live from axHub. Includes moving the Oct 30 compact frame (axf.css compact block, settings compact CSS, console count strips) and the MCP servers pages (framework/libs/mcp) onto them. Profile: Angel. Android twins deferred.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -42829,7 +42912,7 @@
    "pr": "#181",
    "mergedAt": "2026-10-31T07:02:46Z",
    "createdAt": "2026-10-30T17:31:49.428Z",
-   "updatedAt": "2026-11-27T19:51:12.765Z",
+   "updatedAt": "2026-11-27T19:55:07.445Z",
    "builtAt": "2026-10-31T09:07:22.007Z",
    "notes": [
     {
@@ -42859,6 +42942,10 @@
     {
      "text": "Watchdog: merged and CI is green on 371ba924d7: landed.",
      "at": "2026-11-27T19:51:12.765Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-27T19:55:07.445Z"
     }
    ],
    "approvals": [
@@ -42889,9 +42976,9 @@
     "ci": "success",
     "ciAt": "2026-11-27T19:51:12.765Z",
     "ciRun": "commit@371ba924d75c368824c2fb3b2415209572d890bb",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+    "verifiedAt": "2026-11-27T19:55:07.445Z",
+    "verifyHow": "deploy",
+    "verifyLog": "No verify command: CI green on the merge commit is the verify."
    },
    "shipped": {
     "id": "sm-ui-all-assets",
@@ -43023,7 +43110,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -43754,7 +43841,7 @@
    "title": "Layouts: repeating slots",
    "category": "Framework",
    "detail": "Brett, Oct 30 2026 (voice): Many-slots with style (tabs/cards/grid/stacked) + fallback slot; pages declare data sets. Web + Android + fixtures.",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -43762,7 +43849,7 @@
    "pr": "#191",
    "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-27T19:51:32.890Z",
+   "updatedAt": "2026-11-27T20:30:22.755Z",
    "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
@@ -43788,6 +43875,10 @@
     {
      "text": "Watchdog: PR #191 merged 2026-10-31 07:26 and the build never heard: the merge is recorded, CI on 86657f7210 is next.",
      "at": "2026-11-27T19:51:32.890Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 86657f7210: landed.",
+     "at": "2026-11-27T20:30:22.755Z"
     }
    ],
    "approvals": [],
@@ -43808,9 +43899,9 @@
     "pr": 191,
     "sha": "86657f72109eb308179841a29b84b237554643b9",
     "mergedAt": "2026-10-31T07:26:36Z",
-    "ci": "none",
-    "ciAt": "",
-    "ciRun": "",
+    "ci": "success",
+    "ciAt": "2026-11-27T20:30:22.755Z",
+    "ciRun": "commit@86657f72109eb308179841a29b84b237554643b9",
     "verifiedAt": "",
     "verifyHow": "",
     "verifyLog": ""
@@ -43919,7 +44010,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -47031,7 +47122,7 @@
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/196",
    "mergedAt": "2026-11-01T00:13:51Z",
    "createdAt": "2026-10-31T05:27:46.906Z",
-   "updatedAt": "2026-11-12T03:28:38Z",
+   "updatedAt": "2026-11-27T20:00:27.147Z",
    "builtAt": "2026-10-31T23:53:03.392Z",
    "notes": [
     {
@@ -47057,6 +47148,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #196 merged 2026-11-01 00:13 and the build never heard: the merge is recorded, CI on d9ea1692a9 is next.",
+     "at": "2026-11-27T20:00:27.147Z"
     }
    ],
    "approvals": [
@@ -47103,6 +47198,17 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
+   },
+   "landed": {
+    "pr": 196,
+    "sha": "d9ea1692a9878b6b16f63536896d4062cacdb0f3",
+    "mergedAt": "2026-11-01T00:13:51Z",
+    "ci": "none",
+    "ciAt": "",
+    "ciRun": "",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
    },
    "shipped": {
     "id": "sm-agent-swarm",
@@ -47538,7 +47644,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -51944,7 +52050,7 @@
    "pr": "#247",
    "mergedAt": "2026-11-03T12:10:18Z",
    "createdAt": "2026-10-31T05:27:48.056Z",
-   "updatedAt": "2026-11-12T03:28:40Z",
+   "updatedAt": "2026-11-27T20:00:33.666Z",
    "builtAt": "2026-11-03T12:01:23.473Z",
    "notes": [
     {
@@ -51970,6 +52076,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #247 merged 2026-11-03 12:10 and the build never heard: the merge is recorded, CI on e1ced4d7c4 is next.",
+     "at": "2026-11-27T20:00:33.666Z"
     }
    ],
    "approvals": [
@@ -51992,6 +52102,17 @@
     "verbatim": false,
     "from": "brief",
     "addenda": []
+   },
+   "landed": {
+    "pr": 247,
+    "sha": "e1ced4d7c49ebd93c8211aff7ce5d03fec53bda4",
+    "mergedAt": "2026-11-03T12:10:18Z",
+    "ci": "none",
+    "ciAt": "",
+    "ciRun": "",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
    },
    "shipped": {
     "id": "sm-agent-swarm-fable-rebuild",
@@ -52172,7 +52293,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129107,7 +129228,7 @@
    "pr": "#417",
    "priority": "P0",
    "createdAt": "2026-11-08T22:32:08.043Z",
-   "updatedAt": "2026-11-27T18:12:22.638Z",
+   "updatedAt": "2026-11-27T20:23:59.915Z",
    "builtAt": "2026-11-09T21:00:47.340Z",
    "notes": [
     {
@@ -129141,6 +129262,18 @@
     {
      "text": "Retry 1: PR #417 was closed unmerged and its branch was deleted. Its three commits are back on the build branch with main merged in, and the work is now in the console's axhub-approvals plugin too. New PR #936. All plugin tests and CI checks pass locally.",
      "at": "2026-11-27T18:12:22.638Z"
+    },
+    {
+     "text": "PR #936 is green on every check (help coverage restored; axf-data sqlite race fixed). Waiting on the merge queue to land.",
+     "at": "2026-11-27T20:23:24.312Z"
+    },
+    {
+     "text": "Headless run axf-approvals-page-auto-approve-toggle-1-h-2-h-until--joey: brief only · start 15.1K tokens ($0.05) · cost $12.66 · 62 turns · 6 tools, MCP none",
+     "at": "2026-11-27T20:23:54.654Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $12.66",
+     "at": "2026-11-27T20:23:59.915Z"
     }
    ],
    "approvals": [],
@@ -129164,6 +129297,43 @@
       "verbatim": true
      }
     ]
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-27T20:23:42.785Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-approvals-page-auto-approve-toggle-1-h-2-h-until--joey",
+     "phase": ""
+    }
    },
    "steps": [
     {
@@ -129244,7 +129414,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -193128,7 +193298,7 @@
    "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T10:39:51.656Z",
-   "updatedAt": "2026-11-14T20:22:04Z",
+   "updatedAt": "2026-11-27T20:10:31.716Z",
    "builtAt": "2026-11-13T10:57:06.217Z",
    "notes": [
     {
@@ -193166,6 +193336,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #590 merged 2026-11-14 20:15 and the build never heard: the merge is recorded, CI on b7ddb2f236 is next.",
+     "at": "2026-11-27T20:10:31.716Z"
     }
    ],
    "approvals": [],
@@ -193220,6 +193394,17 @@
     "maxParallel": 0,
     "budgetUsd": 0,
     "spentUsd": 0
+   },
+   "landed": {
+    "pr": 590,
+    "sha": "b7ddb2f2364503e5eb8eddbc861fc159e10e1b40",
+    "mergedAt": "2026-11-14T20:15:18Z",
+    "ci": "none",
+    "ciAt": "",
+    "ciRun": "",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
    },
    "shipped": {
     "id": "sm-every-skin-ships-light-dark-colour-theme",
@@ -193284,7 +193469,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -204628,7 +204813,7 @@
    "mergedAt": "2026-11-16T19:01:40Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-16T19:08:23Z",
+   "updatedAt": "2026-11-27T20:20:30.248Z",
    "builtAt": "2026-11-16T18:44:45.128Z",
    "notes": [
     {
@@ -204714,6 +204899,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #628 merged 2026-11-16 19:01 and the build never heard: the merge is recorded, CI on 2e73f739de is next.",
+     "at": "2026-11-27T20:20:30.248Z"
     }
    ],
    "approvals": [],
@@ -204777,6 +204966,17 @@
     "maxParallel": 0,
     "budgetUsd": 0,
     "spentUsd": 0
+   },
+   "landed": {
+    "pr": 628,
+    "sha": "2e73f739deaa3e19e933aea2409c02acd6c401ba",
+    "mergedAt": "2026-11-16T19:01:40Z",
+    "ci": "none",
+    "ciAt": "",
+    "ciRun": "",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
    },
    "shipped": {
     "id": "sm-all-settings-interfaces-open-floating",
@@ -204885,7 +205085,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -216474,7 +216674,7 @@
    "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:44.815Z",
-   "updatedAt": "2026-11-14T23:32:49.153Z",
+   "updatedAt": "2026-11-27T20:10:36.524Z",
    "builtAt": "2026-11-14T23:32:27.690Z",
    "notes": [
     {
@@ -216524,6 +216724,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #647 merged 2026-11-14 20:15 and the build never heard: the merge is recorded, CI on 0c23f110d7 is next.",
+     "at": "2026-11-27T20:10:36.524Z"
     }
    ],
    "approvals": [],
@@ -216587,6 +216791,17 @@
     "maxParallel": 0,
     "budgetUsd": 0,
     "spentUsd": 0
+   },
+   "landed": {
+    "pr": 647,
+    "sha": "0c23f110d7285680482301ce746d02c891ee7e24",
+    "mergedAt": "2026-11-14T20:15:18Z",
+    "ci": "none",
+    "ciAt": "",
+    "ciRun": "",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
    },
    "shipped": {
     "id": "sm-skins-plugin-merge-main-and-land",
@@ -216673,7 +216888,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -222429,7 +222644,7 @@
    "mergedAt": "2026-11-14T23:37:41.535Z",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-14T23:38:59Z",
+   "updatedAt": "2026-11-27T20:10:45.410Z",
    "builtAt": "2026-11-14T23:37:45.133Z",
    "notes": [
     {
@@ -222503,6 +222718,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #658 merged 2026-11-14 23:37 and the build never heard: the merge is recorded, CI on 178d9a271b is next.",
+     "at": "2026-11-27T20:10:45.410Z"
     }
    ],
    "approvals": [],
@@ -222566,6 +222785,17 @@
     "maxParallel": 0,
     "budgetUsd": 0,
     "spentUsd": 0
+   },
+   "landed": {
+    "pr": 658,
+    "sha": "178d9a271b983dcfdad263ec46c69fede085340d",
+    "mergedAt": "2026-11-14T23:37:41.535Z",
+    "ci": "none",
+    "ciAt": "",
+    "ciRun": "",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
    },
    "shipped": {
     "id": "sm-hotfix-desktop-console-draws-app-menu",
@@ -222652,7 +222882,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -224584,7 +224814,7 @@
    "mergedAt": "2026-11-15T05:39:36Z",
    "priority": "P1",
    "createdAt": "2026-11-13T23:42:29.374Z",
-   "updatedAt": "2026-11-15T05:42:05Z",
+   "updatedAt": "2026-11-27T20:20:15.299Z",
    "builtAt": "2026-11-14T01:12:18.165Z",
    "notes": [
     {
@@ -224626,6 +224856,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #666 merged 2026-11-15 05:39 and the build never heard: the merge is recorded, CI on 39213d1bdc is next.",
+     "at": "2026-11-27T20:20:15.299Z"
     }
    ],
    "approvals": [],
@@ -224680,6 +224914,17 @@
     "maxParallel": 0,
     "budgetUsd": 0,
     "spentUsd": 0
+   },
+   "landed": {
+    "pr": 666,
+    "sha": "39213d1bdce16c5762db18ee02b1315e9fa7db70",
+    "mergedAt": "2026-11-15T05:39:36Z",
+    "ci": "none",
+    "ciAt": "",
+    "ciRun": "",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
    },
    "shipped": {
     "id": "sm-voice-listener-use-claude-when-connected",
@@ -225055,7 +225300,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -229046,7 +229291,7 @@
    "pr": "#674",
    "mergedAt": "2026-11-14T17:57:14Z",
    "createdAt": "2026-11-14T16:44:38.923Z",
-   "updatedAt": "2026-11-14T18:02:04Z",
+   "updatedAt": "2026-11-27T20:00:45.491Z",
    "builtAt": "2026-11-14T17:07:43.504Z",
    "notes": [
     {
@@ -229076,6 +229321,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #674 merged 2026-11-14 17:57 and the build never heard: the merge is recorded, CI on 8b50fda7a2 is next.",
+     "at": "2026-11-27T20:00:45.491Z"
     }
    ],
    "approvals": [],
@@ -229133,6 +229382,17 @@
     "maxParallel": 0,
     "budgetUsd": 0,
     "spentUsd": 0
+   },
+   "landed": {
+    "pr": 674,
+    "sha": "8b50fda7a27c019886dd5dd6ebff9f2845d1ca35",
+    "mergedAt": "2026-11-14T17:57:14Z",
+    "ci": "none",
+    "ciAt": "",
+    "ciRun": "",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
    },
    "shipped": {
     "id": "sm-builds-share-one-claude-login-write",
@@ -229282,7 +229542,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -243161,7 +243421,7 @@
    "mergedAt": "2026-11-15T13:23:45Z",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:25.282Z",
-   "updatedAt": "2026-11-17T19:02:33.722Z",
+   "updatedAt": "2026-11-27T20:20:20.648Z",
    "builtAt": "2026-11-15T13:04:13.597Z",
    "notes": [
     {
@@ -243247,6 +243507,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #711 merged 2026-11-15 13:23 and the build never heard: the merge is recorded, CI on cf2f5d769f is next.",
+     "at": "2026-11-27T20:20:20.648Z"
     }
    ],
    "approvals": [
@@ -243319,6 +243583,17 @@
     "maxParallel": 0,
     "budgetUsd": 0,
     "spentUsd": 0
+   },
+   "landed": {
+    "pr": 711,
+    "sha": "cf2f5d769fd2005c50c83a2b18e63e3d8e46bc2d",
+    "mergedAt": "2026-11-15T13:23:45Z",
+    "ci": "none",
+    "ciAt": "",
+    "ciRun": "",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
    },
    "shipped": {
     "id": "sm-gate-rules-plugin-in-the-console",
@@ -243909,7 +244184,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245623,7 +245898,7 @@
    "mergedAt": "2026-11-15T19:56:03Z",
    "priority": "P0",
    "createdAt": "2026-11-15T13:23:46.016Z",
-   "updatedAt": "2026-11-17T19:02:33.722Z",
+   "updatedAt": "2026-11-27T20:20:25.665Z",
    "builtAt": "2026-11-15T17:08:47.543Z",
    "notes": [
     {
@@ -245685,6 +245960,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #715 merged 2026-11-15 19:56 and the build never heard: the merge is recorded, CI on 2cf47a6341 is next.",
+     "at": "2026-11-27T20:20:25.665Z"
     }
    ],
    "approvals": [
@@ -245748,6 +246027,17 @@
     "maxParallel": 0,
     "budgetUsd": 0,
     "spentUsd": 0
+   },
+   "landed": {
+    "pr": 715,
+    "sha": "2cf47a6341c0abcf1b148d111e0e92079a1c74bf",
+    "mergedAt": "2026-11-15T19:56:03Z",
+    "ci": "none",
+    "ciAt": "",
+    "ciRun": "",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
    },
    "shipped": {
     "id": "sm-build-rules-tab-gate-rules-vps-owns",
@@ -246395,7 +246685,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -250864,7 +251154,7 @@
    "pr": "#618",
    "mergedAt": "2026-11-14T20:15:18Z",
    "createdAt": "2026-11-14T19:11:08Z",
-   "updatedAt": "2026-11-16T14:10:21Z",
+   "updatedAt": "2026-11-27T20:10:40.927Z",
    "builtAt": "2026-11-14T19:11:08Z",
    "notes": [
     {
@@ -250878,6 +251168,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-27T18:05:44.558Z"
+    },
+    {
+     "text": "Watchdog: PR #618 merged 2026-11-14 20:15 and the build never heard: the merge is recorded, CI on c1a92b67ba is next.",
+     "at": "2026-11-27T20:10:40.927Z"
     }
    ],
    "approvals": [],
@@ -250894,6 +251188,17 @@
     "from": "report",
     "addenda": []
    },
+   "landed": {
+    "pr": 618,
+    "sha": "c1a92b67bad91a682ad730f5086f96b9a6e36b6d",
+    "mergedAt": "2026-11-14T20:15:18Z",
+    "ci": "none",
+    "ciAt": "",
+    "ciRun": "",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
+   },
    "shipped": {
     "id": "sm-console-skin-axhub-only",
     "rev": 1,
@@ -250909,7 +251214,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -262390,7 +262695,7 @@
    "pr": "#935",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:50.833Z",
-   "updatedAt": "2026-11-27T18:06:44.706Z",
+   "updatedAt": "2026-11-27T20:12:39.326Z",
    "builtAt": "",
    "notes": [
     {
@@ -262412,6 +262717,18 @@
     {
      "text": "Reconciler: PR #935; PR #935 names s1, s2, s3, s4, s5 done",
      "at": "2026-11-27T18:06:44.706Z"
+    },
+    {
+     "text": "PR #935 CI green on 9e3500bcd (run 46057944016: web, Node sweep, Gradle). Four runs: fixed token registry (--fx-widget-cap), plugin default settings interface, framework help drafts, banner-widgets guard (toolbar widgets are registry-fed), Kotlin validation twin skipped as deferred, plugin lifecycle mentions (axf-plugin:toolbar-widgets). Phase 1 s1-s7 ticked; ready for the lander. Hub copy of framework/catalog/status.json was not touched by this session.",
+     "at": "2026-11-27T20:12:09.631Z"
+    },
+    {
+     "text": "Headless run axf-toolbar-widgets-in-any-banner-style--lenny: brief only · start 18.2K tokens ($0.16) · cost $23.31 · 90 turns · 6 tools, MCP none",
+     "at": "2026-11-27T20:12:34.672Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $23.31",
+     "at": "2026-11-27T20:12:39.326Z"
     }
    ],
    "approvals": [],
@@ -262422,8 +262739,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "toolbar-widgets-in-any-banner-style",
+    "brief": "# Build: toolbar-widgets-in-any-banner-style\n\n## Brett said (verbatim)\nAt: 2026-11-16T22:44:50.833Z\n> Rebuild.\n\n## What to build\nContinue build \"Toolbar widgets in any banner style\" (toolbar-widgets-in-any-banner-style) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-16 22:44):\n\"Rebuild.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 15 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/attach-widgets-to-any-toolbar-banner\nSteps in this phase (7 left, ~1.1 h):\n[ ] s1 (~8 min) Archive the stale build: mark toolbar-widgets-attach-any-banner-style archived in the builds store with a note pointing to toolbar-widgets-in-any-banner-style, close its PR with a comment (keep the branch), and write down the old branch's intent (git log/diff of origin/<old branch> against its merge base, read only) in _claude/builds/reports/toolbar-widgets-in-any-banner-style.md under 'Intent from the old branch'\n[ ] s2 (~8 min) Map what already exists on main: banner widget host engine, widget style/shape options (banner-widget-shapes), attach-widgets-to-any-toolbar-banner work, Toolbars plugin toolbar settings and the attached-things snap rule in axf.css. Add a short 'Current state' section to the report listing the files and what is missing for toolbars\n[ ] s3 (~10 min) Contract: extend the widget-host contract so a toolbar is a widget host like a banner (host kind 'toolbar', slots start/end/overflow, per-widget style + shape taken from the banner widget style registry, attach order). Write it in framework/spec (widget host section) and add the Kotlin twin as a deferred gap in framework/spec/PORTING.md\n[ ] s4 (~10 min) Schema: add the toolbar widget fields (widgets[] with id, slot, style, shape, order) to the toolbar entry in framework/schemas/asset-types.json, validators following it, then regenerate JSON Schemas (node framework/cli/axf.mjs schemas). Old toolbars with no widgets stay valid (migration = no-op, recorded)\n[ ] s5 (~10 min) Engine part 1: in the widget host engine (framework/core/engines), accept host kind 'toolbar' and resolve a widget's style and shape from the banner widget style/shape registry, the same way for both host kinds (one function, no copy)\n[ ] s6 (~10 min) Engine part 2: snap-not-overlap layout for toolbar hosts: widgets and buttons size to their content, the flexible item shrinks to its minimum first, then overflow (scroll snap or More); pure function returning placements, no DOM\n[ ] s7 (~10 min) Fixtures: add toolbar-host cases to the widget host fixtures (each banner widget style and shape on a toolbar, crowded toolbar snap/overflow, empty toolbar, old asset with no widgets), regenerate with npx -y tsx framework/spec/gen-fixtures.mts and check them with npx -y tsx framework/spec/check-widgets.mts\nRead first: _claude/builds/store.json, _claude/builds/reports/toolbar-widgets-in-any-banner-style.md, framework/core/engines/, framework/react/, framework/ui/axf.css, framework/spec/, framework/spec/PORTING.md, framework/schemas/asset-types.json, framework/schemas/json/, framework/spec/fixtures/, framework/spec/check-widgets.mts\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step toolbar-widgets-in-any-banner-style <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nParallel steps: steps with a dependsOn list may run in step sessions beside you (Fill every slot). Before you start a step, run `node apps/console-web/plugins/build-orchestrator/pipeline.mjs fill status toolbar-widgets-in-any-banner-style`: skip any step it shows running elsewhere and every step waiting on one, and leave their files alone; their branches merge into yours by themselves.\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step toolbar-widgets-in-any-banner-style <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note toolbar-widgets-in-any-banner-style \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Every banner launches expanded (activity, build manager, codebase changes, approvals, systems check, keys, What's new). Activity still only appears while something runs or just finished.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n\n## Retry: attempt 1 (done-means-merged@1)\nThe last run failed: the push or the PR failed (landing for 10 days: no PR reached GitHub and nothing moved it).\nThis attempt: retry. Run the same approach again: the failure looked transient. Pick up at the first open step.\nNever stop on a failure: fix it and keep going. If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on the next rung.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -262465,7 +262782,17 @@
     "heldWhy": "",
     "maxParallel": 0,
     "budgetUsd": 0,
-    "spentUsd": 0
+    "spentUsd": 0,
+    "runEnd": {
+     "at": "2026-11-27T20:12:24.406Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-toolbar-widgets-in-any-banner-style--lenny",
+     "phase": ""
+    }
    },
    "failure": {
     "kind": "push-fail",
@@ -262962,7 +263289,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {

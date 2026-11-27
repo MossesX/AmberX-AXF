@@ -845,29 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-27 18:19 UTC · `build-profiles` note (all) · watchdog
-- 2026-11-27 18:19 UTC · `fresh-look` note (all) · watchdog
-- 2026-11-27 18:28 UTC · `amberx-notes` note (all) · watchdog
-- 2026-11-27 18:29 UTC · `fix-interface-scope-settings` note (all) · watchdog
-- 2026-11-27 18:29 UTC · `fix-hubsync-look-source` note (all) · watchdog
-- 2026-11-27 18:29 UTC · `fix-banner-snap` note (all) · watchdog
-- 2026-11-27 18:29 UTC · `banner-fix-fallback` note (all) · watchdog
-- 2026-11-27 18:36 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 18:36 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
-- 2026-11-27 18:36 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
-- 2026-11-27 18:36 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
-- 2026-11-27 18:39 UTC · `banner-fix-fallback-done` note (all) · watchdog
-- 2026-11-27 18:39 UTC · `amberx-push` note (all) · watchdog
-- 2026-11-27 18:39 UTC · `amberx-voice-center` note (all) · watchdog
-- 2026-11-27 18:39 UTC · `amberx-assistant-agents` note (all) · watchdog
-- 2026-11-27 18:39 UTC · `amberx-claude-tokens` note (all) · watchdog
-- 2026-11-27 18:49 UTC · `amberx-handsfree` note (all) · watchdog
-- 2026-11-27 18:49 UTC · `mosses-build-tools` note (all) · watchdog
-- 2026-11-27 18:49 UTC · `assistant-no-subagents` note (all) · watchdog
-- 2026-11-27 18:49 UTC · `refactor-all` note (all) · watchdog
-- 2026-11-27 18:49 UTC · `enterprise-branding` note (all) · watchdog
-- 2026-11-27 18:57 UTC · `claude-emergency-access` note (all) · watchdog
-- 2026-11-27 18:57 UTC · `emergency-remove-every-leftover-js` note (all) · watchdog
 - 2026-11-27 18:57 UTC · `emergency-check-can-these-plugins-` note (all) · watchdog
 - 2026-11-27 18:57 UTC · `emergency-rip-out-the-7-mb-status-` note (all) · watchdog
 - 2026-11-27 18:58 UTC · `claude-emergency-access` → failed, note (all) · watchdog
@@ -1245,6 +1222,29 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-27 19:51 UTC · `x.windows` → fixing, note (all) · watchdog
 - 2026-11-27 19:51 UTC · `audio-output-recorder` note (all) · watchdog
 - 2026-11-27 19:51 UTC · `layout-repeating-slots` note (all) · watchdog
+- 2026-11-27 19:55 UTC · `settings-compact` → complete, note (all) · verify
+- 2026-11-27 19:55 UTC · `ui-all-assets` → complete, note (all) · verify
+- 2026-11-27 20:00 UTC · `x.terminal` → fixing, note (all) · watchdog
+- 2026-11-27 20:00 UTC · `agent-swarm` note (all) · watchdog
+- 2026-11-27 20:00 UTC · `agent-swarm-fable-rebuild` note (all) · watchdog
+- 2026-11-27 20:00 UTC · `ai-keys` note (all) · watchdog
+- 2026-11-27 20:00 UTC · `builds-share-one-claude-login-write` note (all) · watchdog
+- 2026-11-27 20:10 UTC · `x.android.modules` → fixing, note (all) · watchdog
+- 2026-11-27 20:10 UTC · `every-skin-ships-light-dark-colour-theme` note (all) · watchdog
+- 2026-11-27 20:10 UTC · `skins-plugin-merge-main-and-land` note (all) · watchdog
+- 2026-11-27 20:10 UTC · `console-skin-axhub-only` note (all) · watchdog
+- 2026-11-27 20:10 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · watchdog
+- 2026-11-27 20:12 UTC · `toolbar-widgets-in-any-banner-style` note (all) · orchestrator
+- 2026-11-27 20:12 UTC · `toolbar-widgets-in-any-banner-style` note (all) · orchestrator
+- 2026-11-27 20:20 UTC · `x.android.showcase` → fixing, note (all) · watchdog
+- 2026-11-27 20:20 UTC · `voice-listener-use-claude-when-connected` note (all) · watchdog
+- 2026-11-27 20:20 UTC · `gate-rules-plugin-in-the-console` note (all) · watchdog
+- 2026-11-27 20:20 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · watchdog
+- 2026-11-27 20:20 UTC · `all-settings-interfaces-open-floating` note (all) · watchdog
+- 2026-11-27 20:23 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` note (all) · orchestrator
+- 2026-11-27 20:24 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` note (all) · orchestrator
+- 2026-11-27 20:30 UTC · `x.web.core` → fixing, note (all) · watchdog
+- 2026-11-27 20:30 UTC · `layout-repeating-slots` → landed, note (all) · watchdog
 
 ## Token passes (log)
 
