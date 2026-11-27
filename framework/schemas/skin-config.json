@@ -21,9 +21,9 @@
   "extrasCategory": "extras",
   "global": "global",
   "summary": {
-    "categories": 48,
-    "groups": 289,
-    "options": 1151,
+    "categories": 44,
+    "groups": 281,
+    "options": 1119,
     "limits": 4,
     "sections": [
       "Themes",
@@ -34,7 +34,6 @@
       "Widgets",
       "System",
       "Brand",
-      "Demos",
       "Look"
     ]
   },
@@ -3262,122 +3261,6 @@
             "front",
             "back",
             "labels"
-          ]
-        }
-      ],
-      "limits": []
-    },
-    {
-      "type": "demonstration",
-      "label": "Demonstration",
-      "section": "Demos",
-      "by": "slot",
-      "groups": [
-        {
-          "id": "pick",
-          "kind": "pick",
-          "options": [
-            "asset"
-          ]
-        },
-        {
-          "id": "fields",
-          "kind": "fields",
-          "options": [
-            "steps",
-            "about",
-            "entries",
-            "app",
-            "voice",
-            "chain",
-            "keywords",
-            "generated",
-            "editable"
-          ]
-        }
-      ],
-      "limits": []
-    },
-    {
-      "type": "book",
-      "label": "Book",
-      "section": "Demos",
-      "by": "slot",
-      "groups": [
-        {
-          "id": "pick",
-          "kind": "pick",
-          "options": [
-            "asset"
-          ]
-        },
-        {
-          "id": "fields",
-          "kind": "fields",
-          "options": [
-            "chapters",
-            "about",
-            "docs",
-            "outputs",
-            "keywords"
-          ]
-        }
-      ],
-      "limits": []
-    },
-    {
-      "type": "clip",
-      "label": "Clip",
-      "section": "Demos",
-      "by": "slot",
-      "groups": [
-        {
-          "id": "pick",
-          "kind": "pick",
-          "options": [
-            "asset"
-          ]
-        },
-        {
-          "id": "fields",
-          "kind": "fields",
-          "options": [
-            "source.kind",
-            "media.seconds",
-            "recorded",
-            "transcript",
-            "chain",
-            "entries",
-            "keywords"
-          ]
-        }
-      ],
-      "limits": []
-    },
-    {
-      "type": "docs",
-      "label": "Documentation",
-      "section": "Demos",
-      "by": "slot",
-      "groups": [
-        {
-          "id": "pick",
-          "kind": "pick",
-          "options": [
-            "asset"
-          ]
-        },
-        {
-          "id": "fields",
-          "kind": "fields",
-          "options": [
-            "source.kind",
-            "depth",
-            "format",
-            "files",
-            "interactive",
-            "build",
-            "keywords"
           ]
         }
       ],

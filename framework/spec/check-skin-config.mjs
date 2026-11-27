@@ -28,15 +28,15 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 const registry = {
   types: {
-    'color-theme': { label: 'Colour theme', group: 'Themes', required: ['tokens', 'scheme'], nested: { tokens: ['bg', 'fg', 'accent'] }, enums: { scheme: ['light', 'dark'] } },
-    menu: { label: 'Menu', group: 'Navigation', hideable: true, required: ['menus'], optional_fields: { compact: 'Compact rows — fewer pixels per item' }, skinConfig: { limits: { depth: { label: 'Menu levels the AI may build (1 = flat)', measure: 'depth', min: 1, max: 4, default: 2 } } } },
-    'context-menu': { label: 'Context menu', group: 'Navigation', hideable: true, required: ['targets'], nested: { targets: ['default'] }, skinConfig: { limits: { depth: { measure: 'depth', root: 'targets', min: 1, max: 3, default: 1 } } } },
-    toolbar: { label: 'Toolbar', group: 'Navigation', hideable: true, required: ['groups'], skinConfig: { limits: { groups: { label: 'Toolbar groups', measure: 'count:groups', min: 1, max: 6, default: 3 } } } },
-    button: { label: 'Button', group: 'Controls', required: ['variant'], enums: { variant: ['solid', 'outline'] } },
-    badge: { label: 'Badge', group: 'Widgets', widget: true, required: ['tone'] },
+    'color-theme': { label: 'Colour theme', group: 'Themes', required: ['tokens', 'scheme'], nested: { tokens: ['bg', 'fg', 'accent'] }, enums: { scheme: ['light', 'dark'] }, skin: { by: 'slot', ingredient: true, via: 'colorTheme', why: 'the skin\'s colour theme' } },
+    menu: { label: 'Menu', group: 'Navigation', hideable: true, required: ['menus'], optional_fields: { compact: 'Compact rows — fewer pixels per item' }, skinConfig: { limits: { depth: { label: 'Menu levels the AI may build (1 = flat)', measure: 'depth', min: 1, max: 4, default: 2 } } }, skin: { by: 'slot', parts: true, why: 'picked and styled' } },
+    'context-menu': { label: 'Context menu', group: 'Navigation', hideable: true, required: ['targets'], nested: { targets: ['default'] }, skinConfig: { limits: { depth: { measure: 'depth', root: 'targets', min: 1, max: 3, default: 1 } } }, skin: { by: 'slot', parts: true, why: 'picked and styled' } },
+    toolbar: { label: 'Toolbar', group: 'Navigation', hideable: true, required: ['groups'], skinConfig: { limits: { groups: { label: 'Toolbar groups', measure: 'count:groups', min: 1, max: 6, default: 3 } } }, skin: { by: 'slot', parts: true, why: 'picked and styled' } },
+    button: { label: 'Button', group: 'Controls', required: ['variant'], enums: { variant: ['solid', 'outline'] }, skin: { by: 'slot', parts: true, why: 'picked and styled' } },
+    badge: { label: 'Badge', group: 'Widgets', widget: true, required: ['tone'], skin: { by: 'parts', why: 'many copies, styled with parts' } },
     'icon-pack': { label: 'Icon pack', group: 'Brand', required: ['glyphs'], skin: { by: 'reference', via: 'iconPack' } },
     'logo-mark': { label: 'Logo mark', group: 'Brand', required: ['paths'], skin: { by: 'reference', via: 'branding' } },
-    branding: { label: 'Branding', group: 'Brand', required: ['name'] },
+    branding: { label: 'Branding', group: 'Brand', required: ['name'], skin: { by: 'slot', why: 'picked' } },
     skin: { label: 'Skin', group: 'System', required: ['assets'], skin: { by: 'bundle', why: 'the whole look' } },
     'uac-policy': { label: 'Access policy', group: 'System', required: ['roles'], skin: { by: 'none', why: 'no look' } },
     orphan: { label: 'Orphan widget', group: 'Widgets', widget: true, required: ['x'] },
