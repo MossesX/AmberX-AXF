@@ -1065,6 +1065,7 @@ PLUGIN_DOCS: list = [
     plugin_doc('push-banner', 'merge-queue.json', {'waiting': 'pr', 'merged': 'pr', 'kicked': 'pr'}, 'the merge queue: one row per waiting, merged and kicked PR (rid = the PR number)'),
     plugin_doc('push-banner', 'merge-queue-control.json', {'kicked': MAP_ROWS, 'removed': MAP_ROWS}, 'merge queue control: one row per kicked and removed PR'),
     plugin_doc('push-banner', 'land-control.json', {'holds': MAP_ROWS, 'after': MAP_ROWS, 'off': MAP_ROWS}, 'landing control: one row per hold'),
+    plugin_doc('push-banner', 'land.json', {'items': 'id'}, 'the landing list: one row per build waiting to land; switches and order in store_heads'),
     plugin_doc('push-banner', 'done.json', {'items': 'key'}, 'push banner done items: one row per item'),
     plugin_doc('push-banner', 'failed.json', {'items': 'key'}, 'push banner failed items: one row per item'),
     plugin_doc('systems-check', 'routine.json', {'checks': 'id'}, 'the systems check routine: one row per check'),
@@ -1134,6 +1135,15 @@ PLUGIN_MAPS = ItemsTable('plugin_maps', 'plugins', r'^(maintenance/held|claude-a
 BUILD_PROFILE_MATRICES = ItemsTable('build_profile_matrices', 'builds', r'^profiles/[^/]+/matrices\.json$', {'matrices': ItemList('id')},
                                     [Col('id'), Col('title'), Col('profile'), Col('ref'), Col('version', type='int'), Col('created_at', 'createdAt'), Col('updated_at', 'updatedAt')],
                                     'build matrices of each profile (builds/profiles/<profile>/matrices.json): one row per matrix')
+MAINT_PLANS = ItemsTable('plugin_maintenance_plan_items', 'plugins', r'^maintenance/plans/[^/]+\.json$', {'items': ItemList('id')},
+                         [Col('id'), Col('kind'), Col('job'), Col('ref'), Col('why'), Col('size', type='num'), Col('status')],
+                         'maintenance plans (plugins/maintenance/plans/<plan>.json): one row per thing the plan would clean up')
+PROFILE_CLEANUPS = ItemsTable('plugin_maintenance_profile_cleanups', 'plugins', r'^maintenance/profile-cleanup/plans/[^/]+\.json$', {'profiles': ItemList('id')},
+                              [Col('id'), Col('name'), Col('base'), Col('archived', type='bool'), Col('finished', type='bool')],
+                              'profile clean-up plans (plugins/maintenance/profile-cleanup/plans/<plan>.json): one row per profile')
+ACCESS_BATCHES = ItemsTable('plugin_container_access_items', 'plugins', r'^container-access/batches/[^/]+\.json$', {'items': ItemList('id')},
+                            [Col('id'), Col('kind'), Col('container'), Col('item_path', 'path'), Col('status'), Col('reason')],
+                            'container access batches (plugins/container-access/batches/<batch>.json): one row per change in the batch')
 PIPELINE_ACCOUNTS = ItemsTable('pipeline_accounts', 'builds', r'^pipeline/accounts\.json$', {MAP: ItemList()}, [],
                                'pipeline accounts (builds/pipeline/accounts.json, a map name → account): one row per account')
 # items kept one per key outside plugins/ and console/: shipped build reports, report data, pipeline state, UI Review
@@ -1148,7 +1158,7 @@ SESSION_INBOX = KeyRowTable('session_inbox', 'sessions', ITEM_COLS, 'the session
 PLUGIN_KEY_ROWS = KeyRowTable('plugin_docs', 'plugins', ITEM_COLS, 'plugin data with no table of its own (plugins/<folder>/…): one row per key; an item kept as its own key is one row', '^' + _NOT_STATUS + r'[a-z0-9][a-z0-9-]*/.+\.json$')
 CONSOLE_KEY_ROWS = KeyRowTable('console_docs', 'console', ITEM_COLS, 'console, framework and deploy data with no table of its own (console/…): one row per key', '^' + _NOT_STATUS + r'.+\.json$')
 PLUGIN_FAMILIES: list = [AGENT_MEMORY, FEATURE_MATRICES, TODO_PROJECTS, AGENT_COMMANDS, HOME_CARDS, CLIENT_TABLE_ROWS, PHONE_ITEMS, CREW_CHATS, AI_CONVERSATIONS,
-                         AI_SESSIONS, COMMAND_CATALOGS, GH_CACHE, PLUGIN_MAPS, BUILD_PROFILE_MATRICES, PIPELINE_ACCOUNTS]
+                         AI_SESSIONS, COMMAND_CATALOGS, GH_CACHE, PLUGIN_MAPS, MAINT_PLANS, PROFILE_CLEANUPS, ACCESS_BATCHES, BUILD_PROFILE_MATRICES, PIPELINE_ACCOUNTS]
 KEY_ROWS: list = [BUILD_KEY_ROWS, UI_REVIEW_KEY_ROWS, SESSION_INBOX, PLUGIN_KEY_ROWS, CONSOLE_KEY_ROWS]
 
 TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES, AGENT_SLOTS, CATALOG_FEATURES, CATALOG_LIBRARIES, PROJECT_RULES, SESSIONS, CODEBASE_CHANGES,

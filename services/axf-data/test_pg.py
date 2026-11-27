@@ -472,6 +472,28 @@ def test_plugin_families_and_key_rows():
             TB.GH_CACHE.put_row(cur, 'plugins', 'push-banner/gh-cache.json', TB.MAP, {'at': 7, 'etag': 'e3'}, '/repos/x/pulls/3')
             assert TB.GH_CACHE.delete_row(cur, 'plugins', 'push-banner/gh-cache.json', TB.MAP, '/repos/x/pulls/1') is True
             assert sorted(json.loads(TB.GH_CACHE.read(cur, 'plugins', 'push-banner/gh-cache.json'))) == ['/repos/x/pulls/2', '/repos/x/pulls/3']
+        # a maintenance plan, a container access batch, the landing list: one item changes, one row is written
+        plan = {'$axf': 'maint-plan@1', 'id': 'p1', 'count': 2, 'items': [{'id': 'docker:build-cache', 'kind': 'docker', 'job': 'docker', 'size': 5, 'why': 'old'}, {'id': 'tmp:/x', 'kind': 'tmp', 'size': 1.5}]}
+        c.put('/v1/plugins/maintenance/plans/p1.json', content=json.dumps(plan), headers=J(**{'if-none-match': '*'}))
+        assert c.get('/v1/plugins/maintenance/plans/p1.json', headers=H()).json() == plan
+        batch = {'id': 'b1', 'status': 'open', 'items': [{'id': 'i1', 'kind': 'write', 'path': '/etc/x', 'status': 'pending'}, {'id': 'i2', 'kind': 'write', 'path': '/etc/y', 'status': 'pending'}]}
+        c.put('/v1/plugins/container-access/batches/b1.json', content=json.dumps(batch), headers=J(**{'if-none-match': '*'}))
+        cleanup = {'mode': 'plan', 'profiles': [{'id': 'main', 'name': 'Main', 'archived': False, 'items': [1]}, {'id': 'side', 'name': 'Side'}]}
+        c.put('/v1/plugins/maintenance/profile-cleanup/plans/pc1.json', content=json.dumps(cleanup), headers=J(**{'if-none-match': '*'}))
+        assert c.get('/v1/plugins/maintenance/profile-cleanup/plans/pc1.json', headers=H()).json() == cleanup
+        assert [st.fetchone('SELECT table_name FROM keys WHERE path=%s', (k,))['table_name'] for k in ('maintenance/plans/p1.json', 'container-access/batches/b1.json', 'maintenance/profile-cleanup/plans/pc1.json')] == \
+            ['plugin_maintenance_plan_items', 'plugin_container_access_items', 'plugin_maintenance_profile_cleanups']
+        with st.tx() as cur:
+            assert TB.MAINT_PLANS.get_row(cur, 'plugins', 'maintenance/plans/p1.json', 'items', 'tmp:/x') == {'id': 'tmp:/x', 'kind': 'tmp', 'size': 1.5}
+            assert TB.MAINT_PLANS.delete_row(cur, 'plugins', 'maintenance/plans/p1.json', 'items', 'docker:build-cache') is True
+            assert TB.ACCESS_BATCHES.put_row(cur, 'plugins', 'container-access/batches/b1.json', 'items', {**batch['items'][1], 'status': 'applied'})['added'] == 0
+            assert TB.PROFILE_CLEANUPS.get_row(cur, 'plugins', 'maintenance/profile-cleanup/plans/pc1.json', 'profiles', 'side') == {'id': 'side', 'name': 'Side'}
+            assert [i['id'] for i in json.loads(TB.MAINT_PLANS.read(cur, 'plugins', 'maintenance/plans/p1.json'))['items']] == ['tmp:/x']
+        assert st.fetchone("SELECT item_path, status FROM plugin_container_access_items WHERE rid = 'i2'") == {'item_path': '/etc/y', 'status': 'applied'}
+        land = {'$axf': 'land@1', 'on': True, 'order': ['a', 'b'], 'items': [{'id': 'a', 'pr': 1, 'state': 'waiting'}, {'id': 'b', 'pr': None, 'state': 'waiting'}]}
+        c.put('/v1/plugins/push-banner/land.json', content=json.dumps(land), headers=J(**{'if-none-match': '*'}))
+        c.post('/v1/plugins/push-banner/land.json:patch', json={'lists': {'items': [{'key': 'a', 'delete': True}, {'key': 'b', 'item': {'id': 'b', 'pr': 2, 'state': 'landing'}}]}}, headers=H())
+        assert c.get('/v1/plugins/push-banner/land.json', headers=H()).json() == {**land, 'items': [{'id': 'b', 'pr': 2, 'state': 'landing'}]}
         # crew chats, assistant sessions (rid = the event's seq), conversations
         chat = {'id': 'group', 'title': 'Crew', 'agents': {'joey': {}}, 'messages': [{'id': 'm1', 'at': 't', 'from': 'joey', 'text': 'hi'}]}
         c.put('/v1/console/agent-swarm/chats/group.json', content=json.dumps(chat), headers=J(**{'if-none-match': '*'}))
