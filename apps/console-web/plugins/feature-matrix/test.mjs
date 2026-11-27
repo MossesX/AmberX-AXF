@@ -81,7 +81,7 @@ const first = cli.importAll('all');
 const id = 'all:orchestrator:refactor-all';
 t('import: the draft becomes feature-matrix@1 on disk, one matrix per open build', () => {
   const f = JSON.parse(readFileSync(join(dir, 'all.json'), 'utf8')); assert.equal(f.$axf, fm.SCHEMA); assert.ok(fm.findMatrix(fm.normalizeState(f), id));
-  assert.ok(first.log.length >= 1); assert.ok(existsSync(join(dir, 'mirror', 'all.json')), 'mirrored to the plugin data folder');
+  assert.ok(first.log.length >= 1); assert.ok(!existsSync(join(dir, 'mirror', 'all.json')), 'one record: no mirror copy beside it');
 });
 t('import is idempotent', () => { const before = readFileSync(join(dir, 'all.json'), 'utf8'); const v = fm.findMatrix(fm.normalizeState(JSON.parse(before)), id).version; cli.importAll('all'); assert.equal(fm.findMatrix(cli.loadProfile('all'), id).version, v); });
 const v0 = fm.findMatrix(cli.loadProfile('all'), id).version;

@@ -1,7 +1,7 @@
 /**
  * Lifecycle hooks (plugin-lifecycle@1). The matrices files (_claude/builds/[profiles/<id>/]matrices.json) are project
- * files next to each profile's orchestrator tracker: uninstall never deletes them. Only the data folder (Apply reports,
- * the mirror) goes.
+ * files next to each profile's orchestrator tracker: uninstall never deletes them. Only the data folder (Apply reports)
+ * goes.
  */
 import { existsSync, mkdirSync } from 'node:fs';
 import { activeId, matricesFile } from './matrix.mjs';
