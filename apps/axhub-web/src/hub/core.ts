@@ -402,3 +402,46 @@ export function patternList(text: string): string[] | undefined {
   const list = text.split(/[\s,]+/).map((x) => x.trim()).filter(Boolean);
   return list.length ? [...new Set(list)] : undefined;
 }
+
+/* ---------------------------------------------------------------- Auto-approve + groups (Brett, Nov 9 2026) */
+
+/**
+ * Waiting requests in collapsible groups (build approvals-page-auto-approve-toggle): one per build / session / agent that
+ * asked (`sourceWho`), else per service (`code.service`, else the tool before its first dot). First-seen order.
+ */
+export interface WaitGroupRow extends SourceRow { tool: string; code?: { service?: string } }
+export function waitGroupKey(r: WaitGroupRow): { id: string; title: string; kind: 'build' | 'service' } {
+  const who = sourceWho(r);
+  if (who) return { id: `build:${who}`, title: who, kind: 'build' };
+  const svc = r.code?.service || (r.tool.includes('.') ? r.tool.slice(0, r.tool.indexOf('.')) : r.tool) || 'other';
+  return { id: `service:${svc}`, title: svc, kind: 'service' };
+}
+export function waitGroups<R extends WaitGroupRow>(rows: readonly R[]): { id: string; title: string; kind: 'build' | 'service'; rows: R[] }[] {
+  const out = new Map<string, { id: string; title: string; kind: 'build' | 'service'; rows: R[] }>();
+  for (const r of rows) { const k = waitGroupKey(r); const g = out.get(k.id) ?? { ...k, rows: [] }; g.rows.push(r); out.set(k.id, g); }
+  return [...out.values()];
+}
+
+/** The Auto-approve presets (Brett: "one hour, two hours, and until I turn it off"). `minutes: null` = until off. */
+export const AUTO_PRESETS = [
+  { id: '1h', label: '1 hour', minutes: 60 },
+  { id: '2h', label: '2 hours', minutes: 120 },
+  { id: 'until-off', label: 'Until I turn it off', minutes: null },
+] as const;
+export type AutoPresetId = (typeof AUTO_PRESETS)[number]['id'];
+/** The reason an Auto-approve pass is granted with; "until off" is read back from it. */
+export const AUTO_REASON: Record<AutoPresetId, string> = { '1h': 'Auto-approve for 1 hour', '2h': 'Auto-approve for 2 hours', 'until-off': 'Auto-approve until turned off' };
+interface AutoPassLike { service: string; tools: string[]; title: string; description?: string; grantedVia: string; secondsLeft: number; active: boolean }
+/** Is this pass an Auto-approve one: every service and tool (granted here), or the console's all pass (feed)? */
+export const isAutoPass = (p: AutoPassLike): boolean => p.active && ((p.service === '*' && (p.tools.length === 0 || p.tools.includes('*'))) || p.grantedVia === 'feed');
+/** Until off: granted here with that reason, or the console's until-off pass (its text says so). */
+export const isUntilOff = (p: AutoPassLike): boolean => [p.title, p.description ?? ''].some((t) => /until (you )?turn(ed)? (it )?off/i.test(t));
+/** Minutes to extend an until-off pass by now (0 = not yet): once under half of the longest pass is left. */
+export const untilOffExtend = (p: AutoPassLike, maxMinutes: number): number => (p.grantedVia !== 'feed' && isUntilOff(p) && p.secondsLeft < (maxMinutes * 60) / 2 ? maxMinutes : 0);
+/** The body that switches Auto-approve on (a hub pass on every service and tool), or null when the hub's limit is lower. */
+export function autoGrantBody(id: AutoPresetId, limits: { min: number; max: number }): { service: string; tools: string[]; minutes: number; reason: string } | null {
+  const p = AUTO_PRESETS.find((x) => x.id === id)!;
+  const minutes = p.minutes ?? limits.max;
+  if (minutes > limits.max || minutes < limits.min) return null;
+  return { service: '*', tools: ['*'], minutes, reason: AUTO_REASON[id] };
+}

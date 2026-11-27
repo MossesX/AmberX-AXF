@@ -26,7 +26,7 @@ import { ControlError, audit, confirmSalt, readAudit } from './lib/common.mjs';
 import { appearanceFile, runTokens } from './lib/tokens.mjs';
 import { notesDir, runAmberx } from './lib/amberx.mjs';
 import { runPlanner } from './lib/planner.mjs';
-import { coveringCall, coveringPass, passSettings, publication, recordPassChanges, recordPassCommand, runPass, savePassSettings } from './lib/pass.mjs';
+import { autoPresetId, autoState, coveringCall, coveringPass, passSettings, publication, recordPassChanges, recordPassCommand, runPass, savePassSettings } from './lib/pass.mjs';
 import { PASS_DEFAULT_SCOPE, PASS_SCOPE_IDS, PASS_TARGET, passScopeId, passScopeOf, passScopeWord } from '../../../../framework/core/engines/control-pass.mjs';
 
 /** The token rows a write may change, by id (what a covered write records as before / after). */
@@ -145,6 +145,17 @@ export function commandFromArgv(argv) {
     // axf pass grant [minutes] [--scope all|theme|style|layout|tokens] [--include-irreversible] · status [scope] ·
     // revoke | undo [scope] · approve | deny [scope] <request>; also the old word order: axf token pass grant theme 30.
     // No scope named = all (everything).
+    // axf pass auto [1h|2h|until-off|off|status] [--include-irreversible]: the approvals page's Auto-approve control
+    if (op === 'auto') {
+      const w = words.splice(0, words.length).join(' ');
+      const preset = autoPresetId(w);
+      if (!w || w === 'status') { op = 'get'; }
+      else if (['off', 'stop', 'revoke', 'end'].includes(w.toLowerCase())) { op = 'revoke'; }
+      else if (preset) { op = 'grant'; if (preset === 'until-off') f.field.until_off = true; else f.field.minutes = preset === '1h' ? 60 : 120; if (typeof f.reason !== 'string') f.reason = 'Auto-approve from the CLI'; }
+      else return { error: `axf pass auto 1h | 2h | until-off | off | status (got ${w})` };
+      if (typeof f.scope !== 'string') f.scope = 'all';
+    }
+    if (f['until-off'] === true) f.field.until_off = true;
     if (!op || op === 'status') op = words.length || typeof f.scope === 'string' ? 'get' : 'list';
     let sc = typeof f.scope === 'string' ? passScopeId(f.scope) : null;
     if (typeof f.scope === 'string' && !sc) return { error: `no pass scope ${f.scope} (all, theme, style, layout, tokens = ${PASS_SCOPE_IDS.join(', ')})` };
@@ -245,6 +256,7 @@ function help() {
     '  axf pass grant 30                 (everything skips the veto for 30 min once Brett approves)',
     '  axf pass grant 30 --scope theme   (only theme changes)',
     '  axf pass grant 30 --include-irreversible   (hard deletes too, no confirm)',
+    '  axf pass auto 1h | 2h | until-off | off | status   (Auto-approve on the approvals page: every call skips the veto)',
     '  axf pass status · axf pass revoke · axf pass undo   (undo lists what it can\'t roll back)',
     '  axf token layout get navWidth',
     '  axf token theme set accent "#ff8800" --reason "warmer accent"',  // theme-ok: an example value in the help text
@@ -301,6 +313,7 @@ export async function main(argv) {
   if (cmd === 'schema') { console.log(JSON.stringify(controlSchema(), null, 1)); return 0; }
   if (cmd === 'registry') { console.log(JSON.stringify(controlRegistry(), null, 1)); return 0; }
   if (cmd === 'audit') { const rows = readAudit(Number(argv[1]) || 30); out(rows, rows.map((r) => `${r.at} ${r.by} ${r.op} ${r.target}${r.path ? ` ${r.path}` : ''}${r.action ? ` ${r.action}` : ''}${r.reason ? ` — ${r.reason}` : ''}`).join('\n') || 'no writes yet'); return 0; }
+  if (cmd === 'pass-auto') { const a = autoState(); out(a, a.text); return 0; }
   if (cmd === 'pass-publication') { const p = publication(); console.log(JSON.stringify({ body: p.body, payload: p.payload, signature: p.signature })); return 0; }
   if (cmd === 'pass-check') {
     // pass-check <control target> [op]  ·  pass-check --call <service.tool> [--irreversible]   (an axHub call)
