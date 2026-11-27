@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10461,
- "updatedAt": "2026-11-27T06:14:22.554Z",
+ "rev": 10462,
+ "updatedAt": "2026-11-27T06:15:14.263Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214862,11 +214862,11 @@
     "all"
    ],
    "order": {
-    "all": 946
+    "all": 947
    },
    "kind": "build",
    "planRef": "",
-   "rev": 132,
+   "rev": 133,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -372643,7 +372643,7 @@
    "branch": "lander/claude-emergency-access",
    "pr": "933",
    "createdAt": "2026-11-24T21:08:59.649Z",
-   "updatedAt": "2026-11-27T06:13:37.050Z",
+   "updatedAt": "2026-11-27T06:14:57.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -372765,6 +372765,10 @@
     {
      "text": "Watchdog: step s2 retried at ready, attempt 4 on hulu0241.",
      "at": "2026-11-27T06:09:32.845Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-27T06:14:33.099Z"
     }
    ],
    "approvals": [],
@@ -373023,11 +373027,11 @@
        "priorFailures": 0
       }
      },
-     "rev": 14,
+     "rev": 15,
      "createdAt": "2026-11-24T21:10:08.429Z",
-     "updatedAt": "2026-11-27T06:09:41.183Z",
-     "statusAt": "2026-11-27T06:09:32.845Z",
-     "statusBy": "watchdog",
+     "updatedAt": "2026-11-27T06:14:57.214Z",
+     "statusAt": "2026-11-27T06:14:57.078Z",
+     "statusBy": "orchestrator",
      "attempt": 4,
      "statusLog": [
       {
@@ -373112,9 +373116,16 @@
        "by": "watchdog",
        "attempt": 4,
        "why": "retry forward at sending, attempt 4"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-27T06:14:57.078Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "to hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "sending",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/claude-emergency-access--s2",
      "branch": "claude/claude-emergency-access--s2"
@@ -373401,7 +373412,7 @@
    "fromProfile": "main-framework",
    "kind": "build",
    "planRef": "let-claude-send-builds-to-emerge-aewn",
-   "rev": 98,
+   "rev": 101,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -387429,7 +387440,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s6",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T06:13:15.961Z",
+   "updatedAt": "2026-11-27T06:14:45.644Z",
    "builtAt": "",
    "notes": [
     {
@@ -388067,6 +388078,38 @@
     {
      "text": "Claude account: hulu0241 (axf-emergency-check-can-these-plugins---s10--sully, shared account login)",
      "at": "2026-11-27T06:13:15.961Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T06:14:33.099Z"
+    },
+    {
+     "text": "Watchdog: step s4 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T06:14:33.099Z"
+    },
+    {
+     "text": "Watchdog: step s5 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T06:14:33.099Z"
+    },
+    {
+     "text": "Watchdog: step s6 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-27T06:14:33.099Z"
+    },
+    {
+     "text": "Watchdog: step s7 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T06:14:33.099Z"
+    },
+    {
+     "text": "Watchdog: step s8 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-27T06:14:33.099Z"
+    },
+    {
+     "text": "Watchdog: step s11 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-27T06:14:33.099Z"
+    },
+    {
+     "text": "Headless run axf-emergency-check-can-these-plugins---s9--paulie: brief only · start 12.8K tokens ($0.07) · cost $0.29 · 4 turns · 6 tools, MCP none",
+     "at": "2026-11-27T06:14:45.644Z"
     }
    ],
    "approvals": [],
@@ -388110,13 +388153,13 @@
     "budgetUsd": 0,
     "spentUsd": 0,
     "runEnd": {
-     "at": "2026-11-27T06:10:23.315Z",
+     "at": "2026-11-27T06:14:10.878Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-emergency-check-can-these-plugins---s8--gina",
+     "session": "axf-emergency-check-can-these-plugins---s9--paulie",
      "phase": ""
     }
    },
@@ -389368,12 +389411,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-27T06:13:38.658Z",
      "note": "",
-     "rev": 19,
+     "rev": 20,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-27T06:11:34.387Z",
+     "updatedAt": "2026-11-27T06:13:39.443Z",
      "statusAt": "2026-11-27T06:11:34.231Z",
      "statusBy": "orchestrator",
      "attempt": 5,
@@ -389585,13 +389628,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-25T12:16:48.420Z",
-     "updatedAt": "2026-11-27T06:13:05.114Z",
-     "statusAt": "2026-11-27T06:13:04.875Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "failedFrom": "sending",
+     "updatedAt": "2026-11-27T06:14:37.981Z",
+     "statusAt": "2026-11-27T06:14:33.099Z",
+     "statusBy": "watchdog",
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -389626,9 +389668,16 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: emergency-check-can-these-plugins- was not dispatched by the orchestrator (no token on file). Only the orchestrator starts builds. Queue it (Build orchestrator → Pending → Queue, or its pipeline-queue command: console API, MCP, or the or"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-27T06:14:33.099Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "retry forward at sending, attempt 2"
       }
      ],
-     "status": "failed",
+     "status": "ready",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/emergency-check-can-these-plugins---s11",
      "branch": "claude/emergency-check-can-these-plugins---s11"
@@ -389642,7 +389691,7 @@
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 315,
+   "rev": 319,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -389727,7 +389776,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s6",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T06:13:20.194Z",
+   "updatedAt": "2026-11-27T06:14:33.099Z",
    "builtAt": "",
    "notes": [
     {
@@ -390273,6 +390322,18 @@
     {
      "text": "Claude account: hulu0241 (axf-emergency-rip-out-the-7-mb-status---s6--paulie, shared account login)",
      "at": "2026-11-27T06:11:57.196Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 5 of 5 failed at sending (Fable included). Alerted Brett.",
+     "at": "2026-11-27T06:14:33.099Z"
+    },
+    {
+     "text": "Watchdog: step s5 gave up: attempt 5 of 5 failed at building (Fable included). Alerted Brett.",
+     "at": "2026-11-27T06:14:33.099Z"
+    },
+    {
+     "text": "Watchdog: step s7 retried at ready, attempt 4 on hulu0241.",
+     "at": "2026-11-27T06:14:33.099Z"
     }
    ],
    "approvals": [],
@@ -391247,13 +391308,12 @@
      "done": false,
      "doneAt": "",
      "note": "Part 7: 2 plan steps in one session (they touch the same files).",
-     "rev": 15,
+     "rev": 17,
      "createdAt": "2026-11-25T22:55:50.329Z",
-     "updatedAt": "2026-11-27T06:13:20.312Z",
-     "statusAt": "2026-11-27T06:13:20.194Z",
-     "statusBy": "orchestrator",
-     "attempt": 3,
-     "failedFrom": "building",
+     "updatedAt": "2026-11-27T06:15:05.670Z",
+     "statusAt": "2026-11-27T06:14:33.099Z",
+     "statusBy": "watchdog",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -391330,9 +391390,16 @@
        "by": "orchestrator",
        "attempt": 3,
        "why": "session exit 1"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-27T06:14:33.099Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at building, attempt 4"
       }
      ],
-     "status": "failed",
+     "status": "ready",
      "account": "hulu0241",
      "slot": "hl-mwyl4e4i-142",
      "worktree": "/root/axf-builds/emergency-rip-out-the-7-mb-status---s7",
@@ -391351,7 +391418,7 @@
    },
    "kind": "build",
    "planRef": "emergency-rip-out-the-7-mb-statu-qsmm",
-   "rev": 273,
+   "rev": 276,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
