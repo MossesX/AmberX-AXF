@@ -845,31 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-27 19:10 UTC · `plugin-lazy-load` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `lenny-land-all` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `terminal-no-focus` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `expenses-port` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `hotfix-build-manager` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `urgent-land-gizmo-chat` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `merge-queue` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `fable-no-approval` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `tab-group-assets` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `urgent-console-perf` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `land-merge-queue-first` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `claude-account-switcher` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `priority-tags` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `build-own-login` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `ai-keys-new-format` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `first-refresh-token-saved-every-time-it-s-used-v` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `ui-review-notify-session-audio` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `claude-badge-vps` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `notifications-control-panel` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `gizmo-rebuild-fable` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `badges-notify-followup` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `glossary-index-demos` → fixing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `profiles-all-finish` → fixing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `plan-designer` → fixing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` → fixing, note (all) · builds-live
 - 2026-11-27 19:10 UTC · `idle-alert-phone-flag-when-nothing-is-building` → landing, note (all) · builds-live
 - 2026-11-27 19:10 UTC · `workers-api-routing` → landing, note (all) · builds-live
 - 2026-11-27 19:10 UTC · `brief-only-headless` → landing, note (all) · builds-live
@@ -1245,6 +1220,31 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-28 02:10 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → archived (all) · claude-overnight
 - 2026-11-28 02:10 UTC · `merge-main-land-one-source-truth-console` → archived (all) · claude-overnight
 - 2026-11-28 02:10 UTC · `hide-any-ui-asset-global-context-menu` → archived (all) · claude-overnight
+- 2026-11-28 10:20 UTC · `project-manager-plugin-list-create` added (0 steps) (all) · console
+- 2026-11-28 10:21 UTC · `project-manager-plugin-list-create` → queued, note (all) · console
+- 2026-11-28 10:21 UTC · `landing-gate-only-one-build-may-start` added (0 steps) (all) · console
+- 2026-11-28 10:22 UTC · `landing-gate-only-one-build-may-start` → queued, note (all) · console
+- 2026-11-28 10:23 UTC · `landing-gate-only-one-build-may-start` → archived, note (all) · console
+- 2026-11-28 10:23 UTC · `emergency-one-true-source-json` note (all) · console
+- 2026-11-28 10:24 UTC · `project-manager-plugin-list-create` note (all) · orchestrator
+- 2026-11-28 10:25 UTC · `emergency-remove-every-leftover-js` note, removed (all) · console
+- 2026-11-28 10:25 UTC · `emergency-check-can-these-plugins-` note, removed (all) · console
+- 2026-11-28 10:25 UTC · `emergency-rip-out-the-7-mb-status-` note, removed (all) · console
+- 2026-11-28 10:26 UTC · `xlayout` note, removed (all) · console
+- 2026-11-28 10:26 UTC · `emergency-one-true-source-json` note, removed (all) · console
+- 2026-11-28 10:26 UTC · `emergency-remove-every-leftover-json` → pending, note, removed (all) · console
+- 2026-11-28 10:26 UTC · `molly-opus` note, removed (all) · console
+- 2026-11-28 10:26 UTC · `ai-keys` note, removed (all) · console
+- 2026-11-28 10:26 UTC · `fable-rebuild-plan-studio-cleared-out` note, removed (all) · console
+- 2026-11-28 10:26 UTC · `stack-walkthrough` note, removed (all) · console
+- 2026-11-28 10:26 UTC · `layout-repeating-slots` note, removed (all) · console
+- 2026-11-28 10:27 UTC · `get-main-green-unblock-lander-land-axf` note, removed (all) · console
+- 2026-11-28 10:27 UTC · `data-container-axf-data-holds-all` note, removed (all) · console
+- 2026-11-28 10:27 UTC · `owner-recognized-everywhere-veto` note, removed (all) · console
+- 2026-11-28 10:27 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` note, removed (all) · console
+- 2026-11-28 10:27 UTC · `profile-manager` PR 942, note (all) · orchestrator
+- 2026-11-28 10:28 UTC · `project-manager-plugin-list-create` → archived, note (all) · console
+- 2026-11-28 10:28 UTC · `project-manager-plugin-lean-create` added (0 steps) (all) · console
 
 ## Token passes (log)
 

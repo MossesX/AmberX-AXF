@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10485,
- "updatedAt": "2026-11-28T09:08:18.432Z",
+ "rev": 10486,
+ "updatedAt": "2026-11-28T10:29:10.048Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -14259,7 +14259,7 @@
    "pr": "#358",
    "mergedAt": "2026-11-06T00:33:19Z",
    "createdAt": "2026-10-23T00:40:17.479Z",
-   "updatedAt": "2026-11-27T20:43:02.291Z",
+   "updatedAt": "2026-11-28T10:26:42.459Z",
    "builtAt": "2026-10-23T00:40:17.479Z",
    "notes": [
     {
@@ -14289,6 +14289,10 @@
     {
      "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
      "at": "2026-11-27T20:43:02.291Z"
+    },
+    {
+     "text": "Deleted (console): Brett Nov 28: clear the whole build store and start over; keep only the Project manager plugin. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-28T10:26:42.459Z"
     }
    ],
    "approvals": [],
@@ -14315,13 +14319,13 @@
     "all"
    ],
    "order": {
-    "all": 398
+    "all": 399
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 36,
+   "deleted": true,
+   "deletedAt": "2026-11-28T10:26:42.459Z",
    "pending": {
     "builtAt": "2026-10-23T00:40:17.479Z",
     "createdAt": "2026-10-23T00:40:17.479Z",
@@ -44365,7 +44369,7 @@
    "pr": "#191",
    "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-27T20:31:33.150Z",
+   "updatedAt": "2026-11-28T10:26:59.449Z",
    "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
@@ -44399,6 +44403,10 @@
     {
      "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
      "at": "2026-11-27T20:31:33.150Z"
+    },
+    {
+     "text": "Deleted (console): Brett Nov 28: clear the whole build store and start over; keep only the Project manager plugin. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-28T10:26:59.449Z"
     }
    ],
    "approvals": [],
@@ -44526,13 +44534,13 @@
     "all"
    ],
    "order": {
-    "all": 281
+    "all": 282
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 47,
+   "deleted": true,
+   "deletedAt": "2026-11-28T10:26:59.449Z",
    "pending": {
     "builtAt": "2026-11-04T12:44:12.117Z",
     "createdAt": "2026-10-31T09:07:21.792Z",
@@ -54497,7 +54505,7 @@
    "pr": "229",
    "mergedAt": "2026-11-02T01:38:15Z",
    "createdAt": "2026-11-01T22:38:15.391Z",
-   "updatedAt": "2026-11-27T20:40:02.223Z",
+   "updatedAt": "2026-11-28T10:26:54.141Z",
    "builtAt": "2026-11-02T05:32:27.282Z",
    "notes": [
     {
@@ -54519,6 +54527,10 @@
     {
      "text": "Watchdog: PR #229 merged 2026-11-02 01:38 and the build never heard: the merge is recorded, CI on cfc33f428d is next.",
      "at": "2026-11-27T20:40:02.223Z"
+    },
+    {
+     "text": "Deleted (console): Brett Nov 28: clear the whole build store and start over; keep only the Project manager plugin. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-28T10:26:54.141Z"
     }
    ],
    "approvals": [],
@@ -55196,13 +55208,13 @@
     "all"
    ],
    "order": {
-    "all": 360
+    "all": 361
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 79,
+   "deleted": true,
+   "deletedAt": "2026-11-28T10:26:54.141Z",
    "pending": {
     "builtAt": "2026-11-02T05:32:27.282Z",
     "createdAt": "2026-11-01T22:38:15.391Z",
@@ -55412,7 +55424,7 @@
    "pr": "230",
    "mergedAt": "2026-11-02T04:01:24Z",
    "createdAt": "2026-11-02T02:43:38.594Z",
-   "updatedAt": "2026-11-27T20:50:17.704Z",
+   "updatedAt": "2026-11-28T10:26:35.226Z",
    "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
@@ -55438,6 +55450,10 @@
     {
      "text": "Watchdog: PR #230 merged 2026-11-02 04:01 and the build never heard: the merge is recorded, CI on 2188d054f0 is next.",
      "at": "2026-11-27T20:50:17.704Z"
+    },
+    {
+     "text": "Deleted (console): Brett Nov 28: clear the whole build store and start over; keep only the Project manager plugin. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-28T10:26:35.226Z"
     }
    ],
    "approvals": [],
@@ -55697,13 +55713,13 @@
     "all"
    ],
    "order": {
-    "all": 294
+    "all": 295
    },
    "kind": "build",
    "planRef": "",
-   "rev": 61,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 63,
+   "deleted": true,
+   "deletedAt": "2026-11-28T10:26:35.226Z",
    "pending": {
     "builtAt": "2026-11-04T12:44:12.117Z",
     "createdAt": "2026-11-02T02:43:38.594Z",
@@ -55987,7 +56003,7 @@
    "pr": "#252",
    "mergedAt": "2026-11-03T16:48:36.572Z",
    "createdAt": "2026-11-02T18:47:31.123Z",
-   "updatedAt": "2026-11-28T02:09:16.963Z",
+   "updatedAt": "2026-11-28T10:26:09.206Z",
    "builtAt": "2026-11-03T13:57:06.541Z",
    "notes": [
     {
@@ -56025,6 +56041,10 @@
     {
      "text": "Watchdog: PR #252 merged 2026-11-03 16:48 and the build never heard: the merge is recorded, CI on bffc260146 is next.",
      "at": "2026-11-28T02:09:16.963Z"
+    },
+    {
+     "text": "Deleted (console): Brett Nov 28: clear the whole build store and start over; keep only the Project manager plugin. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-28T10:26:09.206Z"
     }
    ],
    "approvals": [],
@@ -56332,9 +56352,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 60,
+   "deleted": true,
+   "deletedAt": "2026-11-28T10:26:09.206Z",
    "pending": {
     "builtAt": "2026-11-03T13:57:06.541Z",
     "createdAt": "2026-11-02T18:47:31.123Z",
@@ -65094,14 +65114,14 @@
    "title": "Build profiles manager (browse, view, create, edit, switch, duplicate, merge, move builds, archive, delete/restore, cleanup)",
    "category": "Builds",
    "detail": "Brett, Nov 3 2026 (voice): grow the build-profiles plugin into a full manager page. Assigned agent: Landin' Lenny. Keep the plugin id, data and every existing feature. Commands declared once -> REST + MCP + CLI (reads allow, changes veto, data delete confirm).",
-   "status": "running",
+   "status": "pulling-main",
    "hidden": false,
    "source": "voice",
    "pendingId": "",
    "branch": "claude/profile-manager",
-   "pr": "",
+   "pr": "942",
    "createdAt": "2026-11-03T19:59:06.499Z",
-   "updatedAt": "2026-11-12T03:29:41Z",
+   "updatedAt": "2026-11-28T10:27:50.657Z",
    "builtAt": "",
    "notes": [
     {
@@ -65119,6 +65139,35 @@
     {
      "text": "Shipped manifest sm-profile-manager rev 1 sent to Shipped features (backfill): complete 2026-11-07 (date inferred: no commit or PR recorded), 28 file(s), 0 test line(s), 1 open.",
      "at": "2026-11-12T03:29:41Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-27T18:06:44.706Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (15 min past budget): re-ran the transition (1).",
+     "at": "2026-11-27T18:32:01.871Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (36 min past budget): re-ran the transition (2).",
+     "at": "2026-11-27T18:53:01.642Z"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (41 min past its budget).",
+     "at": "2026-11-27T18:58:01.725Z"
+    },
+    {
+     "text": "Clash: 3 steps of 5 touch files that B-3386 (EMERGENCY: Remove every leftover JSON data file and everything that uses it), B-3388 (EMERGENCY: rip out the 7 MB status file) have not landed yet (framework/cli/profiles.mjs, framework/cli/persist.mjs, apps/console-web/plugins/build-profiles/plugin.json, apps/console-web/server/main.py, +1 more). It carries on by itself: every step runs now, and a conflict with main is fixed by a session. To answer by hand: Run all now (run-all), or Run 2 clean steps now, defer 3 (defer).",
+     "at": "2026-11-27T18:58:24.064Z"
+    },
+    {
+     "text": "Store: refused a write by builds-live, nothing of it was kept: s1 step s1 was replaced by another (profile-manager is split (Pending): its steps are fixed, none is removed or replaced); s2 step s2 was replaced by another (profile-manager is split (Pending): its steps are fixed, none is removed or replaced); s4 step s4 was replaced by another (profile-manager is split (Pending): its steps are fixed, none is removed or replaced)",
+     "at": "2026-11-27T18:59:34.691Z"
+    },
+    {
+     "text": "Draft PR #942 opened as the build started: https://github.com/MossesX/AmberX-AXF/pull/942.",
+     "at": "2026-11-28T10:27:50.657Z",
+     "by": "orchestrator"
     }
    ],
    "approvals": [],
@@ -65135,6 +65184,39 @@
     "from": "brief",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-27T18:11:50.804Z",
+     "why": "subscription account hulu0241"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
+   },
    "shipped": {
     "id": "sm-profile-manager",
     "rev": 1,
@@ -65147,7 +65229,7 @@
      "uid": "st-mw142icj0b8waq",
      "title": "",
      "text": "profiles.mjs: stats per profile (builds by status, pending, queue, cost spent/left, last activity), update colour/icon, duplicate, merge, move-builds, archive/unarchive, remove→restorable, restore, owner-only purge; cleanup scan + fix; tests",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -65166,14 +65248,27 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T19:59:06.507Z",
-     "updatedAt": "2026-11-26T22:41:18.502Z"
+     "updatedAt": "2026-11-26T22:41:18.502Z",
+     "statusAt": "2026-11-27T18:58:24.064Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-27T18:58:24.064Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s2",
      "uid": "st-mw142icj0cjj4z",
      "title": "",
      "text": "build-profiles server router: commands declared once (list, get, create, update, select, duplicate, merge, move-builds, archive, remove, restore, purge, cleanup) -> REST + MCP + CLI via plugin-commands@1, read/write/destructive flags",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -65191,18 +65286,31 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T19:59:06.507Z",
-     "updatedAt": "2026-11-26T22:41:18.502Z"
+     "updatedAt": "2026-11-26T22:41:18.502Z",
+     "statusAt": "2026-11-27T18:58:24.064Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-27T18:58:24.064Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s3",
-     "uid": "st-mw142icj0dcnc6",
+     "uid": "st-mwzcgvrf1ncp8c",
      "title": "",
-     "text": "Manager page UI: grid of every profile (collapsible rows, counts, cost, last activity), sort/search/filter, expand = builds, pending, queue, plan, files",
-     "model": "Opus",
+     "text": "- Manager page UI: grid of every profile (collapsible rows, counts, cost, last activity), sort/search/filter, expand = builds, pending, queue, plan, files\n- Profile view + Create/Edit/Duplicate/Merge/Move builds/Archive/Delete/Restore dialogs, banner chip colour/icon, context menu 'Build profiles...' and 'Move to profile'",
+     "model": "Fable",
      "why": "",
-     "phase": "",
+     "phase": "1",
      "group": "",
-     "estimate": "30 min",
+     "estimate": "60 min",
      "files": [
       "apps/console-web/plugins/build-profiles/web/index.tsx"
      ],
@@ -65210,43 +65318,46 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T20:14:26.844Z",
-     "note": "",
+     "done": false,
+     "doneAt": "",
+     "note": "Part 3: 2 plan steps in one session (they touch the same files).",
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"merge\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-27T18:58:24.064Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 60,
+       "priorFailures": 0
+      }
+     },
      "rev": 1,
-     "createdAt": "2026-11-03T19:59:06.507Z",
-     "updatedAt": "2026-11-26T22:41:18.502Z"
+     "createdAt": "2026-11-27T18:58:24.075Z",
+     "updatedAt": "2026-11-27T18:58:24.075Z",
+     "statusAt": "2026-11-27T18:58:24.064Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-27T18:58:24.064Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s4",
-     "uid": "st-mw142icj0eirr3",
-     "title": "",
-     "text": "Profile view + Create/Edit/Duplicate/Merge/Move builds/Archive/Delete/Restore dialogs, banner chip colour/icon, context menu 'Build profiles...' and 'Move to profile'",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "apps/console-web/plugins/build-profiles/web/index.tsx"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T20:14:28.220Z",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-03T19:59:06.507Z",
-     "updatedAt": "2026-11-26T22:41:18.502Z"
-    },
-    {
-     "id": "s5",
      "uid": "st-mw142icj0fte90",
      "title": "",
      "text": "Cleanup helper (archived builds that are really complete) with one-tap fix; typecheck, theme/controls checks, plugin-commands check",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -65261,14 +65372,27 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T19:59:06.507Z",
-     "updatedAt": "2026-11-26T22:41:18.502Z"
+     "updatedAt": "2026-11-26T22:41:18.502Z",
+     "statusAt": "2026-11-27T18:58:24.064Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-27T18:58:24.064Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
-     "id": "s6",
-     "uid": "st-mw142icj0gnre8",
+     "id": "s5",
+     "uid": "st-mwzcgvrf1p58dj",
      "title": "",
      "text": "Phone + desktop screenshots, UI Review item, report _claude/builds/reports/profile-manager.md, THREADS, PR",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -65281,20 +65405,47 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-27T18:58:24.064Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 0,
+       "areas": 0,
+       "minutes": 25,
+       "priorFailures": 0
+      }
+     },
      "rev": 1,
      "createdAt": "2026-11-03T19:59:06.507Z",
-     "updatedAt": "2026-11-26T22:41:18.502Z"
+     "updatedAt": "2026-11-27T18:58:06.769Z",
+     "statusAt": "2026-11-27T18:58:24.064Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-27T18:58:24.064Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     }
    ],
    "profiles": [
     "all"
    ],
    "order": {
-    "all": 121
+    "all": 138
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -65320,7 +65471,34 @@
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
-   "copies": []
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-28T10:27:37.652Z",
+   "statusBy": "orchestrator",
+   "attempt": 2,
+   "statusLog": [
+    {
+     "status": "failed",
+     "at": "2026-11-27T18:58:01.725Z",
+     "by": "watchdog",
+     "attempt": 1,
+     "why": "pending did not move after 2 re-run(s) of the transition (41 min past its budget)"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-27T18:58:27.255Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "5 steps for 6 slots"
+    },
+    {
+     "status": "pulling-main",
+     "at": "2026-11-28T10:27:37.652Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "no other build is active"
+    }
+   ]
   },
   {
    "id": "build-prompt-origin",
@@ -93277,11 +93455,11 @@
     "all"
    ],
    "order": {
-    "all": 560
+    "all": 551
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -95918,11 +96096,11 @@
     "all"
    ],
    "order": {
-    "all": 296
+    "all": 290
    },
    "kind": "build",
    "planRef": "shipped-features-r2",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -96425,11 +96603,11 @@
     "all"
    ],
    "order": {
-    "all": 178
+    "all": 174
    },
    "kind": "build",
    "planRef": "fable-review-shipped-features-build-hook-contrac",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -98025,11 +98203,11 @@
     "all"
    ],
    "order": {
-    "all": 186
+    "all": 182
    },
    "kind": "build",
    "planRef": "assistant-chat-mode",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -99164,11 +99342,11 @@
     "all"
    ],
    "order": {
-    "all": 538
+    "all": 529
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -100264,11 +100442,11 @@
     "all"
    ],
    "order": {
-    "all": 196
+    "all": 192
    },
    "kind": "build",
    "planRef": "console-approvals-in-place",
-   "rev": 59,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -113038,11 +113216,11 @@
     "all"
    ],
    "order": {
-    "all": 226
+    "all": 222
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -113521,11 +113699,11 @@
     "all"
    ],
    "order": {
-    "all": 229
+    "all": 225
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -117347,11 +117525,11 @@
     "all"
    ],
    "order": {
-    "all": 626
+    "all": 616
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -118578,11 +118756,11 @@
     "all"
    ],
    "order": {
-    "all": 630
+    "all": 620
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -118851,11 +119029,11 @@
     "all"
    ],
    "order": {
-    "all": 573
+    "all": 564
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -120578,11 +120756,11 @@
     "all"
    ],
    "order": {
-    "all": 561
+    "all": 552
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -120966,11 +121144,11 @@
     "all"
    ],
    "order": {
-    "all": 582
+    "all": 573
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -121785,11 +121963,11 @@
     "all"
    ],
    "order": {
-    "all": 586
+    "all": 577
    },
    "kind": "build",
    "planRef": "",
-   "rev": 89,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -121972,11 +122150,11 @@
     "all"
    ],
    "order": {
-    "all": 598
+    "all": 589
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122585,11 +122763,11 @@
     "all"
    ],
    "order": {
-    "all": 616
+    "all": 607
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123787,11 +123965,11 @@
     "all"
    ],
    "order": {
-    "all": 601
+    "all": 592
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124293,11 +124471,11 @@
     "all"
    ],
    "order": {
-    "all": 600
+    "all": 591
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124476,11 +124654,11 @@
     "all"
    ],
    "order": {
-    "all": 620
+    "all": 611
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -128080,11 +128258,11 @@
     "all"
    ],
    "order": {
-    "all": 614
+    "all": 605
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129870,11 +130048,11 @@
     "all"
    ],
    "order": {
-    "all": 599
+    "all": 590
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129913,7 +130091,7 @@
    "pr": "#417",
    "priority": "P0",
    "createdAt": "2026-11-08T22:32:08.043Z",
-   "updatedAt": "2026-11-27T20:23:59.915Z",
+   "updatedAt": "2026-11-28T10:27:22.598Z",
    "builtAt": "2026-11-09T21:00:47.340Z",
    "notes": [
     {
@@ -129959,6 +130137,10 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $12.66",
      "at": "2026-11-27T20:23:59.915Z"
+    },
+    {
+     "text": "Deleted (console): Brett Nov 28: clear the whole build store and start over; keep only the Project manager plugin. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-28T10:27:22.598Z"
     }
    ],
    "approvals": [],
@@ -130099,9 +130281,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 92,
+   "deleted": true,
+   "deletedAt": "2026-11-28T10:27:22.598Z",
    "pending": {
     "builtAt": "2026-11-09T21:00:47.340Z",
     "createdAt": "2026-11-08T22:32:08.043Z",
@@ -130253,11 +130435,11 @@
     "all"
    ],
    "order": {
-    "all": 622
+    "all": 613
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130479,11 +130661,11 @@
     "all"
    ],
    "order": {
-    "all": 625
+    "all": 615
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134063,11 +134245,11 @@
     "all"
    ],
    "order": {
-    "all": 627
+    "all": 617
    },
    "kind": "build",
    "planRef": "",
-   "rev": 124,
+   "rev": 125,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134441,11 +134623,11 @@
     "all"
    ],
    "order": {
-    "all": 628
+    "all": 618
    },
    "kind": "build",
    "planRef": "",
-   "rev": 152,
+   "rev": 153,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134947,11 +135129,11 @@
     "all"
    ],
    "order": {
-    "all": 632
+    "all": 622
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135107,11 +135289,11 @@
     "all"
    ],
    "order": {
-    "all": 637
+    "all": 627
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135267,11 +135449,11 @@
     "all"
    ],
    "order": {
-    "all": 633
+    "all": 623
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135499,11 +135681,11 @@
     "all"
    ],
    "order": {
-    "all": 634
+    "all": 624
    },
    "kind": "build",
    "planRef": "",
-   "rev": 105,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135767,11 +135949,11 @@
     "all"
    ],
    "order": {
-    "all": 635
+    "all": 625
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -136550,11 +136732,11 @@
     "all"
    ],
    "order": {
-    "all": 638
+    "all": 628
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137054,11 +137236,11 @@
     "all"
    ],
    "order": {
-    "all": 640
+    "all": 630
    },
    "kind": "build",
    "planRef": "",
-   "rev": 99,
+   "rev": 100,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137262,11 +137444,11 @@
     "all"
    ],
    "order": {
-    "all": 643
+    "all": 633
    },
    "kind": "build",
    "planRef": "",
-   "rev": 97,
+   "rev": 98,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137470,11 +137652,11 @@
     "all"
    ],
    "order": {
-    "all": 647
+    "all": 637
    },
    "kind": "build",
    "planRef": "",
-   "rev": 97,
+   "rev": 98,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137694,11 +137876,11 @@
     "all"
    ],
    "order": {
-    "all": 645
+    "all": 635
    },
    "kind": "build",
    "planRef": "",
-   "rev": 102,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137995,11 +138177,11 @@
     "all"
    ],
    "order": {
-    "all": 649
+    "all": 639
    },
    "kind": "build",
    "planRef": "",
-   "rev": 142,
+   "rev": 143,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138208,11 +138390,11 @@
     "all"
    ],
    "order": {
-    "all": 650
+    "all": 640
    },
    "kind": "build",
    "planRef": "",
-   "rev": 98,
+   "rev": 99,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138379,11 +138561,11 @@
     "all"
    ],
    "order": {
-    "all": 651
+    "all": 641
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138617,11 +138799,11 @@
     "all"
    ],
    "order": {
-    "all": 652
+    "all": 642
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138777,11 +138959,11 @@
     "all"
    ],
    "order": {
-    "all": 654
+    "all": 644
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138941,11 +139123,11 @@
     "all"
    ],
    "order": {
-    "all": 657
+    "all": 647
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -139101,11 +139283,11 @@
     "all"
    ],
    "order": {
-    "all": 659
+    "all": 649
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -139560,11 +139742,11 @@
     "all"
    ],
    "order": {
-    "all": 661
+    "all": 651
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -139798,11 +139980,11 @@
     "all"
    ],
    "order": {
-    "all": 662
+    "all": 652
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140148,11 +140330,11 @@
     "all"
    ],
    "order": {
-    "all": 664
+    "all": 654
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140308,11 +140490,11 @@
     "all"
    ],
    "order": {
-    "all": 666
+    "all": 656
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140706,11 +140888,11 @@
     "all"
    ],
    "order": {
-    "all": 668
+    "all": 658
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142126,11 +142308,11 @@
     "all"
    ],
    "order": {
-    "all": 674
+    "all": 664
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142286,11 +142468,11 @@
     "all"
    ],
    "order": {
-    "all": 679
+    "all": 669
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142450,11 +142632,11 @@
     "all"
    ],
    "order": {
-    "all": 681
+    "all": 671
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142614,11 +142796,11 @@
     "all"
    ],
    "order": {
-    "all": 683
+    "all": 673
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142974,11 +143156,11 @@
     "all"
    ],
    "order": {
-    "all": 684
+    "all": 674
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -143138,11 +143320,11 @@
     "all"
    ],
    "order": {
-    "all": 687
+    "all": 677
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -144524,11 +144706,11 @@
     "all"
    ],
    "order": {
-    "all": 689
+    "all": 679
    },
    "kind": "build",
    "planRef": "",
-   "rev": 88,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -144680,11 +144862,11 @@
     "all"
    ],
    "order": {
-    "all": 690
+    "all": 680
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -145358,11 +145540,11 @@
     "all"
    ],
    "order": {
-    "all": 692
+    "all": 682
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -149216,11 +149398,11 @@
     "all"
    ],
    "order": {
-    "all": 697
+    "all": 687
    },
    "kind": "build",
    "planRef": "",
-   "rev": 130,
+   "rev": 131,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -149792,11 +149974,11 @@
     "all"
    ],
    "order": {
-    "all": 700
+    "all": 690
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -150762,11 +150944,11 @@
     "all"
    ],
    "order": {
-    "all": 705
+    "all": 695
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -150918,11 +151100,11 @@
     "all"
    ],
    "order": {
-    "all": 708
+    "all": 698
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151074,11 +151256,11 @@
     "all"
    ],
    "order": {
-    "all": 710
+    "all": 700
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151234,11 +151416,11 @@
     "all"
    ],
    "order": {
-    "all": 711
+    "all": 701
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151394,11 +151576,11 @@
     "all"
    ],
    "order": {
-    "all": 716
+    "all": 706
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151550,11 +151732,11 @@
     "all"
    ],
    "order": {
-    "all": 717
+    "all": 707
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 88,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -152965,11 +153147,11 @@
     "all"
    ],
    "order": {
-    "all": 719
+    "all": 709
    },
    "kind": "build",
    "planRef": "",
-   "rev": 125,
+   "rev": 126,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -154238,11 +154420,11 @@
     "all"
    ],
    "order": {
-    "all": 722
+    "all": 712
    },
    "kind": "build",
    "planRef": "",
-   "rev": 130,
+   "rev": 131,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -156142,11 +156324,11 @@
     "all"
    ],
    "order": {
-    "all": 730
+    "all": 720
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -156339,11 +156521,11 @@
     "all"
    ],
    "order": {
-    "all": 734
+    "all": 724
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -156733,11 +156915,11 @@
     "all"
    ],
    "order": {
-    "all": 736
+    "all": 726
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -156893,11 +157075,11 @@
     "all"
    ],
    "order": {
-    "all": 738
+    "all": 728
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157999,11 +158181,11 @@
     "all"
    ],
    "order": {
-    "all": 743
+    "all": 733
    },
    "kind": "build",
    "planRef": "",
-   "rev": 100,
+   "rev": 101,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -158227,11 +158409,11 @@
     "all"
    ],
    "order": {
-    "all": 745
+    "all": 735
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -158459,11 +158641,11 @@
     "all"
    ],
    "order": {
-    "all": 748
+    "all": 738
    },
    "kind": "build",
    "planRef": "",
-   "rev": 97,
+   "rev": 98,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -158934,11 +159116,11 @@
     "all"
    ],
    "order": {
-    "all": 752
+    "all": 741
    },
    "kind": "build",
    "planRef": "",
-   "rev": 105,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -160092,11 +160274,11 @@
     "all"
    ],
    "order": {
-    "all": 761
+    "all": 750
    },
    "kind": "build",
    "planRef": "",
-   "rev": 102,
+   "rev": 103,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161845,11 +162027,11 @@
     "all"
    ],
    "order": {
-    "all": 769
+    "all": 758
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -162051,11 +162233,11 @@
     "all"
    ],
    "order": {
-    "all": 772
+    "all": 761
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -162535,11 +162717,11 @@
     "all"
    ],
    "order": {
-    "all": 775
+    "all": 764
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -176219,11 +176401,11 @@
     "all"
    ],
    "order": {
-    "all": 801
+    "all": 790
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -179677,11 +179859,11 @@
     "all"
    ],
    "order": {
-    "all": 823
+    "all": 812
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -182427,11 +182609,11 @@
     "all"
    ],
    "order": {
-    "all": 832
+    "all": 820
    },
    "kind": "build",
    "planRef": "",
-   "rev": 95,
+   "rev": 96,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -183711,10 +183893,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
-     "kind": "subscription",
-     "at": "2026-11-16T23:03:59.942Z",
-     "why": "subscription account hulu0241"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-28T10:13:02.770Z",
+     "why": "the one build account hulu0241 is hit its limit until 2026-11-28 14:56 (API overflow is off)"
     },
     "tried": [],
     "pickedAt": "",
@@ -183820,11 +184002,11 @@
     "all"
    ],
    "order": {
-    "all": 838
+    "all": 826
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -189362,10 +189544,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
-     "kind": "subscription",
-     "at": "2026-11-16T23:03:59.942Z",
-     "why": "subscription account hulu0241"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-28T10:13:02.770Z",
+     "why": "the one build account hulu0241 is hit its limit until 2026-11-28 14:56 (API overflow is off)"
     },
     "tried": [],
     "pickedAt": "",
@@ -189490,11 +189672,11 @@
     "all"
    ],
    "order": {
-    "all": 852
+    "all": 840
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -198371,7 +198553,7 @@
    "pr": "#601",
    "mergedAt": "2026-11-16T19:09:18Z",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-27T20:30:29.162Z",
+   "updatedAt": "2026-11-28T10:27:17.381Z",
    "builtAt": "2026-11-16T19:41:08.651Z",
    "notes": [
     {
@@ -198497,6 +198679,10 @@
     {
      "text": "Watchdog: PR #601 merged 2026-11-16 19:09 and the build never heard: the merge is recorded, CI on d46ec0f788 is next.",
      "at": "2026-11-27T20:30:29.162Z"
+    },
+    {
+     "text": "Deleted (console): Brett Nov 28: clear the whole build store and start over; keep only the Project manager plugin. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-28T10:27:17.381Z"
     }
    ],
    "approvals": [],
@@ -198644,13 +198830,13 @@
     "all"
    ],
    "order": {
-    "all": 750
+    "all": 751
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 78,
+   "deleted": true,
+   "deletedAt": "2026-11-28T10:27:17.381Z",
    "pending": {
     "builtAt": "2026-11-14T23:12:56.322Z",
     "createdAt": "2026-11-12T02:04:11.564Z",
@@ -200045,11 +200231,11 @@
     "all"
    ],
    "order": {
-    "all": 808
+    "all": 797
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206223,11 +206409,11 @@
     "all"
    ],
    "order": {
-    "all": 856
+    "all": 844
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206657,11 +206843,11 @@
     "all"
    ],
    "order": {
-    "all": 859
+    "all": 847
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -215439,11 +215625,11 @@
     "all"
    ],
    "order": {
-    "all": 947
+    "all": 932
    },
    "kind": "build",
    "planRef": "",
-   "rev": 133,
+   "rev": 134,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -216905,11 +217091,11 @@
     "all"
    ],
    "order": {
-    "all": 880
+    "all": 868
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -218087,11 +218273,11 @@
     "all"
    ],
    "order": {
-    "all": 948
+    "all": 933
    },
    "kind": "build",
    "planRef": "",
-   "rev": 135,
+   "rev": 136,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -219401,11 +219587,11 @@
     "all"
    ],
    "order": {
-    "all": 863
+    "all": 851
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -219714,11 +219900,11 @@
     "all"
    ],
    "order": {
-    "all": 951
+    "all": 936
    },
    "kind": "build",
    "planRef": "",
-   "rev": 135,
+   "rev": 136,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -232644,11 +232830,11 @@
     "all"
    ],
    "order": {
-    "all": 957
+    "all": 942
    },
    "kind": "build",
    "planRef": "",
-   "rev": 105,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -237944,11 +238130,11 @@
     "all"
    ],
    "order": {
-    "all": 919
+    "all": 906
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -238312,11 +238498,11 @@
     "all"
    ],
    "order": {
-    "all": 922
+    "all": 908
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -241967,7 +242153,7 @@
    "mergedAt": "2026-11-17T02:07:47Z",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-27T20:30:34.315Z",
+   "updatedAt": "2026-11-28T10:27:11.732Z",
    "builtAt": "2026-11-16T23:35:36.106Z",
    "notes": [
     {
@@ -242069,6 +242255,10 @@
     {
      "text": "Watchdog: PR #704 merged 2026-11-17 02:07 and the build never heard: the merge is recorded, CI on 7015af4b81 is next.",
      "at": "2026-11-27T20:30:34.315Z"
+    },
+    {
+     "text": "Deleted (console): Brett Nov 28: clear the whole build store and start over; keep only the Project manager plugin. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-28T10:27:11.732Z"
     }
    ],
    "approvals": [
@@ -242864,13 +243054,13 @@
     "all"
    ],
    "order": {
-    "all": 904
+    "all": 905
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 77,
+   "deleted": true,
+   "deletedAt": "2026-11-28T10:27:11.732Z",
    "pending": {
     "builtAt": "2026-11-16T23:35:36.106Z",
     "createdAt": "2026-11-15T04:28:05.062Z",
@@ -252616,7 +252806,7 @@
    "mergedAt": "2026-11-16T23:54:53Z",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-27T20:30:39.363Z",
+   "updatedAt": "2026-11-28T10:27:05.914Z",
    "builtAt": "2026-11-17T04:37:58.933Z",
    "notes": [
     {
@@ -252718,6 +252908,10 @@
     {
      "text": "Watchdog: PR #775 merged 2026-11-16 23:54 and the build never heard: the merge is recorded, CI on 89b25b4ea0 is next.",
      "at": "2026-11-27T20:30:39.363Z"
+    },
+    {
+     "text": "Deleted (console): Brett Nov 28: clear the whole build store and start over; keep only the Project manager plugin. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-28T10:27:05.914Z"
     }
    ],
    "approvals": [],
@@ -253281,9 +253475,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 55,
+   "deleted": true,
+   "deletedAt": "2026-11-28T10:27:05.914Z",
    "pending": {
     "builtAt": "2026-11-17T04:37:58.933Z",
     "createdAt": "2026-11-16T16:22:57.802Z",
@@ -259296,10 +259490,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
-     "kind": "subscription",
-     "at": "2026-11-27T18:11:50.805Z",
-     "why": "subscription account hulu0241"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-28T10:13:02.771Z",
+     "why": "the one build account hulu0241 is hit its limit until 2026-11-28 14:56 (API overflow is off)"
     },
     "tried": [],
     "pickedAt": "",
@@ -259427,11 +259621,11 @@
     "all"
    ],
    "order": {
-    "all": 955
+    "all": 940
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -259865,10 +260059,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
-     "kind": "subscription",
-     "at": "2026-11-27T18:11:50.805Z",
-     "why": "subscription account hulu0241"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-28T10:13:02.771Z",
+     "why": "the one build account hulu0241 is hit its limit until 2026-11-28 14:56 (API overflow is off)"
     },
     "tried": [],
     "pickedAt": "",
@@ -259996,11 +260190,11 @@
     "all"
    ],
    "order": {
-    "all": 954
+    "all": 939
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -261649,7 +261843,7 @@
    "mergedAt": "2026-11-17T18:57:50Z",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-27T20:40:14.000Z",
+   "updatedAt": "2026-11-28T10:26:48.042Z",
    "builtAt": "2026-11-16T23:28:28.907Z",
    "notes": [
     {
@@ -261771,6 +261965,10 @@
     {
      "text": "Watchdog: PR #761 merged 2026-11-17 18:57 and the build never heard: the merge is recorded, CI on 6dddf68941 is next.",
      "at": "2026-11-27T20:40:14.000Z"
+    },
+    {
+     "text": "Deleted (console): Brett Nov 28: clear the whole build store and start over; keep only the Project manager plugin. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-28T10:26:48.042Z"
     }
    ],
    "approvals": [
@@ -261936,13 +262134,13 @@
     "all"
    ],
    "order": {
-    "all": 940
+    "all": 941
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 52,
+   "deleted": true,
+   "deletedAt": "2026-11-28T10:26:48.042Z",
    "pending": {
     "builtAt": "2026-11-16T23:28:28.907Z",
     "createdAt": "2026-11-16T20:25:16.196Z",
@@ -262218,11 +262416,11 @@
     "all"
    ],
    "order": {
-    "all": 959
+    "all": 944
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -264112,11 +264310,11 @@
     "all"
    ],
    "order": {
-    "all": 953
+    "all": 938
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -269462,11 +269660,11 @@
     "all"
    ],
    "order": {
-    "all": 963
+    "all": 948
    },
    "kind": "build",
    "planRef": "",
-   "rev": 141,
+   "rev": 142,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -272761,11 +272959,11 @@
     "all"
    ],
    "order": {
-    "all": 966
+    "all": 951
    },
    "kind": "build",
    "planRef": "",
-   "rev": 117,
+   "rev": 118,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -273428,11 +273626,11 @@
     "all"
    ],
    "order": {
-    "all": 967
+    "all": 952
    },
    "kind": "build",
    "planRef": "",
-   "rev": 128,
+   "rev": 129,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -274805,11 +275003,11 @@
     "all"
    ],
    "order": {
-    "all": 968
+    "all": 953
    },
    "kind": "build",
    "planRef": "",
-   "rev": 118,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -275393,11 +275591,11 @@
     "all"
    ],
    "order": {
-    "all": 969
+    "all": 954
    },
    "kind": "build",
    "planRef": "",
-   "rev": 128,
+   "rev": 129,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -277035,11 +277233,11 @@
     "all"
    ],
    "order": {
-    "all": 971
+    "all": 956
    },
    "kind": "build",
    "planRef": "",
-   "rev": 129,
+   "rev": 130,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -280007,11 +280205,11 @@
     "all"
    ],
    "order": {
-    "all": 972
+    "all": 957
    },
    "kind": "build",
    "planRef": "",
-   "rev": 149,
+   "rev": 150,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -280602,11 +280800,11 @@
     "all"
    ],
    "order": {
-    "all": 973
+    "all": 958
    },
    "kind": "build",
    "planRef": "",
-   "rev": 127,
+   "rev": 128,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -281328,11 +281526,11 @@
     "all"
    ],
    "order": {
-    "all": 974
+    "all": 959
    },
    "kind": "build",
    "planRef": "",
-   "rev": 128,
+   "rev": 129,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -285814,11 +286012,11 @@
     "all"
    ],
    "order": {
-    "all": 975
+    "all": 960
    },
    "kind": "build",
    "planRef": "",
-   "rev": 118,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -286522,11 +286720,11 @@
     "all"
    ],
    "order": {
-    "all": 977
+    "all": 962
    },
    "kind": "build",
    "planRef": "",
-   "rev": 119,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -287154,11 +287352,11 @@
     "all"
    ],
    "order": {
-    "all": 978
+    "all": 963
    },
    "kind": "build",
    "planRef": "",
-   "rev": 117,
+   "rev": 118,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -287817,11 +288015,11 @@
     "all"
    ],
    "order": {
-    "all": 979
+    "all": 964
    },
    "kind": "build",
    "planRef": "",
-   "rev": 118,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -288394,11 +288592,11 @@
     "all"
    ],
    "order": {
-    "all": 980
+    "all": 965
    },
    "kind": "build",
    "planRef": "",
-   "rev": 119,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -288620,11 +288818,11 @@
     "all"
    ],
    "order": {
-    "all": 981
+    "all": 966
    },
    "kind": "build",
    "planRef": "",
-   "rev": 118,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -289176,11 +289374,11 @@
     "all"
    ],
    "order": {
-    "all": 982
+    "all": 967
    },
    "kind": "build",
    "planRef": "",
-   "rev": 119,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -289893,11 +290091,11 @@
     "all"
    ],
    "order": {
-    "all": 984
+    "all": 969
    },
    "kind": "build",
    "planRef": "",
-   "rev": 122,
+   "rev": 123,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -290681,11 +290879,11 @@
     "all"
    ],
    "order": {
-    "all": 985
+    "all": 970
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -292370,11 +292568,11 @@
     "all"
    ],
    "order": {
-    "all": 986
+    "all": 971
    },
    "kind": "build",
    "planRef": "",
-   "rev": 116,
+   "rev": 117,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -292639,11 +292837,11 @@
     "all"
    ],
    "order": {
-    "all": 987
+    "all": 972
    },
    "kind": "build",
    "planRef": "",
-   "rev": 118,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -293468,11 +293666,11 @@
     "all"
    ],
    "order": {
-    "all": 988
+    "all": 973
    },
    "kind": "build",
    "planRef": "",
-   "rev": 147,
+   "rev": 148,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -295301,11 +295499,11 @@
     "all"
    ],
    "order": {
-    "all": 989
+    "all": 974
    },
    "kind": "build",
    "planRef": "",
-   "rev": 117,
+   "rev": 118,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -295846,11 +296044,11 @@
     "all"
    ],
    "order": {
-    "all": 990
+    "all": 975
    },
    "kind": "build",
    "planRef": "",
-   "rev": 116,
+   "rev": 117,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -301830,11 +302028,11 @@
     "all"
    ],
    "order": {
-    "all": 992
+    "all": 977
    },
    "kind": "build",
    "planRef": "",
-   "rev": 116,
+   "rev": 117,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -302562,11 +302760,11 @@
     "all"
    ],
    "order": {
-    "all": 994
+    "all": 979
    },
    "kind": "build",
    "planRef": "",
-   "rev": 118,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -302870,11 +303068,11 @@
     "all"
    ],
    "order": {
-    "all": 993
+    "all": 978
    },
    "kind": "build",
    "planRef": "",
-   "rev": 119,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -303178,11 +303376,11 @@
     "all"
    ],
    "order": {
-    "all": 995
+    "all": 980
    },
    "kind": "build",
    "planRef": "",
-   "rev": 119,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -303485,11 +303683,11 @@
     "all"
    ],
    "order": {
-    "all": 996
+    "all": 981
    },
    "kind": "build",
    "planRef": "",
-   "rev": 118,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -303793,11 +303991,11 @@
     "all"
    ],
    "order": {
-    "all": 997
+    "all": 982
    },
    "kind": "build",
    "planRef": "",
-   "rev": 118,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -305165,11 +305363,11 @@
     "all"
    ],
    "order": {
-    "all": 998
+    "all": 983
    },
    "kind": "build",
    "planRef": "",
-   "rev": 94,
+   "rev": 95,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -305521,11 +305719,11 @@
     "all"
    ],
    "order": {
-    "all": 1000
+    "all": 985
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -306418,11 +306616,11 @@
     "all"
    ],
    "order": {
-    "all": 1001
+    "all": 986
    },
    "kind": "build",
    "planRef": "",
-   "rev": 119,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -313379,11 +313577,11 @@
     "all"
    ],
    "order": {
-    "all": 1003
+    "all": 988
    },
    "kind": "build",
    "planRef": "",
-   "rev": 124,
+   "rev": 125,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -313884,11 +314082,11 @@
     "all"
    ],
    "order": {
-    "all": 1004
+    "all": 989
    },
    "kind": "build",
    "planRef": "",
-   "rev": 117,
+   "rev": 118,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -334721,11 +334919,11 @@
     "all"
    ],
    "order": {
-    "all": 1005
+    "all": 990
    },
    "kind": "build",
    "planRef": "",
-   "rev": 116,
+   "rev": 117,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -335333,11 +335531,11 @@
     "all"
    ],
    "order": {
-    "all": 1006
+    "all": 991
    },
    "kind": "build",
    "planRef": "",
-   "rev": 123,
+   "rev": 124,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -336496,11 +336694,11 @@
     "all"
    ],
    "order": {
-    "all": 1007
+    "all": 992
    },
    "kind": "build",
    "planRef": "",
-   "rev": 112,
+   "rev": 113,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -336960,11 +337158,11 @@
     "all"
    ],
    "order": {
-    "all": 1008
+    "all": 993
    },
    "kind": "build",
    "planRef": "",
-   "rev": 113,
+   "rev": 114,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -337456,11 +337654,11 @@
     "all"
    ],
    "order": {
-    "all": 1009
+    "all": 994
    },
    "kind": "build",
    "planRef": "",
-   "rev": 108,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -338047,11 +338245,11 @@
     "all"
    ],
    "order": {
-    "all": 1011
+    "all": 996
    },
    "kind": "build",
    "planRef": "",
-   "rev": 100,
+   "rev": 101,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -338551,11 +338749,11 @@
     "all"
    ],
    "order": {
-    "all": 1014
+    "all": 999
    },
    "kind": "build",
    "planRef": "",
-   "rev": 99,
+   "rev": 100,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -339076,11 +339274,11 @@
     "all"
    ],
    "order": {
-    "all": 1015
+    "all": 1000
    },
    "kind": "build",
    "planRef": "",
-   "rev": 99,
+   "rev": 100,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -339625,11 +339823,11 @@
     "all"
    ],
    "order": {
-    "all": 1016
+    "all": 1001
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -342396,11 +342594,11 @@
     "all"
    ],
    "order": {
-    "all": 1017
+    "all": 1002
    },
    "kind": "build",
    "planRef": "",
-   "rev": 99,
+   "rev": 100,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -343249,11 +343447,11 @@
     "all"
    ],
    "order": {
-    "all": 1018
+    "all": 1003
    },
    "kind": "build",
    "planRef": "",
-   "rev": 98,
+   "rev": 99,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -344677,11 +344875,11 @@
     "all"
    ],
    "order": {
-    "all": 1019
+    "all": 1004
    },
    "kind": "build",
    "planRef": "",
-   "rev": 99,
+   "rev": 100,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -347309,11 +347507,11 @@
     "all"
    ],
    "order": {
-    "all": 1020
+    "all": 1005
    },
    "kind": "build",
    "planRef": "",
-   "rev": 95,
+   "rev": 96,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -348945,11 +349143,11 @@
     "all"
    ],
    "order": {
-    "all": 1022
+    "all": 1007
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -349190,11 +349388,11 @@
     "all"
    ],
    "order": {
-    "all": 1023
+    "all": 1008
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -349508,11 +349706,11 @@
     "all"
    ],
    "order": {
-    "all": 1025
+    "all": 1010
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -349808,11 +350006,11 @@
     "all"
    ],
    "order": {
-    "all": 1030
+    "all": 1015
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -350735,11 +350933,11 @@
     "all"
    ],
    "order": {
-    "all": 1040
+    "all": 1025
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -351142,11 +351340,11 @@
     "all"
    ],
    "order": {
-    "all": 1041
+    "all": 1026
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -351574,11 +351772,11 @@
     "all"
    ],
    "order": {
-    "all": 1042
+    "all": 1027
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -363609,11 +363807,11 @@
     "all"
    ],
    "order": {
-    "all": 85
+    "all": 84
    },
    "kind": "build",
    "planRef": "",
-   "rev": 61,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -366931,11 +367129,11 @@
     "all"
    ],
    "order": {
-    "all": 75
+    "all": 74
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -391866,7 +392064,7 @@
    "branch": "claude/emergency-remove-every-leftover-js--s3",
    "pr": "928",
    "createdAt": "2026-11-25T12:01:11.961Z",
-   "updatedAt": "2026-11-27T19:00:04.470Z",
+   "updatedAt": "2026-11-28T10:25:34.173Z",
    "builtAt": "",
    "notes": [
     {
@@ -392788,6 +392986,10 @@
     {
      "text": "Watchdog: build stuck at building (63 min past budget): re-ran the transition (1), the tick exited 1.",
      "at": "2026-11-28T01:02:08.100Z"
+    },
+    {
+     "text": "Deleted (console): Brett Nov 28: clear the whole build store and start over; keep only the Project manager plugin. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-28T10:25:34.173Z"
     }
    ],
    "approvals": [
@@ -393959,9 +394161,9 @@
    },
    "kind": "build",
    "planRef": "emergency-remove-every-leftover--7jpc",
-   "rev": 352,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 353,
+   "deleted": true,
+   "deletedAt": "2026-11-28T10:25:34.173Z",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-25T12:03:54.811Z",
@@ -394072,7 +394274,7 @@
    "branch": "claude/emergency-check-can-these-plugins---s11",
    "pr": "930",
    "createdAt": "2026-11-25T12:13:57.933Z",
-   "updatedAt": "2026-11-27T19:00:04.470Z",
+   "updatedAt": "2026-11-28T10:25:41.286Z",
    "builtAt": "",
    "notes": [
     {
@@ -395590,6 +395792,10 @@
     {
      "text": "Watchdog: build stuck at building (63 min past budget): re-ran the transition (1).",
      "at": "2026-11-28T01:02:08.100Z"
+    },
+    {
+     "text": "Deleted (console): Brett Nov 28: clear the whole build store and start over; keep only the Project manager plugin. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-28T10:25:41.286Z"
     }
    ],
    "approvals": [],
@@ -397356,9 +397562,9 @@
    },
    "kind": "build",
    "planRef": "emergency-check-can-these-plugin-hjqr",
-   "rev": 429,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 430,
+   "deleted": true,
+   "deletedAt": "2026-11-28T10:25:41.286Z",
    "pending": {
     "builtAt": "",
     "createdAt": "2026-11-25T12:13:57.933Z",
@@ -397491,7 +397697,7 @@
    "branch": "claude/emergency-rip-out-the-7-mb-status---s6",
    "pr": "932",
    "createdAt": "2026-11-25T22:53:22.832Z",
-   "updatedAt": "2026-11-27T19:00:04.470Z",
+   "updatedAt": "2026-11-28T10:25:47.053Z",
    "builtAt": "",
    "notes": [
     {
@@ -398493,6 +398699,10 @@
     {
      "text": "Watchdog: build stuck at building (63 min past budget): re-ran the transition (1).",
      "at": "2026-11-28T01:02:08.100Z"
+    },
+    {
+     "text": "Deleted (console): Brett Nov 28: clear the whole build store and start over; keep only the Project manager plugin. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-28T10:25:47.053Z"
     }
    ],
    "approvals": [],
@@ -399621,9 +399831,9 @@
    },
    "kind": "build",
    "planRef": "emergency-rip-out-the-7-mb-statu-qsmm",
-   "rev": 353,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 354,
+   "deleted": true,
+   "deletedAt": "2026-11-28T10:25:47.053Z",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-25T22:55:57.112Z",
@@ -399940,11 +400150,11 @@
     "all"
    ],
    "order": {
-    "all": 1058
+    "all": 1042
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -400014,10 +400224,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
-     "kind": "subscription",
-     "at": "2026-11-27T18:11:50.805Z",
-     "why": "subscription account hulu0241"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-28T10:13:02.771Z",
+     "why": "the one build account hulu0241 is hit its limit until 2026-11-28 14:56 (API overflow is off)"
     },
     "tried": [],
     "pickedAt": "",
@@ -400078,11 +400288,11 @@
     "all"
    ],
    "order": {
-    "all": 1046
+    "all": 1030
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -400397,11 +400607,11 @@
     "all"
    ],
    "order": {
-    "all": 6
+    "all": 5
    },
    "kind": "build",
    "planRef": "emergency-finish-ripping-out-the-refg",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -400444,14 +400654,14 @@
    "title": "EMERGENCY: remove every leftover JSON data file (builds live only in Postgres)",
    "category": "Fixes",
    "detail": "Brett: \"There's like 1,200 JSON files that were picking up old builds, and we're supposed to get rid of them.\" Builds and every other data set must live only in Postgres (axf-data). The earlier build 'EMERGENCY: Remove every leftover JSON data file' crashed on the duplicate build_notes error and never landed; pick up its branch. Also land branch claude/retire-store-json (untracks _claude/builds/store.json and orchestrator.json). Find everything that writes or reads store.json, orchestrator.json, store.json.live-outbox.jsonl, origins.json and the journal (builds-live.mjs, builds-store.mjs, the merge driver, export writer) and switch it to Postgres only, so nothing can reload old builds.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-27T22:37:23.743Z",
-   "updatedAt": "2026-11-27T22:38:38.404Z",
+   "updatedAt": "2026-11-28T10:26:28.398Z",
    "builtAt": "",
    "notes": [
     {
@@ -400461,13 +400671,17 @@
     {
      "text": "Brett's rule: all or nothing. Switching to Postgres, deleting the JSON files and landing PR 940 land together as one change. If any part fails, nothing lands; fix it and retry until all three pass. Done only when a console restart and a pull of main show zero old builds.",
      "at": "2026-11-27T22:38:38.404Z"
+    },
+    {
+     "text": "Deleted (console): Brett Nov 28: clear the whole build store and start over; keep only the Project manager plugin. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-28T10:26:28.398Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "pipeline": {
-    "queuedAt": "2026-11-27T22:37:46.907Z",
-    "queuedBy": "console",
+    "queuedAt": "",
+    "queuedBy": "",
     "account": "",
     "session": "",
     "slot": "",
@@ -400484,10 +400698,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
-     "kind": "subscription",
-     "at": "2026-11-27T22:47:27.048Z",
-     "why": "subscription account hulu0241"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-28T10:13:02.771Z",
+     "why": "the one build account hulu0241 is hit its limit until 2026-11-28 14:56 (API overflow is off)"
     },
     "tried": [],
     "pickedAt": "",
@@ -400574,9 +400788,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 7,
+   "deleted": true,
+   "deletedAt": "2026-11-28T10:26:28.398Z",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-27T22:37:23.745Z",
@@ -400597,7 +400811,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-28T01:47:16.795Z",
-   "updatedAt": "2026-11-28T01:58:46.596Z",
+   "updatedAt": "2026-11-28T10:26:18.199Z",
    "builtAt": "",
    "notes": [
     {
@@ -400606,13 +400820,20 @@
     },
     {
      "text": "Split by Fable into 16 steps (216 min). The triage gate assigns the models.",
-     "at": "2026-11-28T01:58:40.025Z",
-     "by": "orchestrator"
+     "at": "2026-11-28T01:58:40.025Z"
     },
     {
      "text": "Clash: 6 steps of 6 touch files that B-3384 (Pipeline fixes: drop the 7 MB status file, Pending to one Queued, accounts, land), B-3386 (EMERGENCY: Remove every leftover JSON data file and everything that uses it), B-3387 (EMERGENCY CHECK: Can these plugins go? (report only, no deletes)), B-3388 (EMERGENCY: rip out the 7 MB status file) have not landed yet (services/axf-data/tables.py, services/axf-data/tests, framework/spec/DATA-INVENTORY.md, framework/spec/fixtures/build-pipeline.json, +33 more). It carries on by itself: every step runs now, and a conflict with main is fixed by a session. To answer by hand: Run all now (run-all), or Defer all 6 steps (defer).",
-     "at": "2026-11-28T01:58:40.025Z",
-     "by": "orchestrator"
+     "at": "2026-11-28T01:58:40.025Z"
+    },
+    {
+     "text": "Clash answered (console): the clean steps run now; deferred: s1 waits for B-3384 (Pipeline fixes: drop the 7 MB status file, Pending to one Queued, accounts, land); s2 waits for B-3384 (Pipeline fixes: drop the 7 MB status file, Pending to one Queued, accounts, land); s3 waits for B-3384 (Pipeline fixes: drop the 7 MB status file, Pending to one Queued, accounts, land); s4 waits for B-3386 (EMERGENCY: Remove every leftover JSON data file and everything that uses it); s5 waits for B-3384 (Pipeline fixes: drop the 7 MB status file, Pending to one Queued, accounts, land); s6 waits for B-3384 (Pipeline fixes: drop the 7 MB status file, Pending to one Queued, accounts, land). Each starts by itself when that build lands.",
+     "at": "2026-11-28T10:23:54.614Z",
+     "by": "console"
+    },
+    {
+     "text": "Deleted (console): Brett Nov 28: clear the whole build store and start over; keep only the Project manager plugin. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-28T10:26:18.199Z"
     }
    ],
    "approvals": [],
@@ -400654,9 +400875,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-28T01:58:40.035Z",
-     "updatedAt": "2026-11-28T01:58:40.035Z",
+     "updatedAt": "2026-11-28T10:23:54.663Z",
      "statusAt": "2026-11-28T01:58:40.025Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -400669,7 +400890,19 @@
        "why": "split"
       }
      ],
-     "status": "pending"
+     "status": "pending",
+     "waitsFor": {
+      "buildId": "pipeline-fixes-drop-7-mb-status-file",
+      "number": "B-3384",
+      "title": "Pipeline fixes: drop the 7 MB status file, Pending to one Queued, accounts, lander"
+     },
+     "alsoWaitsFor": [
+      {
+       "buildId": "emergency-remove-every-leftover-js",
+       "number": "B-3386",
+       "title": "EMERGENCY: Remove every leftover JSON data file and everything that uses it"
+      }
+     ]
     },
     {
      "id": "s2",
@@ -400720,9 +400953,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-28T01:58:40.035Z",
-     "updatedAt": "2026-11-28T01:58:40.035Z",
+     "updatedAt": "2026-11-28T10:23:54.663Z",
      "statusAt": "2026-11-28T01:58:40.025Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -400735,7 +400968,29 @@
        "why": "split"
       }
      ],
-     "status": "pending"
+     "status": "pending",
+     "waitsFor": {
+      "buildId": "pipeline-fixes-drop-7-mb-status-file",
+      "number": "B-3384",
+      "title": "Pipeline fixes: drop the 7 MB status file, Pending to one Queued, accounts, lander"
+     },
+     "alsoWaitsFor": [
+      {
+       "buildId": "emergency-remove-every-leftover-js",
+       "number": "B-3386",
+       "title": "EMERGENCY: Remove every leftover JSON data file and everything that uses it"
+      },
+      {
+       "buildId": "emergency-check-can-these-plugins-",
+       "number": "B-3387",
+       "title": "EMERGENCY CHECK: Can these plugins go? (report only, no deletes)"
+      },
+      {
+       "buildId": "emergency-rip-out-the-7-mb-status-",
+       "number": "B-3388",
+       "title": "EMERGENCY: rip out the 7 MB status file"
+      }
+     ]
     },
     {
      "id": "s3",
@@ -400784,9 +401039,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-28T01:58:40.035Z",
-     "updatedAt": "2026-11-28T01:58:40.035Z",
+     "updatedAt": "2026-11-28T10:23:54.663Z",
      "statusAt": "2026-11-28T01:58:40.025Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -400799,7 +401054,24 @@
        "why": "split"
       }
      ],
-     "status": "pending"
+     "status": "pending",
+     "waitsFor": {
+      "buildId": "pipeline-fixes-drop-7-mb-status-file",
+      "number": "B-3384",
+      "title": "Pipeline fixes: drop the 7 MB status file, Pending to one Queued, accounts, lander"
+     },
+     "alsoWaitsFor": [
+      {
+       "buildId": "emergency-remove-every-leftover-js",
+       "number": "B-3386",
+       "title": "EMERGENCY: Remove every leftover JSON data file and everything that uses it"
+      },
+      {
+       "buildId": "emergency-rip-out-the-7-mb-status-",
+       "number": "B-3388",
+       "title": "EMERGENCY: rip out the 7 MB status file"
+      }
+     ]
     },
     {
      "id": "s4",
@@ -400836,9 +401108,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-28T01:58:40.035Z",
-     "updatedAt": "2026-11-28T01:58:40.035Z",
+     "updatedAt": "2026-11-28T10:23:54.663Z",
      "statusAt": "2026-11-28T01:58:40.025Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -400851,7 +401123,19 @@
        "why": "split"
       }
      ],
-     "status": "pending"
+     "status": "pending",
+     "waitsFor": {
+      "buildId": "emergency-remove-every-leftover-js",
+      "number": "B-3386",
+      "title": "EMERGENCY: Remove every leftover JSON data file and everything that uses it"
+     },
+     "alsoWaitsFor": [
+      {
+       "buildId": "emergency-rip-out-the-7-mb-status-",
+       "number": "B-3388",
+       "title": "EMERGENCY: rip out the 7 MB status file"
+      }
+     ]
     },
     {
      "id": "s5",
@@ -400891,9 +401175,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-28T01:58:40.035Z",
-     "updatedAt": "2026-11-28T01:58:40.035Z",
+     "updatedAt": "2026-11-28T10:23:54.663Z",
      "statusAt": "2026-11-28T01:58:40.025Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -400906,7 +401190,24 @@
        "why": "split"
       }
      ],
-     "status": "pending"
+     "status": "pending",
+     "waitsFor": {
+      "buildId": "pipeline-fixes-drop-7-mb-status-file",
+      "number": "B-3384",
+      "title": "Pipeline fixes: drop the 7 MB status file, Pending to one Queued, accounts, lander"
+     },
+     "alsoWaitsFor": [
+      {
+       "buildId": "emergency-remove-every-leftover-js",
+       "number": "B-3386",
+       "title": "EMERGENCY: Remove every leftover JSON data file and everything that uses it"
+      },
+      {
+       "buildId": "emergency-rip-out-the-7-mb-status-",
+       "number": "B-3388",
+       "title": "EMERGENCY: rip out the 7 MB status file"
+      }
+     ]
     },
     {
      "id": "s6",
@@ -400943,9 +401244,9 @@
        "priorFailures": 0
       }
      },
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-28T01:58:40.035Z",
-     "updatedAt": "2026-11-28T01:58:40.035Z",
+     "updatedAt": "2026-11-28T10:23:54.663Z",
      "statusAt": "2026-11-28T01:58:40.025Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -400958,7 +401259,24 @@
        "why": "split"
       }
      ],
-     "status": "pending"
+     "status": "pending",
+     "waitsFor": {
+      "buildId": "pipeline-fixes-drop-7-mb-status-file",
+      "number": "B-3384",
+      "title": "Pipeline fixes: drop the 7 MB status file, Pending to one Queued, accounts, lander"
+     },
+     "alsoWaitsFor": [
+      {
+       "buildId": "emergency-remove-every-leftover-js",
+       "number": "B-3386",
+       "title": "EMERGENCY: Remove every leftover JSON data file and everything that uses it"
+      },
+      {
+       "buildId": "emergency-rip-out-the-7-mb-status-",
+       "number": "B-3388",
+       "title": "EMERGENCY: rip out the 7 MB status file"
+      }
+     ]
     }
    ],
    "profiles": [
@@ -400969,9 +401287,9 @@
    },
    "kind": "build",
    "planRef": "emergency-one-true-source-remove-j2d2",
-   "rev": 4,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 7,
+   "deleted": true,
+   "deletedAt": "2026-11-28T10:26:18.199Z",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-28T01:58:46.672Z",
@@ -401006,6 +401324,1038 @@
      "why": "6 steps for 6 slots"
     }
    ]
+  },
+  {
+   "id": "project-manager-plugin-list-create",
+   "title": "Project manager plugin: list, create, switch, rename and archive projects in the console",
+   "category": "",
+   "detail": "A console plugin (own folder, plugin.json, install/uninstall, settings sub-tab, help entry) that manages projects. Builds, notes, to-dos, plans and build groups are already scoped to the active project; this adds the interface. Features: list every project (name, repo, build counts, last activity); create a new project (name, linked repo, starter boilerplate like the console: React + TypeScript + Python with user accounts and console/axHub login); switch the active project (banner widget + app menu + command palette); rename; archive/restore (never hard delete). Projects do NOT get their own Claude accounts or credentials; they share the existing ones. All UI from framework assets and skin tokens only, no hard-coded styling. Full API parity: REST, MCP, CLI and voice for every action. Tests, UI Review shots desktop + phone, report.",
+   "status": "archived",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-28T10:20:55.374Z",
+   "updatedAt": "2026-11-28T10:28:50.010Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-28T10:21:07.045Z"
+    },
+    {
+     "text": "Split by Claude into 19 steps (8 Fable, 5 can run beside earlier steps).",
+     "at": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "text": "Moved to the Archive from queued (console): Brett: 19 steps is too many; refiled lean.",
+     "at": "2026-11-28T10:28:50.010Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "They don't need their own clone accounts, dude. They just need a project manager. An interface. Make a plugin for it. I don't care. Just do it.",
+    "at": "2026-11-28T10:20:55.374Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-28T10:24:34.498Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 19,
+     "note": "Split by Claude into 19 steps (8 Fable, 5 can run beside earlier steps)."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mx09jy6a1l5xcw",
+     "title": "",
+     "text": "Design the projects record contract: project-registry@1 (id, name, repo, boilerplate, status active|archived, createdAt, lastActivityAt, renamedFrom[]) plus the active-project pointer, in framework/spec/PROJECT-REGISTRY.md and a schema entry in framework/schemas/project-registry.json. Projects reuse the existing Claude accounts and credentials, so the contract has no account or credential fields. Add a Postgres RecordTable 'projects' and a DocTable 'active-project' in services/axf-data/tables.py, plus their entries in framework/schemas/data-store-paths.json.",
+     "model": "Fable",
+     "why": "New cross-app data contract and Postgres table design that every scoped store (builds, notes, to-dos, plans) reads",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/spec/PROJECT-REGISTRY.md",
+      "framework/schemas/project-registry.json",
+      "services/axf-data/tables.py",
+      "framework/schemas/data-store-paths.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/PROJECT-REGISTRY.md",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 4,
+       "areas": 3,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mx09jy6a1m1t32",
+     "title": "",
+     "text": "Write the migration in framework/cli/data-migrate.mjs. It seeds the projects table from the existing project.manifest.json files and the projects already referenced by scoped builds, notes, to-dos, plans and build groups. Then run a verify pass that checks no scoped record points at a missing project. Add the reference validator framework/core/project-registry.mjs (validate, rename keeps renamedFrom, archive/restore and never delete) with fixtures in framework/spec/fixtures/project-registry.json.",
+     "model": "Fable",
+     "why": "Migration design plus the reference engine and fixtures for the new contract",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "framework/cli/data-migrate.mjs",
+      "framework/core/project-registry.mjs",
+      "framework/spec/fixtures/project-registry.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s1"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/core/project-registry.mjs",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Fable",
+      "facts": {
+       "files": 3,
+       "areas": 3,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mx09jy6a1n61kh",
+     "title": "",
+     "text": "Scaffold the plugin apps/console-web/plugins/project-manager/: plugin.json (description, builtWith, lifecycle.dataDir plugins/project-manager, settingsTab with parent 'plugins', uiEditor none), install.mjs, uninstall.mjs (--all leaves nothing behind), README.md and the help entry. Run plugin-lifecycle.mjs check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/plugin.json",
+      "apps/console-web/plugins/project-manager/install.mjs",
+      "apps/console-web/plugins/project-manager/uninstall.mjs",
+      "apps/console-web/plugins/project-manager/README.md",
+      "apps/console-web/plugins/project-manager/help"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s2"
+     ],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"scaffold\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 5,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mx09jy6a1o0q78",
+     "title": "",
+     "text": "Build the server data layer in apps/console-web/plugins/project-manager/server/store.py. It reads and writes the projects and active-project tables through server/data_store.py (data-store@1, no JSON writes) and offers list with build counts and last activity, get, create, rename, archive, restore and set_active. Rename updates the scoped stores by id, not by name.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/server/store.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s3"
+     ],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"rename\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mx09jy6a1paxw3",
+     "title": "",
+     "text": "Add the REST routes in apps/console-web/plugins/project-manager/server/routes.py: GET /projects (with ?archived), GET /projects/{id}, POST /projects, POST /projects/{id}/rename, /archive, /restore, GET and POST /active. Changing actions carry confirm where destructive (archive), and there is no DELETE route.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/server/routes.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s4"
+     ],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"rename\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mx09jy6a1qqw9c",
+     "title": "",
+     "text": "Implement create with a starter boilerplate. Pick from framework/boilerplates/index.json, defaulting to the console-style React + TypeScript + Python with user accounts and console/axHub login. Scaffold through the existing claude-project / axf init path, write a validated project.manifest.json and link the repo. The project shares the existing Claude accounts, so no account or credential setup happens.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"credential\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/server/create.py",
+      "apps/console-web/plugins/project-manager/server/routes.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s5"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"credential\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mx09jy6a1r17lr",
+     "title": "",
+     "text": "Add the CLI apps/console-web/plugins/project-manager/projects.mjs with the commands list, get, create, rename, archive, restore, use and current. It calls the same REST routes, and its header comment describes it for the glossary.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/projects.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s5"
+     ],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"rename\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mx09jy6a1s01v4",
+     "title": "",
+     "text": "Expose every action as an MCP tool through plugin-commands (project-manager_list, _get, _create, _rename, _archive, _restore, _use, _current) with descriptions. Add the console actions and voice phrases for AmberX ('switch project to X', 'new project', 'archive project', 'rename project') in the plugin's commands file.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/commands.json",
+      "apps/console-web/plugins/project-manager/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s6"
+     ],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"rename\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mx09jy6a1tjkjy",
+     "title": "",
+     "text": "Build the web UI view apps/console-web/plugins/project-manager/web/ProjectsView.tsx. It shows a DataGrid of projects (name, repo, build counts, last activity, status) with a toolbar (role=toolbar, aria-label) holding New, Rename, Archive/Restore and Show archived. Use framework controls and tokens only, wrap the root in SkinScope, and give targets data-axf-target.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/web/ProjectsView.tsx",
+      "apps/console-web/plugins/project-manager/web/projects.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s5"
+     ],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"rename\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mx09jy6a1u8wfo",
+     "title": "",
+     "text": "Add the dialogs in web/ProjectDialogs.tsx: Create (name, repo, boilerplate picker defaulting to the console boilerplate), Rename, and an Archive confirm. They are framework Dialog/TextField/SelectField only and call the REST routes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/web/ProjectDialogs.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s9",
+      "s6"
+     ],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"boilerplate\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mx09jy6a1vevis",
+     "title": "",
+     "text": "Add deep links and control@1 targets. view:projects, row:<project>, dialog:projects.create and dialog:projects.rename are reachable by console_show/console_open. The view state is readable through /api/console-control. Append the new targets last in the control registry, then run check-console-control.mjs.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"registry\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/web/index.ts",
+      "apps/console-web/plugins/project-manager/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s10",
+      "s8"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"registry\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mx09jy6a1wgohl",
+     "title": "",
+     "text": "Add the active-project banner widget web/ActiveProjectChip.tsx. It is a status widget showing the current project, opens a switch menu on tap, and offers Settings/Change/Move on right-click. Register it in KNOWN_BANNERS and add its control@1 target and banner settings label/icon/settingsTab.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/web/ActiveProjectChip.tsx",
+      "apps/console-web/plugins/project-manager/web/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s11"
+     ],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"label\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mx09jy6a1xh7ya",
+     "title": "",
+     "text": "Wire switching into the app menu and the Ctrl+K command palette as runtime contributions (rt.addContextItems / AxfWebLibrary.contextMenu entries 'Switch project…', one entry per project, plus 'New project…'). Do not edit any menu asset.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/web/index.ts",
+      "apps/console-web/plugins/project-manager/web/switchMenu.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s12"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mx09jy6a1yvn26",
+     "title": "",
+     "text": "Make switching refresh scoped views live: on an active-project change, emit the existing project-scope event so builds, notes, to-dos, plans and build groups reload. Add notify.json for the 'project switched/created' notifications.",
+     "model": "Fable",
+     "why": "no rule matched: Fable by default",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/web/activeProject.ts",
+      "apps/console-web/plugins/project-manager/notify.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s13"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "default",
+      "why": "no rule matched: Fable by default",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 1,
+       "minutes": 10,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mx09jy6a1z59df",
+     "title": "",
+     "text": "Add the settings sub-tab web/ProjectSettings.tsx under Settings → Plugins with the settings default boilerplate, show-archived default and chip visibility. Include the level toolbar and the Install & uninstall panel. Make every setting readable and settable via REST, MCP, CLI (projects.mjs settings get/set) and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/web/ProjectSettings.tsx",
+      "apps/console-web/plugins/project-manager/server/routes.py",
+      "apps/console-web/plugins/project-manager/projects.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s14"
+     ],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"boilerplate\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s16",
+     "uid": "st-mx09jy6a203il2",
+     "title": "",
+     "text": "Write the server tests in apps/console-web/plugins/project-manager/test.py. Cover list counts, create with a boilerplate, rename keeping scoped records, archive/restore, the absence of hard delete, and switching active. Add tests showing create never touches the Claude accounts and the REST, CLI and MCP paths return the same results.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s15"
+     ],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"boilerplate\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s17",
+     "uid": "st-mx09jy6a21zrcb",
+     "title": "",
+     "text": "Run the CI checks and fix what they flag: check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, check-json-data-writes, plugin-lifecycle --after-uninstall, glossary catalog --check, project.mjs validate --all, the console typecheck and build.",
+     "model": "Fable",
+     "why": "Work that might need Fable: \"ci\" might need Fable",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/project-manager"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s16"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "fable-words",
+      "why": "Work that might need Fable: \"ci\" might need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 1,
+       "areas": 1,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s18",
+     "uid": "st-mx09jy6a22pakq",
+     "title": "",
+     "text": "Capture desktop and phone shots of the projects list, create dialog, rename dialog, archived view and banner chip via vite preview. Prepare 3 options as assets in plugins/project-manager/assets/ (list layouts / chip styles) and submit them with review.mjs submit --choices, using the group named after the build.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/project-manager/assets",
+      "_claude/builds/shots/project-manager-plugin-list-create"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s17"
+     ],
+     "triage": {
+      "model": "Opus",
+      "rule": "simple-work",
+      "why": "Clearly simple work: \"rename\" clearly doesn't need Fable",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 2,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    },
+    {
+     "id": "s19",
+     "uid": "st-mx09jy6a236wb5",
+     "title": "",
+     "text": "Finish the build. Write the report _claude/builds/reports/project-manager-plugin-list-create.md listing what was added, how each action is reached by REST/MCP/CLI/voice/deep link, the tests, and the gaps (Kotlin twin deferred in PORTING.md). Add the THREADS.md row, commit, push the branch, open the PR stating it is waiting on UI Review, and link it with builds-live.mjs link.",
+     "model": "Fable",
+     "why": "Contracts: it touches framework/spec/PORTING.md",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/project-manager-plugin-list-create.md",
+      "_claude/THREADS.md",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "after": [
+      "s18"
+     ],
+     "triage": {
+      "model": "Fable",
+      "rule": "contracts",
+      "why": "Contracts: it touches framework/spec/PORTING.md",
+      "lane": "orchestrator",
+      "at": "2026-11-28T10:24:31.524Z",
+      "suggested": "Opus",
+      "facts": {
+       "files": 3,
+       "areas": 2,
+       "minutes": 15,
+       "priorFailures": 0
+      }
+     },
+     "rev": 1,
+     "createdAt": "2026-11-28T10:24:34.498Z",
+     "updatedAt": "2026-11-28T10:24:34.498Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1060
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 5,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-28T10:24:34.498Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "landing-gate-only-one-build-may-start",
+   "title": "Landing gate: only one build may start ahead of an unlanded build",
+   "category": "",
+   "detail": "Dispatcher rule enforced on the VPS: when a build is built (done, waiting to land), at most ONE more build may start until that build lands on main. If one built-but-unlanded build exists and one more is already building, the dispatcher starts nothing new; it lands first (lander takes the oldest built build, merges main in, fixes clashes in a session, runs CI, lands). Applies to every account and slot. Show the gate on the orchestrator (\"Waiting: B-xxxx must land first\") and send an AmberX phone notice when the gate holds builds. Full API parity (REST, MCP, CLI, voice) for reading the gate state. Tests: with one built unlanded build and one building, the dispatcher starts nothing; after landing, the next starts.",
+   "status": "archived",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-28T10:21:47.605Z",
+   "updatedAt": "2026-11-28T10:23:10.066Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-28T10:22:05.948Z"
+    },
+    {
+     "text": "Moved to the Archive from queued (console): Brett cancelled: existing clash rule covers it.",
+     "at": "2026-11-28T10:23:10.066Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "When we have something built, it can only begin building one more before the one before it lands.",
+    "at": "2026-11-28T10:21:47.605Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1061
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 4,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "project-manager-plugin-lean-create",
+   "title": "Project manager plugin (lean): create, switch, rename, archive projects",
+   "category": "",
+   "detail": "KEEP IT SMALL: at most 5 steps total, Opus unless something truly needs Fable. A console plugin, project-manager, with: (1) projects table in Postgres via the existing data store (no JSON), seeded from existing projects; (2) REST + MCP + CLI for list, create, switch active, rename, archive/restore (no hard delete); create makes an empty build store, plans and settings for the new project and shares the existing Claude accounts; (3) one screen: grid of projects with New, Rename, Archive, Switch, plus a settings tab under Settings > Plugins; framework assets and tokens only; (4) a small banner chip showing the active project, tap to switch; (5) tests, CI checks, report, PR. No UI Review options, no glossary/porting extras, no voice phrase packs beyond what plugin-commands gives for free.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-28T10:28:56.853Z",
+   "updatedAt": "2026-11-28T10:28:56.853Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "19's way too many, dog. That's way too many.",
+    "at": "2026-11-28T10:28:56.853Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1045
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
   }
  ]
 }
