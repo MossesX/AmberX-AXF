@@ -328,6 +328,60 @@ class DocTable:
         self._head(cur, ns, path, cur_head, lifted)
         return {'applied': applied, 'added': added, 'head': cur_head}
 
+    # ── one row (a build by its id): read it, change it, nothing else read or written ──
+    def row(self, cur, lkey: str, rid: str, lock: bool = False) -> dict | None:
+        """One item of a keyed list with its child lists, as it sits in the document. `lock`: `FOR UPDATE` on that row."""
+        spec = self.lists[lkey]
+        if not spec.key:
+            raise ValueError(f'{lkey} has no key: its rows cannot be read one by one')
+        cur.execute(f'SELECT * FROM "{spec.table}" WHERE section=%s AND rid=%s{" FOR UPDATE" if lock else ""}', (spec.section, rid))
+        row = cur.fetchone()
+        if not row:
+            return None
+        item = unlift(row, spec.cols, row['extra'])
+        lifted = row.get('children_lifted') or {}
+        for ckey, ctable, ccols in spec.kids:
+            if lifted.get(ckey):
+                cur.execute(f'SELECT * FROM "{ctable}" WHERE section=%s AND parent_rid=%s ORDER BY pos', (spec.section, rid))
+                item[ckey] = [unlift(k, ccols, k['extra']) for k in cur.fetchall()]
+        return item
+
+    def update_row(self, cur, lkey: str, rid: str, fields: dict, drop: tuple | list = (), if_rev: Any = _MISSING) -> dict:
+        """Change one item of a keyed list in place: `fields` are set over the item (top-level keys, whole values), the
+        `drop` keys are removed. Only that row is locked and written; its child rows (steps, notes) are rewritten only
+        when `fields` or `drop` name them. `if_rev`: the item's `rev` the writer read (RowConflict when it moved).
+        Returns the item as stored. KeyError: no such row. The head and the record's rev / etag are the caller's to
+        move in the same transaction (PgStore does, as for a patch)."""
+        spec = self.lists[lkey]
+        if not isinstance(fields, dict) or not all(isinstance(k, str) for k in fields):
+            raise ValueError('fields: an object')
+        if spec.key in fields and fields[spec.key] != rid or spec.key in drop:
+            raise ValueError(f'{spec.key} names the row: it cannot change')
+        if not spec.key:
+            raise ValueError(f'{lkey} has no key: its rows cannot be changed one by one')
+        cur.execute(f'SELECT pos, children_lifted FROM "{spec.table}" WHERE section=%s AND rid=%s FOR UPDATE', (spec.section, rid))
+        at = cur.fetchone()
+        if not at:
+            raise KeyError(rid)
+        item = self.row(cur, lkey, rid)
+        if if_rev is not _MISSING and item.get('rev') != if_rev:
+            raise RowConflict(rid, item.get('rev'), if_rev)
+        new = {k: v for k, v in item.items() if k not in drop}
+        new.update(fields)
+        h = sha(canonical(new).encode('utf-8'))[:32]
+        kid_keys = {ckey for ckey, _t, _c in spec.kids}
+        if kid_keys & (set(fields) | set(drop)):
+            self._upsert_row(cur, spec, at['pos'], new, h, rid)
+            return new
+        vals, extra = lift(new, spec.cols)
+        for ckey, on in (at['children_lifted'] or {}).items():
+            if on:
+                extra.pop(ckey, None)
+        sets = ''.join(f'"{c.name}"=%s, ' for c in spec.cols)
+        cur.execute(f'UPDATE "{spec.table}" SET {sets}extra=%s, doc_hash=%s WHERE section=%s AND rid=%s',
+                    (*[vals[c.name] for c in spec.cols], Jsonb(extra, dumps=canonical), h, spec.section, rid))
+        return new
+
     def ddl(self) -> str:
         out = []
         for spec in self.lists.values():
@@ -343,6 +397,14 @@ class DocTable:
                 out.append(f'CREATE TABLE IF NOT EXISTS "{ctable}" (section TEXT NOT NULL, {pcol}, pos INTEGER NOT NULL{_ddl_cols(ccols)}, '
                            f'extra JSONB NOT NULL DEFAULT \'{{}}\', PRIMARY KEY (section, {spec.parent_col}, pos));')
         return '\n'.join(out)
+
+
+class RowConflict(ValueError):
+    """update_row: the row's `rev` is not the one the writer read."""
+
+    def __init__(self, key: str, have: Any, expected: Any):
+        super().__init__(f'{key} changed since it was read (rev {have!r}, expected {expected!r})')
+        self.key, self.have, self.expected = key, have, expected
 
 
 # ── data-patch@1: the shape both engines accept, checked once, applied to rows (pg.py) or to the document (store.py) ──
@@ -903,6 +965,74 @@ def table_for(ns: str, path: str, kind: str, content_type: str, body: bytes):
 
 def by_name(name: str):
     return _BY_NAME.get(name)
+
+
+# ── pipeline status: one build's row, and the small summary every status caller reads (never the whole store) ──────────
+
+# A build holds a session while it has one of these statuses (builds@1: running, fixing; pipeline-2@1: sending, building),
+# or while one of its steps has a RUNNING_STEP status (Pipeline 2.0 runs steps in their own slots).
+RUNNING_BUILD = ('running', 'fixing', 'sending', 'building')
+RUNNING_STEP = ('sending', 'building')
+PIPELINE_SUMMARY = 'pipeline-summary@1'
+
+_LIVE = "b.section='builds' AND b.deleted IS NOT TRUE"
+_TEXT = "NULLIF(%s, '')"
+_SUMMARY_SQL = f"""
+WITH live AS (
+  SELECT b.rid, b.pos, b.id, b.title, b.status, b.rev, b.priority, b.updated_at, b.extra->'pipeline' AS p
+  FROM builds b WHERE {_LIVE}
+), run_steps AS (
+  SELECT s.parent_rid, jsonb_agg(jsonb_build_object(
+           'id', s.id, 'status', s.extra->>'status', 'model', s.model,
+           'slot', {_TEXT % "s.extra->>'slot'"}, 'account', {_TEXT % "s.extra->>'account'"},
+           'session', COALESCE({_TEXT % "s.extra->>'tmux'"}, {_TEXT % "s.extra->>'session'"})) ORDER BY s.pos) AS steps
+  FROM build_steps s
+  WHERE s.section='builds' AND s.done IS NOT TRUE AND s.skip IS NOT TRUE AND s.extra->>'status' = ANY(%(run_step)s)
+  GROUP BY s.parent_rid
+)
+SELECT
+  (SELECT COALESCE(jsonb_object_agg(c.status, c.n), '{{}}'::jsonb)
+     FROM (SELECT COALESCE(status, '') AS status, COUNT(*) AS n FROM live GROUP BY 1) c) AS counts,
+  (SELECT COUNT(*) FROM live) AS total,
+  (SELECT jsonb_build_object('id', l.id, 'title', l.title, 'status', l.status, 'rev', l.rev, 'priority', l.priority,
+                             'queuedAt', {_TEXT % "l.p->>'queuedAt'"}, 'model', {_TEXT % "l.p->>'model'"})
+     FROM live l WHERE l.status='queued' ORDER BY {_TEXT % "l.p->>'queuedAt'"} NULLS LAST, l.pos LIMIT 1) AS queued,
+  (SELECT COALESCE(jsonb_agg(jsonb_build_object(
+            'id', l.id, 'title', l.title, 'status', l.status, 'rev', l.rev,
+            'slot', {_TEXT % "l.p->>'slot'"}, 'account', {_TEXT % "l.p->>'account'"}, 'session', {_TEXT % "l.p->>'session'"},
+            'model', {_TEXT % "l.p->>'model'"}, 'launchedAt', {_TEXT % "l.p->>'launchedAt'"},
+            'steps', COALESCE(r.steps, '[]'::jsonb)) ORDER BY l.pos), '[]'::jsonb)
+     FROM live l LEFT JOIN run_steps r ON r.parent_rid = l.rid
+     WHERE l.status = ANY(%(run_build)s) OR r.parent_rid IS NOT NULL) AS running,
+  (SELECT MAX(updated_at) FROM live) AS updated_at
+"""
+
+
+def build_row(cur, build_id: str, lock: bool = False) -> dict | None:
+    """One build (with its steps and notes) by id, read from its own rows. None when there is no such build."""
+    return BUILDS.row(cur, 'builds', build_id, lock)
+
+
+def build_update(cur, build_id: str, fields: dict, drop: tuple | list = (), if_rev: Any = _MISSING) -> dict:
+    """Set `fields` on one build (a status change: `{'status': 'queued', 'rev': n + 1, 'updatedAt': …}`): that build's
+    row is the only one locked and written. See DocTable.update_row."""
+    return BUILDS.update_row(cur, 'builds', build_id, fields, drop, if_rev)
+
+
+def pipeline_summary(cur) -> dict:
+    """pipeline-summary@1: what a status caller needs, computed in SQL in one statement (no build is read whole):
+
+        counts     status → how many builds (deleted ones are not counted); total = their sum
+        queued     the one Queued build { id, title, status, rev, priority, queuedAt, model } or None
+                   (should the store hold several, the one queued first; counts.queued says how many)
+        running    the builds holding a session: { id, title, status, rev, slot, account, session, model, launchedAt,
+                   steps: [{ id, status, model, slot, account, session }] } (steps: the Pipeline 2.0 steps running now)
+        updatedAt  the newest build change
+    """
+    cur.execute(_SUMMARY_SQL, {'run_build': list(RUNNING_BUILD), 'run_step': list(RUNNING_STEP)})
+    r = cur.fetchone()
+    return {'$axf': PIPELINE_SUMMARY, 'counts': r['counts'] or {}, 'total': r['total'], 'queued': r['queued'], 'running': r['running'] or [],
+            'updatedAt': r['updated_at'] or ''}
 
 
 def describe(name: str, mirrors: dict[str, str]) -> str:
