@@ -310,6 +310,6 @@ for (const kind of BP.STOP_KINDS) ok(qfx.cases.some((c) => c.op === 'sequence' &
   eq(ran, ['d', 'a', 'b', 'c'], 'one queued: the queued build first, then Pending oldest first');
 }
 
-if (WRITE) { writeFileSync(QFIXTURE, `${JSON.stringify(qfx, null, 2)}\n`); writeFileSync(FIXTURE, `${JSON.stringify(fixture, null, 2)}\n`); console.log(`build-pipeline: fixture written (${fixture.transition.length} transition + ${fixture.sessions.length} session + ${qfx.cases.length} queue cases)`); }
+if (WRITE) { writeFileSync(QFIXTURE, `${JSON.stringify(qfx, null, 1)}\n`); writeFileSync(FIXTURE, `${JSON.stringify(fixture, null, 2)}\n`); console.log(`build-pipeline: fixture written (${fixture.transition.length} transition + ${fixture.sessions.length} session + ${qfx.cases.length} queue cases)`); }
 if (failed) { console.error(`build-pipeline: ${failed}/${n} checks failed`); process.exit(1); }
 console.log(`build-pipeline: ${n}/${n} checks passed`);
