@@ -188,8 +188,8 @@ test('status: the merge queue rows are the store rows (read-only)', async () => 
 
 test('an emergency build cuts to the front of the merge line; the build already landing then merges its green PR as it is', async () => {
   const r = repo({ 'claude/n-s1': { 'n.txt': 'n\n' }, 'claude/e-s1': { 'e.txt': 'e\n' } });
-  let hold = true; const asked = [];
-  const gh = github(r, (head) => { asked.push(head); return hold ? 'running' : 'success'; });
+  let hold = true; let nHead = ''; const asked = [];
+  const gh = github(r, (head) => { asked.push(head); return hold || head === nHead ? 'running' : 'success'; });
   const now = clock();
   const store = memoryStore([one('n', 'claude/n-s1'), one('e', 'claude/e-s1', { status: 'building', steps: [{ id: 's1', status: 'building', branch: 'claude/e-s1', title: 's1' }], emergency: { at: '2026-11-20T10:00:00.000Z', by: 'Brett' } })], { now });
   const opts = base(r, gh, store, now);
@@ -199,7 +199,8 @@ test('an emergency build cuts to the front of the merge line; the build already 
   const firstHead = sh(r.work, 'rev-parse', 'origin/lander/n');
   // the emergency build finishes: it is picked ahead of the build that is already landing
   Object.assign(byId(store, 'e'), { status: 'build-complete', steps: [{ id: 's1', status: 'completed', branch: 'claude/e-s1', title: 's1' }] });
-  hold = false; now.add(1);
+  // CI goes green on the emergency build's PR; the ordinary build's CI is still running
+  hold = false; nHead = firstHead; now.add(1);
   out = await tick(opts);
   assert.equal(out.build, 'e', 'the emergency build goes first'); assert.deepEqual(out.others, ['n'], 'the ordinary build waits where it is');
   assert.equal(byId(store, 'e').status, 'landed'); assert.ok(onMain(r, 'e.txt'), 'the emergency work is on main');
@@ -208,7 +209,7 @@ test('an emergency build cuts to the front of the merge line; the build already 
   const merges = () => gh.calls.filter((c) => c.startsWith('PUT')).length;
   assert.equal(merges(), 1);
   // the ordinary build's CI is green on a head from before the emergency landing: it merges as it is (Nov 24 2026)
-  now.add(1); asked.length = 0;
+  nHead = ''; now.add(1); asked.length = 0;
   out = await tick(opts);
   const n = byId(store, 'n');
   assert.equal(out.build, 'n'); assert.equal(n.status, 'landed'); assert.equal(merges(), 2);

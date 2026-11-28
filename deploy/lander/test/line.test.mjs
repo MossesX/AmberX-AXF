@@ -196,7 +196,8 @@ test('the merge line, pure: places, the build each one waits for, and the words 
 
 test('the lander writes each waiting build\'s place and the build it waits for into the store, and moves the line up as builds land', async () => {
   const r = repo({ 'claude/a': { 'a.txt': 'a\n' }, 'claude/b': { 'b.txt': 'b\n' }, 'claude/c': { 'c.txt': 'c\n' } });
-  let ci = 'running'; const gh = github(r, () => ci);
+  // CI goes green on a's PR only: b and c show the line moving up behind it
+  let ci = 'running'; let aHead = ''; const gh = github(r, (head) => (head === aHead ? ci : 'running'));
   const now = clock();
   const store = memoryStore([one('a', 'claude/a', { updatedAt: '2026-11-19T11:00:00.000Z', number: 41 }), one('b', 'claude/b', { updatedAt: '2026-11-19T11:01:00.000Z', number: 42 }), one('c', 'claude/c', { updatedAt: '2026-11-19T11:02:00.000Z', number: 43 })], { now });
   const notify = recorder();
@@ -212,14 +213,16 @@ test('the lander writes each waiting build\'s place and the build it waits for i
   const before = notify.sent.length; const log = byId(store, 'b').updatedAt;
   now.add(1); await tick(opts);
   assert.equal(notify.sent.length, before); assert.equal(byId(store, 'b').updatedAt, log, 'an unchanged place is not written again');
-  // a lands: it leaves the line, b is now first, c waits for b
-  ci = 'success'; now.add(1); await tick(opts);
+  // a lands: it leaves the line, b is now first (and is worked in the same tick: its CI runs), c waits for b
+  aHead = sh(r.work, 'rev-parse', 'origin/lander/a'); ci = 'success'; now.add(1);
+  const out = await tick(opts);
+  assert.deepEqual(out.landed, ['a']);
   assert.equal(byId(store, 'a').status, 'landed'); assert.equal(byId(store, 'a').mergeLine, undefined, 'a landed build has no place in the line');
-  assert.equal(byId(store, 'a').landing.mergeLine, undefined); assert.equal(byId(store, 'a').landing.state, 'landed'); assert.equal(byId(store, 'b').landing.state, 'waiting-to-merge');
+  assert.equal(byId(store, 'a').landing.mergeLine, undefined); assert.equal(byId(store, 'a').landing.state, 'landed'); assert.equal(byId(store, 'b').landing.state, 'running-ci');
   assert.deepEqual(byId(store, 'b').mergeLine, { position: 1, waitingFor: null });
   assert.deepEqual(byId(store, 'c').mergeLine, { position: 2, waitingFor: { buildId: 'b', id: 'b', number: '42', title: 'Build b' } });
   const st = await status(r.s, { store });
-  assert.deepEqual(st.line.map((x) => [x.build, x.position, x.state]), [['b', 1, 'waiting-to-merge'], ['c', 2, 'waiting-to-merge']]);
+  assert.deepEqual(st.line.map((x) => [x.build, x.position, x.state]), [['b', 1, 'running-ci'], ['c', 2, 'waiting-to-merge']]);
 });
 
 test('a store that does not keep `mergeLine` costs one write a tick and never a failure', async () => {
@@ -273,14 +276,14 @@ test('merge together: a build that clashes is named, left out and lands by itsel
   assert.equal(byId(store, 'a').status, 'landed'); assert.equal(byId(store, 'b').status, 'landed');
   assert.match(gh.prs.get(1).title, /Merge together: 2 builds \(a, b\)/);
   const c = byId(store, 'c');
-  assert.equal(c.status, 'build-complete', 'the clashing build was not touched');
-  assert.ok(c.notes.some((n) => /left out of merge together: claude\/a and claude\/c conflict in code \(shared\.txt\)/.test(n.text)), 'and the record says which branch it clashes with');
+  assert.ok(c.notes.some((n) => /left out of merge together: claude\/a and claude\/c conflict in code \(shared\.txt\)/.test(n.text)), 'the record says which branch it clashes with');
   assert.ok(out.actions.some((a) => /c is left out/.test(a)));
+  assert.deepEqual([...out.landed].sort(), ['a', 'b'], 'the two that go together landed');
+  // one at a time from here, in the same tick: its own PR, and the clash with what just landed goes the usual way (a fix session)
   assert.deepEqual(c.mergeLine, { position: 1, waitingFor: null }, 'it is now first in the line, by itself');
-  // one at a time from here: its own PR, and the clash with what just landed goes the usual way (a fix session)
-  now.add(1); await tick(opts);
   assert.equal(gh.prs.size, 2); assert.equal(gh.prs.get(2).head.ref, 'lander/c');
-  assert.equal(byId(store, 'c').failure.kind, 'clash-main');
+  assert.equal(c.failure.kind, 'clash-main');
+  assert.ok(out.actions.some((a) => /^c: failed in pr-pulling-main/.test(a)), 'what the tick did to another build carries that build\'s id');
 });
 
 test('merge together waits for a build that is already landing, and with fewer than two waiting it is dropped', async () => {
@@ -327,12 +330,14 @@ test('merge together that stops for Brett is undone: the PR is closed and the ot
   assert.ok(existsSync(r.work));
 });
 
-test('merge together for the builds the press named only: the rest of the line stays one at a time', async () => {
+test('merge together for the builds the press named only: the rest of the line lands by itself, after them', async () => {
   const r = repo({ 'claude/a': { 'a.txt': 'a\n' }, 'claude/b': { 'b.txt': 'b\n' }, 'claude/c': { 'c.txt': 'c\n' } });
   const gh = github(r); const now = clock();
   const store = memoryStore([one('a', 'claude/a', { updatedAt: '2026-11-19T11:00:00.000Z' }), one('b', 'claude/b', { updatedAt: '2026-11-19T11:01:00.000Z' }), one('c', 'claude/c', { updatedAt: '2026-11-19T11:02:00.000Z' })], { now });
   G.writeJson(files(r.s).control, { mergeTogether: { at: '2026-11-24T02:00:00.000Z', by: 'Brett', builds: ['a', 'c'] } });
-  await tick(base(r, gh, store, now));
+  const out = await tick(base(r, gh, store, now));
   assert.match(gh.prs.get(1).title, /Merge together: 2 builds \(a, c\)/);
-  assert.deepEqual(['a', 'b', 'c'].map((id) => byId(store, id).status), ['landed', 'build-complete', 'landed']);
+  assert.equal(gh.prs.get(2).head.ref, 'lander/b', 'the build that was not named has its own PR');
+  assert.deepEqual(['a', 'b', 'c'].map((id) => byId(store, id).status), ['landed', 'landed', 'landed']);
+  assert.deepEqual([out.landed.slice(0, 2).sort(), out.landed[2]], [['a', 'c'], 'b'], 'the two together first, then the third'); assert.equal(merges(gh), 2, 'one merge for the two together, one for the third');
 });
