@@ -90,6 +90,18 @@ with tempfile.TemporaryDirectory() as d:
     check(code == 400 and "action is one of" in str(why), "an unknown action is refused (400)")
     code, res = call(ps.build, Req({"id": plan}))
     check(code == 200 and res["build"]["id"] == "launch", "the plan is sent as one pending build")
+
+    # shipped-manifest@1 through the routes: an invalid one is refused (400, the fields named) and flags the plan
+    good = {"$axf": "shipped-manifest@1", "id": "sm-launch", "rev": 1, "build": {"id": "launch", "title": "Launch"}, "said": {"text": "Ship the launch.", "verbatim": True}, "pr": {"number": 7}, "steps": []}
+    code, why = call(ps.shipped, Req({"manifest": {**good, "said": {"text": ""}, "landedCommit": "nope"}}))
+    check(code == 400 and "said.text" in str(why) and "landedCommit" in str(why), f"an invalid shipped manifest is refused with its field errors (400): {why}")
+    code, res = call(ps.shipped_get, "launch")
+    check(code == 200 and res["problem"] and res["shipped"] is None and res["item"] == plan, "the plan is flagged and carries no manifest; found by its build id")
+    code, res = call(ps.shipped, Req({"manifest": good}))
+    check(code == 200 and res["ok"] and res["item"]["shipped"]["build"]["id"] == "launch" and res["item"]["problem"] is None, "a valid one is stored on the plan it was sent from and clears the flag")
+    code, why = call(ps.shipped, Req({"manifest": {**good, "build": {"id": "nobody-sent-this"}}}))
+    check(code == 404, "a build no plan sent is a 404: nothing is synced into the tree")
+    check(isinstance(ps.check_shipped().get("problems"), list) and ps.shipped_log()["entries"][-1]["ok"], "check-shipped and the receipt log answer")
     if plugin_services.get(CAP) is None:
         code, why = call(ps.orchestrate, Req({"id": plan, "action": "queue"}))
         check(code == 503 and "switched off or not installed" in str(why), "without the orchestrator's capability an action answers 503")

@@ -7,6 +7,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Checkbox, Chip, Container, Icon, Note, SelectField, Switch, useAxfState, useRuntime } from '@console/axf/react';
 import { LoadingSkeleton } from '@console/emptyState';
+import { ShippedPanel } from './shipped';
 import * as tc from './tree-core.mjs';
 import type { Item, Live, State } from './tree-core.mjs';
 import * as live from './live-core.mjs';
@@ -90,6 +91,7 @@ export function SentEditor({ item, state }: { item: Item; state: State }) {
         {item.minutes > 0 && <span className={`${B}__n`}>{item.minutes} min</span>}
         {own?.steps && own.steps.total > 0 && <span className={`${B}__n`}>{own.steps.done}/{own.steps.total} steps done</span>}
       </p>
+      <ShippedPanel item={item} />
       <div className={`${B}__editrow`} role="group" aria-label="Orchestrator actions">
         {live.ACTIONS.map((a) => <Button key={a} size="sm" icon={ACTION_ICON[a]} tone={a === 'cancel' ? 'danger' : undefined} onClick={() => runOrchAction(rt, item.id, a)}>{live.ACTION_LABEL[a]}</Button>)}
         <Button size="sm" tone="quiet" icon="external" onClick={() => openInOrchestrator(rt, sent?.build ?? '')}>Open in orchestrator</Button>

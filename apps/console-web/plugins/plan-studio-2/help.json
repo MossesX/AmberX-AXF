@@ -534,6 +534,18 @@
         "title": "Plan Studio 2.0",
         "text": "Opens Plan Studio 2.0, the planning tree.",
         "kind": "button"
+      },
+      {
+        "target": "shipped",
+        "title": "Shipped",
+        "kind": "field",
+        "text": "The shipped manifest this plan received when the build it was sent as shipped: Brett's words first, then what landed (commit, PR, branch, when), the totals and the details (steps estimate vs actual, files, tests, still open, the brief). It is checked against shipped-manifest@1 before it is kept. Only plans sent from Plan Studio receive one."
+      },
+      {
+        "target": "shipped-refused",
+        "title": "Shipped manifest refused",
+        "kind": "field",
+        "text": "A shipped manifest for this plan's build was not valid, so it was refused: every field that was wrong is listed. Nothing of it was kept; a valid manifest the plan had before stays. The next valid manifest for the build clears this. Check all of them with check-shipped (tree.mjs check-shipped, or GET /api/plugins/plan-studio-2/check-shipped)."
       }
     ],
     "intros": [
