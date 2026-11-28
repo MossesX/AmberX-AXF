@@ -35,6 +35,42 @@
         "title": "Use it right away",
         "text": "Switches to the new profile as soon as it's made.",
         "kind": "toggle"
+      },
+      {
+        "target": "action:build-profiles.cleanup",
+        "title": "Clean up builds",
+        "text": "Lists archived builds that really finished, and builds in a profile that no longer exists. One tap fixes each.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "clean-up-builds",
+        "title": "Clean up builds",
+        "text": "Opens the cleanup list: archived builds that really finished, with a one-tap fix.",
+        "kind": "button"
+      },
+      {
+        "target": "review-cleanup",
+        "title": "Review cleanup",
+        "text": "Opens the list of builds the cleanup scan flagged, so you can fix them.",
+        "kind": "button"
+      },
+      {
+        "target": "fix",
+        "title": "Fix",
+        "text": "Gives this build the status it earned (complete or landed), or moves it to the base profile. Nothing is deleted.",
+        "kind": "button"
+      },
+      {
+        "target": "fix-all",
+        "title": "Fix all",
+        "text": "Fixes every build on the list that can be fixed. Builds marked \"needs a look\" are left alone.",
+        "kind": "button"
+      },
+      {
+        "target": "scan-again",
+        "title": "Scan again",
+        "text": "Checks the builds again. Changes nothing.",
+        "kind": "button"
       }
     ],
     "intros": []

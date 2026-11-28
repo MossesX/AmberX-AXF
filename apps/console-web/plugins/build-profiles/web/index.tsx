@@ -10,6 +10,7 @@
  *   - dialog `build-profiles` (action `build-profiles.open`): every profile with its counts, Use this one, New
  *     profile (empty or a copy), rename / describe, take off the list (its data stays)
  *   - app menu (Builds → Build profile…, Plugins), right-click menu, Settings → Plugins → Build profiles
+ *   - cleanup helper (cleanup.tsx, dialog `build-profiles-cleanup`): archived builds that really finished, one-tap fix
  *
  * Switching saves the pick for every device and session, then reloads the console so every view reads the new data.
  * Uninstalling removes the picker only; the profiles and their data stay.
@@ -22,6 +23,7 @@ import { getToken, post } from '@console/api';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './build-profiles.css';
 import { appMenu } from './menu';
+import { CLEANUP_DIALOG, CleanupNotice, cleanupDialogs, registerCleanup } from './cleanup';
 import { LoadingSkeleton } from '@console/emptyState';
 
 const ID = 'ai.amberx.axf.console.build-profiles';
@@ -186,6 +188,7 @@ function Picker() {
       {s.error && <Note tone="warning">{s.error}</Note>}
       <ul className="axp-build-profiles__list">{s.data.profiles.map((p) => <ProfileRow key={p.id} p={p} state={s.data!} />)}</ul>
       <NewProfile state={s.data} />
+      <CleanupNotice />
     </div>
   );
 }
@@ -200,7 +203,10 @@ function SettingsPanel() {
   return (
     <div className="fx-stack">
       <p style={{ margin: 0 }}>In use: <strong>{p?.name ?? '…'}</strong>{s.data && <span className="fx-muted"> · data in {s.data.dataRoot}</span>}</p>
-      <div className="fx-row fx-row--wrap"><Button tone="primary" icon="layers" onClick={() => rt.openDialog(DIALOG)}>Switch or manage profiles</Button></div>
+      <div className="fx-row fx-row--wrap">
+        <Button tone="primary" icon="layers" onClick={() => rt.openDialog(DIALOG)}>Switch or manage profiles</Button>
+        <Button tone="neutral" icon="sparkles" onClick={() => rt.openDialog(CLEANUP_DIALOG)}>Clean up builds</Button>
+      </div>
       <Switch label="Show the profile on the banner" checked={show} onChange={(on) => flip(SHOW_KEY, on, setShow)} />
       <Switch label="Reload the console after switching" hint="Every page then reads the new profile's data." checked={reload} onChange={(on) => flip(RELOAD_KEY, on, setReload)} />
       <p className="fx-small fx-muted" style={{ margin: 0 }}>
@@ -218,11 +224,13 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     runtime = rt;
     rt.actions.register('build-profiles.open', () => rt.openDialog(DIALOG), { label: 'Build profiles' });
+    registerCleanup(rt);
     paint(rt);
     void loadProfiles();
   },
   dialogs: {
     [DIALOG]: { title: 'Build profiles', icon: 'layers', render: () => <Picker /> },
+    ...cleanupDialogs,
   },
   contextMenu: [
     { id: 'build-profiles.default', target: 'default', order: 92, items: [{ id: 'build-profiles', label: 'Build profile…', icon: 'layers', action: 'build-profiles.open' }] },

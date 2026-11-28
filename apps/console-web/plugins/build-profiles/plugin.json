@@ -12,6 +12,7 @@
   ],
   "provides": [
     "dialog:build-profiles",
+    "dialog:build-profiles-cleanup",
     "settings-tab:build-profiles"
   ],
   "optional": [],
