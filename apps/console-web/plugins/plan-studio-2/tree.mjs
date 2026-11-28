@@ -33,6 +33,12 @@
  *   … sync                                                        bring the tree in line with the builds store now
  *   … refresh-builds                                              read the sent builds from the builds store again (the cache)
  *   … say "<spoken sentence>"                                     one voice command (what AmberX and the page's mic send)
+ *   … shipped <build | file.json | -> [--item <item>]             a shipped-manifest@1 to the plan the build was sent from (the
+ *                                                                 build's sidecar, a file or stdin): validated with the shared
+ *                                                                 validator; stored on the plan, or refused + flagged (exit 2)
+ *   … shipped-show <item> | --build <build>                       the manifest a plan carries (+ its flag)
+ *   … shipped-log [n]                                             the last n receipts (ok / refused, with the reason)
+ *   … check-shipped                                               every shipped sent build has its valid manifest on its plan (exit 1 if not)
  *   … clear --yes                                                 everything gone (the trash too)
  *   … api '<json {op,…}>'                                         what the server calls (also reads stdin)
  *   … where
@@ -46,7 +52,7 @@
  * `<item>` is an id, or the title / words in it ("the step about deploy"): tree-core resolve().
  */
 import { spawn } from 'node:child_process';
-import { chmodSync, chownSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { appendFileSync, chmodSync, chownSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as tc from './web/tree-core.mjs';
@@ -58,6 +64,9 @@ import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { persistRoot, readProfiles, activeProfile } from '../../../../framework/cli/persist.mjs';
 import { projectDataDir } from '../../../../framework/cli/projects.mjs';
 import { ownerFrom, sendToEmergency } from '../../../../framework/cli/emergency-builds.mjs';
+import { readManifest as readShippedSidecar } from '../../../../framework/cli/shipped-files.mjs';
+import * as SM from '../../../../framework/core/shipped-manifest.mjs';
+import * as shippedCore from './shipped.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
@@ -112,7 +121,7 @@ function pipelineViewOf(b, all) {
 }
 const keep = (b, keys) => Object.fromEntries(keys.filter((k) => b[k] != null && b[k] !== '').map((k) => [k, b[k]]));
 /** One build as Plan Studio needs it (what live-core reads, nothing else). */
-const slimBuild = (b, all = []) => ({ ...keep(b, ['number', 'title', 'split', 'clash', 'pr', 'prUrl', 'branch']), pipelineView: pipelineViewOf(b, all), id: b.id, flow: b.flow, planRef: b.planRef, status: b.status, deleted: !!b.deleted, failedFrom: b.failedFrom ?? '', attempt: b.attempt ?? 1, statusAt: b.statusAt ?? '', createdAt: b.createdAt ?? '', updatedAt: b.updatedAt ?? '', profiles: b.profiles ?? [], ...(b.emergency ? { emergency: true } : {}), ...(b.pipeline?.heldAt ? { pipeline: { heldAt: b.pipeline.heldAt } } : {}), steps: (b.steps ?? []).map(slimStep) });
+const slimBuild = (b, all = []) => ({ ...keep(b, ['number', 'title', 'split', 'clash', 'pr', 'prUrl', 'branch', 'shipped']), pipelineView: pipelineViewOf(b, all), id: b.id, flow: b.flow, planRef: b.planRef, status: b.status, deleted: !!b.deleted, failedFrom: b.failedFrom ?? '', attempt: b.attempt ?? 1, statusAt: b.statusAt ?? '', createdAt: b.createdAt ?? '', updatedAt: b.updatedAt ?? '', profiles: b.profiles ?? [], ...(b.emergency ? { emergency: true } : {}), ...(b.pipeline?.heldAt ? { pipeline: { heldAt: b.pipeline.heldAt } } : {}), steps: (b.steps ?? []).map(slimStep) });
 function readCache() { try { const c = JSON.parse(readFileSync(cacheFile(), 'utf8')); return Array.isArray(c?.builds) && Number.isFinite(Date.parse(c.at)) ? c : null; } catch { return null; } }
 function writeCache(builds) {
   try { const f = cacheFile(); mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify({ $axf: 'plan-sent-builds-cache@1', at: new Date().toISOString(), builds })}\n`); renameSync(tmp, f); handBack(f); } catch { /* a cache: the next read pays instead */ } // axf-data: not data (a cache derived from the builds store; deleting it loses nothing)
@@ -158,15 +167,63 @@ export function assertUnlocked(state, id, builds = storeBuilds()) {
  * store's change event (build-hook.mjs). → { changed, replaced, restored, state }
  */
 export function sync({ by = 'plan-studio-2', fresh = false, builds = storeBuilds({ fresh }), state = load() } = {}) {
-  if (!builds) return { changed: false, replaced: [], restored: [], state };
-  const r = live.syncSent(state, builds, loadHistory(), { by });
-  if (!r.changed) return { ...r, state };
+  if (!builds) return { changed: false, replaced: [], restored: [], shipped: [], state };
+  const rec = receivePending(state, builds, { by });
+  if (rec.changed) state = save(rec.state);
+  const r = { ...live.syncSent(state, builds, loadHistory(), { by }), shipped: rec.received };
+  if (!r.changed) return { ...r, changed: rec.changed, state };
   // the history first when steps leave the tree (never gone from both), the tree first when they come back
   if (r.replaced.length) saveHistory(r.history);
   const st = save(r.state);
   if (!r.replaced.length) saveHistory(r.history);
   return { ...r, state: st };
 }
+/* ------------------------------------------------------------------ shipped manifests (shipped-manifest@1 → the sent plan) */
+
+/** The shipped-manifest@1 sidecar of a build (framework/cli/shipped-files.mjs), or null. */
+export const shippedSidecar = (buildId) => { try { return readShippedSidecar(buildId); } catch { return null; } };
+const RECEIPTS = 'shipped-receipts.jsonl';
+const receiptsFile = () => join(storeDir(), RECEIPTS);
+function logReceipt(e) { try { mkdirSync(storeDir(), { recursive: true }); appendFileSync(receiptsFile(), `${JSON.stringify(e)}\n`); handBack(receiptsFile()); } catch { /* a log: the item carries what matters */ } } // axf-data: not data (a log of receipts; the plan items carry the manifests)
+/** The last n receipts (ok / refused, with the reason), newest last. */
+export function shippedReceipts(n = 50) {
+  let lines = []; try { lines = readFileSync(receiptsFile(), 'utf8').split('\n').filter(Boolean); } catch { return []; }
+  return lines.slice(-Math.max(1, n)).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+}
+/**
+ * Every sent build whose record carries a shipped ref its plan has not received at that id + rev (and has not refused
+ * at it either) → the sidecar manifest is received by its plan item (shipped.mjs receive). Runs inside sync, so the
+ * build-hook@1 `shipped` event, every read and a missed event all end the same way. → { state, changed, received }
+ */
+export function receivePending(state, builds, { by = 'plan-studio-2', sidecar = shippedSidecar } = {}) {
+  let s = state; const received = [];
+  for (const b of builds ?? []) {
+    const ref = SM.normRef(b.shipped);
+    if (!ref || !b.planRef || b.deleted) continue;
+    const it = tc.byId(s, b.planRef);
+    if (!it) continue;
+    if (it.shipped && it.shipped.id === ref.id && Number(it.shipped.rev) >= ref.rev && !it.shippedProblem) continue;
+    if (it.shippedProblem && it.shippedProblem.id === ref.id && it.shippedProblem.rev >= ref.rev) continue;
+    const m = sidecar(b.id);
+    if (!m) continue; // the ref is there before the file on a slow disk: the next read takes it
+    const r = shippedCore.receive(s, it.id, m, { source: m.source || 'orchestrator', by });
+    if (r.changed) s = r.state;
+    const e = { at: new Date().toISOString(), build: b.id, item: it.id, ok: r.ok, id: String(m.id ?? ''), rev: Number(m.rev) || 0, by, ...(r.refused ? { refused: true, reason: r.reason } : {}), ...(r.unchanged ? { unchanged: true } : {}) };
+    if (r.changed) logReceipt(e);
+    received.push(e);
+  }
+  return { state: s, changed: s !== state, received };
+}
+/** The item a `shipped` request is about: `id` (an item) or `build` (the item that build was sent from). */
+function shippedItem(s, builds, r) {
+  if (r.id) { const it = tc.resolve(s, r.id) ?? shippedCore.itemForBuild(s, builds, String(r.id)); if (!it) throw new tc.TreeError('not_found', `no item or sent build "${r.id}"`); return it; }
+  const bid = String(r.build ?? r.manifest?.build?.id ?? '');
+  if (!bid) throw new tc.TreeError('validation', 'give the plan item (id) or the build it was sent as (build)');
+  const it = shippedCore.itemForBuild(s, builds, bid);
+  if (!it) throw new tc.TreeError('not_found', `build "${bid}" was not sent from a plan in Plan Studio 2.0, so no plan receives its manifest`);
+  return it;
+}
+
 /** Written as root (a VPS session's CLI): the file goes back to the folder's owner, group-writable, so the console can still write it. */
 function handBack(f) {
   if (process.getuid?.() !== 0) return;
@@ -268,7 +325,7 @@ export function stateView(s) {
  */
 export function api(r, { by = '' } = {}) {
   const who = String(r.by ?? by ?? '');
-  const builds = storeBuilds({ fresh: r.fresh === true || r.op === 'plan-build' }); // a plan's build is read from the store on every call
+  const builds = storeBuilds({ fresh: r.fresh === true || ['plan-build', 'shipped', 'check-shipped'].includes(r.op) }); // a plan's build is read from the store on every call
   // the stored tree (writes work on it), brought in line with the builds store first; `v` is what reads show
   const synced = sync({ by: who || 'plan-studio-2', builds });
   const s = synced.state;
@@ -307,6 +364,23 @@ export function api(r, { by = '' } = {}) {
       if (!tg) throw new tc.TreeError('validation', builds ? 'That is not sent to the orchestrator yet: send it first.' : 'The builds store cannot be read right now.');
       return { ok: true, build: tg.build.id, step: tg.step, item: tg.item ? { id: tg.item.id, title: tg.item.title } : null, live: live.buildLive(tg.build) };
     }
+    case 'shipped': {
+      // receive a shipped-manifest@1 for a sent plan: the manifest given, else the build's sidecar; refused when invalid
+      const it = shippedItem(s, builds, r);
+      const bid = String(r.build ?? r.manifest?.build?.id ?? (builds ?? []).find((b) => b.planRef === it.id && b.shipped)?.id ?? live.sentBuilds(builds ?? [], it.id).pop()?.id ?? '');
+      const m = r.manifest && typeof r.manifest === 'object' ? r.manifest : bid ? shippedSidecar(bid) : null;
+      if (!m) throw new tc.TreeError('not_found', bid ? `no shipped manifest for build "${bid}" yet (the orchestrator writes one when it lands)` : `"${it.title}" was not sent as a build: give a manifest`);
+      const source = typeof r.source === 'string' && r.source ? r.source : r.manifest ? 'api' : m.source || 'orchestrator';
+      const res = shippedCore.receive(s, it.id, m, { source, by: who || 'api' });
+      const st = res.changed ? save(res.state) : s;
+      const e = { at: new Date().toISOString(), build: String(m.build?.id ?? bid), item: it.id, ok: res.ok, id: String(m.id ?? ''), rev: Number(m.rev) || 0, by: who || 'api', ...(res.refused ? { refused: true, reason: res.reason } : {}) };
+      if (res.changed) logReceipt(e);
+      const say = res.refused ? `Refused the shipped manifest for "${it.title}" and flagged the plan: ${res.reason}.` : res.unchanged ? `"${it.title}" already has this shipped manifest${res.stale ? ' (a newer rev)' : ''}.` : `"${it.title}" received the shipped manifest of ${res.manifest.build} (rev ${Number(m.rev) || 1}).`;
+      return { ok: res.ok, rev: st.rev, refused: !!res.refused, unchanged: !!res.unchanged, stale: !!res.stale, reason: res.reason ?? '', errors: res.errors ?? [], code: res.refused ? 'invalid_manifest' : undefined, error: res.refused ? `shipped-manifest@1 refused: ${res.reason}` : undefined, item: shippedCore.shippedView(tc.byId(st, it.id)), manifest: res.manifest ?? null, say };
+    }
+    case 'shipped-get': { const it = shippedItem(v, builds, r); const sv = shippedCore.shippedView(it); return { ok: true, ...sv, say: sv.shipped ? `"${it.title}" carries the shipped manifest of ${sv.summary.build} (rev ${sv.shipped.rev})${sv.problem ? `; a later one was refused: ${sv.problem.reason}` : ''}.` : sv.problem ? `"${it.title}" has no shipped manifest: one was refused (${sv.problem.reason}).` : `"${it.title}" has not received a shipped manifest.` }; }
+    case 'shipped-log': return { ok: true, entries: shippedReceipts(Number(r.n) || 50) };
+    case 'check-shipped': { if (!builds) throw new tc.TreeError('validation', 'The builds store cannot be read right now.'); const c = shippedCore.checkShipped(s, builds, shippedSidecar); return { ...c, say: c.ok ? `Every shipped build (${c.checked}) has its manifest on its plan.` : `${c.problems.length} problem${c.problems.length === 1 ? '' : 's'}: ${c.problems.map((p) => `${p.build}: ${p.problem}`).join('; ')}.` }; }
     case 'trash': return { ok: true, trash: s.trash.map((t) => ({ id: t.id, title: t.title, at: t.at, by: t.by, items: t.items.length })) };
     case 'add': { guard(r.parent ?? r.in); const res = tc.add(s, { parent: r.parent ?? r.in ?? null, kind: r.kind, title: r.title, body: r.body, index: r.index, by: who, status: r.status, priority: r.priority, model: r.model, minutes: r.minutes, tags: r.tags }); return done(res, `Added the ${tc.KIND_LABEL[res.item.kind].toLowerCase()} "${res.item.title}"${res.item.parent ? ` inside "${tc.byId(res.state, res.item.parent).title}"` : ''}.`); }
     case 'rename': { guard(r.id); const res = tc.rename(s, r.id, r.title, who); return done(res, `Renamed to "${res.item.title}".`); }
@@ -394,6 +468,18 @@ export async function main(argv = process.argv.slice(2)) {
           ...r.steps.map((x) => `  ${(x.uid || '-').padEnd(20)} ${x.id.padEnd(5)} ${(x.model || 'no model yet').padEnd(13)} ${x.label.padEnd(18)} ${x.title.slice(0, 80)}`)].filter(Boolean).join('\n'));
       }
       case 'say': { const r = api({ op: 'say', text: a.join(' ') }); return out(r, r.say); }
+      case 'shipped': { // <build> | <file.json> | -  [--item <item>]: a shipped-manifest@1 to the plan it was sent from
+        const what = a[0] ?? '';
+        if (!what) throw new tc.TreeError('validation', 'shipped <build | file.json | -> [--item <item>]');
+        const fromFile = what === '-' || /\.json$/i.test(what) || what.includes('/');
+        const manifest = fromFile ? JSON.parse(readFileSync(what === '-' ? 0 : what, 'utf8')) : undefined;
+        const r = api({ op: 'shipped', id: flags.item, build: fromFile ? undefined : what, manifest, source: flags.source ?? (fromFile ? 'manual' : undefined) });
+        if (!r.ok) process.exitCode = 2;
+        return out(r, r.ok ? r.say : `✗ ${r.say}\n${r.errors.map((e) => `  ${e.field}: ${e.message}`).join('\n')}`);
+      }
+      case 'shipped-show': { const r = api({ op: 'shipped-get', id: flags.item ?? (a[0] && !flags.build ? a[0] : undefined), build: flags.build }); return out(r, r.shipped ? `${r.say}\n${JSON.stringify(r.summary, null, 1)}` : r.say); }
+      case 'shipped-log': { const r = api({ op: 'shipped-log', n: Number(a[0]) || 30 }); return out(r, r.entries.map((e) => `${e.at}  ${e.ok ? '✓' : '✗'} ${e.build} → ${e.item} ${e.id}${e.rev ? ` rev ${e.rev}` : ''}${e.refused ? `  refused: ${e.reason}` : ''}`).join('\n') || 'no shipped manifests received yet'); }
+      case 'check-shipped': { const r = api({ op: 'check-shipped', fresh: true }); if (!r.ok) process.exitCode = 1; return out(r, [`${r.ok ? '✓' : '✗'} ${r.checked} shipped build(s) sent from a plan`, ...r.problems.map((p) => `  ✗ ${p.build} (${p.item}): ${p.problem}`)].join('\n')); }
       case 'sync': { const r = api({ op: 'sync', fresh: true }); return out(r, r.say); }
       case 'refresh-builds': { // the background read behind a stale cache (storeBuilds)
         try { const b = refreshBuilds(); return out({ ok: !!b, builds: b?.length ?? 0 }, b ? `${b.length} sent build${b.length === 1 ? '' : 's'} read from the builds store` : 'the builds store cannot be read'); }
@@ -403,7 +489,7 @@ export async function main(argv = process.argv.slice(2)) {
       case 'restore-steps': { const r = api({ op: 'restore-steps', id: a[0], entry: a[1] }); return out(r, r.say); }
       case 'clear': { if (!flags.yes) throw new tc.TreeError('confirm', 'add --yes to clear everything'); return out(api({ op: 'clear', yes: true }), 'cleared'); }
       case 'api': { const raw = a[0] ?? readFileSync(0, 'utf8'); const r = api(JSON.parse(raw)); return console.log(JSON.stringify(r)); }
-      default: console.error('usage: tree.mjs tree|list|show|find|add|rename|edit|move|up|down|indent|outdent|duplicate|delete|undo|trash|link|unlink|collapse|expand|export|import|build|build-status|history|restore-steps|sync|say|clear|api|where'); process.exitCode = 2;
+      default: console.error('usage: tree.mjs tree|list|show|find|add|rename|edit|move|up|down|indent|outdent|duplicate|delete|undo|trash|link|unlink|collapse|expand|export|import|build|build-status|history|restore-steps|sync|say|shipped|shipped-show|shipped-log|check-shipped|clear|api|where'); process.exitCode = 2;
     }
   } catch (e) {
     const err = { ok: false, error: e.message, code: e.code ?? 'error' };

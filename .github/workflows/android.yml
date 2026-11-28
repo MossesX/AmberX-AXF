@@ -211,6 +211,8 @@ jobs:
         run: node apps/console-web/plugins/plan-studio-2/test.mjs  # axf-plugin:plan-studio-2
       - name: Plan Studio 2.0 sent plans (steps read from the builds store, replace on split, live check-off, From orchestrator, the lock)  # axf-plugin:plan-studio-2
         run: node apps/console-web/plugins/plan-studio-2/live.test.mjs  # axf-plugin:plan-studio-2
+      - name: Plan Studio 2.0 shipped manifests (a sent plan receives its build's shipped-manifest@1, validated; invalid refused + flagged; end to end through ship → build-hook@1)  # axf-plugin:plan-studio-2
+        run: node apps/console-web/plugins/plan-studio-2/shipped.test.mjs  # axf-plugin:plan-studio-2
       - name: VPS Configuration plugin (gate rules, lander adapter, History, CLI-vs-API parity)  # axf-plugin:gate
         run: node apps/console-web/plugins/gate/test.mjs  # axf-plugin:gate
       - name: Gate build rules (REST/MCP/CLI parity, home-card fixer, gate block then fix, store rules in the brief)  # axf-plugin:gate
