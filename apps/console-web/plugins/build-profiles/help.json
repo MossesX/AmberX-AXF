@@ -71,6 +71,96 @@
         "title": "Scan again",
         "text": "Checks the builds again. Changes nothing.",
         "kind": "button"
+      },
+      {
+        "target": "view:build-profiles",
+        "title": "Build profiles",
+        "text": "Every build profile in one grid: its builds, what it cost and when it last moved. Open a row to see what is in it and to change it.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:build-profiles.view",
+        "title": "Build profile",
+        "text": "One profile: its details, its numbers, what is in it and every action you can take on it.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:build-profiles.edit",
+        "title": "New, edit or duplicate",
+        "text": "The form for a profile: its name, description, colour and icon. A new one starts empty or as a copy.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:build-profiles.merge",
+        "title": "Merge build profiles",
+        "text": "Moves every build of one profile into another. The first profile comes off the list unless you keep it.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:build-profiles.move",
+        "title": "Move builds",
+        "text": "Sends the builds you name to another profile. Each keeps its id, status and steps.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:build-profiles.confirm",
+        "title": "Confirm the change",
+        "text": "Says what archiving, taking off the list, restoring or deleting data will do before you press the button.",
+        "kind": "screen"
+      },
+      {
+        "target": "manage-profiles",
+        "title": "Manage profiles",
+        "text": "Opens the Build profiles page with every profile in a grid.",
+        "kind": "button"
+      },
+      {
+        "target": "switch-profile",
+        "title": "Switch profile",
+        "text": "Opens the quick picker to change the profile the console works on.",
+        "kind": "button"
+      },
+      {
+        "target": "duplicate",
+        "title": "Duplicate",
+        "text": "Makes a second profile with copies of this one's files. Its builds show in both.",
+        "kind": "button"
+      },
+      {
+        "target": "merge-into",
+        "title": "Merge into",
+        "text": "Moves every build of this profile into another one you pick.",
+        "kind": "button"
+      },
+      {
+        "target": "builds-cost",
+        "title": "Profile row",
+        "text": "Tap the row to open or close what is in this profile: builds, pending, queue, plan and files.",
+        "kind": "button"
+      },
+      {
+        "target": "start-with",
+        "title": "Start with",
+        "text": "Starts the new profile empty, or as a copy of another one.",
+        "kind": "field"
+      },
+      {
+        "target": "show-its-builds-in-the-copy-too",
+        "title": "Show its builds in the copy",
+        "text": "On: the copy lists the same builds. Off: it starts with the files and no builds.",
+        "kind": "toggle"
+      },
+      {
+        "target": "delete-data",
+        "title": "Delete data",
+        "text": "Opens the confirm for deleting this profile's data for good. Owner only.",
+        "kind": "button"
+      },
+      {
+        "target": "delete-its-data",
+        "title": "Delete its data",
+        "text": "Deletes the profile's files and the builds that live only in it. It can't be undone.",
+        "kind": "button"
       }
     ],
     "intros": []

@@ -1,0 +1,30 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "build-profiles",
+  "name": "Build profiles",
+  "version": "1.0.0",
+  "description": "The Build profiles manager toolbar: a new profile, reload, open or close every row, and clear the filters. The search, sort and filter picks ride on the same bar.",
+  "author": "AmberX AXF",
+  "tags": ["page", "build-profiles", "builds"],
+  "data": {
+    "scope": "view:build-profiles",
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "profiles",
+        "label": "Profiles",
+        "items": [
+          { "id": "new", "icon": "plus", "label": "New profile", "action": "handler:build-profiles.new", "priority": 100, "overflow": "never" },
+          { "id": "reload", "icon": "refresh", "label": "Reload", "action": "handler:build-profiles.reload", "priority": 200 },
+          { "id": "expand", "icon": "chevron-down", "label": "Expand all", "action": "handler:build-profiles.expand", "enabledWhen": "profiles", "priority": 260 },
+          { "id": "collapse", "icon": "chevron-up", "label": "Collapse all", "action": "handler:build-profiles.collapse", "enabledWhen": "open", "priority": 250 },
+          { "id": "clear", "icon": "x", "label": "Clear filters", "action": "handler:build-profiles.clear", "enabledWhen": "filtering", "priority": 300 }
+        ]
+      }
+    ]
+  }
+}
