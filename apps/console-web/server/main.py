@@ -590,6 +590,9 @@ import build_profiles  # noqa: E402
 
 PROFILES = build_profiles.BuildProfiles(ROOT, _persist_root)
 PROFILES_CLI = ROOT / "framework" / "cli" / "profiles.mjs"
+# Every change framework/cli/profiles.mjs takes through `act`. The Build profiles plugin's router declares the same
+# set as commands (REST /api/control, MCP, CLI); this route stays for the console's own page and banner chip.
+PROFILE_ACTIONS = ("select", "create", "update", "duplicate", "merge", "move-builds", "archive", "unarchive", "remove", "restore", "cleanup")
 
 
 def _plan_media_dir() -> Path:
@@ -613,7 +616,9 @@ def profiles_state() -> Any:
 
 @app.post("/api/profiles", dependencies=[Depends(auth)])
 async def profiles_act(request: Request) -> Any:
-    """One change: {action: select|create|update|remove, ...} — see framework/cli/profiles.mjs."""
+    """One change: {action: select|create|update|duplicate|merge|move-builds|archive|unarchive|remove|restore|cleanup, ...}
+    — see framework/cli/profiles.mjs. Deleting a profile's data (purge) is not taken here: it is owner-only and goes
+    through the plugin's own route (/api/plugins/<plugin>/purge) or its confirmed command."""
     body = await request.body()
     if len(body) > 16 * 1024:
         raise HTTPException(413, "change too large")
@@ -621,8 +626,8 @@ async def profiles_act(request: Request) -> Any:
         change = json.loads(body or b"{}")
     except json.JSONDecodeError:
         raise HTTPException(400, "not JSON")
-    if not isinstance(change, dict) or change.get("action") not in ("select", "create", "update", "remove"):
-        raise HTTPException(400, "action must be select, create, update or remove")
+    if not isinstance(change, dict) or change.get("action") not in PROFILE_ACTIONS:
+        raise HTTPException(400, "action must be one of " + ", ".join(PROFILE_ACTIONS))
     res = _profiles_cli("act", json.dumps(change))
     for line in res.get("log", []) if isinstance(res, dict) else []:
         log("profiles", line)
