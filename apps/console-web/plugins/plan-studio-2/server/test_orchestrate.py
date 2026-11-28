@@ -90,6 +90,7 @@ with tempfile.TemporaryDirectory() as d:
     check(code == 400 and "action is one of" in str(why), "an unknown action is refused (400)")
     code, res = call(ps.build, Req({"id": plan}))
     check(code == 200 and res["build"]["id"] == "launch", "the plan is sent as one pending build")
+    check(res.get("status") == "pending" and "in Pending" in str(res.get("say")), f"a send files the build in Pending, never in the Queue: {res}")
 
     # shipped-manifest@1 through the routes: an invalid one is refused (400, the fields named) and flags the plan
     good = {"$axf": "shipped-manifest@1", "id": "sm-launch", "rev": 1, "build": {"id": "launch", "title": "Launch"}, "said": {"text": "Ship the launch.", "verbatim": True}, "pr": {"number": 7}, "steps": []}

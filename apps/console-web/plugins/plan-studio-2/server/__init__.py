@@ -223,7 +223,9 @@ async def import_items(request: Request) -> dict[str, Any]:
 
 @router.post("/build")
 async def build(request: Request) -> dict[str, Any]:
-    """Send an item to the build orchestrator: {id, profile, buildId, preview, said}. Its open steps become the build's."""
+    """Send an item to the build orchestrator: {id, profile, buildId, preview, said}. The build is filed in Pending,
+    never in the Queue (one build is queued at a time; the orchestrator moves the next Pending build up). Its open steps
+    go along as planning notes. The answer carries `status: "pending"`."""
     body = await _body(request)
     body.pop("emergency", None)  # an emergency build goes through POST /emergency (Brett's signed-in console only)
     return _write("build", request, body)

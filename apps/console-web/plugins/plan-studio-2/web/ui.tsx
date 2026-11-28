@@ -438,7 +438,7 @@ export function BuildDialog({ props, close }: { props: Record<string, unknown>; 
   };
   return (
     <div className={`${B}__dialog fx-stack`}>
-      <p className="fx-muted">“{it.title}” becomes one pending build in the Build orchestrator. Its open steps (any depth) go along as planning notes: the orchestrator decides the real build steps, each with its minutes and model. Once it has filed them, they replace these steps here (marked From orchestrator, yours are kept in the item's history) and check off as each one completes. The plan is locked until the build lands or is cancelled. The item gets a link back to the build. Send to emergency (Brett only) sends the same build past the line: it builds in the 2 emergency slots and lands first.</p>
+      <p className="fx-muted">“{it.title}” becomes one build in Pending in the Build orchestrator, never straight in the Queue: one build is queued at a time, and the next one in Pending moves up when it goes live. Its open steps (any depth) go along as planning notes: the orchestrator decides the real build steps, each with its minutes and model. Once it has filed them, they replace these steps here (marked From orchestrator, yours are kept in the item's history) and check off as each one completes. The plan is locked until the build lands or is cancelled. The item gets a link back to the build. Send to emergency (Brett only) sends the same build past the line: it builds in the 2 emergency slots and lands first.</p>
       {err && <Note tone="danger">{err}</Note>}
       {preview && (
         <>

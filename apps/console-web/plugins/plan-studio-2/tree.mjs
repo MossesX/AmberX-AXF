@@ -24,8 +24,9 @@
  *   … export [<item>] [--json] [--out file] · import <file.json> [--in <item>]
  *   … validate <item> [--id build-id]                             plan-build@1: the build id it gets and every reason it may not be sent
  *   … build <item> [--profile p] [--id build-id] [--preview]      send to the build orchestrator: must pass plan-build@1; ONE Pipeline 2.0
- *                                                                 build (flow pipeline-2, pending, its steps kept as planning) in the
- *                                                                 builds store; the orchestrator's splitting stage designs the build steps
+ *                                                                 build (flow pipeline-2, its steps kept as planning) in the builds store,
+ *                                                                 always in Pending and never in the Queue: the orchestrator moves it up
+ *                                                                 when the Queue is free; its splitting stage designs the build steps
  *   … build-status <item>                                         the build a plan was sent as, read from the builds store now: its number,
  *                                                                 state, status line, waiting reason, merge line and steps (unique id, model, status)
  *   … history <item>                                              the planning steps a send replaced (kept beside the tree)
@@ -268,10 +269,24 @@ export function planOf(state, ref, { id = '', said = '' } = {}) {
  * takes it from there: splitting (Fable designs the build steps, each with minutes and a model) → split → pulling-main
  * → assigning-models → ready. The item gets a `build` link back.
  *
+ * A send files the build in Pending, never in the Queue (the single-Queued contract, framework/core/build-pipeline.mjs:
+ * one build queued at a time, the next Pending build moves up when the queued one goes live). Nothing a caller passes
+ * changes that: the record is written with SENT_STATUS and no queue marks, and it is checked before it is stored. Moving
+ * it up is the orchestrator's call (its line, or Brett's Queue action), never this command's.
+ *
  * `emergency` (Send to emergency): the same build, tagged emergency once it is in the store, so it skips the line,
  * builds in the emergency slots and lands first. Brett's signed-in console only: who is asking is read from `env`
  * (framework/cli/emergency-builds.mjs ownerFrom) and checked before anything is written, so a refused ask sends nothing.
  */
+export const SENT_STATUS = 'pending';
+export const SENT_LABEL = 'Pending';
+/** Why a record may not be filed by a send, or '': a sent build is Pending, with nothing that puts it in the Queue or on a slot. */
+export function notPendingWhy(rec) {
+  if (rec?.status !== SENT_STATUS) return `status is ${rec?.status || 'unset'}, not ${SENT_STATUS}`;
+  const p = rec.pipeline && typeof rec.pipeline === 'object' ? rec.pipeline : {};
+  const mark = ['queuedAt', 'queuedBy', 'dispatchedAt', 'session', 'slot'].find((k) => p[k]);
+  return mark ? `it carries a queue mark (pipeline.${mark})` : '';
+}
 export function sendToBuild(state, ref, { profile = '', id = '', preview = false, by = '', said = '', emergency = false, env = process.env } = {}) {
   if (emergency && !preview) { const o = ownerFrom(env); if (!o.ok) throw new tc.TreeError('forbidden', o.why); }
   const prof = profile || activeProfile().id;
@@ -290,14 +305,17 @@ export function sendToBuild(state, ref, { profile = '', id = '', preview = false
       ...(said ? { origin: { said, at: now, source: 'console', by: by || 'Brett' } } : {}),
       planning: plan.steps,
       steps: [],
-    }, 'pending', { at: now, by: who, why: 'Send to orchestrator' }).rec;
-    s.builds.push(core.normBuild(b, { now, profile: prof }));
+    }, SENT_STATUS, { at: now, by: who, why: 'Send to orchestrator: filed in Pending' }).rec;
+    const rec = core.normBuild(b, { now, profile: prof });
+    const bad = notPendingWhy(rec);
+    if (bad) throw new tc.TreeError('validation', `"${it.title}" was not sent: a send files a build in Pending, never in the Queue (${bad})`);
+    s.builds.push(rec);
     return s;
   }, { by: who, action: 'plan-studio-2:send', note: `${plan.id}: ${plan.steps.length} planning steps` });
   if (emergency) sendToEmergency(plan.id, { env });
   refreshBuilds(); // the new build locks the plan from the next read on
   const linked = tc.link(state, it.id, { type: 'build', ref: `${prof}:${plan.id}`, label: plan.title });
-  return { ok: true, state: linked.state, build: { profile: prof, id: plan.id }, planning: plan.steps.length, plan, emergency: !!emergency };
+  return { ok: true, state: linked.state, build: { profile: prof, id: plan.id }, planning: plan.steps.length, plan, emergency: !!emergency, status: SENT_STATUS, label: SENT_LABEL };
 }
 
 /* ------------------------------------------------------------------ one op → one change (the server, the CLI, voice) */
@@ -390,7 +408,7 @@ export function api(r, { by = '' } = {}) {
     case 'collapse': { const ids = r.all ? null : [tc.resolve(s, r.id)?.id].filter(Boolean); if (!r.all && !ids.length) throw new tc.TreeError('not_found', `no item "${r.id}"`); const res = tc.setCollapsed(s, ids, r.collapsed !== false); return done(res, `${r.collapsed === false ? 'Expanded' : 'Collapsed'} ${r.all ? 'everything' : 'it'}.`); }
     case 'import': { guard(r.parent ?? r.in); const res = tc.importItems(s, r.data, { parent: r.parent ?? r.in ?? null, by: who }); return done(res, `Imported ${res.imported} items.`); }
     case 'validate': { const { plan, errors } = planOf(s, r.id, { id: r.buildId, said: r.said }); return { ok: !errors.length, plan, errors, say: errors.length ? `Not ready to send: ${errors.map((e) => `${e.path} ${e.why}`).join('; ')}.` : `Ready to send as ${plan.id}.` }; }
-    case 'build': { const res = sendToBuild(s, r.id, { profile: r.profile, id: r.buildId, preview: !!r.preview, by: who, said: r.said, emergency: r.emergency === true }); if (res.preview) return res; const st = save(res.state); return { ok: true, rev: st.rev, build: res.build, planning: res.planning, emergency: res.emergency, say: res.emergency ? `Sent it as the emergency build ${res.build.id}. It skips the line, builds in the emergency slots and lands first.` : `Sent it to the build orchestrator as ${res.build.id}. Fable splits it into build steps.` }; }
+    case 'build': { const res = sendToBuild(s, r.id, { profile: r.profile, id: r.buildId, preview: !!r.preview, by: who, said: r.said, emergency: r.emergency === true }); if (res.preview) return res; const st = save(res.state); return { ok: true, rev: st.rev, build: res.build, status: res.status, label: res.label, planning: res.planning, emergency: res.emergency, say: res.emergency ? `Sent it as the emergency build ${res.build.id}. It skips the line, builds in the emergency slots and lands first.` : `Sent it to the build orchestrator as ${res.build.id}. It is in Pending: Fable splits it into build steps, and it moves up to the Queue when the Queue is free (one build is queued at a time).` }; }
     case 'say': {
       const cmd = tc.parseVoice(r.text ?? '');
       if (!cmd) return { ok: false, understood: false, say: "I didn't catch a plan command. Try: new plan Launch, add a step Deploy to Launch, rename it, delete it, undo." };
@@ -452,7 +470,7 @@ export async function main(argv = process.argv.slice(2)) {
       case 'export': { const r = api({ op: 'export', id: a[0], format: flags.json ? 'json' : 'md' }); const text = r.format === 'json' ? JSON.stringify(r.data, null, 1) : r.markdown; if (flags.out) { writeFileSync(flags.out, text); return console.log(`wrote ${flags.out}`); } return console.log(text); }
       case 'import': { const data = JSON.parse(readFileSync(a[0] === '-' ? 0 : a[0], 'utf8')); return out(api({ op: 'import', data, parent: flags.in }), 'imported'); }
       case 'validate': { const r = api({ op: 'validate', id: a[0], buildId: flags.id, said: flags.said }); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? `ok: plan-build@1, build id ${r.plan.id}, ${r.plan.steps.length} planning steps` : `not valid (plan-build@1):\n${r.errors.map((e) => `  ${e.path}: ${e.why}`).join('\n')}`); }
-      case 'build': { const r = api({ op: 'build', id: a[0], profile: flags.profile, buildId: flags.id, preview: !!flags.preview, said: flags.said }); return out(r, r.preview ? `preview: build ${r.build.id} (${r.change.steps.length} steps, ${r.minutes} min)\n${r.change.steps.map((s) => `  - ${s.text} [${s.model}${s.estimate ? `, ${s.estimate}` : ''}]`).join('\n')}` : r.say); }
+      case 'build': { const r = api({ op: 'build', id: a[0], profile: flags.profile, buildId: flags.id, preview: !!flags.preview, said: flags.said }); return out(r, r.preview ? `preview: build ${r.build.id} (${r.change.steps.length} steps, ${r.minutes} min)\n${r.change.steps.map((s) => `  - ${s.text} [${s.model}${s.estimate ? `, ${s.estimate}` : ''}]`).join('\n')}` : `${r.say}${r.status ? `\nstatus: ${r.label ?? r.status}` : ''}`); }
       case 'build-status': {
         const r = api({ op: 'plan-build', id: a[0] });
         if (!r.build) return out(r, r.say);

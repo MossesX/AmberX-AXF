@@ -267,7 +267,7 @@
       {
         "target": "send-to-build",
         "title": "Send to build…",
-        "text": "Sends this item to the Build orchestrator as one pending build; its open steps go along as planning notes and Fable designs the build steps.",
+        "text": "Sends this item to the Build orchestrator as one build in Pending, never straight to the Queue; its open steps go along as planning notes and Fable designs the build steps. It moves up to the Queue when the Queue is free.",
         "kind": "button"
       },
       {
@@ -399,7 +399,7 @@
       {
         "target": "send-to-the-orchestrator",
         "title": "Send to the orchestrator",
-        "text": "Files the build. Only then does it become a build.",
+        "text": "Files the build in Pending. Only then does it become a build; it moves up to the Queue when the Queue is free.",
         "kind": "button"
       },
       {
@@ -507,7 +507,7 @@
       {
         "target": "action:plan-studio-2.build",
         "title": "Send to build orchestrator",
-        "text": "It becomes one pending build; Fable designs its build steps.",
+        "text": "It becomes one build in Pending, never straight in the Queue; Fable designs its build steps.",
         "kind": "menu-item"
       },
       {
