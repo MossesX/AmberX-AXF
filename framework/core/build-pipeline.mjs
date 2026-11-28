@@ -7,6 +7,9 @@
  * accounts (which have Fable, how many may run in parallel) and the agent slots; when a slot is free it takes the next
  * Queue build and starts a headless session on an account that can run the next phase's model (**Building**).
  *
+ *   One build in the Queue at a time (Nov 28 2026, the single-Queued contract at the end of this file): Pending is a
+ *   line, promote() moves its oldest build up when the queued one goes live, and hold / cancel / unqueue stick.
+ *
  *   status flow:  pending → queued → running (Building) ⇄ fixing → landing → landed → complete  (done-means-merged@1, below)
  *                 a session that ends with steps left: nextStatusOnExit(). Its phase done (any model, Fable → Opus or
  *                 Opus → Fable with the upgrade policy satisfied) = back to queued, same queue position, the next phase
@@ -41,6 +44,9 @@
  *              the account stopped it. Evidence for the watchdog (build-watchdog@1); absent until a run ends.
  *   heldAt, heldBy, heldWhy  On hold (Brett, Nov 10 2026: "Make a hold status … leave in queue on hold"): the build stays
  *              in the Queue, keeps its place, and the dispatcher skips it until it is released. '' = not held.
+ *   stop       { kind, at, by, why, from }  a standing hold | cancel | unqueue: terminal until Brett (the single-Queued
+ *              contract at the end of this file). Optional: absent on a build nobody stopped.
+ *   lineAt     ISO: the build's place in the Pending line once it has been queued or held (optional; else createdAt)
  *   maxParallel  parallel step sessions this build may have at once beyond its own (0 = the planner's default, 3)
  *   budgetUsd, spentUsd  this build's API spend cap and what its API runs have cost so far (0 = no cap / nothing spent);
  *              an API launch that would pass the cap waits, subscriptions are never counted
@@ -312,6 +318,8 @@ export function normPipeline(p) {
     ...(normRunEnd(p.runEnd) ? { runEnd: normRunEnd(p.runEnd) } : {}), // optional: absent until a run ends (old records unchanged)
     ...(normLaunchRetry(p.launchRetry) ? { launchRetry: normLaunchRetry(p.launchRetry) } : {}), // optional: only after a launch crash
     ...(normBounce(p.bounce) ? { bounce: normBounce(p.bounce) } : {}), // optional: only after a land-clash bounce
+    ...(normStop(p.stop) ? { stop: normStop(p.stop) } : {}), // optional: a standing hold / cancel / unqueue (single-Queued contract)
+    ...(iso(p.lineAt) ? { lineAt: iso(p.lineAt) } : {}), // optional: the build's place in the Pending line once it has been queued or held
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;
@@ -355,9 +363,9 @@ export function tabOf(b) {
 export const canQueue = (b) => !!b && b.status === 'pending' && !b.deleted && !b.hidden;
 /** A build may leave the Queue for Pending: queued and not launched yet. */
 export const canUnqueue = (b) => !!b && b.status === 'queued' && !b.deleted;
-/** On hold: queued, kept in the Queue, skipped by the dispatcher until released. */
-export const isHeld = (b) => !!b && b.status === 'queued' && !!b.pipeline?.heldAt;
-/** A build may be put on hold: queued (not launched) and not held already. */
+/** On hold: waiting (in Pending since the single-Queued contract; a legacy record may still be queued), skipped until Brett releases it. */
+export const isHeld = (b) => !!b && (b.status === 'queued' || b.status === 'pending') && !!b.pipeline?.heldAt;
+/** A build may be put on hold: queued (not launched) and not held already. A Pending build is held through hold(). */
 export const canHold = (b) => !!b && b.status === 'queued' && !b.deleted && !isHeld(b);
 /** A build with a live session (running, waiting on an approval, or a fix attempt on it) is never archived or deleted underneath it. */
 export const isLive = (b) => !!b && (b.status === 'running' || b.status === 'waiting' || b.status === 'fixing');
@@ -731,4 +739,288 @@ export function outcomeLine(b, run) {
       return `Session${where} stopped on its own with ${left}: back in Pending for Brett.`;
     default: return `Session${where} ended (exit ${run.exit}) with ${left} after ${b.pipeline?.runs ?? 0} runs: crash limit reached, failed: back in Pending for Brett.`;
   }
+}
+
+// ------------------------------------------------------------------ the single-Queued contract (Nov 28 2026)
+
+/**
+ * One build in the Queue (Brett, Nov 25 2026: "Plan Studio sends to Pending; only one build Queued; when it goes live
+ * the next Pending moves up" and "Hold, cancel, unqueue really stick"). Pure, IO-free; every call returns new records.
+ *
+ * The rules:
+ *   1. At most QUEUE_MAX (1) build is in status `queued`. Everything Plan Studio sends lands in Pending.
+ *   2. Pending is a line. promote() moves the oldest build in it (pendingOrder) up to `queued` whenever the slot is
+ *      free. The slot frees the moment the queued build goes live (goLive(): queued → running), or leaves any other way.
+ *   3. A build that comes back to the Queue by itself (nextStatusOnExit: phase-done, crash) may meet the build that was
+ *      promoted behind it. settleQueue() keeps one: the build that has run before wins (its next phase starts at once),
+ *      then the oldest queuedAt; the others go back to Pending, unmarked, and move up again in their turn.
+ *   4. hold, cancel and unqueue are STOPS: terminal until Brett. Each one puts the build in Pending with a `stop`
+ *      record on its pipeline ({ kind, at, by, why, from }). A stopped build is never promoted, never launched and never
+ *      given another status by the dispatcher, the reconciler, the watchdog or a run's exit: keepStop() is the one gate
+ *      every automated writer passes its record through, and it puts the stop back. Only an owner actor (isOwnerActor:
+ *      Brett, or a surface acting on his word) reverses one, through release() or queue().
+ *        hold      the build waits in Pending and keeps its place in line: released, a build held out of the Queue
+ *                  is at the head of the line again
+ *        unqueue   the build left the Queue for Pending; it goes back up only when Brett queues it
+ *        cancel    the build's session is to be killed and its slot freed (the caller does that with `kill`); every
+ *                  step claim is dropped; it runs again only when Brett queues it
+ *      A legacy hold (pipeline.heldAt on a queued build, no stop record) is read as a hold stop; settleQueue() moves
+ *      it out of the slot so a held build never blocks the line.
+ *
+ * Every action returns { ok, why, builds, build, changes } (changes = [{ id, from, to, why }]) and never throws; on a
+ * refusal `builds` is the list it was given. Fixture: framework/spec/fixtures/build-pipeline.json.
+ */
+export const QUEUE_MAX = 1;
+export const STOP_KINDS = Object.freeze(['hold', 'cancel', 'unqueue']);
+export const STOP_LABEL = Object.freeze({ hold: 'On hold', cancel: 'Cancelled', unqueue: 'Back in Pending' });
+/** Actors that act on Brett's word. `brett:<surface>` (brett:mcp, brett:cli …) counts too; every other actor is automation. */
+export const OWNER_ACTORS = Object.freeze(['brett', 'console', 'voice', 'amberx', 'phone']);
+/** The actors named in the code today that never reverse a stop (documentation: anything not an owner is automation). */
+export const AUTOMATION_ACTORS = Object.freeze(['dispatcher', 'reconciler', 'watchdog', 'lander', 'pipeline', 'orchestrator', 'tick', 'reaper', 'builds-live', 'vps', 'session', 'auto']);
+export const isOwnerActor = (by) => { const s = str(by, 80).trim().toLowerCase(); return OWNER_ACTORS.includes(s) || /^brett:[a-z0-9-]+$/.test(s); };
+/** Statuses a stop may be put on: cancel reaches every build that is not finished; hold and unqueue only waiting ones. */
+export const STOPPABLE = Object.freeze({ hold: ['pending', 'queued'], unqueue: ['queued'], cancel: ['pending', 'queued', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'landing', 'escalated'] });
+/** What the orchestrator's main view lists: sent builds (out of Pending) plus landed ones. Pending has its own tab. */
+export const SENT_STATUSES = Object.freeze(['queued', 'running', 'waiting', 'fixing', 'built', 'landing']);
+export const isSent = (b) => !!b && !b.deleted && !b.hidden && SENT_STATUSES.includes(b.status);
+export const showsInOrchestrator = (b) => isSent(b) || (!!b && !b.deleted && !b.hidden && b.status === 'landed');
+
+/** A stop record in shape, or null. */
+export function normStop(s) {
+  const x = obj(s);
+  if (!x || !STOP_KINDS.includes(x.kind) || !iso(x.at)) return null;
+  return { kind: x.kind, at: iso(x.at), by: str(x.by, 80), why: str(x.why, 300), from: str(x.from, 20) };
+}
+/** The stop standing on a build, or null. A legacy hold (heldAt, no stop record) reads as a hold. */
+export function stopOf(b) {
+  const p = obj(b?.pipeline);
+  if (!p || b.deleted) return null;
+  return normStop(p.stop) ?? (iso(p.heldAt) && (b.status === 'queued' || b.status === 'pending') ? { kind: 'hold', at: iso(p.heldAt), by: str(p.heldBy, 80), why: str(p.heldWhy, 300), from: str(b.status, 20) } : null);
+}
+export const isStopped = (b) => !!stopOf(b);
+
+const live1 = (b) => !!b && !b.deleted;
+/** Builds in status queued (deleted ones never count). */
+export const queuedBuilds = (builds) => list(builds).filter((b) => live1(b) && b.status === 'queued');
+/** The builds holding the Queue slot: queued and not stopped. A sound store has at most QUEUE_MAX. */
+export const slotHolders = (builds) => queuedBuilds(builds).filter((b) => !isStopped(b));
+/** The one queued build, or null. */
+export const queuedOne = (builds) => slotHolders(builds)[0] ?? null;
+/** Is the Queue slot free? */
+export const slotFree = (builds) => slotHolders(builds).length < QUEUE_MAX;
+
+/**
+ * A build's place in line. One that reached the Queue before (lineAt: the moment it was first queued) was at the head
+ * of the line already, so it stands before every build that never got that far; among those, the earliest lineAt.
+ * The rest line up by the time they were filed.
+ */
+const lineAt = (b) => iso(b?.pipeline?.lineAt);
+const lineCmp = (a, b) => (lineAt(a) ? 0 : 1) - (lineAt(b) ? 0 : 1) || (Date.parse(lineAt(a)) || 0) - (Date.parse(lineAt(b)) || 0)
+  || str(a.createdAt, 40).localeCompare(str(b.createdAt, 40)) || str(a.id, 200).localeCompare(str(b.id, 200));
+/**
+ * May promote() move this Pending build up? { ok, why }. Not when it is stopped, hidden, deleted, unsplit or finished,
+ * and not when it is in Pending because a run sent it there for Brett (nextStatusOnExit: crash-limit, upgrade-blocked,
+ * needs-brett, stopped): those wait for him to queue them.
+ */
+export function promotable(b) {
+  if (!b || b.deleted || b.hidden) return { ok: false, why: 'not in Pending' };
+  if (b.status !== 'pending') return { ok: false, why: `status is ${str(b.status, 20) || 'unknown'}, not pending` };
+  const stop = stopOf(b);
+  if (stop) return { ok: false, why: `${STOP_LABEL[stop.kind]}${stop.by ? ` (${stop.by})` : ''}: waits for Brett` };
+  if (!(b.steps ?? []).length) return { ok: false, why: 'no steps yet: waiting for the split' };
+  if (!openSteps(b).length) return { ok: false, why: 'every step is done' };
+  const lr = b.pipeline?.lastRun;
+  if (lr && (lr.outcome === 'returned' || lr.outcome === 'failed')) return { ok: false, why: `its last run sent it back for Brett (${lr.reason || lr.outcome})` };
+  return { ok: true, why: '' };
+}
+/** The Pending line in promotion order: oldest first (line place, then filed time, then id). Only promotable builds. */
+export function pendingOrder(builds) {
+  return list(builds).filter((b) => promotable(b).ok).sort(lineCmp);
+}
+
+const refuse = (builds, why) => ({ ok: false, why, builds: list(builds), build: null, changes: [] });
+const findBuild = (builds, id) => list(builds).find((b) => b && b.id === id) ?? null;
+const swap = (builds, next) => list(builds).map((b) => (b && b.id === next.id ? next : b));
+const withPipe = (b, patch, extra = {}) => {
+  const p = { ...emptyPipeline(), ...(obj(b.pipeline) ?? {}), ...patch };
+  for (const k of Object.keys(p)) if (p[k] === undefined) delete p[k];
+  return { ...b, ...extra, pipeline: p };
+};
+const unheld = { heldAt: '', heldBy: '', heldWhy: '' };
+
+/** Pending → queued, shared by queue() and promote(): the build keeps its first place in line (lineAt). */
+const toQueued = (b, { by, at, note }) => withPipe(b, { queuedAt: at, queuedBy: str(by, 80), lineAt: iso(b.pipeline?.lineAt) || at, stop: undefined, ...unheld, note }, { status: 'queued', updatedAt: at });
+
+/**
+ * Check the invariant, pure: { ok, queued: [ids], why }. ok = at most QUEUE_MAX builds hold the slot and no stopped
+ * build sits in status queued.
+ */
+export function checkQueue(builds) {
+  const q = queuedBuilds(builds); const held = q.filter(isStopped); const slot = q.filter((b) => !isStopped(b));
+  const why = slot.length > QUEUE_MAX ? `${slot.length} builds are queued (${slot.map((b) => b.id).join(', ')}): one at a time` : held.length ? `${held.map((b) => b.id).join(', ')} ${held.length === 1 ? 'is' : 'are'} stopped but still queued` : '';
+  return { ok: !why, queued: q.map((b) => b.id), why };
+}
+
+/**
+ * Put a Pending build in the Queue by name. Refused while another build holds the slot (it stays in Pending and moves
+ * up by itself), and refused to automation when the build is stopped. An owner's queue() lifts the stop.
+ */
+export function queue(builds, id, { by = '', now = Date.now() } = {}) {
+  const b = findBuild(builds, id);
+  if (!b || b.deleted) return refuse(builds, `no build ${id}`);
+  if (b.status === 'queued' && !isStopped(b)) return { ok: true, why: 'already queued', builds: list(builds), build: b, changes: [] };
+  if (b.status !== 'pending' && !(b.status === 'queued' && isStopped(b))) return refuse(builds, `${id} is ${b.status}: only a Pending build can be queued`);
+  if (b.hidden) return refuse(builds, `${id} is hidden`);
+  const stop = stopOf(b);
+  if (stop && !isOwnerActor(by)) return refuse(builds, `${id} is ${STOP_LABEL[stop.kind].toLowerCase()}${stop.by ? ` (${stop.by})` : ''}: only Brett queues it again`);
+  const holder = slotHolders(builds).find((x) => x.id !== id);
+  if (holder) return refuse(builds, `${holder.id} is already queued: one build in the Queue at a time. ${id} stays in Pending and moves up by itself when ${holder.id} goes live.`);
+  const at = nowIso(now);
+  const next = toQueued(b, { by, at, note: `Queued (${str(by, 80) || 'unknown'}).` });
+  return { ok: true, why: '', builds: swap(builds, next), build: next, changes: [{ id, from: b.status, to: 'queued', why: stop ? `queued by ${by}: ${stop.kind} lifted` : `queued by ${by || 'unknown'}` }] };
+}
+
+/**
+ * Move the oldest Pending build up when the slot is free. { ok, builds, build, promoted: id | '', why, changes }.
+ * Nothing to do (slot taken, empty line) is ok with promoted ''. Never picks a stopped build.
+ */
+export function promote(builds, { by = 'dispatcher', now = Date.now() } = {}) {
+  const holder = queuedOne(builds);
+  if (holder) return { ok: true, why: `${holder.id} is queued`, builds: list(builds), build: null, promoted: '', changes: [] };
+  const b = pendingOrder(builds)[0];
+  if (!b) return { ok: true, why: 'nothing in Pending can move up', builds: list(builds), build: null, promoted: '', changes: [] };
+  const at = nowIso(now);
+  const next = toQueued(b, { by, at, note: 'Moved up from Pending: the Queue was free.' });
+  return { ok: true, why: '', builds: swap(builds, next), build: next, promoted: b.id, changes: [{ id: b.id, from: 'pending', to: 'queued', why: 'oldest in Pending, the Queue was free' }] };
+}
+
+/**
+ * The queued build goes live: queued → running, and the next Pending build moves up behind it. The dispatcher writes
+ * its launch fields (account, session, slot …) on the returned record. Refused for a stopped build or one not queued.
+ */
+export function goLive(builds, id, { by = 'dispatcher', now = Date.now() } = {}) {
+  const b = findBuild(builds, id);
+  if (!b || b.deleted) return refuse(builds, `no build ${id}`);
+  const stop = stopOf(b);
+  if (stop) return refuse(builds, `${id} is ${STOP_LABEL[stop.kind].toLowerCase()}: it is not launched until Brett says so`);
+  if (b.status !== 'queued') return refuse(builds, `${id} is ${b.status}: only the queued build goes live`);
+  const at = nowIso(now);
+  const live = { ...b, status: 'running', updatedAt: at };
+  const p = promote(swap(builds, live), { by, now });
+  return { ok: true, why: '', builds: p.builds, build: live, promoted: p.promoted, changes: [{ id, from: 'queued', to: 'running', why: 'went live' }, ...p.changes] };
+}
+
+/**
+ * Put a stop on a build (hold | cancel | unqueue). Anyone may stop a build; only an owner lifts it. The build goes to
+ * Pending with `pipeline.stop`; the slot it held is free and, unless `promote: false`, the next Pending build moves up.
+ * cancel also returns `kill: { session, slot, account, claims: [{ step, runId, slot, account }] }`: what the caller
+ * must kill and free (the tmux session, the agent slot, each parallel step session); the record no longer points at them.
+ */
+export function stop(builds, id, kind, { by = '', why = '', now = Date.now(), promote: moveUp = true } = {}) {
+  if (!STOP_KINDS.includes(kind)) return refuse(builds, `unknown stop ${kind}`);
+  const b = findBuild(builds, id);
+  if (!b || b.deleted) return refuse(builds, `no build ${id}`);
+  const cur = stopOf(b);
+  if (cur && cur.kind === kind && normStop(b.pipeline?.stop) && b.status === 'pending') return { ok: true, why: `already ${STOP_LABEL[kind].toLowerCase()}`, builds: list(builds), build: b, changes: [], kill: null };
+  if (cur?.kind === 'cancel' && kind !== 'cancel') return refuse(builds, `${id} is cancelled: queue it again first`);
+  if (!STOPPABLE[kind].includes(b.status)) return refuse(builds, `${id} is ${b.status}: ${kind} applies to ${STOPPABLE[kind].join(', ')} builds`);
+  const at = nowIso(now);
+  const rec = { kind, at, by: str(by, 80), why: str(why, 300), from: str(b.status, 20) };
+  const tail = rec.why ? `: ${rec.why}` : '';
+  const held = kind === 'hold' ? { heldAt: at, heldBy: rec.by, heldWhy: rec.why } : unheld;
+  const p = obj(b.pipeline) ?? {};
+  let next; let kill = null;
+  if (kind === 'cancel') {
+    const claims = (b.steps ?? []).filter((s) => s.claim?.runId).map((s) => ({ step: s.id, runId: str(s.claim.runId, 80), slot: str(s.claim.slot, 60), account: accountName(s.claim.account) }));
+    kill = { session: str(p.session, 120), slot: str(p.slot, 60), account: accountName(p.account), claims };
+    const steps = (b.steps ?? []).map((s) => { if (!s.claim) return s; const x = { ...s }; delete x.claim; return x; });
+    next = withPipe(b, { stop: rec, ...held, queuedAt: '', queuedBy: '', session: '', slot: '', dispatchedAt: '', note: `Cancelled (${rec.by || 'unknown'})${tail}. It runs again only when Brett queues it.` }, { status: 'pending', updatedAt: at, ...(b.steps ? { steps } : {}) });
+  } else if (kind === 'hold') {
+    next = withPipe(b, { stop: rec, ...held, ...(iso(p.lineAt) || iso(p.queuedAt) ? { lineAt: iso(p.lineAt) || iso(p.queuedAt) } : {}), queuedAt: '', queuedBy: '', note: `On hold (${rec.by || 'unknown'})${tail}. It keeps its place in line and waits until Brett releases it.` }, { status: 'pending', updatedAt: at });
+  } else {
+    next = withPipe(b, { stop: rec, ...held, queuedAt: '', queuedBy: '', note: `Back to Pending (${rec.by || 'unknown'})${tail}. It moves up only when Brett queues it.` }, { status: 'pending', updatedAt: at });
+  }
+  let out = swap(builds, next);
+  const changes = [{ id, from: b.status, to: 'pending', why: `${kind}${rec.by ? ` by ${rec.by}` : ''}` }];
+  let promoted = '';
+  if (moveUp) { const pr = promote(out, { now }); out = pr.builds; promoted = pr.promoted; changes.push(...pr.changes); }
+  return { ok: true, why: '', builds: out, build: next, changes, kill, promoted };
+}
+export const hold = (builds, id, opts) => stop(builds, id, 'hold', opts);
+export const cancel = (builds, id, opts) => stop(builds, id, 'cancel', opts);
+export const unqueue = (builds, id, opts) => stop(builds, id, 'unqueue', opts);
+
+/**
+ * Lift a stop: owners only. The build is back in the Pending line, unmarked: a build that had reached the Queue keeps
+ * its place at the head of the line (lineAt), any other lines up by its filed time. It takes the slot at once when it is free.
+ */
+export function release(builds, id, { by = '', now = Date.now(), promote: moveUp = true } = {}) {
+  const b = findBuild(builds, id);
+  if (!b || b.deleted) return refuse(builds, `no build ${id}`);
+  const cur = stopOf(b);
+  if (!cur) return { ok: true, why: 'not stopped', builds: list(builds), build: b, changes: [], promoted: '' };
+  if (!isOwnerActor(by)) return refuse(builds, `${id} is ${STOP_LABEL[cur.kind].toLowerCase()}${cur.by ? ` (${cur.by})` : ''}: only Brett releases it, not ${str(by, 80) || 'an unnamed actor'}`);
+  const at = nowIso(now);
+  const next = withPipe(b, { stop: undefined, ...unheld, queuedAt: '', queuedBy: '', note: `Released (${by}): back in line in Pending.` }, { status: 'pending', updatedAt: at });
+  let out = swap(builds, next);
+  const changes = [{ id, from: b.status, to: 'pending', why: `${cur.kind} lifted by ${by}` }];
+  let promoted = '';
+  if (moveUp) { const pr = promote(out, { now }); out = pr.builds; promoted = pr.promoted; changes.push(...pr.changes); }
+  return { ok: true, why: '', builds: out, build: findBuild(out, id), changes, promoted };
+}
+
+/**
+ * The gate every automated writer passes a record through before it stores it (the dispatcher's tick, a run's exit,
+ * the reconciler, the watchdog, a stale export): `prev` is the stored record, `next` the one about to be written.
+ * When `prev` carries a stop and `by` is not an owner, the stop wins: status, the stop record, the hold fields and the
+ * cleared launch fields come back from `prev`; everything else in `next` (steps ticked, notes, PR, lastRun) is kept.
+ * { build, kept, why }: kept = the write tried to undo a stop and was corrected.
+ */
+export function keepStop(prev, next, { by = '' } = {}) {
+  const cur = stopOf(prev);
+  if (!cur || !next || isOwnerActor(by)) return { build: next, kept: false, why: '' };
+  const pp = obj(prev.pipeline) ?? {}; const np = obj(next.pipeline) ?? {};
+  const same = next.status === prev.status && JSON.stringify(normStop(np.stop)) === JSON.stringify(normStop(pp.stop)) && iso(np.heldAt) === iso(pp.heldAt)
+    && !iso(np.queuedAt) && str(np.session) === str(pp.session) && str(np.slot) === str(pp.slot);
+  if (same) return { build: next, kept: false, why: '' };
+  const pipeline = { ...np, stop: pp.stop, heldAt: pp.heldAt ?? '', heldBy: pp.heldBy ?? '', heldWhy: pp.heldWhy ?? '', queuedAt: pp.queuedAt ?? '', queuedBy: pp.queuedBy ?? '', session: pp.session ?? '', slot: pp.slot ?? '', dispatchedAt: pp.dispatchedAt ?? '' };
+  if (pipeline.stop === undefined) delete pipeline.stop;
+  const steps = cur.kind === 'cancel' && Array.isArray(next.steps) ? next.steps.map((s) => { if (!s?.claim) return s; const x = { ...s }; delete x.claim; return x; }) : next.steps;
+  const build = { ...next, status: prev.status, pipeline, ...(steps ? { steps } : {}) };
+  return { build, kept: true, why: `${prev.id ?? 'build'} is ${STOP_LABEL[cur.kind].toLowerCase()}${cur.by ? ` (${cur.by})` : ''}: ${str(by, 80) || 'automation'} may not move it${next.status !== prev.status ? ` to ${next.status}` : ''}` };
+}
+
+/**
+ * The reconcile pass over a set of builds, pure and idempotent: the one place the invariant is restored.
+ *   1. a stopped build still in status queued (a legacy hold) → Pending, its stop kept
+ *   2. more than QUEUE_MAX slot holders → one stays (has run before, then oldest queuedAt, then filed time, then id),
+ *      the rest → Pending, unmarked, their place in line kept
+ *   3. the slot free → promote()
+ * A stopped build is never given a new status here. { builds, changes, queued: id | '', ok: true }.
+ */
+export function settleQueue(builds, { by = 'reconciler', now = Date.now() } = {}) {
+  const at = nowIso(now);
+  const changes = [];
+  let out = list(builds).map((b) => {
+    if (!live1(b) || b.status !== 'queued') return b;
+    const cur = stopOf(b);
+    if (!cur) return b;
+    changes.push({ id: b.id, from: 'queued', to: 'pending', why: `${cur.kind} stands: out of the Queue slot` });
+    const p = obj(b.pipeline) ?? {};
+    return withPipe(b, { stop: normStop(p.stop) ?? { ...cur, from: 'queued' }, lineAt: iso(p.lineAt) || iso(p.queuedAt) || at, queuedAt: '', queuedBy: '' }, { status: 'pending', updatedAt: at });
+  });
+  const ran = (b) => ((Number(b.pipeline?.runs) || 0) > 0 || !!b.pipeline?.lastRun ? 0 : 1);
+  const holders = slotHolders(out).sort((a, b) => ran(a) - ran(b) || str(a.pipeline?.queuedAt, 40).localeCompare(str(b.pipeline?.queuedAt, 40)) || str(a.createdAt, 40).localeCompare(str(b.createdAt, 40)) || str(a.id, 200).localeCompare(str(b.id, 200)));
+  const keep = holders.slice(0, QUEUE_MAX); const extra = new Set(holders.slice(QUEUE_MAX).map((b) => b.id));
+  if (extra.size) {
+    out = out.map((b) => {
+      if (!b || !extra.has(b.id) || b.status !== 'queued' || b.deleted) return b;
+      changes.push({ id: b.id, from: 'queued', to: 'pending', why: `${keep[0].id} holds the Queue: one at a time` });
+      const p = obj(b.pipeline) ?? {};
+      return withPipe(b, { lineAt: iso(p.lineAt) || iso(p.queuedAt) || at, queuedAt: '', queuedBy: '', note: `Back in line in Pending: ${keep[0].id} holds the Queue. It moves up by itself.` }, { status: 'pending', updatedAt: at });
+    });
+  }
+  const pr = promote(out, { by, now });
+  changes.push(...pr.changes);
+  return { ok: true, builds: pr.builds, changes, queued: queuedOne(pr.builds)?.id ?? '' };
 }

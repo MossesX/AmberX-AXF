@@ -1,0 +1,5700 @@
+{
+ "$axf": "build-pipeline@1",
+ "note": "The single-Queued contract (framework/core/build-pipeline.mjs, last section): at most one build in status queued, promote() moves the oldest Pending build up when the queued one goes live, and hold / cancel / unqueue are stops only an owner actor reverses. Every port replays each case: run `op` on `in` at `now` and answer `out`. Ops: queue, promote, goLive, hold, cancel, unqueue, release, settleQueue answer { ok, why, statuses (id → status), stops (id → standing stop kind), queued [ids], promoted?, changes, kill?, invariant (checkQueue(builds).ok) }; keepStop answers { kept, why, status, stop, build }; checkQueue, pendingOrder ({ order, waits }), isOwnerActor (actor → bool) and orchestrator ({ shown, sent }) answer their value; sequence runs `ops` in order on one evolving list and answers the view after each (`write` = an automated writer stores { ...record, ...patch } through keepStop; its view adds `kept`).",
+ "now": "2026-11-28T10:00:00.000Z",
+ "queueMax": 1,
+ "stopKinds": [
+  "hold",
+  "cancel",
+  "unqueue"
+ ],
+ "ownerActors": [
+  "brett",
+  "console",
+  "voice",
+  "amberx",
+  "phone"
+ ],
+ "sentStatuses": [
+  "queued",
+  "running",
+  "waiting",
+  "fixing",
+  "built",
+  "landing"
+ ],
+ "stoppable": {
+  "hold": [
+   "pending",
+   "queued"
+  ],
+  "unqueue": [
+   "queued"
+  ],
+  "cancel": [
+   "pending",
+   "queued",
+   "running",
+   "waiting",
+   "fixing",
+   "blocked",
+   "failed",
+   "landing",
+   "escalated"
+  ]
+ },
+ "cases": [
+  {
+   "name": "queue: the slot is free, a Pending build goes up",
+   "op": "queue",
+   "in": {
+    "builds": [
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "id": "c",
+    "by": "brett"
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "b": "pending",
+     "c": "queued"
+    },
+    "stops": {},
+    "queued": [
+     "c"
+    ],
+    "changes": [
+     {
+      "id": "c",
+      "from": "pending",
+      "to": "queued",
+      "why": "queued by brett"
+     }
+    ],
+    "invariant": true
+   }
+  },
+  {
+   "name": "queue: refused while another build is queued (one at a time)",
+   "op": "queue",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "id": "c",
+    "by": "brett"
+   },
+   "out": {
+    "ok": false,
+    "why": "a is already queued: one build in the Queue at a time. c stays in Pending and moves up by itself when a goes live.",
+    "statuses": {
+     "a": "queued",
+     "b": "pending",
+     "c": "pending",
+     "d": "pending"
+    },
+    "stops": {},
+    "queued": [
+     "a"
+    ],
+    "changes": [],
+    "invariant": true
+   }
+  },
+  {
+   "name": "queue: already queued is a no-op",
+   "op": "queue",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "id": "a",
+    "by": "brett"
+   },
+   "out": {
+    "ok": true,
+    "why": "already queued",
+    "statuses": {
+     "a": "queued",
+     "b": "pending",
+     "c": "pending",
+     "d": "pending"
+    },
+    "stops": {},
+    "queued": [
+     "a"
+    ],
+    "changes": [],
+    "invariant": true
+   }
+  },
+  {
+   "name": "queue: a running build cannot be queued",
+   "op": "queue",
+   "in": {
+    "builds": [
+     {
+      "id": "r",
+      "status": "running",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "id": "r",
+    "by": "brett"
+   },
+   "out": {
+    "ok": false,
+    "why": "r is running: only a Pending build can be queued",
+    "statuses": {
+     "r": "running"
+    },
+    "stops": {},
+    "queued": [],
+    "changes": [],
+    "invariant": true
+   }
+  },
+  {
+   "name": "queue: the dispatcher may not queue an unqueued build",
+   "op": "queue",
+   "in": {
+    "builds": [
+     {
+      "id": "u",
+      "status": "pending",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "unqueue",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "queued"
+       }
+      }
+     }
+    ],
+    "id": "u",
+    "by": "dispatcher"
+   },
+   "out": {
+    "ok": false,
+    "why": "u is back in pending (brett): only Brett queues it again",
+    "statuses": {
+     "u": "pending"
+    },
+    "stops": {
+     "u": "unqueue"
+    },
+    "queued": [],
+    "changes": [],
+    "invariant": true
+   }
+  },
+  {
+   "name": "queue: Brett queues an unqueued build, the stop is lifted",
+   "op": "queue",
+   "in": {
+    "builds": [
+     {
+      "id": "u",
+      "status": "pending",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "unqueue",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "queued"
+       }
+      }
+     }
+    ],
+    "id": "u",
+    "by": "brett"
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "u": "queued"
+    },
+    "stops": {},
+    "queued": [
+     "u"
+    ],
+    "changes": [
+     {
+      "id": "u",
+      "from": "pending",
+      "to": "queued",
+      "why": "queued by brett: unqueue lifted"
+     }
+    ],
+    "invariant": true
+   }
+  },
+  {
+   "name": "queue: Brett queues a cancelled build again",
+   "op": "queue",
+   "in": {
+    "builds": [
+     {
+      "id": "x",
+      "status": "pending",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "cancel",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "running"
+       }
+      }
+     }
+    ],
+    "id": "x",
+    "by": "console"
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "x": "queued"
+    },
+    "stops": {},
+    "queued": [
+     "x"
+    ],
+    "changes": [
+     {
+      "id": "x",
+      "from": "pending",
+      "to": "queued",
+      "why": "queued by console: cancel lifted"
+     }
+    ],
+    "invariant": true
+   }
+  },
+  {
+   "name": "promote: slot taken, nothing moves",
+   "op": "promote",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ]
+   },
+   "out": {
+    "ok": true,
+    "why": "a is queued",
+    "statuses": {
+     "a": "queued",
+     "b": "pending",
+     "c": "pending",
+     "d": "pending"
+    },
+    "stops": {},
+    "queued": [
+     "a"
+    ],
+    "promoted": "",
+    "changes": [],
+    "invariant": true
+   }
+  },
+  {
+   "name": "promote: slot free, the oldest Pending build moves up",
+   "op": "promote",
+   "in": {
+    "builds": [
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "r",
+      "status": "running",
+      "createdAt": "2026-11-19T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ]
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "d": "pending",
+     "b": "queued",
+     "c": "pending",
+     "r": "running"
+    },
+    "stops": {},
+    "queued": [
+     "b"
+    ],
+    "promoted": "b",
+    "changes": [
+     {
+      "id": "b",
+      "from": "pending",
+      "to": "queued",
+      "why": "oldest in Pending, the Queue was free"
+     }
+    ],
+    "invariant": true
+   }
+  },
+  {
+   "name": "promote: skips held, unqueued, cancelled, unsplit, finished, hidden, deleted and returned-for-Brett builds",
+   "op": "promote",
+   "in": {
+    "builds": [
+     {
+      "id": "held",
+      "status": "pending",
+      "createdAt": "2026-11-01T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "hold",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "queued"
+       },
+       "heldAt": "2026-11-27T09:00:00.000Z",
+       "heldBy": "brett"
+      }
+     },
+     {
+      "id": "unq",
+      "status": "pending",
+      "createdAt": "2026-11-02T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "unqueue",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "queued"
+       }
+      }
+     },
+     {
+      "id": "can",
+      "status": "pending",
+      "createdAt": "2026-11-03T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "cancel",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "queued"
+       }
+      }
+     },
+     {
+      "id": "unsplit",
+      "status": "pending",
+      "createdAt": "2026-11-04T09:00:00.000Z",
+      "steps": []
+     },
+     {
+      "id": "alldone",
+      "status": "pending",
+      "createdAt": "2026-11-05T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable",
+        "done": true
+       },
+       {
+        "id": "s2",
+        "model": "Fable",
+        "done": true
+       }
+      ]
+     },
+     {
+      "id": "hidden",
+      "status": "pending",
+      "createdAt": "2026-11-06T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "hidden": true
+     },
+     {
+      "id": "gone",
+      "status": "pending",
+      "createdAt": "2026-11-07T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "deleted": true
+     },
+     {
+      "id": "crashed",
+      "status": "pending",
+      "createdAt": "2026-11-08T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "runs": 3,
+       "crashes": 3,
+       "lastRun": {
+        "at": "2026-11-26T09:00:00.000Z",
+        "exit": 1,
+        "outcome": "failed",
+        "reason": "crash-limit",
+        "stepsLeft": 2
+       }
+      }
+     },
+     {
+      "id": "asked",
+      "status": "pending",
+      "createdAt": "2026-11-09T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "runs": 1,
+       "lastRun": {
+        "at": "2026-11-26T09:00:00.000Z",
+        "exit": 0,
+        "outcome": "returned",
+        "reason": "needs-brett",
+        "stepsLeft": 1
+       }
+      }
+     },
+     {
+      "id": "ok",
+      "status": "pending",
+      "createdAt": "2026-11-10T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ]
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "held": "pending",
+     "unq": "pending",
+     "can": "pending",
+     "unsplit": "pending",
+     "alldone": "pending",
+     "hidden": "pending",
+     "gone": "pending",
+     "crashed": "pending",
+     "asked": "pending",
+     "ok": "queued"
+    },
+    "stops": {
+     "held": "hold",
+     "unq": "unqueue",
+     "can": "cancel"
+    },
+    "queued": [
+     "ok"
+    ],
+    "promoted": "ok",
+    "changes": [
+     {
+      "id": "ok",
+      "from": "pending",
+      "to": "queued",
+      "why": "oldest in Pending, the Queue was free"
+     }
+    ],
+    "invariant": true
+   }
+  },
+  {
+   "name": "promote: nothing promotable leaves the slot empty",
+   "op": "promote",
+   "in": {
+    "builds": [
+     {
+      "id": "unq",
+      "status": "pending",
+      "createdAt": "2026-11-02T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "unqueue",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "queued"
+       }
+      }
+     }
+    ]
+   },
+   "out": {
+    "ok": true,
+    "why": "nothing in Pending can move up",
+    "statuses": {
+     "unq": "pending"
+    },
+    "stops": {
+     "unq": "unqueue"
+    },
+    "queued": [],
+    "promoted": "",
+    "changes": [],
+    "invariant": true
+   }
+  },
+  {
+   "name": "promote: a build that held a place in line (lineAt) goes before older filed builds",
+   "op": "promote",
+   "in": {
+    "builds": [
+     {
+      "id": "late",
+      "status": "pending",
+      "createdAt": "2026-11-25T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "lineAt": "2026-11-01T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "early",
+      "status": "pending",
+      "createdAt": "2026-11-02T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ]
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "late": "queued",
+     "early": "pending"
+    },
+    "stops": {},
+    "queued": [
+     "late"
+    ],
+    "promoted": "late",
+    "changes": [
+     {
+      "id": "late",
+      "from": "pending",
+      "to": "queued",
+      "why": "oldest in Pending, the Queue was free"
+     }
+    ],
+    "invariant": true
+   }
+  },
+  {
+   "name": "pendingOrder: the line and why the others wait",
+   "op": "pendingOrder",
+   "in": {
+    "builds": [
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "tie2",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "tie1",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "unq",
+      "status": "pending",
+      "createdAt": "2026-11-02T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "unqueue",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "queued"
+       }
+      }
+     },
+     {
+      "id": "unsplit",
+      "status": "pending",
+      "createdAt": "2026-11-04T09:00:00.000Z",
+      "steps": []
+     },
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ]
+   },
+   "out": {
+    "order": [
+     "b",
+     "c",
+     "tie1",
+     "tie2"
+    ],
+    "waits": {
+     "unq": "Back in Pending (brett): waits for Brett",
+     "unsplit": "no steps yet: waiting for the split"
+    }
+   }
+  },
+  {
+   "name": "goLive: the queued build starts and the next Pending build moves up",
+   "op": "goLive",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "id": "a"
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "a": "running",
+     "b": "queued",
+     "c": "pending",
+     "d": "pending"
+    },
+    "stops": {},
+    "queued": [
+     "b"
+    ],
+    "promoted": "b",
+    "changes": [
+     {
+      "id": "a",
+      "from": "queued",
+      "to": "running",
+      "why": "went live"
+     },
+     {
+      "id": "b",
+      "from": "pending",
+      "to": "queued",
+      "why": "oldest in Pending, the Queue was free"
+     }
+    ],
+    "invariant": true
+   }
+  },
+  {
+   "name": "goLive: last build, nothing behind it",
+   "op": "goLive",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     }
+    ],
+    "id": "a"
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "a": "running"
+    },
+    "stops": {},
+    "queued": [],
+    "promoted": "",
+    "changes": [
+     {
+      "id": "a",
+      "from": "queued",
+      "to": "running",
+      "why": "went live"
+     }
+    ],
+    "invariant": true
+   }
+  },
+  {
+   "name": "goLive: refused for a Pending build",
+   "op": "goLive",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "id": "b"
+   },
+   "out": {
+    "ok": false,
+    "why": "b is pending: only the queued build goes live",
+    "statuses": {
+     "a": "queued",
+     "b": "pending",
+     "c": "pending",
+     "d": "pending"
+    },
+    "stops": {},
+    "queued": [
+     "a"
+    ],
+    "changes": [],
+    "invariant": true
+   }
+  },
+  {
+   "name": "goLive: refused for a held build (legacy hold still queued)",
+   "op": "goLive",
+   "in": {
+    "builds": [
+     {
+      "id": "h",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "heldAt": "2026-11-27T09:00:00.000Z",
+       "heldBy": "brett",
+       "heldWhy": "wait"
+      }
+     }
+    ],
+    "id": "h"
+   },
+   "out": {
+    "ok": false,
+    "why": "h is on hold: it is not launched until Brett says so",
+    "statuses": {
+     "h": "queued"
+    },
+    "stops": {
+     "h": "hold"
+    },
+    "queued": [
+     "h"
+    ],
+    "changes": [],
+    "invariant": false
+   }
+  },
+  {
+   "name": "hold: the queued build leaves the slot, the next moves up",
+   "op": "hold",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "id": "a",
+    "by": "brett",
+    "why": "wait for the design"
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "a": "pending",
+     "b": "queued",
+     "c": "pending",
+     "d": "pending"
+    },
+    "stops": {
+     "a": "hold"
+    },
+    "queued": [
+     "b"
+    ],
+    "promoted": "b",
+    "changes": [
+     {
+      "id": "a",
+      "from": "queued",
+      "to": "pending",
+      "why": "hold by brett"
+     },
+     {
+      "id": "b",
+      "from": "pending",
+      "to": "queued",
+      "why": "oldest in Pending, the Queue was free"
+     }
+    ],
+    "kill": null,
+    "invariant": true
+   }
+  },
+  {
+   "name": "hold: a Pending build is skipped from then on",
+   "op": "hold",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "id": "b",
+    "by": "brett"
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "a": "queued",
+     "b": "pending",
+     "c": "pending",
+     "d": "pending"
+    },
+    "stops": {
+     "b": "hold"
+    },
+    "queued": [
+     "a"
+    ],
+    "promoted": "",
+    "changes": [
+     {
+      "id": "b",
+      "from": "pending",
+      "to": "pending",
+      "why": "hold by brett"
+     }
+    ],
+    "kill": null,
+    "invariant": true
+   }
+  },
+  {
+   "name": "hold: refused on a running build",
+   "op": "hold",
+   "in": {
+    "builds": [
+     {
+      "id": "r",
+      "status": "running",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "id": "r",
+    "by": "brett"
+   },
+   "out": {
+    "ok": false,
+    "why": "r is running: hold applies to pending, queued builds",
+    "statuses": {
+     "r": "running"
+    },
+    "stops": {},
+    "queued": [],
+    "changes": [],
+    "invariant": true
+   }
+  },
+  {
+   "name": "unqueue: back to Pending, marked, the next moves up",
+   "op": "unqueue",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "id": "a",
+    "by": "brett"
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "a": "pending",
+     "b": "queued",
+     "c": "pending",
+     "d": "pending"
+    },
+    "stops": {
+     "a": "unqueue"
+    },
+    "queued": [
+     "b"
+    ],
+    "promoted": "b",
+    "changes": [
+     {
+      "id": "a",
+      "from": "queued",
+      "to": "pending",
+      "why": "unqueue by brett"
+     },
+     {
+      "id": "b",
+      "from": "pending",
+      "to": "queued",
+      "why": "oldest in Pending, the Queue was free"
+     }
+    ],
+    "kill": null,
+    "invariant": true
+   }
+  },
+  {
+   "name": "unqueue: refused on a Pending build",
+   "op": "unqueue",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "id": "b",
+    "by": "brett"
+   },
+   "out": {
+    "ok": false,
+    "why": "b is pending: unqueue applies to queued builds",
+    "statuses": {
+     "a": "queued",
+     "b": "pending",
+     "c": "pending",
+     "d": "pending"
+    },
+    "stops": {},
+    "queued": [
+     "a"
+    ],
+    "changes": [],
+    "invariant": true
+   }
+  },
+  {
+   "name": "cancel: a running build, session and slot handed back to kill, claims dropped",
+   "op": "cancel",
+   "in": {
+    "builds": [
+     {
+      "id": "r",
+      "status": "running",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable",
+        "done": true
+       },
+       {
+        "id": "s2",
+        "model": "Fable",
+        "claim": {
+         "runId": "run-1",
+         "slot": "slot-3",
+         "account": "acct-one",
+         "at": "2026-11-28T09:00:00.000Z",
+         "expiresAt": "2026-11-28T11:00:00.000Z"
+        }
+       },
+       {
+        "id": "s3",
+        "model": "Opus",
+        "after": [
+         "s1"
+        ],
+        "claim": {
+         "runId": "run-2",
+         "slot": "slot-4",
+         "account": "acct-two",
+         "at": "2026-11-28T09:00:00.000Z",
+         "expiresAt": "2026-11-28T11:00:00.000Z"
+        }
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "account": "acct-one",
+       "session": "axf-r--fable",
+       "slot": "slot-3",
+       "model": "Fable",
+       "runs": 1
+      }
+     },
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "id": "r",
+    "by": "brett",
+    "why": "wrong plan"
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "r": "pending",
+     "a": "queued",
+     "b": "pending"
+    },
+    "stops": {
+     "r": "cancel"
+    },
+    "queued": [
+     "a"
+    ],
+    "promoted": "",
+    "changes": [
+     {
+      "id": "r",
+      "from": "running",
+      "to": "pending",
+      "why": "cancel by brett"
+     }
+    ],
+    "kill": {
+     "session": "axf-r--fable",
+     "slot": "slot-3",
+     "account": "acct-one",
+     "claims": [
+      {
+       "step": "s2",
+       "runId": "run-1",
+       "slot": "slot-3",
+       "account": "acct-one"
+      },
+      {
+       "step": "s3",
+       "runId": "run-2",
+       "slot": "slot-4",
+       "account": "acct-two"
+      }
+     ]
+    },
+    "invariant": true
+   }
+  },
+  {
+   "name": "cancel: the queued build, the next moves up",
+   "op": "cancel",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "id": "a",
+    "by": "console"
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "a": "pending",
+     "b": "queued",
+     "c": "pending",
+     "d": "pending"
+    },
+    "stops": {
+     "a": "cancel"
+    },
+    "queued": [
+     "b"
+    ],
+    "promoted": "b",
+    "changes": [
+     {
+      "id": "a",
+      "from": "queued",
+      "to": "pending",
+      "why": "cancel by console"
+     },
+     {
+      "id": "b",
+      "from": "pending",
+      "to": "queued",
+      "why": "oldest in Pending, the Queue was free"
+     }
+    ],
+    "kill": {
+     "session": "",
+     "slot": "",
+     "account": "",
+     "claims": []
+    },
+    "invariant": true
+   }
+  },
+  {
+   "name": "cancel: twice is a no-op",
+   "op": "cancel",
+   "in": {
+    "builds": [
+     {
+      "id": "x",
+      "status": "pending",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "cancel",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "running"
+       }
+      }
+     }
+    ],
+    "id": "x",
+    "by": "brett"
+   },
+   "out": {
+    "ok": true,
+    "why": "already cancelled",
+    "statuses": {
+     "x": "pending"
+    },
+    "stops": {
+     "x": "cancel"
+    },
+    "queued": [],
+    "changes": [],
+    "kill": null,
+    "invariant": true
+   }
+  },
+  {
+   "name": "cancel: refused on a landed build",
+   "op": "cancel",
+   "in": {
+    "builds": [
+     {
+      "id": "l",
+      "status": "landed",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "id": "l",
+    "by": "brett"
+   },
+   "out": {
+    "ok": false,
+    "why": "l is landed: cancel applies to pending, queued, running, waiting, fixing, blocked, failed, landing, escalated builds",
+    "statuses": {
+     "l": "landed"
+    },
+    "stops": {},
+    "queued": [],
+    "changes": [],
+    "invariant": true
+   }
+  },
+  {
+   "name": "hold: refused on a cancelled build",
+   "op": "hold",
+   "in": {
+    "builds": [
+     {
+      "id": "x",
+      "status": "pending",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "cancel",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "running"
+       }
+      }
+     }
+    ],
+    "id": "x",
+    "by": "brett"
+   },
+   "out": {
+    "ok": false,
+    "why": "x is cancelled: queue it again first",
+    "statuses": {
+     "x": "pending"
+    },
+    "stops": {
+     "x": "cancel"
+    },
+    "queued": [],
+    "changes": [],
+    "invariant": true
+   }
+  },
+  {
+   "name": "release: the dispatcher may not release a hold",
+   "op": "release",
+   "in": {
+    "builds": [
+     {
+      "id": "h",
+      "status": "pending",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "hold",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "queued"
+       },
+       "heldAt": "2026-11-27T09:00:00.000Z",
+       "heldBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "queued",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-27T09:00:00.000Z"
+      }
+     }
+    ],
+    "id": "h",
+    "by": "dispatcher"
+   },
+   "out": {
+    "ok": false,
+    "why": "h is on hold (brett): only Brett releases it, not dispatcher",
+    "statuses": {
+     "h": "pending",
+     "b": "queued"
+    },
+    "stops": {
+     "h": "hold"
+    },
+    "queued": [
+     "b"
+    ],
+    "changes": [],
+    "invariant": true
+   }
+  },
+  {
+   "name": "release: the reconciler may not release a cancel",
+   "op": "release",
+   "in": {
+    "builds": [
+     {
+      "id": "x",
+      "status": "pending",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "cancel",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "queued"
+       }
+      }
+     }
+    ],
+    "id": "x",
+    "by": "reconciler"
+   },
+   "out": {
+    "ok": false,
+    "why": "x is cancelled (brett): only Brett releases it, not reconciler",
+    "statuses": {
+     "x": "pending"
+    },
+    "stops": {
+     "x": "cancel"
+    },
+    "queued": [],
+    "changes": [],
+    "invariant": true
+   }
+  },
+  {
+   "name": "release: Brett releases a hold, the slot is free, it goes straight up",
+   "op": "release",
+   "in": {
+    "builds": [
+     {
+      "id": "h",
+      "status": "pending",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "hold",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "queued"
+       },
+       "heldAt": "2026-11-27T09:00:00.000Z",
+       "heldBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-10T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "id": "h",
+    "by": "brett"
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "h": "queued",
+     "c": "pending"
+    },
+    "stops": {},
+    "queued": [
+     "h"
+    ],
+    "promoted": "h",
+    "changes": [
+     {
+      "id": "h",
+      "from": "pending",
+      "to": "pending",
+      "why": "hold lifted by brett"
+     },
+     {
+      "id": "h",
+      "from": "pending",
+      "to": "queued",
+      "why": "oldest in Pending, the Queue was free"
+     }
+    ],
+    "invariant": true
+   }
+  },
+  {
+   "name": "release: Brett releases a hold while another build is queued, it waits first in line",
+   "op": "release",
+   "in": {
+    "builds": [
+     {
+      "id": "h",
+      "status": "pending",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "hold",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "queued"
+       },
+       "heldAt": "2026-11-27T09:00:00.000Z",
+       "heldBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "queued",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-27T09:00:00.000Z"
+      }
+     }
+    ],
+    "id": "h",
+    "by": "brett"
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "h": "pending",
+     "b": "queued"
+    },
+    "stops": {},
+    "queued": [
+     "b"
+    ],
+    "promoted": "",
+    "changes": [
+     {
+      "id": "h",
+      "from": "pending",
+      "to": "pending",
+      "why": "hold lifted by brett"
+     }
+    ],
+    "invariant": true
+   }
+  },
+  {
+   "name": "release: not stopped is a no-op",
+   "op": "release",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "id": "b",
+    "by": "brett"
+   },
+   "out": {
+    "ok": true,
+    "why": "not stopped",
+    "statuses": {
+     "a": "queued",
+     "b": "pending",
+     "c": "pending",
+     "d": "pending"
+    },
+    "stops": {},
+    "queued": [
+     "a"
+    ],
+    "promoted": "",
+    "changes": [],
+    "invariant": true
+   }
+  },
+  {
+   "name": "keepStop: a killed session exit (crash → queued) does not requeue a cancelled build",
+   "op": "keepStop",
+   "in": {
+    "by": "dispatcher",
+    "prev": {
+     "id": "x",
+     "status": "pending",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "stop": {
+       "kind": "cancel",
+       "at": "2026-11-27T09:00:00.000Z",
+       "by": "brett",
+       "why": "",
+       "from": "running"
+      },
+      "runs": 1
+     }
+    },
+    "next": {
+     "id": "x",
+     "status": "queued",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "stop": {
+       "kind": "cancel",
+       "at": "2026-11-27T09:00:00.000Z",
+       "by": "brett",
+       "why": "",
+       "from": "running"
+      },
+      "runs": 1,
+      "queuedAt": "2026-11-28T10:00:00.000Z",
+      "queuedBy": "dispatcher",
+      "lastRun": {
+       "at": "2026-11-28T10:00:00.000Z",
+       "exit": 143,
+       "outcome": "requeued",
+       "reason": "crash",
+       "stepsLeft": 2
+      }
+     }
+    }
+   },
+   "out": {
+    "kept": true,
+    "why": "x is cancelled (brett): dispatcher may not move it to queued",
+    "status": "pending",
+    "stop": "cancel",
+    "build": {
+     "id": "x",
+     "status": "pending",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "stop": {
+       "kind": "cancel",
+       "at": "2026-11-27T09:00:00.000Z",
+       "by": "brett",
+       "why": "",
+       "from": "running"
+      },
+      "runs": 1,
+      "queuedAt": "",
+      "queuedBy": "",
+      "lastRun": {
+       "at": "2026-11-28T10:00:00.000Z",
+       "exit": 143,
+       "outcome": "requeued",
+       "reason": "crash",
+       "stepsLeft": 2
+      },
+      "heldAt": "",
+      "heldBy": "",
+      "heldWhy": "",
+      "session": "",
+      "slot": "",
+      "dispatchedAt": ""
+     }
+    }
+   }
+  },
+  {
+   "name": "keepStop: a stale reconcile record (still running, no stop) does not resurrect a cancelled build",
+   "op": "keepStop",
+   "in": {
+    "by": "reconciler",
+    "prev": {
+     "id": "x",
+     "status": "pending",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "stop": {
+       "kind": "cancel",
+       "at": "2026-11-27T09:00:00.000Z",
+       "by": "brett",
+       "why": "",
+       "from": "running"
+      }
+     }
+    },
+    "next": {
+     "id": "x",
+     "status": "running",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable",
+       "done": true
+      },
+      {
+       "id": "s2",
+       "model": "Fable",
+       "claim": {
+        "runId": "run-1",
+        "at": "2026-11-28T09:00:00.000Z",
+        "expiresAt": "2026-11-28T11:00:00.000Z"
+       }
+      }
+     ],
+     "pipeline": {
+      "session": "axf-x--fable",
+      "slot": "slot-1",
+      "account": "acct-one"
+     }
+    }
+   },
+   "out": {
+    "kept": true,
+    "why": "x is cancelled (brett): reconciler may not move it to running",
+    "status": "pending",
+    "stop": "cancel",
+    "build": {
+     "id": "x",
+     "status": "pending",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable",
+       "done": true
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "session": "",
+      "slot": "",
+      "account": "acct-one",
+      "stop": {
+       "kind": "cancel",
+       "at": "2026-11-27T09:00:00.000Z",
+       "by": "brett",
+       "why": "",
+       "from": "running"
+      },
+      "heldAt": "",
+      "heldBy": "",
+      "heldWhy": "",
+      "queuedAt": "",
+      "queuedBy": "",
+      "dispatchedAt": ""
+     }
+    }
+   }
+  },
+  {
+   "name": "keepStop: the reconciler clearing a hold is undone",
+   "op": "keepStop",
+   "in": {
+    "by": "reconciler",
+    "prev": {
+     "id": "h",
+     "status": "pending",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "stop": {
+       "kind": "hold",
+       "at": "2026-11-27T09:00:00.000Z",
+       "by": "brett",
+       "why": "",
+       "from": "queued"
+      },
+      "heldAt": "2026-11-27T09:00:00.000Z",
+      "heldBy": "brett",
+      "heldWhy": "wait"
+     }
+    },
+    "next": {
+     "id": "h",
+     "status": "queued",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "queuedAt": "2026-11-28T10:00:00.000Z",
+      "queuedBy": "reconciler"
+     }
+    }
+   },
+   "out": {
+    "kept": true,
+    "why": "h is on hold (brett): reconciler may not move it to queued",
+    "status": "pending",
+    "stop": "hold",
+    "build": {
+     "id": "h",
+     "status": "pending",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "queuedAt": "",
+      "queuedBy": "",
+      "stop": {
+       "kind": "hold",
+       "at": "2026-11-27T09:00:00.000Z",
+       "by": "brett",
+       "why": "",
+       "from": "queued"
+      },
+      "heldAt": "2026-11-27T09:00:00.000Z",
+      "heldBy": "brett",
+      "heldWhy": "wait",
+      "session": "",
+      "slot": "",
+      "dispatchedAt": ""
+     }
+    }
+   }
+  },
+  {
+   "name": "keepStop: the watchdog may not move an unqueued build to fixing",
+   "op": "keepStop",
+   "in": {
+    "by": "watchdog",
+    "prev": {
+     "id": "u",
+     "status": "pending",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "stop": {
+       "kind": "unqueue",
+       "at": "2026-11-27T09:00:00.000Z",
+       "by": "brett",
+       "why": "",
+       "from": "queued"
+      }
+     }
+    },
+    "next": {
+     "id": "u",
+     "status": "fixing",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "stop": {
+       "kind": "unqueue",
+       "at": "2026-11-27T09:00:00.000Z",
+       "by": "brett",
+       "why": "",
+       "from": "queued"
+      }
+     }
+    }
+   },
+   "out": {
+    "kept": true,
+    "why": "u is back in pending (brett): watchdog may not move it to fixing",
+    "status": "pending",
+    "stop": "unqueue",
+    "build": {
+     "id": "u",
+     "status": "pending",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "stop": {
+       "kind": "unqueue",
+       "at": "2026-11-27T09:00:00.000Z",
+       "by": "brett",
+       "why": "",
+       "from": "queued"
+      },
+      "heldAt": "",
+      "heldBy": "",
+      "heldWhy": "",
+      "queuedAt": "",
+      "queuedBy": "",
+      "session": "",
+      "slot": "",
+      "dispatchedAt": ""
+     }
+    }
+   }
+  },
+  {
+   "name": "keepStop: a write that leaves the stop alone passes untouched (a step ticked)",
+   "op": "keepStop",
+   "in": {
+    "by": "builds-live",
+    "prev": {
+     "id": "u",
+     "status": "pending",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "stop": {
+       "kind": "unqueue",
+       "at": "2026-11-27T09:00:00.000Z",
+       "by": "brett",
+       "why": "",
+       "from": "queued"
+      }
+     }
+    },
+    "next": {
+     "id": "u",
+     "status": "pending",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable",
+       "done": true
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "stop": {
+       "kind": "unqueue",
+       "at": "2026-11-27T09:00:00.000Z",
+       "by": "brett",
+       "why": "",
+       "from": "queued"
+      }
+     }
+    }
+   },
+   "out": {
+    "kept": false,
+    "why": "",
+    "status": "pending",
+    "stop": "unqueue",
+    "build": {
+     "id": "u",
+     "status": "pending",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable",
+       "done": true
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "stop": {
+       "kind": "unqueue",
+       "at": "2026-11-27T09:00:00.000Z",
+       "by": "brett",
+       "why": "",
+       "from": "queued"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "keepStop: Brett’s write goes through",
+   "op": "keepStop",
+   "in": {
+    "by": "brett",
+    "prev": {
+     "id": "u",
+     "status": "pending",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "stop": {
+       "kind": "unqueue",
+       "at": "2026-11-27T09:00:00.000Z",
+       "by": "brett",
+       "why": "",
+       "from": "queued"
+      }
+     }
+    },
+    "next": {
+     "id": "u",
+     "status": "queued",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "queuedAt": "2026-11-28T10:00:00.000Z",
+      "queuedBy": "brett"
+     }
+    }
+   },
+   "out": {
+    "kept": false,
+    "why": "",
+    "status": "queued",
+    "stop": "",
+    "build": {
+     "id": "u",
+     "status": "queued",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "queuedAt": "2026-11-28T10:00:00.000Z",
+      "queuedBy": "brett"
+     }
+    }
+   }
+  },
+  {
+   "name": "keepStop: a build that is not stopped is never touched",
+   "op": "keepStop",
+   "in": {
+    "by": "dispatcher",
+    "prev": {
+     "id": "b",
+     "status": "queued",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "queuedAt": "2026-11-27T09:00:00.000Z"
+     }
+    },
+    "next": {
+     "id": "b",
+     "status": "running",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "queuedAt": "2026-11-27T09:00:00.000Z",
+      "session": "axf-b--fable"
+     }
+    }
+   },
+   "out": {
+    "kept": false,
+    "why": "",
+    "status": "running",
+    "stop": "",
+    "build": {
+     "id": "b",
+     "status": "running",
+     "createdAt": "2026-11-20T09:00:00.000Z",
+     "steps": [
+      {
+       "id": "s1",
+       "model": "Fable"
+      },
+      {
+       "id": "s2",
+       "model": "Fable"
+      }
+     ],
+     "pipeline": {
+      "queuedAt": "2026-11-27T09:00:00.000Z",
+      "session": "axf-b--fable"
+     }
+    }
+   }
+  },
+  {
+   "name": "settleQueue: sound store, nothing changes",
+   "op": "settleQueue",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ]
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "a": "queued",
+     "b": "pending",
+     "c": "pending",
+     "d": "pending"
+    },
+    "stops": {},
+    "queued": [
+     "a"
+    ],
+    "changes": [],
+    "invariant": true
+   }
+  },
+  {
+   "name": "settleQueue: two queued, the one that has run keeps the slot (its next phase), the other goes back in line",
+   "op": "settleQueue",
+   "in": {
+    "builds": [
+     {
+      "id": "fresh",
+      "status": "queued",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-27T08:00:00.000Z",
+       "queuedBy": "dispatcher"
+      }
+     },
+     {
+      "id": "phase2",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-27T09:00:00.000Z",
+       "queuedBy": "dispatcher",
+       "runs": 1,
+       "lastRun": {
+        "at": "2026-11-27T09:00:00.000Z",
+        "exit": 0,
+        "outcome": "requeued",
+        "reason": "phase-done",
+        "stepsLeft": 1
+       }
+      }
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-10T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ]
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "fresh": "pending",
+     "phase2": "queued",
+     "c": "pending"
+    },
+    "stops": {},
+    "queued": [
+     "phase2"
+    ],
+    "changes": [
+     {
+      "id": "fresh",
+      "from": "queued",
+      "to": "pending",
+      "why": "phase2 holds the Queue: one at a time"
+     }
+    ],
+    "invariant": true
+   }
+  },
+  {
+   "name": "settleQueue: three queued and never run, the oldest queuedAt stays",
+   "op": "settleQueue",
+   "in": {
+    "builds": [
+     {
+      "id": "q3",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-27T12:00:00.000Z"
+      }
+     },
+     {
+      "id": "q1",
+      "status": "queued",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-27T10:00:00.000Z"
+      }
+     },
+     {
+      "id": "q2",
+      "status": "queued",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-27T11:00:00.000Z"
+      }
+     }
+    ]
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "q3": "pending",
+     "q1": "queued",
+     "q2": "pending"
+    },
+    "stops": {},
+    "queued": [
+     "q1"
+    ],
+    "changes": [
+     {
+      "id": "q3",
+      "from": "queued",
+      "to": "pending",
+      "why": "q1 holds the Queue: one at a time"
+     },
+     {
+      "id": "q2",
+      "from": "queued",
+      "to": "pending",
+      "why": "q1 holds the Queue: one at a time"
+     }
+    ],
+    "invariant": true
+   }
+  },
+  {
+   "name": "settleQueue: a legacy held build still queued leaves the slot and stays held; the next moves up",
+   "op": "settleQueue",
+   "in": {
+    "builds": [
+     {
+      "id": "h",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "heldAt": "2026-11-27T09:00:00.000Z",
+       "heldBy": "brett",
+       "heldWhy": "wait"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ]
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "h": "pending",
+     "b": "queued"
+    },
+    "stops": {
+     "h": "hold"
+    },
+    "queued": [
+     "b"
+    ],
+    "changes": [
+     {
+      "id": "h",
+      "from": "queued",
+      "to": "pending",
+      "why": "hold stands: out of the Queue slot"
+     },
+     {
+      "id": "b",
+      "from": "pending",
+      "to": "queued",
+      "why": "oldest in Pending, the Queue was free"
+     }
+    ],
+    "invariant": true
+   }
+  },
+  {
+   "name": "settleQueue: stopped builds are never promoted or revived, pass after pass",
+   "op": "settleQueue",
+   "in": {
+    "builds": [
+     {
+      "id": "h",
+      "status": "pending",
+      "createdAt": "2026-11-01T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "hold",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "queued"
+       },
+       "heldAt": "2026-11-27T09:00:00.000Z",
+       "heldBy": "brett"
+      }
+     },
+     {
+      "id": "u",
+      "status": "pending",
+      "createdAt": "2026-11-02T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "unqueue",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "queued"
+       }
+      }
+     },
+     {
+      "id": "x",
+      "status": "pending",
+      "createdAt": "2026-11-03T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "stop": {
+        "kind": "cancel",
+        "at": "2026-11-27T09:00:00.000Z",
+        "by": "brett",
+        "why": "",
+        "from": "running"
+       }
+      }
+     }
+    ]
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "h": "pending",
+     "u": "pending",
+     "x": "pending"
+    },
+    "stops": {
+     "h": "hold",
+     "u": "unqueue",
+     "x": "cancel"
+    },
+    "queued": [],
+    "changes": [],
+    "invariant": true
+   }
+  },
+  {
+   "name": "settleQueue: empty slot, the oldest Pending build is promoted",
+   "op": "settleQueue",
+   "in": {
+    "builds": [
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "r",
+      "status": "running",
+      "createdAt": "2026-11-01T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ]
+   },
+   "out": {
+    "ok": true,
+    "why": "",
+    "statuses": {
+     "c": "pending",
+     "b": "queued",
+     "r": "running"
+    },
+    "stops": {},
+    "queued": [
+     "b"
+    ],
+    "changes": [
+     {
+      "id": "b",
+      "from": "pending",
+      "to": "queued",
+      "why": "oldest in Pending, the Queue was free"
+     }
+    ],
+    "invariant": true
+   }
+  },
+  {
+   "name": "checkQueue: one queued is sound",
+   "op": "checkQueue",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ]
+   },
+   "out": {
+    "ok": true,
+    "queued": [
+     "a"
+    ],
+    "why": ""
+   }
+  },
+  {
+   "name": "checkQueue: two queued is a violation",
+   "op": "checkQueue",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "queued",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-27T09:00:00.000Z"
+      }
+     }
+    ]
+   },
+   "out": {
+    "ok": false,
+    "queued": [
+     "a",
+     "b"
+    ],
+    "why": "2 builds are queued (a, b): one at a time"
+   }
+  },
+  {
+   "name": "checkQueue: a stopped build in status queued is a violation",
+   "op": "checkQueue",
+   "in": {
+    "builds": [
+     {
+      "id": "h",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "heldAt": "2026-11-27T09:00:00.000Z"
+      }
+     }
+    ]
+   },
+   "out": {
+    "ok": false,
+    "queued": [
+     "h"
+    ],
+    "why": "h is stopped but still queued"
+   }
+  },
+  {
+   "name": "checkQueue: deleted queued builds do not count",
+   "op": "checkQueue",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "gone",
+      "status": "queued",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-27T09:00:00.000Z"
+      },
+      "deleted": true
+     }
+    ]
+   },
+   "out": {
+    "ok": true,
+    "queued": [
+     "a"
+    ],
+    "why": ""
+   }
+  },
+  {
+   "name": "isOwnerActor: who may reverse a stop",
+   "op": "isOwnerActor",
+   "in": {
+    "actors": [
+     "brett",
+     "Brett",
+     "console",
+     "voice",
+     "amberx",
+     "phone",
+     "brett:mcp",
+     "brett:cli",
+     "dispatcher",
+     "reconciler",
+     "watchdog",
+     "lander",
+     "pipeline",
+     "orchestrator",
+     "tick",
+     "builds-live",
+     "vps",
+     "session",
+     "auto",
+     "cli",
+     ""
+    ]
+   },
+   "out": {
+    "brett": true,
+    "Brett": true,
+    "console": true,
+    "voice": true,
+    "amberx": true,
+    "phone": true,
+    "brett:mcp": true,
+    "brett:cli": true,
+    "dispatcher": false,
+    "reconciler": false,
+    "watchdog": false,
+    "lander": false,
+    "pipeline": false,
+    "orchestrator": false,
+    "tick": false,
+    "builds-live": false,
+    "vps": false,
+    "session": false,
+    "auto": false,
+    "cli": false,
+    "": false
+   }
+  },
+  {
+   "name": "orchestrator: sent builds plus landed; Pending, complete and archived are not listed",
+   "op": "orchestrator",
+   "in": {
+    "builds": [
+     {
+      "id": "p",
+      "status": "pending",
+      "createdAt": "2026-11-01T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "q",
+      "status": "queued",
+      "createdAt": "2026-11-02T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "r",
+      "status": "running",
+      "createdAt": "2026-11-03T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "w",
+      "status": "waiting",
+      "createdAt": "2026-11-04T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "f",
+      "status": "fixing",
+      "createdAt": "2026-11-05T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "bt",
+      "status": "built",
+      "createdAt": "2026-11-06T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "lg",
+      "status": "landing",
+      "createdAt": "2026-11-07T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "ld",
+      "status": "landed",
+      "createdAt": "2026-11-08T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "cp",
+      "status": "complete",
+      "createdAt": "2026-11-09T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "ar",
+      "status": "archived",
+      "createdAt": "2026-11-10T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "hq",
+      "status": "queued",
+      "createdAt": "2026-11-11T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "hidden": true
+     },
+     {
+      "id": "dl",
+      "status": "landed",
+      "createdAt": "2026-11-12T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "deleted": true
+     }
+    ]
+   },
+   "out": {
+    "shown": [
+     "q",
+     "r",
+     "w",
+     "f",
+     "bt",
+     "lg",
+     "ld"
+    ],
+    "sent": [
+     "q",
+     "r",
+     "w",
+     "f",
+     "bt",
+     "lg"
+    ]
+   }
+  },
+  {
+   "name": "sequence: three builds sent to Pending run one at a time, each promotion on go-live",
+   "op": "sequence",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "pending",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "ops": [
+     {
+      "op": "promote"
+     },
+     {
+      "op": "promote"
+     },
+     {
+      "op": "queue",
+      "id": "c",
+      "by": "brett"
+     },
+     {
+      "op": "goLive",
+      "id": "a"
+     },
+     {
+      "op": "goLive",
+      "id": "b"
+     },
+     {
+      "op": "goLive",
+      "id": "c"
+     },
+     {
+      "op": "promote"
+     }
+    ]
+   },
+   "out": [
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "queued",
+      "b": "pending",
+      "c": "pending"
+     },
+     "stops": {},
+     "queued": [
+      "a"
+     ],
+     "promoted": "a",
+     "changes": [
+      {
+       "id": "a",
+       "from": "pending",
+       "to": "queued",
+       "why": "oldest in Pending, the Queue was free"
+      }
+     ],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "a is queued",
+     "statuses": {
+      "a": "queued",
+      "b": "pending",
+      "c": "pending"
+     },
+     "stops": {},
+     "queued": [
+      "a"
+     ],
+     "promoted": "",
+     "changes": [],
+     "invariant": true
+    },
+    {
+     "ok": false,
+     "why": "a is already queued: one build in the Queue at a time. c stays in Pending and moves up by itself when a goes live.",
+     "statuses": {
+      "a": "queued",
+      "b": "pending",
+      "c": "pending"
+     },
+     "stops": {},
+     "queued": [
+      "a"
+     ],
+     "changes": [],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "running",
+      "b": "queued",
+      "c": "pending"
+     },
+     "stops": {},
+     "queued": [
+      "b"
+     ],
+     "promoted": "b",
+     "changes": [
+      {
+       "id": "a",
+       "from": "queued",
+       "to": "running",
+       "why": "went live"
+      },
+      {
+       "id": "b",
+       "from": "pending",
+       "to": "queued",
+       "why": "oldest in Pending, the Queue was free"
+      }
+     ],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "running",
+      "b": "running",
+      "c": "queued"
+     },
+     "stops": {},
+     "queued": [
+      "c"
+     ],
+     "promoted": "c",
+     "changes": [
+      {
+       "id": "b",
+       "from": "queued",
+       "to": "running",
+       "why": "went live"
+      },
+      {
+       "id": "c",
+       "from": "pending",
+       "to": "queued",
+       "why": "oldest in Pending, the Queue was free"
+      }
+     ],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "running",
+      "b": "running",
+      "c": "running"
+     },
+     "stops": {},
+     "queued": [],
+     "promoted": "",
+     "changes": [
+      {
+       "id": "c",
+       "from": "queued",
+       "to": "running",
+       "why": "went live"
+      }
+     ],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "nothing in Pending can move up",
+     "statuses": {
+      "a": "running",
+      "b": "running",
+      "c": "running"
+     },
+     "stops": {},
+     "queued": [],
+     "promoted": "",
+     "changes": [],
+     "invariant": true
+    }
+   ]
+  },
+  {
+   "name": "sequence: unqueue sticks across the dispatcher and reconcile passes until Brett queues it",
+   "op": "sequence",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "ops": [
+     {
+      "op": "unqueue",
+      "id": "a",
+      "by": "brett"
+     },
+     {
+      "op": "settleQueue"
+     },
+     {
+      "op": "write",
+      "id": "a",
+      "by": "reconciler",
+      "patch": {
+       "status": "queued",
+       "pipeline": {
+        "stop": null,
+        "queuedAt": "2026-11-28T10:00:00.000Z",
+        "queuedBy": "reconciler"
+       }
+      }
+     },
+     {
+      "op": "queue",
+      "id": "a",
+      "by": "dispatcher"
+     },
+     {
+      "op": "goLive",
+      "id": "b"
+     },
+     {
+      "op": "settleQueue"
+     },
+     {
+      "op": "goLive",
+      "id": "c"
+     },
+     {
+      "op": "goLive",
+      "id": "d"
+     },
+     {
+      "op": "settleQueue"
+     },
+     {
+      "op": "queue",
+      "id": "a",
+      "by": "brett"
+     },
+     {
+      "op": "goLive",
+      "id": "a"
+     }
+    ]
+   },
+   "out": [
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "pending",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "a": "unqueue"
+     },
+     "queued": [
+      "b"
+     ],
+     "promoted": "b",
+     "changes": [
+      {
+       "id": "a",
+       "from": "queued",
+       "to": "pending",
+       "why": "unqueue by brett"
+      },
+      {
+       "id": "b",
+       "from": "pending",
+       "to": "queued",
+       "why": "oldest in Pending, the Queue was free"
+      }
+     ],
+     "kill": null,
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "pending",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "a": "unqueue"
+     },
+     "queued": [
+      "b"
+     ],
+     "changes": [],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "a is back in pending (brett): reconciler may not move it to queued",
+     "statuses": {
+      "a": "pending",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "a": "unqueue"
+     },
+     "queued": [
+      "b"
+     ],
+     "invariant": true,
+     "kept": true
+    },
+    {
+     "ok": false,
+     "why": "a is back in pending (brett): only Brett queues it again",
+     "statuses": {
+      "a": "pending",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "a": "unqueue"
+     },
+     "queued": [
+      "b"
+     ],
+     "changes": [],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "pending",
+      "b": "running",
+      "c": "queued",
+      "d": "pending"
+     },
+     "stops": {
+      "a": "unqueue"
+     },
+     "queued": [
+      "c"
+     ],
+     "promoted": "c",
+     "changes": [
+      {
+       "id": "b",
+       "from": "queued",
+       "to": "running",
+       "why": "went live"
+      },
+      {
+       "id": "c",
+       "from": "pending",
+       "to": "queued",
+       "why": "oldest in Pending, the Queue was free"
+      }
+     ],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "pending",
+      "b": "running",
+      "c": "queued",
+      "d": "pending"
+     },
+     "stops": {
+      "a": "unqueue"
+     },
+     "queued": [
+      "c"
+     ],
+     "changes": [],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "pending",
+      "b": "running",
+      "c": "running",
+      "d": "queued"
+     },
+     "stops": {
+      "a": "unqueue"
+     },
+     "queued": [
+      "d"
+     ],
+     "promoted": "d",
+     "changes": [
+      {
+       "id": "c",
+       "from": "queued",
+       "to": "running",
+       "why": "went live"
+      },
+      {
+       "id": "d",
+       "from": "pending",
+       "to": "queued",
+       "why": "oldest in Pending, the Queue was free"
+      }
+     ],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "pending",
+      "b": "running",
+      "c": "running",
+      "d": "running"
+     },
+     "stops": {
+      "a": "unqueue"
+     },
+     "queued": [],
+     "promoted": "",
+     "changes": [
+      {
+       "id": "d",
+       "from": "queued",
+       "to": "running",
+       "why": "went live"
+      }
+     ],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "pending",
+      "b": "running",
+      "c": "running",
+      "d": "running"
+     },
+     "stops": {
+      "a": "unqueue"
+     },
+     "queued": [],
+     "changes": [],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "queued",
+      "b": "running",
+      "c": "running",
+      "d": "running"
+     },
+     "stops": {},
+     "queued": [
+      "a"
+     ],
+     "changes": [
+      {
+       "id": "a",
+       "from": "pending",
+       "to": "queued",
+       "why": "queued by brett: unqueue lifted"
+      }
+     ],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "running",
+      "b": "running",
+      "c": "running",
+      "d": "running"
+     },
+     "stops": {},
+     "queued": [],
+     "promoted": "",
+     "changes": [
+      {
+       "id": "a",
+       "from": "queued",
+       "to": "running",
+       "why": "went live"
+      }
+     ],
+     "invariant": true
+    }
+   ]
+  },
+  {
+   "name": "sequence: hold sticks, then Brett releases it and it is first in line",
+   "op": "sequence",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "ops": [
+     {
+      "op": "hold",
+      "id": "a",
+      "by": "brett",
+      "why": "wait"
+     },
+     {
+      "op": "settleQueue"
+     },
+     {
+      "op": "release",
+      "id": "a",
+      "by": "watchdog"
+     },
+     {
+      "op": "write",
+      "id": "a",
+      "by": "dispatcher",
+      "patch": {
+       "status": "running",
+       "pipeline": {
+        "heldAt": "",
+        "heldBy": "",
+        "heldWhy": "",
+        "stop": null,
+        "session": "axf-a--fable"
+       }
+      }
+     },
+     {
+      "op": "settleQueue"
+     },
+     {
+      "op": "release",
+      "id": "a",
+      "by": "brett"
+     },
+     {
+      "op": "goLive",
+      "id": "b"
+     }
+    ]
+   },
+   "out": [
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "pending",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "a": "hold"
+     },
+     "queued": [
+      "b"
+     ],
+     "promoted": "b",
+     "changes": [
+      {
+       "id": "a",
+       "from": "queued",
+       "to": "pending",
+       "why": "hold by brett"
+      },
+      {
+       "id": "b",
+       "from": "pending",
+       "to": "queued",
+       "why": "oldest in Pending, the Queue was free"
+      }
+     ],
+     "kill": null,
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "pending",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "a": "hold"
+     },
+     "queued": [
+      "b"
+     ],
+     "changes": [],
+     "invariant": true
+    },
+    {
+     "ok": false,
+     "why": "a is on hold (brett): only Brett releases it, not watchdog",
+     "statuses": {
+      "a": "pending",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "a": "hold"
+     },
+     "queued": [
+      "b"
+     ],
+     "changes": [],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "a is on hold (brett): dispatcher may not move it to running",
+     "statuses": {
+      "a": "pending",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "a": "hold"
+     },
+     "queued": [
+      "b"
+     ],
+     "invariant": true,
+     "kept": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "pending",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "a": "hold"
+     },
+     "queued": [
+      "b"
+     ],
+     "changes": [],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "pending",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {},
+     "queued": [
+      "b"
+     ],
+     "promoted": "",
+     "changes": [
+      {
+       "id": "a",
+       "from": "pending",
+       "to": "pending",
+       "why": "hold lifted by brett"
+      }
+     ],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "queued",
+      "b": "running",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {},
+     "queued": [
+      "a"
+     ],
+     "promoted": "a",
+     "changes": [
+      {
+       "id": "b",
+       "from": "queued",
+       "to": "running",
+       "why": "went live"
+      },
+      {
+       "id": "a",
+       "from": "pending",
+       "to": "queued",
+       "why": "oldest in Pending, the Queue was free"
+      }
+     ],
+     "invariant": true
+    }
+   ]
+  },
+  {
+   "name": "sequence: cancel a running build; its killed session, the watchdog and the reconciler cannot bring it back",
+   "op": "sequence",
+   "in": {
+    "builds": [
+     {
+      "id": "r",
+      "status": "running",
+      "createdAt": "2026-11-19T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "account": "acct-one",
+       "session": "axf-r--fable",
+       "slot": "slot-1",
+       "runs": 1
+      }
+     },
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "ops": [
+     {
+      "op": "cancel",
+      "id": "r",
+      "by": "brett"
+     },
+     {
+      "op": "write",
+      "id": "r",
+      "by": "dispatcher",
+      "patch": {
+       "status": "queued",
+       "pipeline": {
+        "queuedAt": "2026-11-28T10:00:00.000Z",
+        "queuedBy": "dispatcher",
+        "lastRun": {
+         "at": "2026-11-28T10:00:00.000Z",
+         "exit": 143,
+         "outcome": "requeued",
+         "reason": "crash",
+         "stepsLeft": 2
+        }
+       }
+      }
+     },
+     {
+      "op": "write",
+      "id": "r",
+      "by": "watchdog",
+      "patch": {
+       "status": "fixing"
+      }
+     },
+     {
+      "op": "settleQueue"
+     },
+     {
+      "op": "goLive",
+      "id": "a"
+     },
+     {
+      "op": "settleQueue"
+     },
+     {
+      "op": "goLive",
+      "id": "r"
+     },
+     {
+      "op": "queue",
+      "id": "r",
+      "by": "brett"
+     }
+    ]
+   },
+   "out": [
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "r": "pending",
+      "a": "queued",
+      "b": "pending",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "r": "cancel"
+     },
+     "queued": [
+      "a"
+     ],
+     "promoted": "",
+     "changes": [
+      {
+       "id": "r",
+       "from": "running",
+       "to": "pending",
+       "why": "cancel by brett"
+      }
+     ],
+     "kill": {
+      "session": "axf-r--fable",
+      "slot": "slot-1",
+      "account": "acct-one",
+      "claims": []
+     },
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "r is cancelled (brett): dispatcher may not move it to queued",
+     "statuses": {
+      "r": "pending",
+      "a": "queued",
+      "b": "pending",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "r": "cancel"
+     },
+     "queued": [
+      "a"
+     ],
+     "invariant": true,
+     "kept": true
+    },
+    {
+     "ok": true,
+     "why": "r is cancelled (brett): watchdog may not move it to fixing",
+     "statuses": {
+      "r": "pending",
+      "a": "queued",
+      "b": "pending",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "r": "cancel"
+     },
+     "queued": [
+      "a"
+     ],
+     "invariant": true,
+     "kept": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "r": "pending",
+      "a": "queued",
+      "b": "pending",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "r": "cancel"
+     },
+     "queued": [
+      "a"
+     ],
+     "changes": [],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "r": "pending",
+      "a": "running",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "r": "cancel"
+     },
+     "queued": [
+      "b"
+     ],
+     "promoted": "b",
+     "changes": [
+      {
+       "id": "a",
+       "from": "queued",
+       "to": "running",
+       "why": "went live"
+      },
+      {
+       "id": "b",
+       "from": "pending",
+       "to": "queued",
+       "why": "oldest in Pending, the Queue was free"
+      }
+     ],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "r": "pending",
+      "a": "running",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "r": "cancel"
+     },
+     "queued": [
+      "b"
+     ],
+     "changes": [],
+     "invariant": true
+    },
+    {
+     "ok": false,
+     "why": "r is cancelled: it is not launched until Brett says so",
+     "statuses": {
+      "r": "pending",
+      "a": "running",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "r": "cancel"
+     },
+     "queued": [
+      "b"
+     ],
+     "changes": [],
+     "invariant": true
+    },
+    {
+     "ok": false,
+     "why": "b is already queued: one build in the Queue at a time. r stays in Pending and moves up by itself when b goes live.",
+     "statuses": {
+      "r": "pending",
+      "a": "running",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {
+      "r": "cancel"
+     },
+     "queued": [
+      "b"
+     ],
+     "changes": [],
+     "invariant": true
+    }
+   ]
+  },
+  {
+   "name": "sequence: a phase ends while the next build is already queued; the running build keeps the slot for its next phase",
+   "op": "sequence",
+   "in": {
+    "builds": [
+     {
+      "id": "a",
+      "status": "queued",
+      "createdAt": "2026-11-20T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ],
+      "pipeline": {
+       "queuedAt": "2026-11-26T09:00:00.000Z",
+       "queuedBy": "brett",
+       "lineAt": "2026-11-26T09:00:00.000Z"
+      }
+     },
+     {
+      "id": "b",
+      "status": "pending",
+      "createdAt": "2026-11-21T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "c",
+      "status": "pending",
+      "createdAt": "2026-11-22T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     },
+     {
+      "id": "d",
+      "status": "pending",
+      "createdAt": "2026-11-23T09:00:00.000Z",
+      "steps": [
+       {
+        "id": "s1",
+        "model": "Fable"
+       },
+       {
+        "id": "s2",
+        "model": "Fable"
+       }
+      ]
+     }
+    ],
+    "ops": [
+     {
+      "op": "goLive",
+      "id": "a"
+     },
+     {
+      "op": "write",
+      "id": "a",
+      "by": "dispatcher",
+      "patch": {
+       "status": "queued",
+       "pipeline": {
+        "queuedAt": "2026-11-28T10:00:00.000Z",
+        "runs": 1,
+        "lastRun": {
+         "at": "2026-11-28T10:00:00.000Z",
+         "exit": 0,
+         "outcome": "requeued",
+         "reason": "phase-done",
+         "stepsLeft": 1
+        }
+       }
+      }
+     },
+     {
+      "op": "settleQueue"
+     },
+     {
+      "op": "goLive",
+      "id": "a"
+     },
+     {
+      "op": "goLive",
+      "id": "b"
+     }
+    ]
+   },
+   "out": [
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "running",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {},
+     "queued": [
+      "b"
+     ],
+     "promoted": "b",
+     "changes": [
+      {
+       "id": "a",
+       "from": "queued",
+       "to": "running",
+       "why": "went live"
+      },
+      {
+       "id": "b",
+       "from": "pending",
+       "to": "queued",
+       "why": "oldest in Pending, the Queue was free"
+      }
+     ],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "queued",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {},
+     "queued": [
+      "a",
+      "b"
+     ],
+     "invariant": false,
+     "kept": false
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "queued",
+      "b": "pending",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {},
+     "queued": [
+      "a"
+     ],
+     "changes": [
+      {
+       "id": "b",
+       "from": "queued",
+       "to": "pending",
+       "why": "a holds the Queue: one at a time"
+      }
+     ],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "running",
+      "b": "queued",
+      "c": "pending",
+      "d": "pending"
+     },
+     "stops": {},
+     "queued": [
+      "b"
+     ],
+     "promoted": "b",
+     "changes": [
+      {
+       "id": "a",
+       "from": "queued",
+       "to": "running",
+       "why": "went live"
+      },
+      {
+       "id": "b",
+       "from": "pending",
+       "to": "queued",
+       "why": "oldest in Pending, the Queue was free"
+      }
+     ],
+     "invariant": true
+    },
+    {
+     "ok": true,
+     "why": "",
+     "statuses": {
+      "a": "running",
+      "b": "running",
+      "c": "queued",
+      "d": "pending"
+     },
+     "stops": {},
+     "queued": [
+      "c"
+     ],
+     "promoted": "c",
+     "changes": [
+      {
+       "id": "b",
+       "from": "queued",
+       "to": "running",
+       "why": "went live"
+      },
+      {
+       "id": "c",
+       "from": "pending",
+       "to": "queued",
+       "why": "oldest in Pending, the Queue was free"
+      }
+     ],
+     "invariant": true
+    }
+   ]
+  }
+ ]
+}

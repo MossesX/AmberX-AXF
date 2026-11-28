@@ -52,3 +52,45 @@ export interface ExitResult { status: 'built' | 'queued' | 'pending'; outcome: '
 export function nextStatusOnExit(run: ExitInput, maxRuns?: number): ExitResult;
 export function outcomeOf(run: ExitInput & { phaseSwitch?: boolean }, maxRuns?: number): 'finished' | 'requeued' | 'returned' | 'failed';
 export function outcomeLine(b: { pipeline?: { runs?: number } | null }, run: PipelineRun): string;
+
+// ---- the single-Queued contract: one build queued, promote on go-live, hold / cancel / unqueue stick
+export const QUEUE_MAX: 1;
+export type StopKind = 'hold' | 'cancel' | 'unqueue';
+export const STOP_KINDS: readonly StopKind[];
+export const STOP_LABEL: Readonly<Record<StopKind, string>>;
+export const OWNER_ACTORS: readonly string[];
+export const AUTOMATION_ACTORS: readonly string[];
+export const STOPPABLE: Readonly<Record<StopKind, string[]>>;
+export const SENT_STATUSES: readonly string[];
+/** A standing hold | cancel | unqueue on `pipeline.stop`: terminal until an owner actor lifts it. */
+export interface PipelineStop { kind: StopKind; at: string; by: string; why: string; from: string }
+export interface QueueBuild { id: string; status: string; createdAt?: string; deleted?: boolean; hidden?: boolean; steps?: Array<{ id?: string; done?: boolean; skip?: boolean; claim?: unknown }>; pipeline?: (Partial<BuildPipeline> & { stop?: PipelineStop | null; lineAt?: string }) | null; [k: string]: unknown }
+export interface QueueChange { id: string; from: string; to: string; why: string }
+export interface QueueResult<T extends QueueBuild = QueueBuild> { ok: boolean; why: string; builds: T[]; build: T | null; changes: QueueChange[]; promoted?: string }
+export interface CancelKill { session: string; slot: string; account: string; claims: Array<{ step: string; runId: string; slot: string; account: string }> }
+export interface QueueOpts { by?: string; why?: string; now?: number | string; promote?: boolean }
+export function isOwnerActor(by: unknown): boolean;
+export function isSent(b: QueueBuild | null | undefined): boolean;
+export function showsInOrchestrator(b: QueueBuild | null | undefined): boolean;
+export function normStop(s: unknown): PipelineStop | null;
+export function stopOf(b: QueueBuild | null | undefined): PipelineStop | null;
+export function isStopped(b: QueueBuild | null | undefined): boolean;
+export function queuedBuilds<T extends QueueBuild>(builds: T[]): T[];
+export function slotHolders<T extends QueueBuild>(builds: T[]): T[];
+export function queuedOne<T extends QueueBuild>(builds: T[]): T | null;
+export function slotFree(builds: QueueBuild[]): boolean;
+export function promotable(b: QueueBuild | null | undefined): { ok: boolean; why: string };
+export function pendingOrder<T extends QueueBuild>(builds: T[]): T[];
+export function checkQueue(builds: QueueBuild[]): { ok: boolean; queued: string[]; why: string };
+export function queue<T extends QueueBuild>(builds: T[], id: string, opts?: QueueOpts): QueueResult<T>;
+export function promote<T extends QueueBuild>(builds: T[], opts?: QueueOpts): QueueResult<T> & { promoted: string };
+export function goLive<T extends QueueBuild>(builds: T[], id: string, opts?: QueueOpts): QueueResult<T>;
+export function stop<T extends QueueBuild>(builds: T[], id: string, kind: StopKind, opts?: QueueOpts): QueueResult<T> & { kill?: CancelKill | null };
+export function hold<T extends QueueBuild>(builds: T[], id: string, opts?: QueueOpts): QueueResult<T>;
+export function cancel<T extends QueueBuild>(builds: T[], id: string, opts?: QueueOpts): QueueResult<T> & { kill?: CancelKill | null };
+export function unqueue<T extends QueueBuild>(builds: T[], id: string, opts?: QueueOpts): QueueResult<T>;
+export function release<T extends QueueBuild>(builds: T[], id: string, opts?: QueueOpts): QueueResult<T>;
+/** The gate every automated writer passes its record through: a standing stop wins over the write. */
+export function keepStop<T extends QueueBuild>(prev: T | null | undefined, next: T, opts?: { by?: string }): { build: T; kept: boolean; why: string };
+/** The reconcile pass: restores one-queued, never revives a stopped build, promotes when the slot is free. Idempotent. */
+export function settleQueue<T extends QueueBuild>(builds: T[], opts?: QueueOpts): { ok: true; builds: T[]; changes: QueueChange[]; queued: string };
