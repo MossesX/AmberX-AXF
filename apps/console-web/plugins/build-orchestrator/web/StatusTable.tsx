@@ -218,7 +218,8 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
   // a status of the other list is no filter here: changing tabs drops it
   const pickList = (to: TableScope) => { setList(to); setF((x) => (x.status && T.scopeOf(x.status) !== to ? { ...x, status: '' } : x)); };
   const inList = !f.status || T.scopeOf(f.status) === list;
-  const wantLanded = !queue && list === 'sent' && (f.landed || f.status === 'landed');
+  // landed rows are read on either tab, so the Builds count says the same on both
+  const wantLanded = !queue && (f.landed || f.status === 'landed');
   const { rows, error, rev, reload } = useTableRows(api, wantLanded);
   const all = rows ?? [];
   const opts = useMemo(() => T.filterOptions(all), [rows]);
