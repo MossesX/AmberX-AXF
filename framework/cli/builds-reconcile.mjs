@@ -12,6 +12,16 @@
  * step branches (`<build-branch>--<step>`) are never matched as builds or orphans; and a build counts as built only when
  * every step branch has merged back (a merged one is deleted), else it stays running with a note.
  *
+ * Status comes from the builds store only (Nov 28 2026: the database once the store is on it; there is no status file
+ * and main's copy of the store is never read for a status, builds-live.mjs pullFrom). The store is read at the start of
+ * the pass and again inside the one write, and what GitHub took seconds to answer is applied to the build as it is then:
+ *   - a status the pass worked out is written only while the build still has the status the pass read (a build Brett
+ *     or the dispatcher moved meanwhile keeps that move; its ticks and PR fields still come in);
+ *   - Brett's stops stick (build-pipeline@1 stopOf: hold, cancel, unqueue). A stopped build is never set running,
+ *     queued, landing or built here and its stop is never cleared; the report lists them as `stopsKept`;
+ *   - a build deleted meanwhile is left alone;
+ *   - nothing is sent back to the Queue while a build the requeue would move is stopped.
+ *
  *   node framework/cli/builds-reconcile.mjs              dry run: what it would change (nothing written)
  *   … --apply                                           write the changes (live to main) and the report; Pending builds
  *                                                       parked after a finished phase go back to the Queue (pipeline.mjs
@@ -36,7 +46,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { aliveIds, idlePlan, plan } from '../plan/builds-reconcile-core.mjs';
-import { claimLive, isParallelStep, releaseStep, stepBranch } from '../core/build-pipeline.mjs';
+import { STOP_LABEL, claimLive, isParallelStep, releaseStep, stepBranch, stopOf } from '../core/build-pipeline.mjs';
 import { REPO_ROOT, persistRoot } from './persist.mjs';
 import { loadStore, withStore } from './builds-store.mjs';
 import { liveStatus, syncAll, install } from './builds-live.mjs';
@@ -177,16 +187,52 @@ export function stepAlive(sessions, slots) {
   };
 }
 
-/** Apply a plan in one store write (live to main). Returns the changes the store saw. */
+/** The fields of a build that say where it rests; a pass may not move them on a stopped build. */
+const REST_FIELDS = ['status', 'builtAt', 'statusAt', 'statusBy'];
+const STOP_PIPELINE = ['stop', 'heldAt', 'heldBy', 'heldWhy', 'queuedAt', 'queuedBy', 'session', 'slot', 'dispatchedAt'];
+/**
+ * Brett's stop on a build stands (build-pipeline@1: hold, cancel and unqueue are terminal until Brett). `was` is the
+ * build as the store held it before the pass touched it, `b` the same build after: when `was` is stopped, its status,
+ * the stop record, the hold fields and the launch fields are put back on `b` (in place); ticked steps, PR fields and
+ * notes stay. → why the pass was corrected, or '' when it had not tried to move the build.
+ */
+export function keepStopOn(was, b) {
+  const stop = stopOf(was);
+  if (!stop || !b) return '';
+  const wp = was.pipeline ?? {}; const np = b.pipeline ?? {};
+  const same = (x, y) => JSON.stringify(x ?? '') === JSON.stringify(y ?? '');
+  const moved = REST_FIELDS.filter((k) => !same(was[k], b[k])); const lifted = STOP_PIPELINE.filter((k) => !same(wp[k], np[k]));
+  if (!moved.length && !lifted.length) return '';
+  const to = b.status;
+  for (const k of REST_FIELDS) { if (was[k] === undefined) delete b[k]; else b[k] = was[k]; }
+  if (was.pipeline || b.pipeline) { b.pipeline = { ...np }; for (const k of STOP_PIPELINE) { if (wp[k] === undefined) delete b.pipeline[k]; else b.pipeline[k] = wp[k]; } }
+  return `${STOP_LABEL[stop.kind].toLowerCase()}${stop.by ? ` (${stop.by})` : ''}: ${to !== was.status ? `not moved to ${to}` : 'the stop stays'}, only Brett lifts that`;
+}
+
+/**
+ * Apply a plan in one store write (live to main). The store is read again inside the write, so every rule looks at the
+ * build as it is now: a deleted build is skipped, a status worked out from a status the build no longer has
+ * (`p.seen`: id → the status the pass read) is not written, and a stopped build keeps its stop (keepStopOn).
+ * Returns { changes: what the store saw, kept: [{ id, why }] stops that stood, stale: [{ id, read, now, not }] }.
+ */
 export function applyPlan(p, by = 'reconciler') {
-  if (!p.changes.length && !(p.stepResets ?? []).length) return { changes: [] };
+  if (!p.changes.length && !(p.stepResets ?? []).length) return { changes: [], kept: [], stale: [] };
+  let kept = []; let stale = [];
   const r = withStore((s) => {
     const now = new Date().toISOString();
+    kept = []; stale = []; // the write may run again on a conflict: only the last run counts
+    const ids = new Set([...p.changes.map((c) => c.id), ...(p.stepResets ?? []).map((x) => x.id)]);
+    const was = new Map(s.builds.filter((b) => ids.has(b.id)).map((b) => [b.id, JSON.parse(JSON.stringify(b))]));
     for (const c of p.changes) {
-      const b = s.builds.find((x) => x.id === c.id); if (!b) continue;
+      const b = s.builds.find((x) => x.id === c.id); if (!b || b.deleted) continue;
+      const set = { ...c.set };
+      // the status was worked out from the one the pass read: the build has another now, so that answer is stale
+      const read = p.seen?.get?.(c.id);
+      if ('status' in set && read !== undefined && read !== b.status) { stale.push({ id: c.id, read, now: b.status, not: set.status }); delete set.status; }
+      if (!Object.keys(set).length && !c.steps.length) continue;
       // a new PR on the build: its merged time is that PR's (blank while open)
-      if (c.set.pr && c.set.pr !== b.pr) b.mergedAt = '';
-      for (const [k, v] of Object.entries(c.set)) b[k] = v;
+      if (set.pr && set.pr !== b.pr) b.mergedAt = '';
+      for (const [k, v] of Object.entries(set)) b[k] = v;
       for (const id of c.steps) { const st = b.steps.find((x) => x.id === id); if (st && !st.done) { st.done = true; st.doneAt = now; if (!st.note) st.note = c.stepNotes[id] ?? ''; } }
       { const text = `Reconciler: ${c.why.join('; ')}`.slice(0, 2000); if (b.notes.at(-1)?.text !== text) b.notes.push({ text, at: now }); } // the same finding twice in a row is one note
       b.updatedAt = now;
@@ -198,13 +244,25 @@ export function applyPlan(p, by = 'reconciler') {
       if ((b.status === 'complete' || b.status === 'built') && !b.builtAt) b.builtAt = now;
     }
     for (const r of p.stepResets ?? []) {
-      const b = s.builds.find((x) => x.id === r.id); if (!b) continue;
+      const b = s.builds.find((x) => x.id === r.id); if (!b || b.deleted) continue;
       const rel = releaseStep(b, r.step, { runId: r.runId, now, note: `Reconciler: ${r.why}` });
       if (rel.ok && rel.released) { Object.assign(b, rel.build); b.notes.push({ text: `Reconciler: ${r.why}`, at: now }); b.updatedAt = now; }
     }
+    // Brett's stops stick: whatever the rules above made of a held, cancelled or unqueued build, it rests where he put it
+    for (const [id, old] of was) {
+      const b = s.builds.find((x) => x.id === id); const why = keepStopOn(old, b);
+      if (!why) continue;
+      kept.push({ id, why });
+      // nothing else came in (no tick, no PR field): the build is written back exactly as it was, so a pass that
+      // repeats every few minutes leaves no trail of notes on it; the report says it each time
+      const bare = (x) => JSON.stringify({ ...x, notes: null, updatedAt: null });
+      if (bare(b) === bare(old)) { for (const k of Object.keys(b)) delete b[k]; Object.assign(b, old); continue; }
+      const text = `Reconciler: left ${why}.`.slice(0, 2000);
+      if (!b.notes.slice(-2).some((n) => n.text === text)) b.notes.push({ text, at: now });
+    }
     return s;
   }, { by, action: 'reconcile', note: [...p.changes.map((c) => c.id), ...(p.stepResets ?? []).map((r) => `${r.id}/${r.step}`)].join(', ') });
-  return { changes: r.changes };
+  return { changes: r.changes, kept, stale };
 }
 
 /**
@@ -214,8 +272,20 @@ export function applyPlan(p, by = 'reconciler') {
 async function requeueParked(apply) {
   const f = join(REPO_ROOT, 'apps/console-web/plugins/build-orchestrator/pipeline.mjs');  // axf-plugin:build-orchestrator
   if (process.env.AXF_RECONCILE_REQUEUE === 'off' || !existsSync(f)) return null;
-  try { const m = await import(f); const r = m.requeueStuck({ apply, by: 'reconciler' }); return { found: r.found, moved: r.moved }; }
-  catch (e) { return { found: [], moved: [], error: String(e.message ?? e).slice(0, 300) }; }
+  try {
+    const m = await import(f);
+    const dry = m.requeueStuck({ apply: false, by: 'reconciler' });
+    const held = stoppedAmong(dry.found, loadStore().builds);
+    // the requeue moves every build it finds: with a stopped one among them nothing is moved (Brett's stop stands)
+    if (!apply || !dry.found.length || held.length) return { found: dry.found.filter((x) => !held.includes(x.id)), moved: [], ...(held.length ? { stopped: held } : {}) };
+    const r = m.requeueStuck({ apply: true, by: 'reconciler' });
+    return { found: r.found, moved: r.moved };
+  } catch (e) { return { found: [], moved: [], error: String(e.message ?? e).slice(0, 300) }; }
+}
+/** The ids among `found` ([{ id }]) whose build is stopped in `builds` (hold, cancel, unqueue). Pure. */
+export function stoppedAmong(found, builds) {
+  const by = new Map((builds ?? []).map((b) => [b.id, b]));
+  return (found ?? []).map((x) => x.id).filter((id) => !!stopOf(by.get(id)));
 }
 
 /**
@@ -249,6 +319,7 @@ export async function reconcile({ apply = false, gh, repo } = {}) {
   const plainBranches = gathered.branches.filter((b) => !isStepBranch(builds, b.name));
   const plainPrs = gathered.prs.filter((x) => !isStepBranch(builds, x.branch));
   const p = error ? { changes: [], suggestions: [], orphans: { prs: [], branches: [] } } : plan(builds, plainPrs, plainBranches, { now: at });
+  p.seen = new Map(builds.map((b) => [b.id, b.status])); // the status each answer below was worked out from
   p.stepBranches = error ? new Map() : stepBr;
   for (const [id, list] of p.stepBranches) {
     const b = builds.find((x) => x.id === id);
@@ -265,7 +336,7 @@ export async function reconcile({ apply = false, gh, repo } = {}) {
     const same = p.changes.find((x) => x.id === c.id);
     if (same) { Object.assign(same.set, c.set); same.why.push(...c.why); } else p.changes.push(c);
   }
-  const applied = apply && (p.changes.length || p.stepResets.length) ? applyPlan(p) : { changes: [] };
+  const applied = apply && (p.changes.length || p.stepResets.length) ? applyPlan(p) : { changes: [], kept: [], stale: [] };
   const requeued = await requeueParked(apply);
   const landing = error ? null : await syncLanding(builds, gathered.prs, { apply });
   const profiles = [...new Set(builds.flatMap((b) => b.profiles))];
@@ -273,6 +344,7 @@ export async function reconcile({ apply = false, gh, repo } = {}) {
     $axf: 'builds-reconcile@1', at, repo: repo ?? repoName(), apply, error: [error, gathered.gitError, landing?.error ? `lander: ${landing.error}` : ''].filter(Boolean).join('; '), pulled: pulled.ok ? (pulled.taken ?? []) : { error: pulled.error },
     profiles, prs: gathered.prs.length, branches: gathered.branches.length,
     changes: p.changes, suggestions: p.suggestions, orphans: p.orphans, live: liveStatus(), written: applied.changes.length,
+    stopsKept: applied.kept ?? [], staleSkipped: applied.stale ?? [],
     stepResets: p.stepResets, stepBranches: [...p.stepBranches.entries()].map(([id, list]) => ({ id, steps: list })),
     requeued, landing,
     running: alive ? builds.filter((b) => b.status === 'running' && alive.has(b.id)).map((b) => b.id) : null,
@@ -295,12 +367,16 @@ function text(r, brief) {
   if (r.error) L.push(r.failed ? r.error : `Not read: ${r.error}`);
   for (const a of r.landing?.actions ?? []) L.push(`lander: ${a}`);
   if (r.landing?.skipped && r.landing.asked?.length) L.push(`lander: ${r.landing.asked.join(', ')} has a PR GitHub shows merged or closed (${r.landing.skipped})`);
-  for (const c of r.changes) L.push(`${r.apply ? 'fixed' : 'would fix'} ${c.id}: ${c.why.join('; ')}`);
+  const keptIds = new Set((r.stopsKept ?? []).map((x) => x.id));
+  for (const c of r.changes) if (!keptIds.has(c.id)) L.push(`${r.apply ? 'fixed' : 'would fix'} ${c.id}: ${c.why.join('; ')}`);
+  for (const x of r.stopsKept ?? []) L.push(`left ${x.id}: ${x.why}`);
+  for (const x of r.staleSkipped ?? []) L.push(`left ${x.id}: it went ${x.read} → ${x.now} during the pass, not set ${x.not}`);
   for (const x of r.stepResets ?? []) L.push(`${r.apply ? 'reset' : 'would reset'} ${x.id}/${x.step}: ${x.why}`);
   if (!brief) for (const s of r.suggestions) L.push(`check ${s.build ?? s.builds?.join('/') ?? ''}: ${s.why}`);
   if (r.orphans.prs.length) L.push(`orphan PRs (no build): ${r.orphans.prs.map((p) => `#${p.number}`).join(' ')}`);
   if (r.orphans.branches.length) L.push(`orphan branches (no PR, no build): ${r.orphans.branches.map((b) => b.branch).join(' ')}`);
   for (const f of r.requeued?.found ?? []) L.push(`${r.apply && r.requeued.moved.includes(f.id) ? 'requeued' : 'would requeue'} ${f.id}: ${f.why}`);
+  if (r.requeued?.stopped?.length) L.push(`not requeued: ${r.requeued.stopped.join(', ')} stopped by Brett (hold, cancel or unqueue stands)`);
   if (r.requeued?.error) L.push(`requeue-stuck: ${r.requeued.error}`);
   if (r.live.queued) L.push(`live: ${r.live.queued} change(s) not on main yet${r.live.error ? ` (${r.live.error})` : ''}`);
   return L.join('\n') || `in sync: ${r.prs} PRs, ${r.branches} branches checked`;

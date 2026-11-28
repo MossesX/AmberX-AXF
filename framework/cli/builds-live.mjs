@@ -16,10 +16,16 @@
  *   3. a flush publishes the outbox to main as ONE small status-only commit, made with git plumbing on origin/main
  *      (a private index, never this checkout's working tree or branch): fetch, take main's store, merge this
  *      checkout's changed builds into it (per build and per step, newer wins: builds-merge-core.mjs), append the journal
- *      lines, one line per change in THREADS.md's live log, regenerate the orchestrator exports, commit with
- *      `[skip ci]`, push. Rejected because main moved: fetch again and re-apply (bounded); never a force push;
+ *      lines, one line per change in THREADS.md's live log, commit with `[skip ci]`, push. Rejected because main
+ *      moved: fetch again and re-apply (bounded); never a force push;
  *   4. main's newer builds come back into this checkout (pull), and into the console's checkout (AXF_CONSOLE_ROOT,
  *      default /opt/axf, mounted live into the console) so the banners show the change now, not at the next update.
+ *
+ * Status is read from the builds store only (Nov 28 2026; Brett: "All the status states exist in the database").
+ * main's copy is a projection: written from the store, never read back as a status once the store is on the database
+ * (pullFrom: a build the database holds is never changed by main's copy, so a stale copy cannot bring back a build that
+ * was held, cancelled, unqueued or deleted). The old orchestrator.json status file is not written, not read and not
+ * copied anywhere; a publish takes one off main (statusFilesOn).
  *
  * Code still goes through the feature branch and its PR; only status data goes straight to main. A flush that can't reach GitHub keeps the outbox and says why (`status`); the next due write or `flush` retries.
  *
@@ -50,7 +56,7 @@ import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { REPO_ROOT } from './persist.mjs';
 import { gitAuthEnv, githubToken, scrub } from './github.mjs';
-import { adoptStore, adoptedChanges, journalDir, journalMax, journalMode, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeMode, storeText, withStore } from './builds-store.mjs';
+import { adoptStore, adoptedChanges, journalDir, journalMax, journalMode, mergeOriginsText, originsFile, readStoreNow, storeFile, storeMode, storeText, withStore } from './builds-store.mjs';
 import { emitChangesTo } from './build-hooks.mjs';
 import { readManifest } from './shipped-files.mjs';
 import { normRunEnd } from '../core/build-pipeline.mjs';
@@ -80,6 +86,13 @@ export const LIVE_HEAD = '## Live build log';
 const LIVE_NOTE = '<!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->';
 const LIVE_KEEP = 400;
 const ATTEMPTS = 6;
+/**
+ * The retired status file (the root one and a profile's twin). STATUS_FILE_RETIRED is also the mark a publish looks for
+ * in main's own copy of this file: main's code stopped reading the status file once it carries it (statusFilesOn).
+ */
+export const STATUS_FILE_RETIRED = 'orchestrator.json';
+const SELF_REL = 'framework/cli/builds-live.mjs';
+const isStatusFile = (rel) => /^_claude\/builds\/(profiles\/[^/]+\/)?orchestrator\.json$/.test(rel);
 /** Files a builds-only conflict may touch (heal) and the merge driver handles. */
 export const BUILDS_PATHS = [STORE_REL, ORIGINS_REL, `${JOURNAL_REL}/`, `${SHIPPED_DIR_REL}/`, '_claude/builds/orchestrator.json', '_claude/builds/profiles/', THREADS_REL];
 
@@ -325,12 +338,9 @@ export function publish(entries, { journalExtra = {} } = {}) {
     const threadLines = entries.flatMap((e) => merge.changeLines({ ...e, builds: (e.builds ?? []).filter((b) => real.includes(b.id)) }));
     const threads = show(base, THREADS_REL);
     if (threads !== null && threadLines.length) files[THREADS_REL] = appendThreads(threads, threadLines);
-    if (real.length) for (const x of orchestratorExports(merged)) { const old = show(base, x.rel); if (old !== null || x.builds) files[x.rel] = x.text; }
-    // One profile (Brett, Nov 7 2026): an orchestrator export of a profile that is not registered any more (a retired
-    // profile's file an older checkout or a merge brought back) is taken off main, never rewritten. The same for a
-    // profile registered only on the hub (test-sandbox, Nov 13 2026): orchestratorExports lists repo-registered
-    // profiles only, so its folder leaves main with the next publish instead of failing check-profiles.mjs there.
-    if (real.length) for (const rel of staleProfileExports(base, files)) files[rel] = null;
+    // No status file: nothing is generated from the store but the store itself. A status file main still carries (an
+    // older checkout or a merge brought it back) is taken off with this commit, the root one and every profile's.
+    for (const rel of statusFilesOn(base)) files[rel] = null;
     // what Brett said (build-origin@1): main's sidecar + every origin on the merged records, never fewer
     { let mine = ''; try { mine = readFileSync(originsFile(), 'utf8'); } catch { /* none yet */ }
       const fromRecords = JSON.stringify({ origins: Object.fromEntries(merged.builds.filter((b) => b.origin).map((b) => [b.id, b.origin])) });
@@ -374,17 +384,19 @@ function journalSizes(rev) {
   for (const l of git(['ls-tree', '-l', rev, `${JOURNAL_REL}/`]).out.split('\n')) { const m = /\s(\d+)\t.*\/([^/]+)\.jsonl$/.exec(l); if (m) out[m[2]] = Number(m[1]); }
   return out;
 }
-/** Orchestrator exports on `rev` under _claude/builds/profiles/ that no registered profile writes (null = remove). */
-export function staleProfileExports(rev, files) {
-  return git(['ls-tree', '-r', '--name-only', rev, '--', '_claude/builds/profiles']).out.split('\n')
-    .filter((rel) => rel.endsWith('/orchestrator.json') && !(rel in files));
+/**
+ * The retired status files `rev` still carries, to be removed by a publish. None while main's code is from before the
+ * retirement (its copy of this file has no STATUS_FILE_RETIRED): that code and its tests still read the file, so it is
+ * left as it is (never rewritten) until the retirement has landed. A main with no copy of this file has nothing that
+ * reads one. Only names are listed: the file's content is never read.
+ */
+export function statusFilesOn(rev) {
+  const code = show(rev, SELF_REL);
+  if (code !== null && !code.includes('STATUS_FILE_RETIRED')) return [];
+  return git(['ls-tree', '-r', '--name-only', rev, '--', '_claude/builds/profiles', `_claude/builds/${STATUS_FILE_RETIRED}`]).out.split('\n').filter(isStatusFile);
 }
-function allFiles(rev, files) {
-  const out = { ...files };
-  const ls = git(['ls-tree', '-r', '--name-only', rev, '--', '_claude/builds/profiles', '_claude/builds/orchestrator.json']).out.split('\n').filter((x) => x.endsWith('orchestrator.json'));
-  for (const rel of ls) if (!(rel in out) || out[rel] === null) out[rel] = show(rev, rel) ?? '';
-  return out;
-}
+/** What main holds now for the files of a publish (the pull reads the store from it); removed files are left out. */
+function allFiles(rev, files) { return Object.fromEntries(Object.entries(files).filter(([, text]) => text !== null)); }
 /**
  * The commit message: the one change, or how many builds changed and which. A commit with no build change (a shipped
  * manifest, an origin or a journal line on its own) names its files; the subject never ends in an empty list.
@@ -396,7 +408,7 @@ export function message(entries, real, rels = []) {
   const head = lines.length === 1 ? lines[0]
     : ids.length ? `${ids.length} build change(s): ${ids.slice(0, 4).join(', ')}${ids.length > 4 ? ` +${ids.length - 4}` : ''}`
       : `${names.length} status file(s): ${names.slice(0, 3).join(', ') || 'none'}`;
-  return `Builds live: ${head.replace(/`/g, '').slice(0, 140)} [skip ci]\n\n${lines.slice(0, 40).join('\n')}\n\nStatus-only commit from framework/cli/builds-live.mjs (store, journal, exports, THREADS live log).`;
+  return `Builds live: ${head.replace(/`/g, '').slice(0, 140)} [skip ci]\n\n${lines.slice(0, 40).join('\n')}\n\nStatus-only commit from framework/cli/builds-live.mjs (store, journal, THREADS live log).`;
 }
 /** A commit on `base` with the given files replaced, through a private index (no working tree is touched). */
 function commitOnto(base, files, msg) {
@@ -424,6 +436,16 @@ export function pullFrom(files) {
   const text = files?.[STORE_REL]; if (!text) return { ok: false };
   const main = core.normalizeStore(JSON.parse(text));
   const local = readStoreNow();
+  if (storeOnTables()) {
+    // The database is the status. main's copy is its projection and may be older than it looks (a checkout from before
+    // the cut republishing its own copy): it never changes a build the database holds. Only a build the database has
+    // never seen (filed in a checkout that could not reach it) comes in, as it was filed.
+    if (files[ORIGINS_REL]) { let mine = ''; try { mine = readFileSync(originsFile(), 'utf8'); } catch { /* none yet */ } const t = mergeOriginsText(files[ORIGINS_REL], mine); if (t !== mine) { try { writeFileSync(originsFile(), t); } catch { /* a read-only checkout */ } } }
+    const fresh = unknownBuilds(local, main);
+    if (!fresh.length || storeMode() !== 'cutover') return { ok: true, taken: [] };
+    adoptStore({ ...local, builds: [...local.builds, ...fresh] });
+    return { ok: true, taken: fresh.map((b) => b.id) };
+  }
   const { store, taken } = merge.mergeStores(local, main);
   // nothing here newer than main: take main's bytes, so the branch and main hold the same file (clean merges later)
   const localOnly = merge.mergeStores(main, local).taken;
@@ -441,7 +463,13 @@ export function pullFrom(files) {
   return { ok: true, taken };
 }
 
-/** The console's checkout (mounted live into the console): its store and exports follow main now. */
+/** The builds of `main` (a store) that `local` has no record of at all, deleted ones included. Pure. */
+export function unknownBuilds(local, main) {
+  const have = new Set((local?.builds ?? []).map((b) => b.id));
+  return (main?.builds ?? []).filter((b) => b && b.id && !have.has(b.id));
+}
+
+/** The console's checkout (mounted live into the console): its store follows main now (a file store only). */
 function toConsole(files) {
   const root = env('AXF_CONSOLE_ROOT', '/opt/axf');
   if (!root || root === 'off' || !files?.[STORE_REL]) return;
@@ -452,8 +480,7 @@ function toConsole(files) {
     const { store, taken } = merge.mergeStores(theirs, main);
     for (const [rel, t] of Object.entries(files)) if (rel.startsWith(`${SHIPPED_DIR_REL}/`) && t) { mkdirSync(join(root, SHIPPED_DIR_REL), { recursive: true }); writeFileSync(join(root, rel), t); }
     if (!taken.length) return;
-    // cutover: the console's store is the tables (this process's pullFrom already merged main into them); its checkout
-    // file is no longer read, and its exports are regenerated by the console's own writes from the record
+    // cutover: the console's store is the tables; its checkout file is no longer read or written
     if (storeOnTables()) return;
     const consoleOnly = merge.mergeStores(main, theirs).taken.length;
     const next = consoleOnly ? store : main;
@@ -462,7 +489,6 @@ function toConsole(files) {
     const hooks = join(root, '.axf-console', 'build-hooks');
     if (existsSync(hooks)) emitChangesTo(hooks, adoptedChanges(theirs, next), { at: new Date().toISOString(), by: 'builds-live' });
     writeFileSync(join(root, STORE_REL), consoleOnly ? storeText(store) : files[STORE_REL]);
-    for (const x of orchestratorExports(consoleOnly ? store : main)) if (existsSync(join(root, x.rel)) || x.builds) writeFileSync(join(root, x.rel), x.text);
     for (const [rel, t] of Object.entries(files)) if (rel.startsWith(`${JOURNAL_REL}/`)) {
       let mine = ''; try { mine = readFileSync(join(root, rel), 'utf8'); } catch { /* new */ }
       writeFileSync(join(root, rel), merge.mergeJournalText(t, mine));
@@ -594,7 +620,9 @@ export function mergeFile(oursPath, theirsPath, path) {
   if (path.endsWith(STORE_REL.split('/').pop()) && path.includes('_claude/builds/') && !path.includes('/profiles/')) {
     writeFileSync(oursPath, storeText(merge.mergeStoreFiles(ours, theirs))); return true;
   }
-  if (path.endsWith('orchestrator.json')) {
+  // The retired status file, while a branch and main both still carry a copy: merged as before so it never holds a
+  // merge up. Nothing reads the result as a status.
+  if (path.endsWith(STATUS_FILE_RETIRED)) {
     const a = JSON.parse(ours); const b = JSON.parse(theirs);
     const m = merge.mergeOrchestratorDocs(a, b);
     writeFileSync(oursPath, `${JSON.stringify(m, null, 1)}\n`); return true;

@@ -49,6 +49,8 @@ function seed() {
   // a retired profile's export an older checkout left on main (one profile since Nov 7 2026): the next publish takes it off
   mkdirSync(join(s, '_claude/builds/profiles/current'), { recursive: true });
   writeFileSync(join(s, '_claude/builds/profiles/current/orchestrator.json'), '{"$axf":"orchestrator@1","builds":[]}\n');
+  // and the old status file itself (retired Nov 28 2026: status lives in the store only)
+  writeFileSync(join(s, '_claude/builds/orchestrator.json'), '{"$axf":"orchestrator@1","builds":[{"id":"x","status":"queued"}]}\n');
   writeFileSync(join(s, '.gitattributes'), '_claude/builds/store.json merge=axf-builds\n_claude/builds/journal/*.jsonl merge=axf-builds\n');
   git(s, 'add', '-A'); git(s, 'commit', '-q', '-m', 'seed'); git(s, 'push', '-q', 'origin', 'main');
   for (const c of ['a', 'b', 'c']) git(T, 'clone', '-q', join(T, 'remote.git'), c);
@@ -75,7 +77,8 @@ async function main() {
   check(files.every((f) => f.startsWith('_claude/')), `status commit touches only _claude/ (${files.join(' ')})`);
   check(files.some((f) => f.startsWith('_claude/builds/journal/')), 'status commit carries the journal line');
   check(gitTry(A, 'cat-file', '-e', 'origin/main:_claude/builds/profiles/current/orchestrator.json').status !== 0, 'a retired profile\'s export is taken off main by the next publish');
-  check(git(A, 'show', 'origin/main:_claude/builds/orchestrator.json').includes('"id": "x"'), 'the base profile (all) exports to the original orchestrator path');
+  check(gitTry(A, 'cat-file', '-e', 'origin/main:_claude/builds/orchestrator.json').status !== 0, 'the old status file is taken off main by the next publish and never written again');
+  check(!existsSync(join(A, '_claude/builds/orchestrator.json')) || !readFileSync(join(A, '_claude/builds/orchestrator.json'), 'utf8').includes('s1'), 'no status file is written into the checkout either');
   const live = JSON.parse(run(A, LIVE, ['status', '--json']).stdout);
   check(live.queued === 0 && live.lastOk && !live.stuck, 'outbox empty, last publish recorded');
 
@@ -226,6 +229,55 @@ async function main() {
   check(rc.score({ id: 'x', branch: '', pr: '' }, { branch: 'claude/x', title: '' }) === 90 && rc.score({ id: 'abc', branch: '', pr: '' }, { title: 'abc' }) === 0, 'short ids only match by branch, never by a word in a title');
   const merged = rc.plan([{ ...B1, branch: 'claude/theme-editor', pr: '#243', steps: B1.steps.map((s) => ({ ...s, done: true })) }], [{ ...prs[0], state: 'merged', mergedAt: '2026-11-03T11:00:00Z' }], [], {});
   check(merged.changes[0]?.set.mergedAt === '2026-11-03T11:00:00Z', 'the build\'s own PR merged: mergedAt recorded');
+
+  // 9b. the reconciler's one write: Brett's stops stick, a status read before the build moved is not written, a
+  // deleted build is left alone; ticks and PR fields still come in
+  {
+    const dir = mkdtempSync(join(tmpdir(), 'axf-reconcile-check-'));
+    const keep = { ...process.env };
+    Object.assign(process.env, { AXF_BUILDS_STORE: join(dir, 'store.json'), AXF_BUILDS_LIVE: '0', AXF_BUILDS_EXPORT: '0', AXF_BUILD_PROFILE: 'all' });
+    delete process.env.AXF_DATA_DIR;
+    try {
+      const now = '2026-11-28T10:00:00.000Z';
+      const st = core.emptyStore(now); st.migratedAt = now;
+      const mk = (id, status, extra = {}) => core.normBuild({ id, title: id, profiles: ['all'], status, steps: [1, 2, 3].map((n) => ({ id: `s${n}`, text: `step ${n}`, model: 'Opus' })), ...extra }, { now, seed: id });
+      const stop = (kind, from) => ({ stop: { kind, at: now, by: 'brett', why: 'not now', from } });
+      st.builds.push(mk('held', 'pending', { pipeline: { ...stop('hold', 'queued'), heldAt: now, heldBy: 'brett' } }), mk('cancelled', 'pending', { pipeline: stop('cancel', 'running') }), mk('unqueued', 'pending', { pipeline: stop('unqueue', 'queued') }),
+        mk('moved', 'queued'), mk('gone', 'running', { deleted: true, deletedAt: now }), mk('plain', 'running'));
+      writeFileSync(join(dir, 'store.json'), `${JSON.stringify(core.compactStore(st), null, 1)}\n`);
+      const R = await import('../cli/builds-reconcile.mjs');
+      const S = await import('../cli/builds-store.mjs');
+      const BP = await import('../core/build-pipeline.mjs');
+      check(['held', 'cancelled', 'unqueued'].every((id) => BP.stopOf(S.loadStore().builds.find((b) => b.id === id))), 'the stops are in the store as the contract reads them');
+      const chg = (id, set, steps = []) => ({ id, set, steps, stepNotes: Object.fromEntries(steps.map((x) => [x, 'PR #7'])), why: [`test ${id}`] });
+      const plan = {
+        changes: [chg('held', { status: 'running', pr: '#7', branch: 'claude/held' }, ['s1']), chg('cancelled', { status: 'landing' }), chg('unqueued', {}, ['s1', 's2', 's3']), chg('moved', { status: 'pending' }), chg('gone', { status: 'pending' }), chg('plain', { status: 'pending' })],
+        stepResets: [], seen: new Map([['held', 'pending'], ['cancelled', 'pending'], ['unqueued', 'pending'], ['moved', 'running'], ['gone', 'running'], ['plain', 'running']]),
+      };
+      const out = R.applyPlan(plan);
+      const after = Object.fromEntries(S.loadStore().builds.map((b) => [b.id, b]));
+      check(after.held.status === 'pending' && BP.stopOf(after.held)?.kind === 'hold' && after.held.pipeline.heldAt === now, `a held build stays held, whatever the pass worked out (${after.held.status})`);
+      check(after.held.steps[0].done && after.held.pr === '#7' && after.held.branch === 'claude/held', 'its ticked step and PR fields still come in');
+      check(after.cancelled.status === 'pending' && BP.stopOf(after.cancelled)?.kind === 'cancel', `a cancelled build is not set landing (${after.cancelled.status})`);
+      check(after.unqueued.status === 'pending' && BP.stopOf(after.unqueued)?.kind === 'unqueue' && after.unqueued.steps.every((x) => x.done) && !after.unqueued.builtAt, `an unqueued build with every step ticked stays in Pending (${after.unqueued.status})`);
+      check(out.kept.map((x) => x.id).sort().join() === 'cancelled,held,unqueued', `the stops that stood are reported (${out.kept.map((x) => x.id).join()})`);
+      check(after.held.notes.at(-1).text.includes('only Brett lifts that'), 'the build carries a note saying why it was left');
+      check(after.moved.status === 'queued' && out.stale.length === 1 && out.stale[0].id === 'moved' && out.stale[0].not === 'pending', `a build that moved during the pass keeps its new status (${after.moved.status})`);
+      check(after.gone.status === 'running' && after.gone.deleted === true && after.gone.notes.length === 0, 'a deleted build is left alone');
+      check(after.plain.status === 'pending', `an ordinary build still takes the pass's answer (${after.plain.status})`);
+      const again = R.applyPlan(plan);
+      check(S.loadStore().builds.find((b) => b.id === 'held').notes.length === after.held.notes.length && again.kept.length === 3, 'a second pass keeps the stops and adds no second note');
+      check(R.keepStopOn(after.plain, { ...after.plain, status: 'running' }) === '' && R.keepStopOn(after.held, JSON.parse(JSON.stringify(after.held))) === '', 'keepStopOn: nothing to say for a build that is not stopped or was not moved');
+      const lifted = JSON.parse(JSON.stringify(after.cancelled)); delete lifted.pipeline.stop; lifted.pipeline.queuedAt = now; lifted.status = 'queued';
+      check(R.keepStopOn(after.cancelled, lifted) !== '' && lifted.status === 'pending' && BP.stopOf(lifted)?.kind === 'cancel' && !lifted.pipeline.queuedAt, 'keepStopOn: a cleared stop and a queue stamp are put back');
+      check(R.stoppedAmong([{ id: 'held' }, { id: 'plain' }, { id: 'nope' }], Object.values(after)).join() === 'held', 'stoppedAmong: the requeue pass sees which of its builds are stopped');
+      check(live0.unknownBuilds({ builds: [{ id: 'a', deleted: true }, { id: 'b' }] }, { builds: [{ id: 'a', status: 'queued' }, { id: 'b', status: 'running' }, { id: 'c' }] }).map((b) => b.id).join() === 'c', 'unknownBuilds: main\'s copy only brings builds the database has no record of (a deleted one is a record)');
+    } finally {
+      for (const k of Object.keys(process.env)) if (!(k in keep)) delete process.env[k];
+      Object.assign(process.env, keep);
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
 
   // 10. threads log: appended in its section, capped, before a later heading
   let t = 'x\n## Active\nrow\n';
@@ -410,6 +462,28 @@ async function main() {
     fetchA();
     const subjects = git(A, 'log', '--format=%s', 'origin/main').split('\n').filter((l) => l.startsWith('Builds live:'));
     check(subjects.length > 0 && subjects.every((l) => !/change\(s\):\s*\[skip ci\]/.test(l)), 'no status commit on main has an empty change list');
+  }
+
+  // the status file and main's own code: while main's builds-live is from before the retirement the file is left as it
+  // is (that code still reads it) and never rewritten; once main carries the retirement it is taken off
+  {
+    const s = join(T, 'seed');
+    const old = '{"$axf":"orchestrator@1","builds":[{"id":"x","status":"queued"}]}\n';
+    const put = (code) => {
+      git(s, 'pull', '-q', 'origin', 'main');
+      mkdirSync(join(s, 'framework/cli'), { recursive: true }); writeFileSync(join(s, 'framework/cli/builds-live.mjs'), code);
+      writeFileSync(join(s, '_claude/builds/orchestrator.json'), old);
+      git(s, 'add', '-A'); git(s, 'commit', '-q', '-m', 'code on main'); git(s, 'push', '-q', 'origin', 'main');
+    };
+    put('// builds-live from before the status file was retired\n');
+    let q = run(A, ORCH, ['act', 'note', 'y', 'a note while main still reads the status file']); check(q.status === 0, `note on y (old main): ${q.stderr}`);
+    fetchA();
+    check(mainStore().builds.find((b) => b.id === 'y').notes.some((n) => n.text.includes('still reads the status file')), 'the publish reached main');
+    check(gitTry(A, 'show', 'origin/main:_claude/builds/orchestrator.json').stdout === old, 'main\'s code is older: its status file is neither rewritten nor removed');
+    put('// export const STATUS_FILE_RETIRED\n');
+    q = run(A, ORCH, ['act', 'note', 'y', 'a note once main retired the status file']); check(q.status === 0, `note on y (new main): ${q.stderr}`);
+    fetchA();
+    check(gitTry(A, 'cat-file', '-e', 'origin/main:_claude/builds/orchestrator.json').status !== 0, 'main carries the retirement: a status file brought back is taken off by the next publish');
   }
 
   console.log(`${fail ? '✗' : '✓'} builds-live: ${pass} passed, ${fail} failed`);
