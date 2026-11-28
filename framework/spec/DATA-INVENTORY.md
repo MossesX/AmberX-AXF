@@ -80,7 +80,7 @@ Row counts below are live `keys` rows in axf-data (not deleted); sizes are the s
 | `_claude/builds/store.json.live.json`, `.live-outbox.jsonl` | 230 B; journal 185 kB | builds-live.mjs | builds-live.mjs | `build_live_outbox` (new) |
 | `_claude/builds/store.json.exports.json` | 1.5 kB | builds-store.mjs | builds-store.mjs | none: exports are generated from the tables (s3) |
 | `_claude/builds/journal/<yyyy-mm>.jsonl` | 59 MB repo; hub `_data/builds/journal` 1.6 GB; axf-data 13 journals 338 MB + `journal-large` 524 records 1.2 GB | builds-store.mjs | builds-store.mjs (append per write) | `build_journal` (new; one row per event: build id, at, by, op, diff jsonb) |
-| `_claude/builds/orchestrator.json` | 7.6 MB | build-orchestrator | builds-store.mjs export, builds-live.mjs | none: read-only export from `builds` (s3), or dropped if no reader |
+| `_claude/builds/orchestrator.json` | 7.6 MB | build-orchestrator | builds-store.mjs export, builds-live.mjs | none: dropped, see "Pipeline status" below (12.3 MB by Nov 28) |
 | `_claude/builds/origins.json` | 3.2 MB | builds-store.mjs | builds-store.mjs, builds-live.mjs | `build_origins` (new) |
 | `_claude/builds/shipped/<id>.json` | 398 | build-orchestrator | builds-store.mjs on landing | `build_shipped` (new) — also the index for the duplicate / break check (Brett's Nov 18 note: search by feature, files, plugin, title words) |
 | `_claude/builds/advice.json`, `bugs.json`, `matrices.json` | 595 kB, 7 kB, 76 kB | build-orchestrator | orchestrator.mjs | `build_advice`, `build_bugs`, `build_matrices` (new) |
@@ -230,6 +230,133 @@ table through the same rule.
 6. **s4.6** sessions, codebase changes (largest row counts, append-only, least contended).
 
 s4 is ~2–3 h of work as listed; the orchestrator should split it into one step per line above (each ≤ 30 min).
+
+## Pipeline status (build `pipeline-fixes-drop-7-mb-status-file`, s1, Nov 28 2026, Fable)
+
+Brett, Nov 25 2026: "The status change is only supposed to exist in the build store. We don't need that file. All the
+status states exist in the database. We haven't needed it for like two weeks."
+
+### The file
+
+`_claude/builds/orchestrator.json` (`orchestrator@1`): the tracker from before the builds store. Since Oct 31 it is a
+generated projection of the store (`core.projectOrchestrator`): one document with every build, its steps, notes and
+origin. A status change of one build rewrites all of it.
+
+| Copy | Size (Nov 28 2026) | State |
+|---|---|---|
+| repo / `/opt/axf` `_claude/builds/orchestrator.json` | 12.3 MB (7.6 MB at the Nov 18 inventory) | rewritten whole and committed to main by every `builds-live` publish: 5 309 of main's 6 478 commits since Nov 14 carry it |
+| axf-data key `builds/orchestrator.json` (generic `records` row, no table) | 7.8 MB, rev 2 | last written Nov 17 (`svc:cli`, the migration); nothing has written it since |
+| axf-data key `builds/reconcile/worktrees/stop-auto-lander-committing-tracking/_claude/builds/orchestrator.json` | 7.8 MB, rev 1 | a worktree's copy the Nov 17 migration swept in; dead |
+| `/opt/axf/_claude/builds/orchestrator.retired-20261127T180513.json` | 12.1 MB | a manual retire on Nov 27; the next publish wrote the file back (the writers below were still in) |
+| `_claude/builds/profiles/<id>/orchestrator.json` | none on main | same code paths; `builds-live` takes strays off main |
+
+Its twin is `_claude/builds/store.json` (17.9 MB in `/opt/axf`, 15.4 MB as the axf-data key `builds/store.json`, rev
+11 755): the same builds as one document. The tables behind it (`builds` 1 149 rows, `build_steps`, `build_notes`)
+are the source since the Nov 18 cutover, but every reader still asks for the whole document.
+
+**Where the load comes from** (measured Nov 28): the `axf-data` container sent 45.8 GB in its first 24 minutes after a
+restart, then ~0.3 GB a minute. axf-data keeps no per-key counters and no access log, so the split by key is not
+measured; what is known: `builds/orchestrator.json` has not been written since Nov 17, and `readStore()` in
+`builds-store.mjs` is an unconditional `get` of `builds/store.json` (15.4 MB assembled from three tables, no
+`If-None-Match`) on every `loadStore` / `withStore`, called from ~40 modules: the orchestrator tick and the watchdogs
+every minute, `pipeline.mjs status` behind every console poll, the lander, the reaper, each build session's CLI calls.
+Deleting the file stops the 12 MB commits and the foreign-write parses; the traffic stops only when status reads and
+writes stop asking for the whole document (s2, s5, s6, s8). axf-data should also count bytes per key
+(`GET /v1/_meta/counts`), so the next one is found in a minute.
+
+### Writers of the file
+
+| Where | What it does |
+|---|---|
+| `framework/cli/builds-live.mjs` `publish` (line 328, `orchestratorExports(merged)` → `files[rel]`) | rewrites the whole file on main with every publish that changes a build |
+| `framework/cli/builds-live.mjs` `toConsole` (line 465) | rewrites it in the console checkout after a publish |
+| `framework/cli/builds-live.mjs` `mergeFile` (line 597; `.gitattributes` `merge=axf-builds`) | merges two copies in a branch merge (`mergeOrchestratorDocs`, `framework/plan/builds-merge-core.mjs`) |
+| `framework/cli/builds-store.mjs` `exportAll` / `exportNow` (`export` command), `exportText`, `orchestratorExports` | writes it in local and shadow mode; in cutover "seen, never written" (B4-09) |
+| `framework/cli/builds-store.mjs` `migrateNow` (line 870) | exports after a first-use migration |
+| `apps/console-web/plugins/agent-swarm/swarm.mjs` line 304 (`writeJson(trackerFile(), …)`) | writes merged steps straight into the file |
+| `apps/console-web/plugins/feature-matrix/matrix.mjs` line 116 | writes a build back into the file |
+
+### Readers of the file
+
+| Where | What it reads |
+|---|---|
+| `framework/cli/builds-store.mjs` `foreignWrites` / `absorbForeign` (`exportTargets`) | the whole file whenever its size or mtime moved since the last export (a 12 MB parse inside a store read), in local and shadow mode |
+| `framework/cli/builds-store.mjs` `sweepStaleRepoExports`, `gatherSources` (line 851; `migrate`, `verify`) | per-profile copies; the pre-migration data set |
+| `framework/cli/builds-live.mjs` `allFiles`, `staleProfileExports`, `BUILDS_PATHS` | lists and reads it from main around each publish |
+| `framework/cli/persist.mjs` `ORCHESTRATOR_REL`, `orchestratorPath`, `hasRepoExport` | the path helpers every reader and writer here goes through |
+| `framework/cli/profiles.mjs` `profileFiles`, retired-folder prune | path only |
+| `apps/console-web/plugins/agent-swarm/swarm.mjs` `loadTracker`, `feature-matrix/matrix.mjs` line 52 | builds and steps from the file instead of the store (`feature-matrix` also derives the `matrices.json` folder from the path) |
+| `framework/core/tracking-paths.mjs` (+ the baked copy `apps/console-web/src/axf/core/`) | path classes `orchestrator`, `orchestrator-profile` (tracking-only diffs, lander size cap) |
+| `framework/cli/land-resolve.py` lines 127–138 | drops the stale `profiles/all` copy in a merge |
+| `framework/plan/builds-store-core.mjs` `projectOrchestrator`, `absorbOrchestrator` | the projection and its inverse (pure) |
+| `framework/spec/check-builds-live.mjs`, `check-builds-store-data.mjs`, `check-builds-store.mjs`, `check-profiles.mjs`, `check-build-origin.mjs`, `fixtures/data-store-migration.json`; plugin tests (`build-orchestrator/test.mjs`, `feature-matrix/test.mjs`, `builds-page/test.py`); `deploy/test/claude-headless-brief.test.sh` | assert the export behaviour above |
+
+Not readers: `build-orchestrator` itself (`orchestrator.mjs` `trackerFile()` is the store unless `AXF_ORCH_FILE` is
+set; `hooks.mjs` only prints it), the console server and the `pipeline_status` route
+(`build-orchestrator/server/__init__.py` → `pipeline.mjs status` → `loadStore`), `services/axf-data` and `deploy/`
+(neither names the file). `framework/schemas/data-store-paths.json` has no rule naming it: the catch-all
+`^_claude/builds/(.+)$ → builds/{1}` maps it, which is how the 7.8 MB key was made. It is not in the manifest's
+`data.shared`. The hub's `_data/pipeline/state.json` (19 kB, the dispatcher's last tick) is a different file and stays.
+
+### What replaces it: one row per build, one indexed summary
+
+No new table. A build's status is its row in `builds`, keyed `(section, rid)` with `rid` = the build id.
+
+| Column | Holds | Use |
+|---|---|---|
+| `section`, `rid` | `'builds'`, build id | primary key `builds_pkey1`: read or update one build |
+| `status` | builds@1 / pipeline-2@1 status | filter and group |
+| `title`, `priority`, `pr`, `branch`, `kind`, `created_at`, `updated_at`, `built_at`, `deleted`, `hidden`, `rev`, `ord` | lifted columns (`BUILD_COLS`) | the line a list shows; `rev` is the `ifRev` of a one-row write |
+| `extra->>'number'`, `'statusAt'`, `'statusBy'`, `'flow'` | pipeline-status@1 | build number, when and who set the status |
+| `extra->'pipeline'` → `queuedAt`, `queuedBy`, `account`, `slot`, `session`, `model`, `phase`, `heldAt`, `heldBy`, `heldWhy` | dispatcher state | who runs it and where; read for the live rows only, never `runs`, `lastRun`, `tried` |
+
+New index (s2): `CREATE INDEX builds_live_status ON builds (section, status) WHERE deleted IS NOT TRUE`. Today's
+`builds_status (status)` does not cover the `section` / `deleted` filter and the count runs as a sequential scan over
+9.8 MB of rows.
+
+Summary (`pipeline-summary@1`, s2): one request, two statements in one transaction, a few kB back.
+
+```sql
+-- counts by status: index-only on builds_live_status
+SELECT status, count(*) FROM builds
+ WHERE section = 'builds' AND deleted IS NOT TRUE GROUP BY status;
+
+-- live rows: the one queued build and what is running; a few dozen rows through the same index
+SELECT rid, title, status, priority, pr, branch, rev, updated_at,
+       extra->>'number' AS number, extra->>'statusAt' AS status_at,
+       jsonb_build_object('queuedAt', extra#>'{pipeline,queuedAt}', 'account', extra#>'{pipeline,account}',
+         'slot', extra#>'{pipeline,slot}', 'session', extra#>'{pipeline,session}', 'model', extra#>'{pipeline,model}',
+         'heldAt', extra#>'{pipeline,heldAt}', 'heldBy', extra#>'{pipeline,heldBy}') AS pipeline
+  FROM builds
+ WHERE section = 'builds' AND deleted IS NOT TRUE AND status = ANY(%(live)s)
+ ORDER BY NULLIF(extra#>>'{pipeline,queuedAt}', '') NULLS LAST, ord;
+```
+
+`live` = every status between Pending and Landed: `queued`, `running`, `waiting`, `fixing`, `blocked`, `escalated`,
+`built`, `landing` (builds@1 `LEGACY_STATUSES`) and `splitting` … `merging-main` (pipeline-2@1 `BUILD_FLOW` without
+`pending` and `landed`); 426 of the 1 149 rows on Nov 28, 367 of them `landing`. The answer:
+`{ counts: {status: n}, queued: <the oldest queued row or null>, running: [rows with slot + account], live: [rows], rev }`.
+
+Seen in the live rows, for s2 to handle: an unset `queuedAt`, `account` or `slot` is the empty string, not null (hence
+the `NULLIF`), and one row holds `slot: "[object Object]"` (a slot object stringified by a writer); the summary returns
+a slot only when it is a slot id.
+
+Rules for the steps that follow:
+
+1. **Read one build**: by key (`section = 'builds' AND rid = %s`), with its `build_steps` / `build_notes` rows through
+   `build_steps_parent` / `build_notes_parent` only when the caller asks for them.
+2. **Write one status**: `data-patch@1` on that build with its `ifRev` (`SELECT … FOR UPDATE` on the one row). No
+   read-modify-write of the store document, no export rewritten after it.
+3. **`pipeline_status` and every caller** (REST `GET /pipeline`, the MCP tool, `pipeline.mjs status`, the tick, the
+   watchdogs, the lander) read the summary; a caller that needs one build reads that row.
+4. **No status in a file**: nothing writes `orchestrator.json` in any mode, nothing reads it back as a foreign write,
+   and `builds-live` stops committing it (and the `store.json` twin) to main.
+5. The whole-document `get` of `builds/store.json` stays only for operations on the whole store (migrate, verify,
+   backup, a merge of two stores).
+
+Clean-up that goes with s7: delete the repo file and the retired copy in `/opt/axf`, delete the two axf-data keys,
+add `^_claude/builds/(profiles/[^/]+/)?orchestrator\.json$ → null` above the catch-all in `data-store-paths.json`,
+and take the two `.gitattributes` lines and the `orchestrator` path classes out with the last reader.
 
 ## Not data (stays where it is)
 
