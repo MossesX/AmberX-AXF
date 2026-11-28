@@ -53,6 +53,7 @@ ok(r.status_code == 200 and r.json()["ok"] and any(p.get("base") for p in r.json
 base = next(p["id"] for p in r.json()["profiles"] if p.get("base"))
 r = client.get("/p/get", params={"id": base})
 ok(r.status_code == 200 and r.json()["profile"]["id"] == base and r.json()["listed"] is True, "get: the base profile")
+ok(isinstance(r.json().get("builds"), list) and isinstance(r.json()["active"], bool) and isinstance(r.json()["effective"], bool), "get: the profile's builds, active and effective as flags")
 ok(client.get("/p/get", params={"id": "no-such-profile-x"}).status_code == 404, "get: unknown profile is 404")
 ok(client.get("/p/get", params={"id": "Bad Id"}).status_code == 400, "get: bad id is 400")
 

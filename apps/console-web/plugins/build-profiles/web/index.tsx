@@ -441,7 +441,7 @@ function BuildsTab({ p }: { p: Profile }) {
                   : <span className="axp-build-profiles__btitle" title={b.id}>{b.title || b.id}</span>}
                 <Chip tone={STATUS_TONE[b.status]}>{b.status}</Chip>
                 <span className="fx-small fx-muted axp-build-profiles__bmeta">
-                  {b.steps ? `${b.stepsDone ?? 0}/${b.steps} steps` : ''}{b.costUsd ? ` · ${money(b.costUsd)}` : ''}{b.pr ? ` · PR #${b.pr}` : ''}{b.lastActivity ? ` · ${ago(b.lastActivity)}` : ''}
+                  {b.steps ? `${b.stepsDone ?? 0}/${b.steps} steps` : ''}{b.costUsd ? ` · ${money(b.costUsd)}` : ''}{b.pr ? ` · PR #${String(b.pr).replace(/^#/, '')}` : ''}{b.lastActivity ? ` · ${ago(b.lastActivity)}` : ''}
                 </span>
               </li>
             ))}
@@ -623,9 +623,13 @@ function Manager() {
   const hasStats = on.some((p) => p.stats);
   return (
     <div className="fx-stack axp-build-profiles-page">
-      <p className="fx-small fx-muted axp-build-profiles__p">
-        Each profile has its own plan, build queue, pending builds, tracking and orchestrator builds. The pick is saved for every device and session.
-      </p>
+      <header className="fx-pagehead">
+        <div>
+          <p className="fx-eyebrow">Builds</p>
+          <h1>Build profiles</h1>
+          <p className="fx-muted">Each profile has its own plan, build queue, pending builds, tracking and orchestrator builds. The pick is saved for every device and session.</p>
+        </div>
+      </header>
       <div className="axp-build-profiles__totals">
         <span><strong>{on.length}</strong> on the list</span>
         {on.some((p) => p.archived) && <span><strong>{on.filter((p) => p.archived).length}</strong> archived</span>}

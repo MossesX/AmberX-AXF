@@ -186,16 +186,19 @@ def list_profiles() -> dict[str, Any]:
 
 @router.get("/get")
 def get_profile(id: str) -> dict[str, Any]:
-    """One build profile: its details, counts and files, and whether it is the active one."""
+    """One build profile: its details, counts and files, its builds, and whether it is the active one."""
     if not PROFILE.match(id):
         raise HTTPException(400, "id: a profile id")
-    s = _state()
-    # profiles off the list (removed, restorable) are looked up too when the registry reports them
-    for group in ("profiles", "removed"):
-        for p in s.get(group) or []:
-            if isinstance(p, dict) and p.get("id") == id:
-                return {"ok": True, "profile": p, "listed": group == "profiles", "active": s.get("active") == id, "effective": s.get("effective") == id}
-    raise HTTPException(404, f'no build profile "{id}"')
+    # the CLI's own read: the profile (on the list or off it) with its builds from the builds store
+    res = _cli("get", id)
+    p = res.get("profile")
+    if res.get("ok") and isinstance(p, dict):
+        builds = res.get("builds")
+        return {"ok": True, "profile": p, "listed": not p.get("removed"), "active": res.get("active") == id, "effective": res.get("effective") == id,
+                "builds": builds if isinstance(builds, list) else None}
+    if "no build profile" in str(res.get("error") or ""):
+        raise HTTPException(404, f'no build profile "{id}"')
+    raise HTTPException(500, str(res.get("error") or "failed"))
 
 
 @router.post("/create")

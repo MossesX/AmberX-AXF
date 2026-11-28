@@ -11,6 +11,7 @@
     "axf-console"
   ],
   "provides": [
+    "view:build-profiles",
     "dialog:build-profiles",
     "dialog:build-profiles-cleanup",
     "settings-tab:build-profiles"
@@ -55,7 +56,7 @@
             "id"
           ]
         },
-        "output": "{ profile, listed, active, effective }"
+        "output": "{ profile, listed, active, effective, builds: [{ id, title, status, steps, stepsDone, pct, pr, lastActivity, costUsd }] }"
       },
       {
         "id": "create",
