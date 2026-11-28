@@ -125,6 +125,11 @@ export function baseDataPath(rel) {
  *
  * Registry: framework/plan/profiles.json (shared data, on the hub), never profiled itself. Per-session override:
  * AXF_BUILD_PROFILE=<id> (a session working on one profile while the console shows another).
+ *
+ * A registry entry: { id, name, description, createdAt, updatedAt, catalog, color?, icon?, archived?, archivedAt?,
+ * copiedFrom? }. `archived` hides a profile from the pickers (it stays on the list and keeps its data; it can't be the
+ * active one). `removed: [entry + removedAt]` holds the profiles taken off the list, each restorable until its data is
+ * deleted for good (profiles.mjs purge).
  */
 export const PROFILES_REL = 'framework/plan/profiles.json';
 export const PROFILES_DIR_REL = 'framework/plan/profiles/';
@@ -145,6 +150,12 @@ export const TRACKER_REL = 'tracker.json';
 /** The orchestrator tracker is a repo file (synced by claude-sync, committed), profiled the same way. */
 export const ORCHESTRATOR_REL = '_claude/builds/orchestrator.json';
 export const PROFILE_ID = /^[a-z0-9][a-z0-9-]{0,39}$/;
+/**
+ * A profile's look on the banner chip and in the manager: `color` is the name of a colour asset and `icon` the name of
+ * an icon asset (never a literal colour: the UI resolves both through its asset tokens). '' = the default look.
+ */
+export const PROFILE_COLOR = /^[a-z][a-z0-9-]{0,39}$/;
+export const PROFILE_ICON = /^[a-z0-9][a-z0-9:_-]{0,59}$/;
 
 /**
  * One work profile (Brett, Nov 7 2026): every build profile was merged into `all`, the base (the old base
@@ -170,7 +181,14 @@ export function readProfiles() {
   for (const p of list) { p.base = p.id === BASE_PROFILE; if (p.base) p.catalog = true; }
   const saved = resolveProfile(reg?.active);
   const active = list.some((p) => p.id === saved) ? saved : BASE_PROFILE;
-  return { $axf: 'build-profiles@1', updatedAt: reg?.updatedAt ?? '', active, profiles: list };
+  // profiles taken off the list (profiles.mjs remove): their data stays, so they are kept here to be restored
+  const removed = (Array.isArray(reg?.removed) ? reg.removed : []).filter((p, i, a) => p && PROFILE_ID.test(p.id) && !RETIRED_PROFILES.includes(p.id) && !list.some((x) => x.id === p.id) && a.findIndex((x) => x?.id === p.id) === i);
+  return { $axf: 'build-profiles@1', updatedAt: reg?.updatedAt ?? '', active, profiles: list, removed };
+}
+
+/** Every profile id that still has data: on the list, or taken off it and restorable. */
+export function knownProfileIds(reg = readProfiles()) {
+  return [...reg.profiles, ...reg.removed].map((p) => p.id);
 }
 
 /** The profile in force: AXF_BUILD_PROFILE (when it names a known profile; a retired id = `all`), else the saved pick. */
