@@ -295,6 +295,36 @@ async def sync(request: Request) -> dict[str, Any]:
     return _write("sync", request, await _body(request))
 
 
+@router.post("/shipped")
+async def shipped(request: Request) -> dict[str, Any]:
+    """A shipped-manifest@1 for a plan that was sent to build: {build} (the build's manifest file), or {manifest}
+    (given), and optionally {id} (the plan item). Validated with the shared validator: a valid one is stored on the
+    plan, an invalid one is refused (400 with the field errors) and flags the plan. A build no plan sent is a 404."""
+    return _write("shipped", request, await _body(request))
+
+
+@router.get("/shipped/{id}")
+def shipped_get(id: str) -> dict[str, Any]:
+    """The shipped manifest a plan carries (an item id, words in its title, or the build it was sent as), its summary
+    and the flag of a refused one."""
+    return _answer(run({"op": "shipped-get", "id": id}))
+
+
+@router.get("/shipped-log")
+def shipped_log(n: int = 50) -> dict[str, Any]:
+    """The last n shipped-manifest receipts: build, plan, id, rev, ok or refused with the reason."""
+    return _answer(run({"op": "shipped-log", "n": max(1, min(n, 500))}))
+
+
+@router.get("/check-shipped")
+def check_shipped() -> dict[str, Any]:
+    """Every sent build that shipped has its valid manifest on its plan, at the shipped rev: {ok, checked, problems}."""
+    r = run({"op": "check-shipped", "fresh": True})
+    if "problems" in r:
+        return r
+    return _answer(r)
+
+
 @router.post("/say")
 async def say(request: Request) -> dict[str, Any]:
     """One spoken plan command ({text}) → the change it means, with what to say back (AmberX voice, the page's mic)."""

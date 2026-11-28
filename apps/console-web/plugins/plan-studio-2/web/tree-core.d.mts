@@ -8,7 +8,25 @@ export interface Item {
   priority: string; tags: string[]; model: string; minutes: number; links: Link[]; collapsed: boolean; createdAt: string; updatedAt: string; by: string;
   /** View fields the server lays on from the builds store (never stored): see live-core.mjs. */
   origin?: 'orchestrator'; locked?: boolean; live?: Live;
+  /** The shipped-manifest@1 the plan received when its build shipped (normalised, valid), see shipped.mjs. */
+  shipped?: ShippedManifest;
+  /** Set when a shipped manifest for this plan's build was refused: what was wrong with it. */
+  shippedProblem?: ShippedProblem;
 }
+/** The fields of a shipped-manifest@1 the page shows (framework/core/shipped-manifest.mjs has the whole format). */
+export interface ShippedManifest {
+  $axf: 'shipped-manifest@1'; version: number; id: string; rev: number; source: string; by: string; shippedAt: string;
+  build: { id: string; title: string; profile: string; category: string; priority: string; repo: string };
+  said: { text: string; verbatim: boolean; at?: string; source?: string; addenda?: { text: string; at?: string }[] };
+  brief: string; models: string[]; accounts: string[]; branch: string; pr: { number: number; url: string; title?: string };
+  landedCommit: string; commits: string[]; mergedAt: string; landedAt: string; files: string[];
+  steps: { id: string; text: string; model: string; estimate: string; done: boolean; estimateMin: number; actualMin: number }[];
+  tests: { name: string; command: string; result: string; detail: string }[];
+  cost: { usd: number; estimated: boolean; tokens: { input: number; output: number; cacheRead: number; cacheWrite: number } };
+  report: string; open: string[];
+  [k: string]: unknown;
+}
+export interface ShippedProblem { $axf: 'plan-shipped-problem@1'; at: string; build: string; id: string; rev: number; source: string; by: string; reason: string; errors: { field: string; message: string }[] }
 /** A sent plan's (or one orchestrator step's) state, read from the builds store (plan-live@1). */
 export interface Live {
   $axf: 'plan-live@1'; build: string; number?: string; profile: string; step?: string; status: string; label: string; state: string; stateLabel: string; attempt: number; at: string;
