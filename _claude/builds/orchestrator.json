@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-28T10:29:10.048Z",
+ "updatedAt": "2026-11-28T10:29:49.771Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -217069,16 +217069,22 @@
    "title": "Project manager plugin (lean): create, switch, rename, archive projects",
    "category": "",
    "detail": "KEEP IT SMALL: at most 5 steps total, Opus unless something truly needs Fable. A console plugin, project-manager, with: (1) projects table in Postgres via the existing data store (no JSON), seeded from existing projects; (2) REST + MCP + CLI for list, create, switch active, rename, archive/restore (no hard delete); create makes an empty build store, plans and settings for the new project and shares the existing Claude accounts; (3) one screen: grid of projects with New, Rename, Archive, Switch, plus a settings tab under Settings > Plugins; framework assets and tokens only; (4) a small banner chip showing the active project, tap to switch; (5) tests, CI checks, report, PR. No UI Review options, no glossary/porting extras, no voice phrase packs beyond what plugin-commands gives for free.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-28T10:28:56.853Z",
-   "updatedAt": "2026-11-28T10:28:56.853Z",
+   "updatedAt": "2026-11-28T10:29:16.691Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-28T10:29:16.691Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -217736,6 +217742,43 @@
      "createdAt": "2026-11-25T23:21:58.477Z"
     }
    ]
+  },
+  {
+   "id": "project-manager-plugin-lean-fable-create",
+   "title": "Project manager plugin (lean, Fable): create, switch, rename, archive projects",
+   "category": "",
+   "detail": "EVERY STEP ON FABLE. KEEP IT SMALL: at most 5 steps total. A console plugin, project-manager, with: (1) projects table in Postgres via the existing data store (no JSON), seeded from existing projects; (2) REST + MCP + CLI for list, create, switch active, rename, archive/restore (no hard delete); create makes an empty build store, plans and settings for the new project and shares the existing Claude accounts; (3) one screen: grid of projects with New, Rename, Archive, Switch, plus a settings tab under Settings > Plugins; framework assets and tokens only; (4) a small banner chip showing the active project, tap to switch; (5) tests, CI checks, report, PR. No UI Review options, no glossary/porting extras.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-28T10:29:22.965Z",
+   "updatedAt": "2026-11-28T10:29:36.261Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-28T10:29:36.261Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "19's way too many. I want it run on Fable, so specify Fable.",
+    "at": "2026-11-28T10:29:22.965Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   },
   {
    "id": "pipeline-test-5-four-docs-edits-planted",

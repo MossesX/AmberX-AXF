@@ -845,9 +845,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-27 19:10 UTC · `idle-alert-phone-flag-when-nothing-is-building` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `workers-api-routing` → landing, note (all) · builds-live
-- 2026-11-27 19:10 UTC · `brief-only-headless` → landing, note (all) · builds-live
 - 2026-11-27 19:10 UTC · `molly-native-expenses` → landing, note (all) · builds-live
 - 2026-11-27 19:10 UTC · `demonstration-designer-plugin-new-standalone` → landing, note (all) · builds-live
 - 2026-11-27 19:10 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` note (all) · builds-live
@@ -1245,6 +1242,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-28 10:27 UTC · `profile-manager` PR 942, note (all) · orchestrator
 - 2026-11-28 10:28 UTC · `project-manager-plugin-list-create` → archived, note (all) · console
 - 2026-11-28 10:28 UTC · `project-manager-plugin-lean-create` added (0 steps) (all) · console
+- 2026-11-28 10:29 UTC · `project-manager-plugin-lean-create` → queued, note (all) · console
+- 2026-11-28 10:29 UTC · `project-manager-plugin-lean-fable-create` added (0 steps) (all) · console
+- 2026-11-28 10:29 UTC · `project-manager-plugin-lean-fable-create` → queued, note (all) · console
 
 ## Token passes (log)
 
