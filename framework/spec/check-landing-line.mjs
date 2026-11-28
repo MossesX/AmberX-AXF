@@ -3,7 +3,9 @@
  * landing-line@1 conformance: one line, one entry at a time, cancelled runs are never a verdict, red files a fix and
  * the line moves on, hands can pause / skip / move, and the merge queue migrates in its old order.
  *   node framework/spec/check-landing-line.mjs           check
- *   node framework/spec/check-landing-line.mjs --write   regenerate fixtures/landing-line-migrate.json's expected output
+ *   node framework/spec/check-landing-line.mjs --write   regenerate the expected output of fixtures/landing-line-migrate.json
+ *                                                        (the migration) and fixtures/landing-line.json (`landNow`: a clean
+ *                                                        green PR lands at once)
  */
 import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -14,6 +16,7 @@ import { clashBounceStep } from '../../apps/console-web/plugins/build-orchestrat
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const FIX = join(ROOT, 'framework/spec/fixtures/landing-line-migrate.json');
+const LINE_FIX = join(ROOT, 'framework/spec/fixtures/landing-line.json');
 const SCHEMA = JSON.parse(readFileSync(join(ROOT, 'framework/schemas/landing-line.json'), 'utf8'));
 const WRITE = process.argv.includes('--write');
 let n = 0; const t = (name, fn) => { try { fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } };
@@ -472,7 +475,7 @@ t('sequences: any run of events either applies cleanly or throws; the line is ne
       const type = L.EVENTS[rnd(L.EVENTS.length)]; const id = ids[rnd(ids.length)]; k += 1;
       const at = `2026-11-15T${String(Math.floor(k / 60) % 24).padStart(2, '0')}:${String(k % 60).padStart(2, '0')}:00Z`;
       const head = sha('b', rnd(10));
-      const ev = { type, id, at, by: 'fuzz', why: 'fuzz', to: rnd(5), head, sha: head, mainSha: sha('f', rnd(10)), files: rnd(2) ? ['a.css'] : [],
+      const ev = { type, id, at, by: 'fuzz', why: 'fuzz', to: rnd(5), head, sha: head, mainSha: sha('f', rnd(10)), files: rnd(2) ? ['a.css'] : [], clean: rnd(3) === 0,
         entry: { pr: 700 + rnd(6), build: `b${rnd(6)}`, head, title: 'Fuzz' }, runs: [run(conclusions[rnd(conclusions.length)], rnd(3) ? (L.findEntry(l, id)?.head || head) : sha('z'))] };
       let next;
       try { next = L.transition(l, ev); applied += 1; } catch (e) { refused += 1; assert.ok(e instanceof Error && e.message, 'a refusal is an Error with words'); continue; }
@@ -484,6 +487,80 @@ t('sequences: any run of events either applies cleanly or throws; the line is ne
     }
   }
   assert.ok(applied > 500 && refused > 500, `the generator reached both outcomes (${applied} applied, ${refused} refused)`);
+});
+// ------------------------------------------------------------------ a clean green PR lands at once (Brett, Nov 25 2026)
+/*
+ * Golden scenarios (fixtures/landing-line.json → landNow; regenerate with --write). Each replays its events on
+ * an empty line; `out` is the entry's state after every event (or the refusal) and the attempts it leaves. A port
+ * replays `in` and must answer `out`.
+ */
+const GREEN = sha('9');
+const ADD = (pr, head = GREEN) => ({ type: 'add', at: T(0), entry: { pr, build: `b${pr}`, branch: `claude/b${pr}`, title: `Build ${pr}`, head } });
+const LAND_NOW = [
+  { name: 'clean and green: start goes straight to landing, then landed; main is never merged in and CI never runs again',
+    events: [ADD(801), { type: 'start', id: 'pr-801', at: T(1), mainSha: sha('f', 1), clean: true, runs: [run('success', GREEN), run('skipped', GREEN, 'docs')] }, { type: 'landed', id: 'pr-801', at: T(2), sha: sha('c', 1) }] },
+  { name: 'green but not known to merge as it is: the full path (merging-main)',
+    events: [ADD(802), { type: 'start', id: 'pr-802', at: T(1), mainSha: sha('f', 1), runs: [run('success', GREEN)] }] },
+  { name: 'clean but CI still running on the head: the full path',
+    events: [ADD(803), { type: 'start', id: 'pr-803', at: T(1), clean: true, runs: [run(null, GREEN, 'ci', 'in_progress')] }] },
+  { name: 'clean but the green run is for another head (superseded): not a result, the full path',
+    events: [ADD(804), { type: 'start', id: 'pr-804', at: T(1), clean: true, runs: [run('success', sha('8'))] }] },
+  { name: 'clean but one check is red: the full path, where the red is judged on the head main was merged into',
+    events: [ADD(805), { type: 'start', id: 'pr-805', at: T(1), clean: true, runs: [run('success', GREEN), run('failure', GREEN, 'tests')] }] },
+  { name: 'clean with no runs at all: nothing says green, the full path',
+    events: [ADD(806), { type: 'start', id: 'pr-806', at: T(1), clean: true, runs: [] }] },
+  { name: 'landed at once, then GitHub refuses the merge: the second attempt takes the full path',
+    events: [ADD(807), { type: 'start', id: 'pr-807', at: T(1), clean: true, runs: [run('success', GREEN)] }, { type: 'land-rejected', id: 'pr-807', at: T(2), why: 'main moved: not mergeable' },
+      { type: 'merged-main', id: 'pr-807', at: T(3), sha: sha('a', 7) }, { type: 'regenerated', id: 'pr-807', at: T(4), head: sha('b', 7) }, { type: 'check', id: 'pr-807', at: T(5), runs: [run('success', sha('b', 7))] }, { type: 'landed', id: 'pr-807', at: T(6), sha: sha('c', 7) }] },
+  { name: 'one at a time: a clean green PR does not start while another entry is in flight, and lands at once when its turn comes',
+    events: [ADD(808, sha('1')), ADD(809), { type: 'start', id: 'pr-808', at: T(1) }, { type: 'start', id: 'pr-809', at: T(2), clean: true, runs: [run('success', GREEN)] },
+      { type: 'merged-main', id: 'pr-808', at: T(3), sha: sha('a', 8) }, { type: 'regenerated', id: 'pr-808', at: T(4), head: sha('b', 8) }, { type: 'check', id: 'pr-808', at: T(5), runs: [run('success', sha('b', 8))] }, { type: 'landed', id: 'pr-808', at: T(6), sha: sha('c', 8) },
+      { type: 'start', id: 'pr-809', at: T(6), clean: true, runs: [run('success', GREEN)] }, { type: 'landed', id: 'pr-809', at: T(7), sha: sha('c', 9) }] },
+  { name: 'a held or paused entry never lands at once',
+    events: [{ type: 'add', at: T(0), entry: { pr: 810, build: 'b810', head: GREEN, hold: 'its screenshots wait for Brett in UI Review' } }, { type: 'start', id: 'pr-810', at: T(1), clean: true, runs: [run('success', GREEN)] }] },
+];
+const replayLandNow = (sc) => {
+  let l = L.emptyLine(T(0)); const steps = [];
+  for (const ev of sc.events) {
+    try { l = L.transition(l, ev); } catch (e) { steps.push({ event: ev.type, id: ev.id || '', refused: e.message }); continue; }
+    const id = ev.id || L.entryId(ev.entry); const e = L.findEntry(l, id) || l.history.find((x) => x.id === id);
+    steps.push({ event: ev.type, id, state: e?.state || '', inFlight: L.inFlight(l)?.id || '' });
+  }
+  const all = [...l.entries, ...l.history];
+  return { steps, entries: all.map((e) => ({ id: e.id, state: e.state, head: e.head, ci: e.ci?.verdict || '', attempts: e.attempts.map((a) => ({ n: a.n, steps: a.steps, result: a.result || '', ...(a.direct ? { direct: true } : {}) })) })), line: l };
+};
+const landNow = LAND_NOW.map((sc) => ({ name: sc.name, ...replayLandNow(sc) }));
+const landNowOut = landNow.map(({ name, steps, entries }) => ({ name, steps, entries }));
+if (WRITE) { const f = { $axf: 'landing-line-fixture@1', note: 'Generated by framework/spec/check-landing-line.mjs --write; every port replays `landNow.in` and must answer `landNow.out`.', landNow: { note: 'A clean green PR lands at once (landing-line@1 `start` with `clean` and green `runs`). Each scenario replays `events` on an empty line; `out` is the entry state after every event (or the refusal) and the attempts left.', in: LAND_NOW, out: landNowOut } }; writeFileSync(LINE_FIX, `${JSON.stringify(f, null, 1)}\n`); console.log(`wrote ${LINE_FIX} (landNow: ${LAND_NOW.length} scenarios)`); }
+{ const f = JSON.parse(readFileSync(LINE_FIX, 'utf8'));
+  t('landNow fixture inputs are the ones in this file', () => assert.ok(same(f.landNow?.in, LAND_NOW), 'landNow inputs drifted: run with --write'));
+  for (const [i, sc] of landNowOut.entries()) t(`landNow replay: ${sc.name}`, () => assert.deepEqual(sc, f.landNow.out[i])); }
+for (const sc of landNow) t(`landNow line fits the schema: ${sc.name}`, () => schemaOk(sc.line, sc.name));
+t('a clean green PR lands at once: one attempt, landing only, marked direct, pinned to the head CI went green on', () => {
+  const sc = landNow[0]; const e = sc.entries[0];
+  assert.deepEqual(sc.steps.map((x) => x.state), ['waiting', 'landing', 'landed']);
+  assert.deepEqual(e.attempts, [{ n: 1, steps: ['landing', 'landed'], result: 'landed', direct: true }]);
+  assert.equal(e.head, GREEN, 'the head is the one the green runs are for: nothing was merged into it'); assert.equal(e.ci, 'green');
+  assert.ok(!e.attempts[0].steps.some((s) => ['merging-main', 'regenerating', 'checking'].includes(s)));
+});
+t('anything short of clean and green takes the full path', () => {
+  for (const i of [1, 2, 3, 4, 5]) { const sc = landNow[i]; assert.equal(sc.steps.at(-1).state, 'merging-main', sc.name); assert.deepEqual(sc.entries[0].attempts, [{ n: 1, steps: ['merging-main'], result: '' }], sc.name); }
+  assert.deepEqual(L.landsAtOnce({ head: GREEN }, { clean: true, runs: [run('success', GREEN)] }), { ok: true, why: '', runUrl: 'https://x/run/ci' });
+  assert.equal(L.landsAtOnce({ head: GREEN }, { clean: 'yes', runs: [run('success', GREEN)] }).ok, false, 'clean is true or it is not known');
+  assert.equal(L.landsAtOnce({ head: GREEN }, { clean: true, runs: [run('cancelled', GREEN)] }).why, `CI on ${GREEN.slice(0, 8)} is retry`, 'a cancelled run is not a result');
+  assert.equal(L.landsAtOnce({ head: '' }, { clean: true, runs: [run('success', GREEN)] }).ok, false, 'no head, nothing to pin the merge to');
+});
+t('a refused merge after landing at once: a second attempt on the full path lands it', () => {
+  const e = landNow[6].entries[0];
+  assert.deepEqual(e.attempts.map((a) => [a.steps, a.result, !!a.direct]), [[['landing'], 'retry', true], [['merging-main', 'regenerating', 'checking', 'landing', 'landed'], 'landed', false]]);
+  assert.equal(e.state, 'landed');
+});
+t('landing at once is still one at a time, and never for a held entry', () => {
+  const sc = landNow[7];
+  assert.match(sc.steps[3].refused, /pr-808 is already in flight; one at a time/);
+  assert.deepEqual(sc.steps.slice(-2).map((x) => [x.id, x.state]), [['pr-809', 'landing'], ['pr-809', 'landed']]);
+  assert.ok(sc.steps.every((x) => x.refused || !x.inFlight || ['pr-808', 'pr-809'].includes(x.inFlight)));
+  assert.match(landNow[8].steps[1].refused, /held/);
 });
 t('commands: every hand action the line offers is declared once, with a REST path and a CLI word', () => {
   const ids = L.LINE_COMMANDS.map((c) => c.id);
