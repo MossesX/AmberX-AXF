@@ -56,6 +56,10 @@
         "to": "builds/store.exports.json"
       },
       {
+        "re": "^_claude/builds/(profiles/[^/]+/)?orchestrator\\.json$",
+        "to": null
+      },
+      {
         "re": "^_claude/builds/(.+)$",
         "to": "builds/{1}"
       }
@@ -169,6 +173,8 @@
     "repo:_claude/builds/store.json": "builds/store.json",
     "repo:_claude/builds/journal/2026-11.jsonl": "builds/journal/2026-11",
     "repo:_claude/builds/store.json.exports.json": "builds/store.exports.json",
+    "repo:_claude/builds/orchestrator.json": null,
+    "repo:_claude/builds/profiles/work/orchestrator.json": null,
     "repo:_claude/builds/shipped/b1.json": "builds/shipped/b1.json",
     "repo:framework/core/data-store.mjs": null,
     "projects:_shared/_claude/notes/handoffs/2026-11-14.md": "notes/handoffs/2026-11-14.md",
