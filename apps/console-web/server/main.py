@@ -592,7 +592,7 @@ PROFILES = build_profiles.BuildProfiles(ROOT, _persist_root)
 PROFILES_CLI = ROOT / "framework" / "cli" / "profiles.mjs"
 # Every change framework/cli/profiles.mjs takes through `act`. The Build profiles plugin's router declares the same
 # set as commands (REST /api/control, MCP, CLI); this route stays for the console's own page and banner chip.
-PROFILE_ACTIONS = ("select", "create", "update", "duplicate", "merge", "move-builds", "archive", "unarchive", "remove", "restore", "cleanup")
+PROFILE_ACTIONS = ("select", "create", "update", "duplicate", "merge", "move-builds", "archive", "unarchive", "remove", "restore", "cleanup-fix")
 
 
 def _plan_media_dir() -> Path:
@@ -616,7 +616,7 @@ def profiles_state() -> Any:
 
 @app.post("/api/profiles", dependencies=[Depends(auth)])
 async def profiles_act(request: Request) -> Any:
-    """One change: {action: select|create|update|duplicate|merge|move-builds|archive|unarchive|remove|restore|cleanup, ...}
+    """One change: {action: select|create|update|duplicate|merge|move-builds|archive|unarchive|remove|restore|cleanup-fix, ...}
     — see framework/cli/profiles.mjs. Deleting a profile's data (purge) is not taken here: it is owner-only and goes
     through the plugin's own route (/api/plugins/<plugin>/purge) or its confirmed command."""
     body = await request.body()

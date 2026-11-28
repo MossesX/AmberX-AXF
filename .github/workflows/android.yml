@@ -121,6 +121,8 @@ jobs:
       - run: node framework/spec/check-json-data-writes.mjs         # no-json-data@1: no new direct JSON/JSONL data write in runtime code (data goes to Postgres through data-store@1); counts per file may only go down (json-data-writes.baseline.json)
       - run: node apps/console-web/plugins/build-orchestrator/build-id.test.mjs   # build-id@1: orchestrator ids fit 40 chars, titles kept, collisions suffixed, legacy aliases and land-alias  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/groups.test.mjs   # build-groups@1: custom groups and tabs, state order and counts, smart rules, group actions, per project  # axf-plugin:build-orchestrator
+      - run: node framework/spec/check-profile-manager.mjs          # build profiles manager: stats, look, duplicate, merge, move builds, archive, remove → restore, purge, cleanup scan + fix (scratch store)
+      - run: node apps/console-web/plugins/build-profiles/cleanup.test.mjs   # cleanup helper: the scan as the panel shows it, what a one-tap fix sends, what the person is told  # axf-plugin:build-profiles
       - run: node framework/spec/check-model-policy.mjs             # model-policy@1: Opus or Fable only, never Sonnet; job types, roster, plan picker and the builds store read one registry
       - run: node framework/spec/check-model-triage.mjs             # model-triage@1: the VPS gate that assigns each step's model (every rule, lane, override, the approval hold, edits checked)
       - run: node framework/spec/check-build-budget.mjs             # build-budget@1: the budget engine against its fixture; no cap until one is saved, spend per build and per day, stops and releases
@@ -465,6 +467,7 @@ jobs:
         run: |
           pip install -r apps/console-web/server/requirements.txt httpx
           for t in apps/console-web/plugins/[!_]*/test.py; do [ -f "$t" ] || continue; echo "== $t"; python "$t"; done
+      - run: node apps/console-web/plugins/build-profiles/cleanup-e2e.test.mjs   # cleanup helper end to end: the plugin's routes → profiles CLI → a scratch builds store (scan, fix one, fix all), and the commands whose names differ from the CLI's  # axf-plugin:build-profiles
       - name: Plugin page toolbar tests (every plugins/*/toolbar.test.mjs; found by glob)
         run: |
           set -e

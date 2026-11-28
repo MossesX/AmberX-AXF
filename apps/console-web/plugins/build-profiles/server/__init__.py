@@ -14,19 +14,22 @@ build_profiles_<command>, CLI `axf build-profiles <command>`):
 `remove` takes a profile off the list and keeps its data (restore brings it back), so it is a change, not a delete;
 its route is /unlist (and restore's /relist) because the commands engine reads delete words in a path as destructive.
 
-What the CLI gets: `state` for reads, `act {action, ...fields}` for changes, with these actions and fields:
+What a command takes (the names in plugin.json), and what the CLI gets for it: `state` and `cleanup` for reads,
+`act {action, ...fields}` for changes. `engine_change` turns the first into the second:
 
+    command      takes                                             the CLI gets
     select       id
-    create       name, id?, description?, copyFrom?, catalog?, select?, colour?, icon?
-    update       id, name?, description?, catalog?, colour?, icon?
+    create       name, id?, description?, copyFrom?, catalog?, select?, colour?, icon?      colour → color
+    update       id, name?, description?, catalog?, colour?, icon?                          colour → color
     duplicate    id, name?, newId?, description?, select?
-    merge        from, into, removeSource?
-    move-builds  builds[], to, from?
+    merge        from, into, removeSource?                         keep = not removeSource (the source stays unless asked)
+    move-builds  builds[], to, from?                               builds → ids
     archive      id                (unarchive: the same route with archived = false)
     remove       id, confirm       (confirm defaults to the id here: the caller's policy gate already asked)
     restore      id
-    purge        id, confirm       (never defaulted)
-    cleanup      fix (false = scan only), profile?, builds[]?
+    purge        id, confirm       (never defaulted)               owner = true (checked here), confirm = "delete <id>"
+    cleanup      profile?          GET: scan only                  `cleanup [--profile <id>]`
+    cleanup-fix  profile?, builds[]?                               act cleanup-fix: builds → ids
 """
 from __future__ import annotations
 
@@ -138,8 +141,29 @@ def change(action: str, data: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-def _act(request: Request, action: str, data: dict[str, Any]) -> dict[str, Any]:
-    res = _cli("act", json.dumps(change(action, data)), actor=_actor(request))
+def engine_change(c: dict[str, Any], owner: bool = False) -> dict[str, Any]:
+    """A checked change in the names framework/cli/profiles.mjs `act` reads (see the table in the module docstring)."""
+    out = {k: v for k, v in c.items() if k != "fix"}
+    action = out["action"]
+    if "colour" in out:
+        out["color"] = out.pop("colour")
+    if action == "merge":
+        out["keep"] = out.pop("removeSource", False) is not True
+    elif action == "move-builds":
+        out["ids"] = out.pop("builds")
+    elif action == "cleanup":
+        out["action"] = "cleanup-fix"
+        if "builds" in out:
+            out["ids"] = out.pop("builds")
+    elif action == "purge":
+        # the route has already matched confirm to the id and checked the caller; the CLI asks for both in its own words
+        out["owner"] = owner
+        out["confirm"] = f"delete {out['id']}"
+    return out
+
+
+def _act(request: Request, action: str, data: dict[str, Any], owner: bool = False) -> dict[str, Any]:
+    res = _cli("act", json.dumps(engine_change(change(action, data), owner)), actor=_actor(request))
     for line in res.get("log") or []:
         cx.log("profiles", str(line))
     if not res.get("ok"):
@@ -243,13 +267,15 @@ async def purge_profile(request: Request) -> dict[str, Any]:
     data = await _body(request)
     if not isinstance(data.get("id"), str) or data.get("confirm") != data.get("id"):
         raise HTTPException(400, "confirm must be the profile id")
-    return _act(request, "purge", data)
+    return _act(request, "purge", data, owner=True)
 
 
 @router.get("/cleanup")
 def cleanup_scan(profile: str = "") -> dict[str, Any]:
-    """Scan for archived builds that are really complete. Changes nothing."""
-    res = _cli("act", json.dumps(change("cleanup", {"fix": False, **({"profile": profile} if profile else {})})))
+    """Scan for archived builds that are really complete, and builds in a profile that no longer exists. Changes nothing."""
+    if profile and not PROFILE.match(profile):
+        raise HTTPException(400, "profile: a profile id")
+    res = _cli("cleanup", *(("--profile", profile) if profile else ()))
     if not res.get("ok"):
         raise HTTPException(400, str(res.get("error") or "failed"))
     return res
@@ -257,5 +283,6 @@ def cleanup_scan(profile: str = "") -> dict[str, Any]:
 
 @router.post("/cleanup")
 async def cleanup_fix(request: Request) -> dict[str, Any]:
-    """Fix what the cleanup scan found: archived builds that are really complete are marked complete."""
+    """Fix what the cleanup scan found: archived builds that are really finished get the status they earned (complete or
+    landed), builds in a profile that no longer exists move to the base profile. `builds` limits it; nothing is deleted."""
     return _act(request, "cleanup", {**(await _body(request)), "fix": True})

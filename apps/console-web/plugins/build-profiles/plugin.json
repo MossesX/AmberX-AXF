@@ -371,7 +371,7 @@
         "id": "cleanup",
         "route": "GET /cleanup",
         "title": "Cleanup scan",
-        "description": "Scan for archived builds that are really complete. Changes nothing.",
+        "description": "Scan for archived builds that are really complete, and builds in a profile that no longer exists. Changes nothing.",
         "readOnly": true,
         "input": {
           "type": "object",
@@ -384,13 +384,13 @@
           },
           "additionalProperties": false
         },
-        "output": "{ found: [{ build, profile, why }] }"
+        "output": "{ findings: [{ kind, id, title, profiles, status, evidence, fixable, to, why }], counts, fixable }"
       },
       {
         "id": "cleanup-fix",
         "route": "POST /cleanup",
         "title": "Cleanup fix",
-        "description": "Fix what the cleanup scan found: archived builds that are really complete are marked complete.",
+        "description": "Fix what the cleanup scan found: archived builds that are really finished get the status they earned (complete or landed); builds in a profile that no longer exists move to the base profile. Nothing is deleted.",
         "input": {
           "type": "object",
           "properties": {
@@ -424,6 +424,7 @@
     "dataDir": ".axf-console/plugins/build-profiles",
     "env": [],
     "mentions": [
+      ".github/workflows/android.yml",
       "CLAUDE.md",
       "_claude/memory/STATUS.md"
     ]
