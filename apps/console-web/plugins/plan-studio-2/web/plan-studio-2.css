@@ -122,6 +122,18 @@
 .axp-plan-studio-2__links li { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); min-width: 0; }
 .axp-plan-studio-2__steps { margin: 0; padding-inline-start: var(--fx-dens-gap-2xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
 
+/* the Shipped box: the shipped-manifest@1 a sent plan received (web/shipped.tsx) */
+.axp-plan-studio-2__shipped { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; border-top: var(--fx-border-w) solid var(--fx-border); padding-top: var(--fx-dens-gap-md); }
+.axp-plan-studio-2__shipped .fx-eyebrow { margin: 0; }
+.axp-plan-studio-2__shipped-errors { margin: var(--fx-dens-gap-xs) 0; padding-inline-start: var(--fx-dens-gap-xl); }
+.axp-plan-studio-2__shipped-said { margin: 0; padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border-inline-start: calc(var(--fx-border-w) * 3) solid var(--fx-accent); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); display: flex; flex-direction: column; align-items: start; gap: var(--fx-dens-gap-xs); }
+.axp-plan-studio-2__shipped-said p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.axp-plan-studio-2__shipped-line { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); font-size: var(--fx-type-scale-sm); overflow-wrap: anywhere; }
+.axp-plan-studio-2__shipped-line code, .axp-plan-studio-2__shipped-more code { font-family: var(--fx-font-mono); }
+.axp-plan-studio-2__shipped-more summary { cursor: pointer; font-weight: var(--fx-type-weights-medium); }
+.axp-plan-studio-2__shipped-more ul { margin: var(--fx-dens-gap-xs) 0 0; padding-inline-start: var(--fx-dens-gap-xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); font-size: var(--fx-type-scale-sm); overflow-wrap: anywhere; }
+.axp-plan-studio-2__shipped-brief { margin: var(--fx-dens-gap-xs) 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); max-height: calc(var(--fx-font-size) * 24); overflow: auto; }
+
 /* the trash */
 .axp-plan-studio-2__trash { list-style: none; margin: 0; padding: 0; border-top: var(--axp-ps2-hair); }
 .axp-plan-studio-2__trash li { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex-wrap: wrap; padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--axp-ps2-hair); min-width: 0; }
