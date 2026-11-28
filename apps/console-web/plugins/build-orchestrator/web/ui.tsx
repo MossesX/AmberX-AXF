@@ -14,8 +14,9 @@ import './orchestrator.css';
 
 /*
  * Build orchestrator page (Pipeline 2.0, Brett, Nov 18-19 2026): ONE table driven only by status (StatusTable.tsx).
- * No tabs: builds are rows that expand to their steps, and every former tab is a filter on the table's toolbar
- * (openTab maps the old tab ids onto filters, so deep links and voice commands keep working). The merge queue is the
+ * Builds are rows that expand to their steps. The page has two lists (Nov 28 2026): Builds shows only sent builds
+ * (queued, building, built) plus landed, and Pending keeps its own tab. Every former tab is a filter on the table's
+ * toolbar (openTab maps the old tab ids onto a list and a filter, so deep links and voice commands keep working). The merge queue is the
  * same table filtered to merging-pr through merging-main (slot builds.merge-queue, which the merge-queue@2 view renders). What used to be the non-build tabs
  * (Accounts, Watchdog, Groups, Approvals, Rules) are panels of Settings → Plugins → Build orchestrator.
  * Deep link: nav:build-orchestrator, or action build-orchestrator.focus:<build | status | old tab id>.
@@ -35,20 +36,22 @@ type Act = (c: Record<string, unknown>) => Promise<boolean>;
  * console command and voice phrase that names a tab still lands somewhere sensible.
  */
 export const TABS = [
-  { id: 'pending', label: 'Pending', filter: { status: 'pending' } }, { id: 'queue', label: 'Ready', filter: { status: 'ready' } },
+  { id: 'pending', label: 'Pending', filter: {} }, { id: 'queue', label: 'Ready', filter: { status: 'ready' } },
   { id: 'active', label: 'Building', filter: { status: 'building' } }, { id: 'incomplete', label: 'Failed', filter: { status: 'failed' } },
   { id: 'errors', label: 'Failed', filter: { status: 'failed' } }, { id: 'complete', label: 'Landed', filter: { status: 'landed', landed: true } },
   { id: 'merge-queue', label: 'Merge queue', filter: { status: 'merging-pr' } }, { id: 'builds', label: 'All builds', filter: {} },
   { id: 'archive', label: 'All builds', filter: {} }, { id: 'deleted', label: 'All builds', filter: {} },
 ] as const satisfies readonly { id: string; label: string; filter: Partial<Filters> }[];
+/** Old tab ids that name a list rather than a status. */
+const LIST_OF_TAB: Record<string, 'sent' | 'pending'> = { pending: 'pending', builds: 'sent', archive: 'sent', deleted: 'sent' };
 /** Settings panels that used to be tabs: a deep link to one opens Settings → Plugins → Build orchestrator. */
 export const SETTINGS_TABS = ['accounts', 'watchdog', 'groups', 'approvals', 'rules'] as const;
 
 /** A tab id from before Pipeline 2.0, or a contract status: the table takes it as its filter. */
 export function openTab(t: string) {
   const tab = TABS.find((x) => x.id === t);
-  if (tab) { setTableFilter({ status: '', account: '', model: '', date: '', text: '', ...tab.filter }); return true; }
-  if ((BUILD_STATUSES as readonly string[]).includes(t)) { setTableFilter({ status: t, landed: t === 'landed' }); return true; }
+  if (tab) { setTableFilter({ status: '', account: '', model: '', date: '', text: '', ...tab.filter }, LIST_OF_TAB[tab.id]); return true; }
+  if ((BUILD_STATUSES as readonly string[]).includes(t)) { setTableFilter({ status: t, ...(t === 'landed' ? { landed: true } : {}) }); return true; }
   return false;
 }
 
@@ -59,7 +62,7 @@ export function OrchestratorPage() {
         <div>
           <p className="fx-eyebrow">Build orchestrator · Pipeline 2.0</p>
           <h1>Builds</h1>
-          <p className="fx-muted">Every build and its steps, by status, live from the builds store. One build is active at a time; a ready build starts by itself.</p>
+          <p className="fx-muted">Sent builds (queued, building, built) and landed ones, with their steps, live from the builds store. Pending builds wait in their own tab; one is queued at a time and the next moves up by itself.</p>
         </div>
         <div className="fx-row fx-row--wrap"><Slot name="builds.toolbar" props={{ page: 'build-orchestrator' }} /></div>
       </header>

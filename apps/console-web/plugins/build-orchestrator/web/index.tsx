@@ -25,9 +25,10 @@ const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', 
 const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 'pause', release: 'play', archive: 'package', unarchive: 'undo', delete: 'trash', restore: 'undo' };
 
 /*
- * Pipeline 2.0 (Nov 19 2026): the page is ONE table driven by status (StatusTable.tsx), no tabs. Actions (console API,
- * MCP console actions, voice): build-orchestrator.open[:<build | status | old tab id>] (a build: its row, filters
- * cleared; a status or an old tab name: that filter), build-orchestrator.merge-queue (the read-only merge queue view),
+ * Pipeline 2.0 (Nov 19 2026): the page is ONE table driven by status (StatusTable.tsx) with two lists (Nov 28 2026):
+ * Builds (only sent builds: queued, building, built, plus landed) and Pending in its own tab. Actions (console API,
+ * MCP console actions, voice): build-orchestrator.open[:<build | status | old tab id>] (a build: its row in the list
+ * that holds it, filters cleared; a status or an old tab name: that list and filter; "pending" / "builds": that tab), build-orchestrator.merge-queue (the read-only merge queue view),
  * build-orchestrator.start:<build>. Search: every build with its status. Context menu: Open, Retry on a failed build,
  * Hold / Archive / Delete. Accounts, Watchdog, Groups, Approvals and Rules are Settings → Plugins → Build orchestrator.
  * Build watchdog (build-watchdogs@1, one panel for every watch: Watchdogs.tsx): watchdogs.status / watchdogs.run[:<watch>[:<build>]] /

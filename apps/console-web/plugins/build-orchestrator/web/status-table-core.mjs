@@ -28,6 +28,18 @@ const LABEL = Object.freeze({
 
 /** The merge queue: a read-only view of the same rows, from merging-pr through merging-main. */
 export const MERGE_QUEUE = Object.freeze(['merging-pr', 'pr-pulling-main', 'running-ci', 'merging-main']);
+/**
+ * Not sent yet: Plan Studio files a build as Pending and it stays there (pending, splitting, split) until it moves up
+ * to the one Queued place. These rows live in the Pending tab, never in the orchestrator's own list.
+ */
+export const PENDING_STATUSES = Object.freeze(['pending', 'splitting', 'split']);
+/** Sent builds (queued, building, built, merging, failed) plus landed: every status the orchestrator's list shows. */
+export const SENT_STATUSES = Object.freeze(BUILD_STATUSES.filter((s) => !PENDING_STATUSES.includes(s)));
+/** The two lists of the builds page and the statuses each one holds. */
+export const SCOPES = Object.freeze({ sent: SENT_STATUSES, pending: PENDING_STATUSES });
+/** The list a status belongs to: 'pending' until the build is sent, 'sent' from then on (landed and failed included). */
+export const scopeOf = (status) => (PENDING_STATUSES.includes(status) ? 'pending' : 'sent');
+
 /** Statuses whose clock stops: total time is frozen at the moment the build got there. */
 export const TERMINAL = Object.freeze(['landed']);
 
@@ -200,15 +212,17 @@ function since(range, now) {
 }
 
 /**
- * The rows a toolbar filter keeps. `status` is one status, a list, or '' (all but landed unless `landed`); `queue`
- * keeps only the merge queue; `account` / `model` match the build or any of its steps; `date` is a DATE_RANGES key
+ * The rows a toolbar filter keeps. `scope` is the list ('sent': sent builds plus landed, 'pending': not sent yet;
+ * none: both); `status` is one status, a list, or '' (all but landed unless `landed`); `queue` keeps only the merge queue; `account` / `model` match the build or any of its steps; `date` is a DATE_RANGES key
  * on the last change; `text` matches id, title or branch.
  */
 export function filterRows(rows, f = {}, now = Date.now()) {
   const statuses = f.queue ? MERGE_QUEUE : Array.isArray(f.status) ? f.status : f.status ? [f.status] : null;
   const from = since(f.date ?? '', now);
   const text = str(f.text).trim().toLowerCase();
+  const scope = !f.queue && Object.hasOwn(SCOPES, f.scope ?? '') ? f.scope : '';
   return rows.filter((r) => {
+    if (scope && scopeOf(r.status) !== scope) return false;
     if (statuses ? !statuses.includes(r.status) : r.status === 'landed' && !f.landed) return false;
     if (f.account && r.account !== f.account && !r.steps.some((s) => s.account === f.account)) return false;
     if (f.model && r.model !== f.model && !r.steps.some((s) => s.model === f.model)) return false;

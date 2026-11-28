@@ -1,7 +1,11 @@
 /**
  * The one builds table (status-table@1, Pipeline 2.0; Brett, Nov 18-19 2026): builds as rows, expandable to their
- * steps, driven only by status. No tabs: filters sit on the toolbar (status, account, model, date, words). The merge
+ * steps, driven only by status. Filters sit on the toolbar (status, account, model, date, words). The merge
  * queue is the same table, read-only, filtered to merging-pr through merging-main (mode="queue").
+ *
+ * Two lists (Nov 28 2026): Builds holds only what was sent (queued, building, built, merging, failed) plus landed;
+ * Pending (what Plan Studio filed and has not moved up yet: pending, splitting, split) stays in its own tab. The tab
+ * row is the framework TabGroup; the rule is status-table-core.mjs (SCOPES, filterRows `scope`).
  *
  * Rows come from GET /table (status-table.mjs → the builds store on Postgres). The table re-reads them the moment the
  * builds live channel says `builds.updated` (live.ts: GET /api/builds/events), when the window gets the focus back, and
@@ -16,13 +20,13 @@
  * the rest moves into the expanded row.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, PageToolbar, SelectField, Switch, TextField, flashWhenReady, useIsPhone, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
+import { Button, Chip, Icon, PageToolbar, SelectField, Switch, TabGroup, TextField, flashWhenReady, useIsPhone, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import * as consoleApi from '@console/api';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import type { pluginApi } from '@console/plugins';
 import * as T from './status-table-core.mjs';
 import { StepDeps } from './StepDeps';
-import type { StepRow, TableRow } from './status-table-core.mjs';
+import type { StepRow, TableRow, TableScope } from './status-table-core.mjs';
 import { buildRowSelector, focusBuild, settleFocus, useFocusedBuild } from './focus';
 import { liveOpen, onBuildsUpdated } from './live';
 import { mergeTogether, mergeTogetherLine } from './mergeTogether';
@@ -32,16 +36,25 @@ import './status-table.css';
 type Api = ReturnType<typeof pluginApi>;
 type TableRes = { ok: boolean; error?: string; unchanged?: boolean; rev?: number; updatedAt?: string; rows?: TableRow[] };
 export type Filters = { status: string; account: string; model: string; date: string; text: string; landed: boolean };
-export const NO_FILTERS: Filters = { status: '', account: '', model: '', date: '', text: '', landed: false };
+/** Landed builds are part of the Builds list: the switch only takes them out. */
+export const NO_FILTERS: Filters = { status: '', account: '', model: '', date: '', text: '', landed: true };
+/** Where the Builds page keeps its filters and its list (per device). */
+const FILTERS_KEY = 'orch-builds-filters';
+const LIST_KEY = 'orch-builds-list';
+const LISTS: readonly TableScope[] = ['sent', 'pending'];
+const readList = (): TableScope => (consoleApi.readLocal<string>(LIST_KEY, 'sent') === 'pending' ? 'pending' : 'sent');
 const POLL_MS = 5_000;
 /** The poll while the live channel is connected: only a safety net for a missed event. */
 const LIVE_POLL_MS = 30_000;
 
 /** Another part of the console (an action, a deep link) asks for a filter: the table takes it. */
 export const FILTER_EVENT = 'axf:orchestrator-filter';
-export function setTableFilter(f: Partial<Filters>): void {
-  consoleApi.writeLocal('orch-table-filters', { ...consoleApi.readLocal<Filters>('orch-table-filters', NO_FILTERS), ...f });
-  window.dispatchEvent(new CustomEvent(FILTER_EVENT, { detail: f }));
+export function setTableFilter(f: Partial<Filters>, list?: TableScope): void {
+  // a status names its list: a pending status opens the Pending tab, any other the Builds tab
+  const to = list ?? (f.status ? T.scopeOf(f.status) : undefined);
+  consoleApi.writeLocal(FILTERS_KEY, { ...NO_FILTERS, ...consoleApi.readLocal<Partial<Filters>>(FILTERS_KEY, {}), ...f });
+  if (to) consoleApi.writeLocal(LIST_KEY, to);
+  window.dispatchEvent(new CustomEvent(FILTER_EVENT, { detail: { filters: f, list: to } }));
 }
 
 /* ---------------- one shared clock for every timer on the page ---------------- */
@@ -190,16 +203,27 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
   const rt = useRuntime();
   const queue = mode === 'queue';
   const phone = useIsPhone();
-  const storeKey = queue ? 'orch-queue-filters' : 'orch-table-filters';
-  const [f, setF] = useState<Filters>(() => ({ ...NO_FILTERS, ...consoleApi.readLocal<Filters>(storeKey, NO_FILTERS) }));
+  const storeKey = queue ? 'orch-queue-filters' : FILTERS_KEY;
+  const [f, setF] = useState<Filters>(() => ({ ...NO_FILTERS, ...consoleApi.readLocal<Partial<Filters>>(storeKey, {}) }));
   useEffect(() => { consoleApi.writeLocal(storeKey, f); }, [f]);
-  useEffect(() => { if (queue) return undefined; const on = (e: Event) => setF((x) => ({ ...x, ...(e as CustomEvent<Partial<Filters>>).detail })); window.addEventListener(FILTER_EVENT, on); return () => window.removeEventListener(FILTER_EVENT, on); }, [queue]);
+  // the list on screen: Builds (sent plus landed) or Pending. The merge queue has no lists.
+  const [list, setList] = useState<TableScope>(() => (queue ? 'sent' : readList()));
+  useEffect(() => { if (!queue) consoleApi.writeLocal(LIST_KEY, list); }, [list, queue]);
+  useEffect(() => {
+    if (queue) return undefined;
+    const on = (e: Event) => { const d = (e as CustomEvent<{ filters?: Partial<Filters>; list?: TableScope }>).detail; if (d?.list) setList(d.list); setF((x) => ({ ...x, ...d?.filters })); };
+    window.addEventListener(FILTER_EVENT, on); return () => window.removeEventListener(FILTER_EVENT, on);
+  }, [queue]);
   const set = <K extends keyof Filters>(k: K, v: Filters[K]) => setF((x) => ({ ...x, [k]: v }));
-  const wantLanded = !queue && (f.landed || f.status === 'landed');
+  // a status of the other list is no filter here: changing tabs drops it
+  const pickList = (to: TableScope) => { setList(to); setF((x) => (x.status && T.scopeOf(x.status) !== to ? { ...x, status: '' } : x)); };
+  const inList = !f.status || T.scopeOf(f.status) === list;
+  const wantLanded = !queue && list === 'sent' && (f.landed || f.status === 'landed');
   const { rows, error, rev, reload } = useTableRows(api, wantLanded);
   const all = rows ?? [];
   const opts = useMemo(() => T.filterOptions(all), [rows]);
-  const shown = useMemo(() => T.filterRows(all, queue ? { ...f, status: f.status || [...T.MERGE_QUEUE], landed: false } : f), [rows, f, queue]);
+  const shown = useMemo(() => T.filterRows(all, queue ? { ...f, status: f.status || [...T.MERGE_QUEUE], landed: false } : { ...f, status: inList ? f.status : '', scope: list }), [rows, f, queue, list]);
+  const listCount = (s: TableScope) => T.SCOPES[s].reduce((n, st) => n + (st === 'landed' && !wantLanded ? 0 : opts.counts[st] ?? 0), 0);
 
   const [sort, setSort] = useState<GridSort>(null);
   const [hidden, setHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>(`${storeKey}-hidden`, []));
@@ -215,14 +239,21 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
     settleFocus(focusId);
   }, [listed, focusId]);
   // a build asked for that the filters hide: clear them so it shows (it may be landed: ask for those too)
-  useEffect(() => { if (focusId && rows && !listed && !queue && Object.values(f).some(Boolean)) setF({ ...NO_FILTERS, landed: true }); }, [focusId, rows]);
+  // and it may sit in the other list: open the tab that holds it
+  useEffect(() => {
+    if (!focusId || !rows || listed || queue) return;
+    const hit = all.find((r) => r.id === focusId);
+    const to = hit ? T.scopeOf(hit.status) : 'sent';
+    if (to !== list) setList(to);
+    if (Object.entries(f).some(([k, v]) => (k === 'landed' ? !v : !!v))) setF({ ...NO_FILTERS });
+  }, [focusId, rows]);
 
   // the Builds page toolbar (page-toolbar@1, assets/toolbar/build-orchestrator-pipeline.json) works on the picked row
   const one = shown.find((r) => r.id === picked);
-  const statuses = T.BUILD_STATUSES.filter((s) => opts.counts[s] > 0);
+  const statuses = (queue ? T.BUILD_STATUSES : T.SCOPES[list]).filter((s) => opts.counts[s] > 0);
   const nextStep = one?.steps.find((s) => s.status !== 'completed' && s.status !== 'in-pr' && s.model !== 'Fable');
   usePublishPageState(queue ? null : 'build-orchestrator', {
-    tab: 'table',
+    tab: 'table', list: queue ? '' : list,
     selection: {
       count: one ? 1 : 0, id: one?.id ?? '', ids: one ? [one.id] : [], pr: one?.pr ?? '', nextPriority: 'P1',
       canQueue: 0, // Pipeline 2.0: nothing is queued by hand, a ready build starts by itself
@@ -230,7 +261,7 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
       canRaise: !!nextStep,
       canRelaunch: !!one && one.status === 'failed',
     },
-    statuses: statuses.length, statusFilter: f.status, statusFilterCount: f.status ? shown.length : 0,
+    statuses: statuses.length, statusFilter: inList ? f.status : '', statusFilterCount: inList && f.status ? shown.length : 0,
   });
   useToolbarHandlers(queue ? null : 'build-orchestrator', {
     'builds.queue-selected': () => { throw new Error('Pipeline 2.0 starts a ready build by itself: there is no queue to put it in.'); },
@@ -244,8 +275,8 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
     'builds.filter-status': () => { const i = statuses.indexOf(f.status as never); const next = statuses[i + 1] ?? ''; set('status', next); return { statusFilter: next }; },
   });
 
-  const statusOpts = (queue ? T.MERGE_QUEUE : T.BUILD_STATUSES).map((s) => ({ value: s, label: `${T.statusLabel(s)}${s === 'split' ? ' (split)' : ''} (${opts.counts[s] ?? 0})` }));
-  const filtered = Object.entries(f).some(([k, v]) => k !== 'landed' && v);
+  const statusOpts = (queue ? T.MERGE_QUEUE : T.SCOPES[list]).map((s) => ({ value: s, label: `${T.statusLabel(s)}${s === 'split' ? ' (split)' : ''} (${opts.counts[s] ?? 0})` }));
+  const filtered = Object.entries(f).some(([k, v]) => k !== 'landed' && (k === 'status' ? inList && v : v));
   const waiting = useMemo(() => waitingToMerge(all).map((r) => r.id), [rows]);
   const cols: GridColumn<TableRow>[] = [
     { id: 'number', label: 'No.', width: 'calc(var(--fx-font-size) * 5)', sortable: true, sortValue: (r) => r.number, render: (r) => <BuildNo n={r.number} /> },
@@ -267,33 +298,37 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
     { id: 'timer', label: 'Timer', width: 'calc(var(--fx-font-size) * 8)', align: 'end', sortable: true, sortValue: (r) => -(Date.parse(r.at) || 0), render: (r) => <Timer row={r} /> },
     { id: 'pr', label: 'PR', width: 'calc(var(--fx-font-size) * 4)', align: 'end', sortable: true, sortValue: (r) => r.prNumber, render: (r) => <PrLink n={r.prNumber} href={r.pr} /> },
   ];
-  const groups: GridGroup<TableRow>[] = [{ id: 'all', title: queue ? `Merge queue (${shown.length})` : `Builds (${shown.length})`, icon: queue ? 'git-merge' : 'layers', rows: shown, groups: [], fixed: true }];
+  const groups: GridGroup<TableRow>[] = [{ id: 'all', title: queue ? `Merge queue (${shown.length})` : list === 'pending' ? `Pending (${shown.length})` : `Builds (${shown.length})`, icon: queue ? 'git-merge' : list === 'pending' ? 'clock' : 'layers', rows: shown, groups: [], fixed: true }];
   const gridHidden = phone ? [...new Set([...hidden, ...PHONE_HIDDEN])] : hidden;
 
   return (
     <div className="st-page fx-stack">
+      {!queue && (
+        <TabGroup<TableScope> id="build-orchestrator.lists" label="Builds: sent builds or pending" value={list} onChange={pickList}
+          tabs={LISTS.map((s) => ({ value: s, label: `${s === 'pending' ? 'Pending' : 'Builds'} (${rows == null ? '…' : listCount(s)})` }))} />
+      )}
       <div className="st-toolbar" role="toolbar" aria-label={queue ? 'Merge queue: filters' : 'Builds: filters'} data-axf-toolbar={queue ? 'build-orchestrator.queue-filters' : 'build-orchestrator.filters'}>
-        <SelectField className="st-pick" label="Status" value={f.status} empty={queue ? 'Whole merge queue' : 'Any status'} options={statusOpts} onChange={(v) => set('status', v)} />
+        <SelectField className="st-pick" label="Status" value={inList ? f.status : ''} empty={queue ? 'Whole merge queue' : 'Any status'} options={statusOpts} onChange={(v) => set('status', v)} />
         {!queue && <SelectField className="st-pick" label="Account" value={f.account} empty="Any account" options={opts.accounts.map((a) => ({ value: a, label: a }))} onChange={(v) => set('account', v)} />}
         {!queue && <SelectField className="st-pick" label="Model" value={f.model} empty="Any model" options={opts.models.map((m) => ({ value: m, label: m }))} onChange={(v) => set('model', v)} />}
         <SelectField className="st-pick" label="Changed" value={f.date} options={Object.entries(T.DATE_RANGES).map(([value, label]) => ({ value, label }))} onChange={(v) => set('date', v)} />
         <TextField className="st-find" label="Find" type="search" value={f.text} placeholder="Id, title or branch" onChange={(v) => set('text', v)} />
-        {!queue && <Switch className="st-landed" label="Show landed" checked={f.landed} onChange={(v) => set('landed', v)} />}
+        {!queue && list === 'sent' && <Switch className="st-landed" label="Show landed" checked={f.landed} onChange={(v) => set('landed', v)} />}
         {filtered && <Button size="sm" icon="x" onClick={() => setF((x) => ({ ...NO_FILTERS, landed: x.landed }))}>Clear filters</Button>}
       </div>
       {!queue && <PageToolbar view="build-orchestrator" slot="pipeline" label="Builds: actions on the picked build" />}
       {error && <div className="pl-note is-warn" role="status"><Icon name="alert" size={14} />{error}</div>}
-      <p className="st-live fx-small fx-muted" aria-live="polite"><span className="st-live__dot" aria-hidden="true" />{rows == null ? 'Loading the builds…' : `Live from the builds store${rev != null ? ` · rev ${rev}` : ''} · ${shown.length} of ${all.length}${queue ? ' · read-only' : ''}`}</p>
+      <p className="st-live fx-small fx-muted" aria-live="polite"><span className="st-live__dot" aria-hidden="true" />{rows == null ? 'Loading the builds…' : `Live from the builds store${rev != null ? ` · rev ${rev}` : ''} · ${shown.length} of ${queue ? all.length : listCount(list)}${queue ? ' · read-only' : ''}`}</p>
       {rows != null && (
         <div className="oc-grid">
-          <DataGrid<TableRow> id={queue ? 'orch-merge-queue' : 'orch-status-table'} label={queue ? 'Merge queue' : 'Builds'} groups={groups} columns={cols} rowId={(r) => r.id} rowLabel={(r) => r.title}
+          <DataGrid<TableRow> id={queue ? 'orch-merge-queue' : 'orch-status-table'} label={queue ? 'Merge queue' : list === 'pending' ? 'Pending builds' : 'Builds'} groups={groups} columns={cols} rowId={(r) => r.id} rowLabel={(r) => r.title}
             rowTone={(r) => (r.view.fromStore ? r.view.tone : tone(r.status))} selected={picked || (listed ? focusId : undefined)}
             hidden={gridHidden} onToggleColumn={(c, show) => setHidden((h) => toggleIn(h, c, show))} onShowAll={() => setHidden([])}
             sort={sort} onSort={(c) => setSort((s) => nextSort(s, c))}
             expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))}
             onRowClick={(r) => { setPicked(r.id); setOpen((o) => toggleIn(o, r.id)); }}
             rowCtx={(r) => ({ target: 'axf-orchestrator-build', payload: r.id })} rowRef={(r) => ({ kind: 'orchestrator', id: r.id })}
-            empty={<div className="fx-empty">{filtered ? 'No builds match these filters.' : queue ? 'Nothing is waiting to merge.' : 'No builds yet. Plan Studio sends them here.'}</div>}
+            empty={<div className="fx-empty">{filtered ? 'No builds match these filters.' : queue ? 'Nothing is waiting to merge.' : list === 'pending' ? 'Nothing is pending. Plan Studio sends builds here.' : 'No build has been sent yet. The next Pending build moves up by itself.'}</div>}
             renderDetail={(r) => <BuildDetail r={r} phone={phone} api={api} canSend={!queue} waiting={waiting} onChanged={() => void reload()} />} key={phone ? 'phone' : 'wide'} />
         </div>
       )}
