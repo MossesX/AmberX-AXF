@@ -5,7 +5,55 @@
 .axp-build-profiles__row + .axp-build-profiles__row { border-top: var(--fx-border-w) solid var(--fx-border) }
 .axp-build-profiles__row.is-active { box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-accent) }
 .axp-build-profiles__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
-.axp-build-profiles__name { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); font-weight: 600 }
-.axp-build-profiles__desc, .axp-build-profiles__counts { margin: 0 }
+.axp-build-profiles__name { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); font-weight: 600; min-width: 0 }
+.axp-build-profiles__desc, .axp-build-profiles__counts, .axp-build-profiles__p { margin: 0 }
 .axp-build-profiles__counts { color: var(--fx-muted) }
 .axp-build-profiles__new { padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-md) }
+
+/* a profile's mark: its icon in its colour (a tone name, so the colour is the theme's) */
+.axp-build-profiles__mark { display: inline-flex; align-items: center; color: var(--fx-muted) }
+.axp-build-profiles__mark[data-tone='accent'] { color: var(--fx-accent) }
+.axp-build-profiles__mark[data-tone='success'] { color: var(--fx-success) }
+.axp-build-profiles__mark[data-tone='warning'] { color: var(--fx-warning) }
+.axp-build-profiles__mark[data-tone='danger'] { color: var(--fx-danger) }
+
+/* manager page: totals, the bar, then the grid of profiles (one column of cells on a phone, a line on a wide page) */
+.axp-build-profiles-page { container: axp-bp / inline-size; min-width: 0; color: var(--fx-text) }
+.axp-build-profiles__totals { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-4xl); font-variant-numeric: tabular-nums }
+.axp-build-profiles__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-lg); min-width: 0 }
+.axp-build-profiles-page .axp-build-profiles__search, .axp-build-profiles__pick .axp-build-profiles__search { margin-left: 0; flex: 1 1 calc(var(--fx-font-size) * 12); min-width: 0 }
+.axp-build-profiles-page .axp-build-profiles__sel { margin-left: 0; flex: 0 1 auto; min-width: 0 }
+.axp-build-profiles__sel select { appearance: none; border: 0; outline: 0; background: none; color: var(--fx-text); font: inherit; cursor: pointer; min-width: 0; height: calc(var(--fx-row-h) - var(--fx-dens-gap-sm)) }
+.axp-build-profiles__grid { list-style: none; margin: 0; padding: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); min-width: 0 }
+.axp-build-profiles__item { min-width: 0 }
+.axp-build-profiles__item + .axp-build-profiles__item { border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-build-profiles__item.is-active { box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-accent) }
+.axp-build-profiles__item.is-off .axp-build-profiles__name { color: var(--fx-muted) }
+.axp-build-profiles__line { display: grid; grid-template-columns: 1fr; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-2xl); width: 100%; padding: var(--fx-dens-gap-lg); align-items: center }
+.axp-build-profiles__who { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
+.axp-build-profiles__cell { display: flex; align-items: baseline; gap: var(--fx-dens-gap-md); min-width: 0; font-size: var(--fx-type-scale-sm); font-variant-numeric: tabular-nums }
+.axp-build-profiles__k { flex: 0 0 calc(var(--fx-font-size) * 6); color: var(--fx-muted) }
+.axp-build-profiles__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); padding: 0 var(--fx-dens-gap-lg) var(--fx-dens-gap-lg); min-width: 0 }
+.axp-build-profiles__panel { padding-top: var(--fx-dens-gap-lg); min-width: 0 }
+@container axp-bp (min-width: 760px) {
+  .axp-build-profiles__line { grid-template-columns: minmax(0, 2.2fr) minmax(0, 2fr) minmax(0, 1.4fr) minmax(0, 1fr) }
+  .axp-build-profiles__cell { flex-direction: column; gap: 0 }
+  .axp-build-profiles__k { flex: none; font-size: var(--fx-type-scale-sm) }
+  .axp-build-profiles__bline .axp-build-profiles__bmeta { flex: 0 0 auto }
+}
+
+/* what is in a profile: build and list lines, files, facts */
+.axp-build-profiles__lines { list-style: none; margin: 0; padding: 0; min-width: 0 }
+.axp-build-profiles__bline { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); padding-block: var(--fx-dens-gap-sm); min-width: 0 }
+.axp-build-profiles__bline + .axp-build-profiles__bline { border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-build-profiles__btitle { flex: 1 1 calc(var(--fx-font-size) * 12); min-width: 0; overflow-wrap: anywhere }
+.axp-build-profiles__bmeta { flex: 1 1 100%; font-variant-numeric: tabular-nums }
+.axp-build-profiles__files, .axp-build-profiles__facts { margin: 0; display: grid; gap: var(--fx-dens-gap-md) var(--fx-dens-gap-2xl); min-width: 0 }
+.axp-build-profiles__facts { grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-font-size) * 13), 1fr)) }
+.axp-build-profiles__file, .axp-build-profiles__fact { min-width: 0 }
+.axp-build-profiles__file dd, .axp-build-profiles__fact dd { margin: 0; overflow-wrap: anywhere }
+.axp-build-profiles--view { min-width: min(calc(var(--fx-font-size) * 40), 86vw) }
+
+/* create / edit: colour and icon side by side with the preview */
+.axp-build-profiles__look { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-font-size) * 10), 1fr)); gap: var(--fx-dens-gap-lg); align-items: start }
+.axp-build-profiles__preview { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); font-weight: 600; align-self: center }
