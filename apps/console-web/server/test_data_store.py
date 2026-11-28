@@ -171,6 +171,70 @@ except ValueError:
 st = ds.status()
 check(st["configured"] and st["namespaces"]["planner"]["mode"] == "rollback" and st["driftLines"]["planner"] == 3, "status: mode per namespace and drift lines")
 
+print("pipeline status: the summary query and one row, never the whole store")
+_pl = lambda **k: {"slot": "", "account": "", "queuedAt": "", **k}  # noqa: E731
+_doc = {"$axf": "builds@1", "rev": 7, "updatedAt": "2026-11-28T12:00:00.000Z", "meta": {}, "builds": [
+    {"id": "a", "title": "A", "status": "pending", "rev": 1, "pipeline": _pl(stop={"kind": "hold", "at": "2026-11-28T09:00:00.000Z", "by": "console", "why": "later", "from": "queued"}),
+     "steps": [{"id": "s1", "done": True}, {"id": "s2", "done": False}], "notes": []},
+    {"id": "b", "title": "B", "status": "queued", "rev": 2, "priority": "P0", "pipeline": _pl(queuedAt="2026-11-28T10:00:00Z", queuedBy="console"), "steps": [], "notes": []},
+    {"id": "c", "title": "C", "status": "running", "rev": 4, "pipeline": _pl(slot="2", account="acct-one", session="axf-c"), "steps": [], "notes": [{"text": "n"}]},
+    {"id": "d", "title": "D", "status": "building", "rev": 1, "pipeline": _pl(slot="1", account="acct-two"), "steps": []},
+    {"id": "e", "title": "E", "status": "queued", "rev": 1, "deleted": True}]}
+_r = client.put("/v1/builds/store.json", content=json.dumps(_doc), headers={"authorization": "Bearer t", "content-type": "application/json", "if-none-match": "*"})
+check(_r.status_code in (200, 201), f"the builds store is on axf-data ({_r.status_code})")
+_rows = client.get("/v1/builds/store.json:summary", headers={"authorization": "Bearer t"}).status_code == 200  # this axf-data has the row calls
+set_mode("builds", "cutover")
+_seen: list[str] = []
+ds.set_remote(ds.Remote("http://axf-data:7700", "t", lambda m, u, h, b: (_seen.append(u), transport(m, u, h, b))[1]))
+_old_store = os.environ.pop("AXF_BUILDS_STORE", None)
+ds.pipeline_clear()
+_s = ds.pipeline_summary()
+check(_s["$axf"] == "pipeline-summary@1" and _s["total"] == 4 and _s["counts"] == {"building": 1, "pending": 1, "queued": 1, "running": 1}, "counts by status, deleted builds left out")
+check(_s["queued"]["id"] == "b" and [q["id"] for q in _s["queuedAll"]] == ["b"] and sorted((r["id"], r["slot"], r["account"]) for r in _s["running"]) == [("c", "2", "acct-one"), ("d", "1", "acct-two")],
+      "the one queued build and the running builds with slot and account")
+_local = ds.summary_of(_doc)
+check(all(_local[k] == _s[k] for k in ("total", "counts")) and _local["queued"]["id"] == "b" and [r["id"] for r in _local["running"]] == ["d", "c"], "a store that is a file answers the same")
+_b = ds.pipeline_build("a")
+check(_b is not None and _b["status"] == "pending" and len(_b["steps"]) == 2 and ds.pipeline_build("nope") is None, "one build by its id, None for an unknown one")
+_row = ds.pipeline_build_status("a")
+check(_row["$axf"] == "pipeline-build@1" and _row["steps"] == {"total": 2, "done": 1} and _row["stop"] == {"kind": "hold", "at": "2026-11-28T09:00:00.000Z", "by": "console", "why": "later", "from": "queued"} and "notes" not in _row,
+      "a build's status row: its step counts and the standing stop, no steps or notes")
+check(ds.pipeline_build_status("e") is None and ds.pipeline_build_status("nope") is None, "a deleted or unknown build has no status row")
+check(ds.pipeline_summary() is _s, "polls inside the cache window share one read")
+if _rows:
+    check(_seen and all(":summary" in u or ":item" in u for u in _seen), f"only :summary and :item were asked, never the document ({_seen[:4]})")
+else:
+    print("  - this axf-data is from before the row calls: the answers above came from the record")
+ds.set_remote(ds.Remote("http://axf-data:7700", "t", lambda *a: (_ for _ in ()).throw(OSError("down"))))
+ds.pipeline_clear()
+try:
+    ds.pipeline_summary()
+    check(False, "axf-data down: an error, never a stale answer")
+except ds.DataStoreError as e:
+    check(e.code == "unavailable", "axf-data down: an error, never a stale answer")
+
+
+# an axf-data from before the summary query (unknown action = invalid_key): the same answer from the record
+def _old_service(m, u, h, b):
+    if ":summary" in u or ":item" in u:
+        return 400, {"content-type": "application/json"}, json.dumps({"code": "invalid_key", "message": "unknown action"}).encode()
+    return transport(m, u, h, b)
+
+
+ds.set_remote(ds.Remote("http://axf-data:7700", "t", _old_service))
+ds.pipeline_clear()
+_o = ds.pipeline_summary()
+check(all(_o[k] == _local[k] for k in ("total", "counts", "queued", "queuedAll", "running")) and ds.pipeline_build("a")["status"] == "pending" and ds.pipeline_build("nope") is None,
+      "an older axf-data: the summary and the build come from the record instead")
+# a newer engine's answer keeps its own fields; the ones every caller reads are always there
+_shape = ds._summary_shape({"counts": {"queued": 1, "pending": 2}, "queued": {"id": "b"}, "running": [{"id": "c", "steps": []}], "updatedAt": "x"})
+check(_shape["total"] == 3 and _shape["queuedAll"] == [{"id": "b"}] and _shape["running"][0]["id"] == "c" and _shape["updatedAt"] == "x", "a summary without total / queuedAll gets them")
+ds.set_remote(ds.Remote("http://axf-data:7700", "t", transport))
+ds.pipeline_clear()
+set_mode("builds", "local")
+if _old_store is not None:
+    os.environ["AXF_BUILDS_STORE"] = _old_store
+
 journal.unlink(missing_ok=True)
 print(f"data_store: {'all ok' if not fails else f'{fails} failed'}")
 sys.exit(1 if fails else 0)

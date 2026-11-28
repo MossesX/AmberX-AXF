@@ -451,20 +451,24 @@
         "id": "pipeline-queue",
         "route": "POST /pipeline/queue",
         "title": "Queue a build",
-        "description": "Move a Pending build to the Queue: the dispatcher starts it when a slot and an account for its model are free. A Pipeline 2.0 build (sent from Plan Studio 2.0) has no Queue of its own: it is moved on instead (split, then the active place when it is next) and the answer says where it stands. Say 'queue the icon browser build'.",
+        "description": "Move a Pending build to the Queue: the dispatcher starts it when a slot and an account for its model are free. One build waits in the Queue at a time: a second one is refused and the answer names the build that holds it (the rest move up by themselves as each one starts). Queueing a held, cancelled or unqueued build lifts that stop. A Pipeline 2.0 build (sent from Plan Studio 2.0) has no Queue of its own: it is moved on instead (split, then the active place when it is next) and the answer says where it stands. Say 'queue the icon browser build'. CLI: axf pipeline queue <build>.",
         "input": {
           "type": "object",
           "properties": {
             "id": {
               "type": "string",
               "description": "Build id"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Several builds at once"
             }
-          },
-          "required": [
-            "id"
-          ]
+          }
         },
-        "output": "{ id, status, pipeline }"
+        "output": "{ id, status, action, done: [{ id, status, tab, stop }], refused: [{ id, error }] }"
       },
       {
         "id": "pipeline-act",
@@ -551,20 +555,28 @@
         "id": "pipeline-unqueue",
         "route": "POST /pipeline/unqueue",
         "title": "Take a build out of the Queue",
-        "description": "Move a queued build back to Pending before it starts.",
+        "description": "Move a queued build back to Pending before it starts. It is Brett's stop: the build stays in Pending and nothing queues it again until he queues or releases it. Say 'take the icon browser build out of the queue'. CLI: axf pipeline unqueue <build>.",
         "input": {
           "type": "object",
           "properties": {
             "id": {
               "type": "string",
               "description": "Build id"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Several builds at once"
+            },
+            "why": {
+              "type": "string",
+              "description": "The reason (kept on the build)"
             }
-          },
-          "required": [
-            "id"
-          ]
+          }
         },
-        "output": "{ id, status }"
+        "output": "{ id, status, action, done: [{ id, status, tab, stop: { kind, at, by, why, from } }], refused: [{ id, error }] }"
       },
       {
         "id": "pipeline-emergency-list",
@@ -615,8 +627,8 @@
       {
         "id": "pipeline-build-action",
         "route": "POST /pipeline/action",
-        "title": "Hold, archive, delete or restore builds",
-        "description": "Act on one build or many at once (bulk): unqueue (Queue back to Pending), hold (stays in the Queue, the dispatcher skips it until released), release, archive, unarchive, delete (soft delete: kept in the builds store forever, Deleted tab) or restore. Builds with a live session are refused; the rest still go. Say 'hold the icon browser build', 'archive these builds' or 'restore the deleted toast build'.",
+        "title": "Hold, cancel, unqueue, release, archive, delete or restore builds",
+        "description": "Act on one build or many at once (bulk). unqueue, hold and cancel are Brett's stops: the build rests in Pending with the stop on its record and no tick, relaunch or reconcile brings it back (cancel also ends its sessions and frees its slots). release lifts a stop; queueing the build again does too. Also archive, unarchive, delete (soft delete: kept in the builds store forever, Deleted tab) and restore. A build an action does not fit is refused; the rest still go. Say 'hold the icon browser build', 'cancel the toast build', 'archive these builds' or 'restore the deleted toast build'.",
         "input": {
           "type": "object",
           "properties": {
@@ -625,6 +637,7 @@
               "enum": [
                 "unqueue",
                 "hold",
+                "cancel",
                 "release",
                 "archive",
                 "unarchive",
@@ -652,6 +665,111 @@
           "required": [
             "action"
           ]
+        },
+        "output": "{ action, done: [{ id, status, tab, stop? }], refused: [{ id, error }] }"
+      },
+      {
+        "id": "pipeline-summary",
+        "route": "GET /pipeline/summary",
+        "title": "Pipeline status summary",
+        "description": "The pipeline at a glance, read from the builds store's rows in the database (one summary query: no whole-store read, no status file): how many builds are in each status, how many each orchestrator view holds (sent, landed, pending), the one queued build (next to start) and the builds running now with their slot and account. Say 'what is queued', 'what is building' or 'how many builds are pending'. CLI: axf pipeline status. Console MCP tool: pipeline_status.",
+        "readOnly": true,
+        "output": "{ counts: { <status>: n }, total, views: { sent, landed, pending }, queued: { id, title, status, queuedAt, queuedBy } | null, queuedAll, running: [{ id, title, status, slot, account, session, model }], rev, at }"
+      },
+      {
+        "id": "pipeline-build",
+        "route": "GET /pipeline/build/{build}",
+        "title": "One build's status",
+        "description": "One build's status row by its id, read from its own row in the database: status, when and who set it, priority, PR, branch, slot, account, session, a standing hold / cancel / unqueue (stop) and how many steps are done. Say 'where is the icon browser build'. CLI: axf pipeline build <build>. Console MCP tool: pipeline_status build=<id>.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, number, title, status, statusAt, statusBy, priority, pr, branch, slot, account, session, model, queuedAt, queuedBy, heldAt, heldBy, heldWhy, stop: { kind, at, by, why, from } | null, steps: { total, done } }"
+      },
+      {
+        "id": "pipeline-hold",
+        "route": "POST /pipeline/hold",
+        "title": "Hold a build",
+        "description": "Brett's hold: a waiting build rests in Pending with the hold on its record and keeps its place in line. No tick, relaunch or reconcile starts it; release it or queue it again to go on. Say 'hold the icon browser build'. CLI: axf pipeline hold <build> --why \"…\".",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Several builds at once"
+            },
+            "why": {
+              "type": "string",
+              "description": "The reason (kept on the build)"
+            }
+          }
+        },
+        "output": "{ action, done: [{ id, status, tab, stop }], refused: [{ id, error }] }"
+      },
+      {
+        "id": "pipeline-cancel",
+        "route": "POST /pipeline/cancel",
+        "title": "Cancel a build",
+        "description": "Brett's cancel: the build's tmux sessions are ended, its agent slots freed, and it rests in Pending; nothing brings it back until it is released or queued again. Cancelling a build that is already cancelled is not an error. Say 'cancel the icon browser build'. CLI: axf pipeline cancel <build>.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Several builds at once"
+            },
+            "why": {
+              "type": "string",
+              "description": "The reason (kept on the build)"
+            }
+          }
+        },
+        "output": "{ action, done: [{ id, status, tab, stop, kill, ended: { sessions, slots, gone } }], refused: [{ id, error }] }"
+      },
+      {
+        "id": "pipeline-release",
+        "route": "POST /pipeline/release",
+        "title": "Release a held or cancelled build",
+        "description": "Lift a hold, cancel or unqueue: the build is back in line in Pending and moves up to the Queue by itself. Say 'release the icon browser build'. CLI: axf pipeline release <build>.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Several builds at once"
+            }
+          }
         },
         "output": "{ action, done: [{ id, status, tab }], refused: [{ id, error }] }"
       },

@@ -2,7 +2,13 @@
 
 The console adds the console-token check (every method) and the 404 while disabled. Every read and change goes
 through the plugin's CLI (orchestrator.mjs --json), so the console, the CLI and other sessions share one set of
-rules and one tracker file (_claude/builds/orchestrator.json). Never exposed on the console MCP.
+rules and one builds store (framework/cli/builds-store.mjs, on the database; there is no status file). Never exposed on
+the console MCP.
+
+Pipeline status (Nov 28 2026): GET /pipeline/summary and GET /pipeline/build/{build} read the summary query and one
+build's row from the builds store (server/data_store.py); nothing here reads the whole store for a status. Brett's queue
+moves (queue, hold, cancel, unqueue, release) all take one road: orchestrator.mjs `act <move>`, which applies the
+build-pipeline@1 transition, so a stop stays on the record against every tick, relaunch and reconcile.
 
 Model upgrades (framework/core/model-switch.mjs, Brett, Nov 3 2026): approving an upgrade (or answering an upgrade
 request) counts only as Brett's own click: a browser signed in to axHub as an admin (wall session), with no
@@ -669,6 +675,52 @@ def pipeline_status() -> dict[str, Any]:
     return _pipeline("status")
 
 
+@router.get("/pipeline/summary")
+def pipeline_summary() -> dict[str, Any]:
+    """pipeline-summary@1: counts by status and by orchestrator view, the one queued build, the running builds with slot
+    and account. Read from the builds store's rows (axf-data's summary query): no Node run, no whole-store read, no
+    status file. The same answer as the console MCP tool `pipeline_status`."""
+    import data_store  # server/data_store.py
+    try:
+        s = data_store.pipeline_summary()
+    except data_store.DataStoreError as e:
+        raise HTTPException(503, f"the builds store can't be read: {e}") from e
+    return {**s, "views": views_of(s.get("counts") or {})}
+
+
+# The orchestrator's views: sent = out of Pending and not landed yet (queued, building, built, or failed on the way);
+# landed; pending = not sent yet. An older record's status counts as the one it stands for; archived is in none.
+VIEWS = ("sent", "landed", "pending")
+VIEW_PENDING = ("pending", "splitting", "split")
+VIEW_LANDED = ("landed", "complete")
+VIEW_OFF = ("archived",)
+
+
+def views_of(counts: dict[str, Any]) -> dict[str, int]:
+    """{ sent, landed, pending } from the summary's counts by status: what each orchestrator view holds."""
+    out = dict.fromkeys(VIEWS, 0)
+    for status, n in counts.items():
+        if status in VIEW_OFF or not isinstance(n, int) or isinstance(n, bool):
+            continue
+        out["pending" if status in VIEW_PENDING else "landed" if status in VIEW_LANDED else "sent"] += n
+    return out
+
+
+@router.get("/pipeline/build/{build}")
+def pipeline_build(build: str) -> dict[str, Any]:
+    """pipeline-build@1: one build's status row by its id (status, who runs it where, a standing hold / cancel /
+    unqueue, its step counts), read from its own row."""
+    import data_store
+    bid = _build_id(build)
+    try:
+        row = data_store.pipeline_build_status(bid)
+    except data_store.DataStoreError as e:
+        raise HTTPException(503, f"the builds store can't be read: {e}") from e
+    if row is None:
+        raise HTTPException(404, f"no build {bid}")
+    return row
+
+
 SELFCHECK_REASONS = {"console-load", "on demand", "voice"}
 
 
@@ -727,18 +779,76 @@ async def pipeline_health_now(request: Request) -> dict[str, Any]:
     return _pipeline("health", "--request", "--by", (brett_click(request) or "console")[:80])
 
 
+# ---- Brett's queue moves (build-pipeline@1, the single-Queued contract): queue, the three stops, and release.
+# One road for every surface: REST here, the MCP plugin commands, `axf pipeline …` / `axf build-orchestrator …` and voice
+# all reach _queue_move(), which runs orchestrator.mjs `act <move>`: the transition is applied under the store lock and
+# the stop stays on the build's record, where the dispatcher, the reconciler, the watchdogs and every session respect it.
+QUEUE_MOVES = ("queue", "hold", "cancel", "unqueue", "release")
+
+
+def _queue_move(request: Request, action: str, body: dict[str, Any]) -> dict[str, Any]:
+    """{id | ids: [id…], why?}: one move on one build or many. { action, done: [{ id, status, tab, stop, ended? }],
+    refused: [{ id, error }] }; 400 with the reasons when no build could be moved."""
+    if action not in QUEUE_MOVES:
+        raise HTTPException(400, f"action is one of {', '.join(QUEUE_MOVES)}")
+    raw = body.get("ids")
+    ids = [_build_id(x) for x in (raw if isinstance(raw, list) else [body.get("id")])[:200]]
+    if not ids:
+        raise HTTPException(400, "no build id given")
+    who = (brett_click(request) or "console")[:80]
+    args = ["act", action, *ids, "--by", who]
+    why = str(body.get("why") or "")[:300]
+    if why.strip():
+        args += ["--why", why]
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
+    env["AXF_ACTOR"] = who
+    res = _node_json(["node", str(CLI), *args, "--json"], 120, env=env)
+    _PIPE_CACHE.clear()
+    readcache.invalidate("build-orchestrator:table:")
+    try:
+        import data_store
+        data_store.pipeline_clear()  # the next summary read shows the move
+    except ImportError:
+        pass
+    if not res.get("ok"):
+        err = str(res.get("error") or f"{action} failed")
+        raise HTTPException(404 if "no build" in err else 500 if res.get("timeout") else 400, err[:400])
+    return res
+
+
 @router.post("/pipeline/queue")
 async def pipeline_queue(request: Request) -> dict[str, Any]:
-    """{id}: Pending → Queue. Brett's move: the dispatcher starts it when a slot and an account for its model are free."""
-    body = await _json_body(request)
-    return _pipeline("queue", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
+    """{id}: Pending → Queue. Brett's move: the dispatcher starts it when a slot and an account for its model are free.
+    One build waits in the Queue at a time: a second is refused (400) with the build that holds it named; it stays in
+    Pending and moves up by itself. Queueing a held, cancelled or unqueued build lifts that stop."""
+    return _queue_move(request, "queue", await _json_body(request))
 
 
 @router.post("/pipeline/unqueue")
 async def pipeline_unqueue(request: Request) -> dict[str, Any]:
-    """{id}: Queue → Pending (a queued build that has not started)."""
-    body = await _json_body(request)
-    return _pipeline("unqueue", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
+    """{id}: Queue → Pending (a queued build that has not started). Brett's stop (build-pipeline@1 unqueue): it stays in
+    Pending, and nothing queues it again until he does."""
+    return _queue_move(request, "unqueue", await _json_body(request))
+
+
+@router.post("/pipeline/hold")
+async def pipeline_hold(request: Request) -> dict[str, Any]:
+    """{id | ids, why?}: hold a waiting build. It rests in Pending with the hold on its record and keeps its place in
+    line; nothing starts it until it is released or queued again."""
+    return _queue_move(request, "hold", await _json_body(request))
+
+
+@router.post("/pipeline/cancel")
+async def pipeline_cancel(request: Request) -> dict[str, Any]:
+    """{id | ids, why?}: cancel a build. Its tmux sessions are ended, its agent slots freed, and it rests in Pending;
+    no tick, relaunch or reconcile brings it back. Cancelling again is not an error."""
+    return _queue_move(request, "cancel", await _json_body(request))
+
+
+@router.post("/pipeline/release")
+async def pipeline_release(request: Request) -> dict[str, Any]:
+    """{id | ids}: lift a hold, cancel or unqueue. The build is back in line in Pending and moves up by itself."""
+    return _queue_move(request, "release", await _json_body(request))
 
 
 EMERGENCY_CLI = ROOT / "framework" / "cli" / "emergency-builds.mjs"
@@ -790,19 +900,23 @@ async def pipeline_emergency_clear(request: Request) -> dict[str, Any]:
     return _emergency("clear", _build_id(body.get("id")))
 
 
-BUILD_ACTIONS = ("unqueue", "hold", "release", "archive", "unarchive", "delete", "restore")
+BUILD_ACTIONS = ("unqueue", "hold", "cancel", "release", "archive", "unarchive", "delete", "restore")
 
 
 @router.post("/pipeline/action")
 async def pipeline_action(request: Request) -> dict[str, Any]:
     """{action, ids: [id…] | id, why?}: the Queue / Archive / Deleted actions on one build or many (bulk select).
-    unqueue = back to Pending; hold / release = stays in the Queue, skipped by the dispatcher until released; archive /
-    unarchive; delete = soft delete (kept in the builds store forever, Deleted tab) / restore. Builds with a live session
-    are refused, the others still go: { done: [{ id, status, tab }], refused: [{ id, error }] }."""
+    unqueue / hold / cancel are Brett's stops (build-pipeline@1): the build rests in Pending with the stop on its record
+    and no tick, relaunch or reconcile brings it back (cancel also ends its sessions and frees its slots); release lifts
+    a stop, as does queueing the build again. These four take the same road as POST /pipeline/<move>. archive /
+    unarchive; delete = soft delete (kept in the builds store forever, Deleted tab) / restore. A build an action does
+    not fit is refused, the others still go: { done: [{ id, status, tab, stop? }], refused: [{ id, error }] }."""
     body = await _json_body(request)
     action = str(body.get("action") or "")
     if action not in BUILD_ACTIONS:
         raise HTTPException(400, f"action is one of {', '.join(BUILD_ACTIONS)}")
+    if action in QUEUE_MOVES:
+        return _queue_move(request, action, body)
     raw = body.get("ids")
     ids = raw if isinstance(raw, list) else [body.get("id")]
     ids = [_build_id(x) for x in ids[:200]]
@@ -1254,20 +1368,25 @@ plugin_services.provide("axf.build-dispatch@1", DispatchService(), Path(__file__
 class ConsoleFocus:
     """console-focus@1 (console-commands-reliable, Nov 11 2026): Console commands asks which screen lists an item a
     Claude session names. `build:<id>` (explicit) or a bare build id → the orchestrator, focused on that build (the
-    console runs build-orchestrator.focus: its tab opens, the row scrolls into view, expands and stays highlighted)."""
+    console runs build-orchestrator.focus: its tab opens, the row scrolls into view, expands and stays highlighted).
+
+    The orchestrator's views are deep links too (Nov 28 2026): console_show "build-orchestrator/sent" (or
+    "orchestrator landed", "builds:pending", "view:sent") opens the orchestrator on that view: sent = queued, building
+    and built; landed; pending. The focus is the view's name (VIEWS), which the page's focus action takes."""
 
     SCREEN = "build-orchestrator"
     ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{1,120}$")
+    VIEW_RE = re.compile(r"^(?:build[- ]orchestrator|orchestrator|builds?|pipeline|view)\s*[/:. ]\s*(?:view\s*[:=]\s*)?([a-z]+)(?:\s+(?:view|builds))?$")
 
     def __init__(self) -> None:
         self._mtime = -1.0
         self._ids: set[str] = set()
+        self._known: dict[str, tuple[float, bool]] = {}
 
     REMOTE_TTL_S = 30.0
 
     def ids(self) -> set[str]:
-        # the builds store itself (server/builds_store.py: the axf-data tables once cut over, never a store.json
-        # projection), at most every REMOTE_TTL_S seconds
+        # a store that is still a file (before the cut): its builds, at most every REMOTE_TTL_S seconds
         import builds_store
         if time.monotonic() - self._mtime < self.REMOTE_TTL_S and self._ids:
             return self._ids
@@ -1275,13 +1394,39 @@ class ConsoleFocus:
         self._mtime = time.monotonic()
         return self._ids
 
+    def known(self, build_id: str) -> bool:
+        """Is this a build's id? On the database: that one row is asked for (never the whole store), remembered for
+        REMOTE_TTL_S; a store that can't be read knows no build."""
+        import data_store
+        if not data_store.builds_on_tables():
+            return build_id in self.ids()
+        hit = self._known.get(build_id)
+        if hit and time.monotonic() - hit[0] < self.REMOTE_TTL_S:
+            return hit[1]
+        try:
+            yes = data_store.pipeline_build(build_id) is not None
+        except data_store.DataStoreError:
+            return False
+        if len(self._known) > 512:
+            self._known.clear()
+        self._known[build_id] = (time.monotonic(), yes)
+        return yes
+
+    def view(self, path: str) -> str:
+        """The orchestrator view a path names ('' = none): "build-orchestrator/sent", "orchestrator landed", "view:pending"."""
+        m = self.VIEW_RE.match(" ".join(str(path or "").lower().split()))
+        return m.group(1) if m and m.group(1) in VIEWS else ""
+
     def resolve(self, path: str) -> dict[str, Any] | None:
         p = str(path or "").strip()
         low = p.lower()
+        view = self.view(p)
+        if view:
+            return {"screen": self.SCREEN, "focus": view, "explicit": True, "kind": "view"}
         for prefix in ("build:", "builds:"):
             if low.startswith(prefix) and p[len(prefix):].strip():
                 return {"screen": self.SCREEN, "focus": p[len(prefix):].strip(), "explicit": True}
-        if self.ID_RE.match(low) and low in self.ids():
+        if self.ID_RE.match(low) and self.known(low):
             return {"screen": self.SCREEN, "focus": low, "explicit": False}
         return None
 

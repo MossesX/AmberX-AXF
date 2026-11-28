@@ -57,6 +57,12 @@
  *   axf <plugin> <word> …        a plugin's own word commands when its plugin.json names a "cli" script that exports cliWords
  *   axf watchdog status | run [--dry-run] [--force] | log [--kind K] [--action A] [--build B] | settings | set <key> <value>
  *                               the VPS stale-row watchdog (Build orchestrator): what it cleaned, run it, change its settings
+ *   axf pipeline [status] | build <build> | queue|hold|cancel|unqueue|release <build>… [--why "…"] | show [sent|landed|pending]
+ *                               the build pipeline (the plugin providing service:orchestrator@1): status = counts by status,
+ *                               the one queued build and the running builds, read from the database (no status file);
+ *                               hold / cancel / unqueue are Brett's stops and stick until release or queue. Each word
+ *                               runs that plugin's command (pipeline-summary, pipeline-build, pipeline-queue, pipeline-hold …),
+ *                               the same REST routes the console, MCP and voice use; show opens that view in the open console
  *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | refresh [--hard] [--all] | where | list [kind] [words] | clients
  *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1);
  *                               refresh reloads it (--hard clears its caches first) and it comes back on the same screen, tabs and scroll
@@ -124,6 +130,44 @@ if (cmd === 'watchdog') {
   try { await main(rest.length ? rest : ['status']); } catch (e) { console.error(`watchdog: ${e.message}`); process.exit(2); }
   process.exit(process.exitCode ?? 0);
 }
+// `axf pipeline …`: the build pipeline's state and Brett's queue moves, by word. Each word is a command of the plugin
+// that provides the build orchestrator (service:orchestrator@1, never by folder name), run by the plugin-commands
+// provider: the same REST routes the console, the MCP plugin commands and voice call.
+if (cmd === 'pipeline') {
+  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
+  const { join: joinPath } = await import('node:path');
+  const { pathToFileURL } = await import('node:url');
+  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
+  const manifest = (d) => { try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')); } catch { return null; } };
+  const dirs = exists(plugins) ? readdirSync(plugins).sort() : [];
+  const MOVES = ['queue', 'hold', 'cancel', 'unqueue', 'release'];
+  const VIEWS = ['sent', 'landed', 'pending'];
+  const owner = dirs.find((d) => { const m = manifest(d); return m?.provides?.includes('service:orchestrator@1') && (m.commands?.items ?? []).some((c) => c.id === 'pipeline-summary'); });
+  const runner = dirs.find((d) => manifest(d)?.provides?.includes('service:plugin-commands@1') && exists(joinPath(plugins, d, 'commands.mjs')));
+  const word = rest[0] && !rest[0].startsWith('--') ? rest[0] : 'status';
+  const given = rest.filter((a, i) => i > 0 && !a.startsWith('--') && !(rest[i - 1] === '--why'));
+  const extra = rest.filter((a, i) => a.startsWith('--') || rest[i - 1] === '--why');
+  if (word === 'help' || rest.includes('--help') || !['status', 'summary', 'build', 'show', ...MOVES].includes(word)) {
+    console.log(`axf pipeline [status] | build <build> | ${MOVES.join('|')} <build>… [--why "…"] | show [${VIEWS.join('|')}]   (--json)`);
+    process.exit(word === 'help' || rest.includes('--help') ? 0 : 2);
+  }
+  if (!owner) { console.error('no plugin provides the build pipeline (service:orchestrator@1 with a pipeline-summary command)'); process.exit(1); }
+  if (word === 'show') { // the deep link: the orchestrator's view in Brett's open console
+    const view = given[0] ?? 'sent';
+    if (!VIEWS.includes(view)) { console.error(`axf pipeline show ${VIEWS.join('|')}`); process.exit(2); }
+    const con = dirs.find((d) => manifest(d)?.provides?.includes('service:console-commands@1') && exists(joinPath(plugins, d, 'console.mjs')));
+    if (!con) { console.error('no plugin provides console-commands@1 (install the Console commands plugin)'); process.exit(1); }
+    const { main } = await import(pathToFileURL(joinPath(plugins, con, 'console.mjs')).href);
+    process.exit(await main(['action', `${owner}.view`, view, ...extra]));
+  }
+  if (!runner) { console.error('no plugin provides plugin-commands@1 (install the Plugin commands plugin)'); process.exit(1); }
+  if ((word === 'build' || MOVES.includes(word)) && !given.length) { console.error(`axf pipeline ${word} <build>`); process.exit(2); }
+  const call = word === 'status' || word === 'summary' ? ['pipeline-summary']
+    : word === 'build' ? ['pipeline-build', '--build', given[0]]
+      : [`pipeline-${word}`, ...(given.length === 1 ? ['--id', given[0]] : ['--ids', JSON.stringify(given)])];
+  const { main } = await import(pathToFileURL(joinPath(plugins, runner, 'commands.mjs')).href);
+  process.exit(await main([owner, ...call, ...extra]));
+}
 // `axf voice …` goes to the plugin that provides the voice listener (service:axf.wake-listener@1 with a cli.mjs), never
 // by folder name: Claude mode on / off / status / test and the command history.
 if (cmd === 'voice') {
@@ -141,7 +185,7 @@ if (cmd === 'voice') {
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
 // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that
 // provides plugin-commands@1 (never by folder name).
-const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas', 'watchdog']);
+const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas', 'watchdog', 'pipeline']);
 {
   const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
   const { join: joinPath } = await import('node:path');

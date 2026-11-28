@@ -8,6 +8,12 @@ builds keep running. That's what I need."
     ds.read_text(path, default)      ds.write_text(path, text, …)      ds.write_bytes(path, data, …)
     ds.private_dir(path)             ds.plugin(folder).read_json("items.json", [])   (a plugin's lifecycle dataDir)
     ds.key_for(path)                 the data-store@1 key a file maps to (None = it always stays local)
+    ds.pipeline_summary()            pipeline-summary@1: counts by status, the queued build, the running builds
+    ds.pipeline_build(id)            one build's row by its id (with its steps and notes), or None
+
+Pipeline status (Nov 28 2026, framework/spec/DATA-INVENTORY.md → Pipeline status): a build's status is its row in the
+builds store. `pipeline_summary()` and `pipeline_build(id)` ask axf-data for the summary query and the one row
+(`<key>:summary`, `<key>:item`); no caller reads the whole store for a status, and no status file exists.
 
 Every call takes the same arguments as storage.* and answers the same way. What happens underneath depends on the
 mode of the key's namespace (framework/core/data-store-mode.mjs, the document at <data>/data-store/mode.json):
@@ -271,6 +277,21 @@ class Remote:
                 return out
             since = r["next"]
 
+    def summary(self, key: str, lst: str = "") -> dict:
+        """pipeline-summary@1 of a table-backed record (builds/store.json): counts by status, the queued build and the
+        running builds with slot and account, computed from the rows on axf-data. The document is never read."""
+        return json.loads(self._send("GET", urllib.parse.quote(key) + ":summary", q={"list": lst} if lst else None)[2])
+
+    def item(self, key: str, item_key: str, lst: str = "") -> dict | None:
+        """data-item@1: one row of a keyed list by its key (one build with its steps and notes, plus the record's scalar
+        head fields), or None when there is no such item. The document is never read."""
+        try:
+            return json.loads(self._send("GET", urllib.parse.quote(key) + ":item", q={"key": item_key, **({"list": lst} if lst else {})})[2])
+        except DataStoreError as e:
+            if e.code == "not_found":
+                return None
+            raise
+
     def json(self, method: str, path: str, body: Any = None, q: dict | None = None) -> Any:
         b = json.dumps(body).encode() if body is not None else None
         return json.loads(self._send(method, path, headers={"content-type": "application/json"} if b else None, body=b, q=q)[2] or b"null")
@@ -283,6 +304,147 @@ def set_remote(r: Remote) -> None:
     """Tests and the data-store plugin swap the client (e.g. a transport into an in-process axf-data)."""
     global REMOTE
     REMOTE = r
+
+
+# ── pipeline status: the summary query and one build's row (pipeline-summary@1, data-item@1) ──────────────────────────
+# A status is a row of the builds table on axf-data. Every status caller on the console server (the pipeline_status MCP
+# tool, the build orchestrator's /pipeline/summary and /pipeline/build routes) reads it here: one small query, never the
+# whole store and never a status file. Before a project's builds are cut over (a fresh checkout, a test store) the same
+# answer is computed from that store's own file.
+
+BUILDS_KEY = "builds/store.json"
+SUMMARY_SCHEMA = "pipeline-summary@1"
+QUEUED_STATUS = "queued"
+# a build some session, the dispatcher or the lander is working on right now (services/axf-data/tables.py: the same list)
+RUNNING_STATUSES = ("running", "fixing", "landing", "splitting", "pulling-main", "assigning-models", "ready", "sending", "building",
+                    "build-complete", "merging-pr", "pr-pulling-main", "running-ci", "merging-main")
+_SUMMARY_PIPELINE = ("slot", "account", "session", "model", "queuedAt", "queuedBy", "heldAt", "heldBy", "heldWhy")
+SUMMARY_CACHE_S = 2.0  # every open console polls the summary: one read serves them all
+_summary_lock = threading.Lock()
+_summary_cache: dict[str, tuple[float, dict]] = {}
+
+
+def _text(v: Any) -> str:
+    return v if isinstance(v, str) else ""
+
+
+def _int(v: Any) -> int | None:
+    return v if isinstance(v, int) and not isinstance(v, bool) else None
+
+
+def summary_row(b: dict[str, Any]) -> dict[str, Any]:
+    """What a list shows of one build: its status, who runs it where, and a standing stop (hold, cancel or unqueue:
+    build-pipeline@1 `pipeline.stop`). Never its steps, notes or origin."""
+    pl = b.get("pipeline") if isinstance(b.get("pipeline"), dict) else {}
+    pr = b.get("pr")
+    out = {"id": _text(b.get("id")), "number": _text(b.get("number")), "title": _text(b.get("title")), "status": _text(b.get("status")),
+           "priority": _text(b.get("priority")), "pr": pr if isinstance(pr, str) or _int(pr) is not None else "", "branch": _text(b.get("branch")),
+           "rev": _int(b.get("rev")), "updatedAt": _text(b.get("updatedAt")), "statusAt": _text(b.get("statusAt")), "statusBy": _text(b.get("statusBy"))}
+    out.update({k: _text(pl.get(k)) for k in _SUMMARY_PIPELINE})
+    stop = pl.get("stop") if isinstance(pl.get("stop"), dict) else None
+    out["stop"] = {k: _text(stop.get(k)) for k in ("kind", "at", "by", "why", "from")} if stop and stop.get("kind") in ("hold", "cancel", "unqueue") else None
+    return out
+
+
+def summary_of(doc: Any) -> dict[str, Any]:
+    """pipeline-summary@1 from a store document: the answer axf-data computes in SQL, for a store that is still a file."""
+    items = [b for b in (doc.get("builds") if isinstance(doc, dict) else None) or [] if isinstance(b, dict) and b.get("deleted") is not True]
+    counts: dict[str, int] = {}
+    for b in items:
+        counts[_text(b.get("status"))] = counts.get(_text(b.get("status")), 0) + 1
+    live = [summary_row(b) for b in items if b.get("status") == QUEUED_STATUS or b.get("status") in RUNNING_STATUSES]
+    queued = sorted((r for r in live if r["status"] == QUEUED_STATUS), key=lambda r: (r["queuedAt"] or r["updatedAt"] or "~", r["id"]))
+    run = sorted((r for r in live if r["status"] != QUEUED_STATUS), key=lambda r: (r["slot"] or "~", r["id"]))
+    return {"$axf": SUMMARY_SCHEMA, "total": len(items), "counts": dict(sorted(counts.items())), "queued": queued[0] if queued else None,
+            "queuedAll": queued, "running": run, "rev": _int(doc.get("rev")) or 0 if isinstance(doc, dict) else 0,
+            "at": _text(doc.get("updatedAt")) if isinstance(doc, dict) else ""}
+
+
+def _summary_shape(s: Any) -> dict[str, Any]:
+    """axf-data's answer with every field a caller reads present (an engine that names no `queuedAll` gets the one)."""
+    s = s if isinstance(s, dict) else {}
+    counts = {str(k): v for k, v in (s.get("counts") or {}).items() if _int(v) is not None} if isinstance(s.get("counts"), dict) else {}
+    queued = s.get("queued") if isinstance(s.get("queued"), dict) else None
+    return {**s, "$axf": SUMMARY_SCHEMA, "counts": counts, "total": _int(s.get("total")) if _int(s.get("total")) is not None else sum(counts.values()),
+            "queued": queued, "queuedAll": s["queuedAll"] if isinstance(s.get("queuedAll"), list) else ([queued] if queued else []),
+            "running": s["running"] if isinstance(s.get("running"), list) else []}
+
+
+def builds_on_tables() -> bool:
+    """True once the builds store lives on the axf-data tables (a test store named by AXF_BUILDS_STORE never does)."""
+    return not os.environ.get("AXF_BUILDS_STORE") and mode_of(BUILDS_KEY) in ("cutover", "rollback")
+
+
+def _builds_file() -> Path:
+    if os.environ.get("AXF_BUILDS_STORE"):
+        return Path(os.environ["AXF_BUILDS_STORE"])
+    d = os.environ.get("AXF_DATA_DIR")
+    return (Path(d) if d and d != "off" else ROOT) / "_claude" / "builds" / "store.json"
+
+
+def _builds_doc() -> Any:
+    """The whole store, only for a store that is a file (before the cut) or an axf-data from before the row calls."""
+    if builds_on_tables():
+        r = REMOTE.get(BUILDS_KEY)
+        return None if r is None else json.loads(r[1])
+    try:
+        return json.loads(_builds_file().read_text("utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
+def _row_call(fn: Callable[[], Any]) -> tuple[bool, Any]:
+    """One row call on axf-data: (True, answer), or (False, None) when the service is from before data-item@1 /
+    pipeline-summary@1 (it answers `invalid_key`: unknown action; it is deployed on its own schedule)."""
+    try:
+        return True, fn()
+    except DataStoreError as e:
+        if e.code == "invalid_key":
+            return False, None
+        raise
+
+
+def pipeline_summary(*, fresh: bool = False) -> dict[str, Any]:
+    """The pipeline's status: counts by status, the one queued build, the running builds with slot and account. On the
+    tables it is the summary query (a GROUP BY and the few live rows). DataStoreError when axf-data can't answer: never
+    a stale file instead. Shared for SUMMARY_CACHE_S."""
+    key = os.environ.get("AXF_BUILDS_STORE", "")
+    now = time.time()
+    with _summary_lock:
+        hit = _summary_cache.get(key)
+        if hit and not fresh and now - hit[0] < SUMMARY_CACHE_S:
+            return hit[1]
+    ok, out = _row_call(lambda: REMOTE.summary(BUILDS_KEY)) if builds_on_tables() else (False, None)
+    out = _summary_shape(out) if ok else summary_of(_builds_doc())
+    with _summary_lock:
+        _summary_cache.clear()
+        _summary_cache[key] = (now, out)
+    return out
+
+
+def pipeline_build(build_id: str) -> dict[str, Any] | None:
+    """One build by its id as the store holds it (its row, with steps and notes), or None when there is none."""
+    if builds_on_tables():
+        ok, r = _row_call(lambda: REMOTE.item(BUILDS_KEY, build_id))
+        if ok:
+            return r["item"] if isinstance(r, dict) and isinstance(r.get("item"), dict) else None
+    doc = _builds_doc()
+    return next((b for b in (doc or {}).get("builds", []) if isinstance(b, dict) and b.get("id") == build_id), None)
+
+
+def pipeline_build_status(build_id: str) -> dict[str, Any] | None:
+    """pipeline-build@1: one build's status row (summary_row) plus its step counts; None for an unknown or deleted build."""
+    b = pipeline_build(build_id)
+    if b is None or b.get("deleted") is True:
+        return None
+    steps = [s for s in b.get("steps") or [] if isinstance(s, dict)]
+    return {"$axf": "pipeline-build@1", **summary_row(b), "steps": {"total": len(steps), "done": sum(1 for s in steps if s.get("done") is True)}}
+
+
+def pipeline_clear() -> None:
+    """Forget the shared summary (after a write, so the next read shows it)."""
+    with _summary_lock:
+        _summary_cache.clear()
 
 
 # ── drift (shadow) ────────────────────────────────────────────────────────────────────────────────────────────────────

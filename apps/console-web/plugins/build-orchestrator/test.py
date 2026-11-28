@@ -206,7 +206,7 @@ try:
     # hold / archive / delete / restore on one build or many (bulk select)
     asyncio.run(srv.pipeline_action(_Req({"action": "hold", "ids": ["alpha", "beta"], "why": "later"}, True)))
     cmd = _calls[-1]
-    check(cmd[2:5] == ["hold", "alpha", "beta"] and cmd[cmd.index("--by") + 1] == "Brett" and cmd[cmd.index("--why") + 1] == "later", "action: hold on two builds, by Brett, with the reason")
+    check("orchestrator.mjs" in cmd[1] and cmd[2:6] == ["act", "hold", "alpha", "beta"] and cmd[cmd.index("--by") + 1] == "Brett" and cmd[cmd.index("--why") + 1] == "later", "action: hold on two builds, by Brett, with the reason, through the build-pipeline@1 transition (orchestrator.mjs act hold)")
     asyncio.run(srv.pipeline_action(_Req({"action": "delete", "id": "alpha"})))
     check(_calls[-1][2:4] == ["delete", "alpha"] and "--why" not in _calls[-1], "action: one id works too; no reason, no --why")
     for body, want in (({"action": "purge", "ids": ["alpha"]}, 400), ({"action": "hold", "ids": ["../x"]}, 400), ({"action": "hold", "ids": []}, 400)):
@@ -216,7 +216,77 @@ try:
         except srv.HTTPException as e:
             code = e.status_code
         check(code == want, f"action {body}: {want}")
-    check(set(srv.BUILD_ACTIONS) == {"unqueue", "hold", "release", "archive", "unarchive", "delete", "restore"} and "archive" in srv.PIPELINE_TABS and "deleted" in srv.PIPELINE_TABS, "no hard delete: actions and the Archive / Deleted tabs")
+    check(set(srv.BUILD_ACTIONS) == {"unqueue", "hold", "cancel", "release", "archive", "unarchive", "delete", "restore"} and "archive" in srv.PIPELINE_TABS and "deleted" in srv.PIPELINE_TABS, "no hard delete: actions and the Archive / Deleted tabs")
+    # ---- Brett's queue moves (Nov 28 2026): queue, hold, cancel, unqueue, release take one road on every surface
+    routes = {r.path: r for r in srv.router.routes if hasattr(r, "path")}
+    for move in srv.QUEUE_MOVES:
+        fn = routes[f"/pipeline/{move}"].endpoint
+        asyncio.run(fn(_Req({"id": "alpha", "why": "not now"}, True)))
+        cmd = _calls[-1]
+        check("orchestrator.mjs" in cmd[1] and cmd[2:5] == ["act", move, "alpha"] and cmd[cmd.index("--by") + 1] == "Brett" and cmd[cmd.index("--why") + 1] == "not now" and cmd[-1] == "--json",
+              f"POST /pipeline/{move}: orchestrator.mjs act {move} alpha, by Brett, with the reason")
+        if move in srv.BUILD_ACTIONS:
+            asyncio.run(srv.pipeline_action(_Req({"action": move, "id": "alpha", "why": "not now"}, True)))
+            check(_calls[-1] == cmd, f"/pipeline/{move} and /pipeline/action {move} run the same command")
+        asyncio.run(fn(_Req({"ids": ["alpha", "beta"]})))
+        check(_calls[-1][2:6] == ["act", move, "alpha", "beta"] and _calls[-1][_calls[-1].index("--by") + 1] == "console" and "--why" not in _calls[-1], f"/pipeline/{move}: several builds, the console as the actor without a signed-in click")
+        for bad, want in (({"id": "../x"}, 400), ({"id": "refused"}, 400), ({"id": "no-such-build"}, 404)):
+            try:
+                asyncio.run(fn(_Req(bad)))
+                code = 200
+            except srv.HTTPException as e:
+                code = e.status_code
+            check(code == want, f"/pipeline/{move} {bad}: {want}")
+    check(srv.views_of({"pending": 2, "split": 1, "splitting": 1, "ready": 1, "queued": 1, "running": 2, "building": 1, "built": 3, "running-ci": 1, "failed": 1, "landed": 4, "complete": 5, "archived": 9}) == {"sent": 10, "landed": 9, "pending": 4},
+          "summary views: sent (queued, building, built, failed on the way), landed, pending; archived in none")
+    check(srv.views_of({}) == {"sent": 0, "landed": 0, "pending": 0}, "an empty store has three empty views")
+    for path in ("/pipeline/summary", "/pipeline/build/{build}"):
+        check(path in routes and "GET" in routes[path].methods, f"GET {path} is mounted")
+    # the status reads come from data_store (the summary query, one row): no Node run, no store read here
+    import data_store
+    _real_sum, _real_row = data_store.pipeline_summary, data_store.pipeline_build_status
+    _before = len(_calls)
+    data_store.pipeline_summary = lambda **kw: {"$axf": "pipeline-summary@1", "total": 3, "counts": {"queued": 1, "landed": 2}, "queued": {"id": "alpha"}, "queuedAll": [{"id": "alpha"}], "running": []}
+    data_store.pipeline_build_status = lambda bid: {"$axf": "pipeline-build@1", "id": bid, "status": "pending", "stop": {"kind": "hold"}, "steps": {"total": 2, "done": 1}} if bid == "alpha" else None
+    try:
+        r = srv.pipeline_summary()
+        check(r["queued"]["id"] == "alpha" and r["views"] == {"sent": 1, "landed": 2, "pending": 0} and len(_calls) == _before, "GET /pipeline/summary: the summary query plus the views' counts, no CLI run")
+        check(srv.pipeline_build("alpha")["stop"] == {"kind": "hold"} and len(_calls) == _before, "GET /pipeline/build/alpha: its status row with the standing stop")
+        for bid, want in (("beta", 404), ("../x", 400)):
+            try:
+                srv.pipeline_build(bid)
+                code = 200
+            except srv.HTTPException as e:
+                code = e.status_code
+            check(code == want, f"GET /pipeline/build/{bid}: {want}")
+
+        def _down(**kw):  # noqa: ANN003
+            raise data_store.DataStoreError("unavailable", "axf-data is down", 503)
+        data_store.pipeline_summary = _down
+        try:
+            srv.pipeline_summary()
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == 503, "the database down: 503, never a stale answer")
+    finally:
+        data_store.pipeline_summary, data_store.pipeline_build_status = _real_sum, _real_row
+    # every command the manifest lists for the pipeline's state and moves names a mounted route
+    manifest = json.loads((HERE / "plugin.json").read_text())
+    by_id = {c["id"]: c for c in manifest["commands"]["items"]}
+    for cid, want in (("pipeline-summary", "GET /pipeline/summary"), ("pipeline-build", "GET /pipeline/build/{build}"), ("pipeline-queue", "POST /pipeline/queue"), ("pipeline-unqueue", "POST /pipeline/unqueue"),
+                      ("pipeline-hold", "POST /pipeline/hold"), ("pipeline-cancel", "POST /pipeline/cancel"), ("pipeline-release", "POST /pipeline/release"), ("pipeline-build-action", "POST /pipeline/action")):
+        c = by_id.get(cid) or {}
+        method, path = want.split(" ", 1)
+        check(c.get("route") == want and path in routes and method in routes[path].methods, f"command {cid} → {want}")
+    check(by_id["pipeline-summary"].get("readOnly") is True and by_id["pipeline-build"].get("readOnly") is True, "the two reads are read-only (axHub runs them without a veto)")
+    check("cancel" in by_id["pipeline-build-action"]["input"]["properties"]["action"]["enum"], "cancel is a build action on the bulk command too")
+    # the deep link: console_show "build-orchestrator/sent" (console-focus@1) opens the orchestrator on that view
+    focus = plugin_services.get("console-focus@1")
+    for path, view in (("build-orchestrator/sent", "sent"), ("Build orchestrator landed", "landed"), ("orchestrator: pending", "pending"), ("view:sent", "sent"), ("builds/landed view", "landed"), ("build-orchestrator/view=sent", "sent")):
+        hit = focus.resolve(path)
+        check(hit == {"screen": "build-orchestrator", "focus": view, "explicit": True, "kind": "view"}, f'console_show "{path}" → the {view} view')
+    check(focus.view("build-orchestrator/settings") == "" and focus.view("sent") == "" and focus.resolve("build:alpha") == {"screen": "build-orchestrator", "focus": "alpha", "explicit": True}, "anything else is no view; build:<id> still opens the build")
     # ---- fill every slot (Nov 13 2026): GET /pipeline/fill, POST /pipeline/fill/run, steps/:step/deps, fill settings
     srv.pipeline_fill()
     check(_calls[-1][2:4] == ["fill", "status"] and _calls[-1][-1] == "--json", "GET /pipeline/fill runs pipeline.mjs fill status")

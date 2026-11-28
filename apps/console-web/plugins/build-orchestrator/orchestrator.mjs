@@ -17,6 +17,20 @@
  *                                     note <id> <text> · rename <id> <title> · rename-step <id> <stepId> <title>
  *                                     archive|hide|unhide|remove <id>
  *   … act --json '{"action":…}'       any change from orchestrator-core.mjs apply()
+ *   … act queue|hold|cancel|unqueue|release <id>… [--why w]
+ *                                     Brett's queue moves (build-pipeline@1, the single-Queued contract): queue = Pending →
+ *                                     the Queue (refused while another build holds it); hold / cancel / unqueue = a stop:
+ *                                     the build rests in Pending with `pipeline.stop` on its record and nothing brings it
+ *                                     back (cancel also ends its tmux sessions and frees its agent slots); release lifts a
+ *                                     stop. The same road as REST POST /pipeline/<queue|hold|cancel|unqueue|release>, the
+ *                                     MCP plugin commands, `axf pipeline …` and voice. Several ids at once: one refused
+ *                                     build never stops the others.
+ *   … summary [build]                 pipeline-summary@1 (counts by status, the queued build, running builds), or one
+ *                                     build's status row: read from the builds store's rows, never a status file
+ *
+ * Stops stick (Nov 28 2026): every change made here passes build-pipeline@1 keepStop(). A change that does not speak
+ * for Brett (a session ticking a step, the dispatcher, a watchdog) never moves a held, cancelled or unqueued build out
+ * of Pending or drops its stop: the rest of the change is kept, the stop is put back, and the log says so.
  *   … request-upgrade <id> <phase>    a session reached a model UPGRADE: file the request and print the axHub approval
  *                                     to ask for (Brett approves; nobody else can)
  *
@@ -54,8 +68,12 @@ function storeBlocks(b) { try { return BR.briefBlocks(BR.load().store, { id: b.i
 
 loadUpgradePolicy(); // Fable upgrades need my approval (owner-only Claude setting, default off; Brett, Nov 4 2026)
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
-import { storeFile, withStore, loadStore } from '../../../../framework/cli/builds-store.mjs';
+import * as store from '../../../../framework/cli/builds-store.mjs';
 import { absorbOrchestrator, projectOrchestrator } from '../../../../framework/plan/builds-store-core.mjs';
+import * as BP from '../../../../framework/core/build-pipeline.mjs';
+import { FLOW as P2_FLOW } from '../../../../framework/core/pipeline-status.mjs';
+
+const { storeFile, withStore, loadStore } = store;
 
 const legacy = () => process.env.AXF_ORCH_FILE || '';
 const profile = () => activeProfile().id;
@@ -81,7 +99,144 @@ export function save(state, by = 'orchestrator') {
   const f = legacy();
   if (f) { mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(state, null, 1)}\n`); renameSync(tmp, f); return; }
   const p = profile();
-  withStore((s) => absorbOrchestrator(s, p, state, { by }), { by, action: 'orchestrator' });
+  withStore((s) => { const stops = stopsOf(s.builds); return keepStops(stops, absorbOrchestrator(s, p, state, { by }), { by }).store; }, { by, action: 'orchestrator' });
+}
+
+// ------------------------------------------------------------------ Brett's stops stick (build-pipeline@1)
+
+/** Brett's queue moves, each a build-pipeline@1 transition: queue, the three stops, and release. */
+export const QUEUE_MOVES = Object.freeze(['queue', 'hold', 'cancel', 'unqueue', 'release']);
+/** Does this actor speak for Brett? His verified approval (AXF_APPROVER), or an owner actor of build-pipeline@1. */
+const speaksForBrett = (by, change) => !!change?.approver || (typeof BP.isOwnerActor === 'function' && BP.isOwnerActor(by));
+/** A Pipeline 2.0 build keeps its own contract (pipeline-2@1, pipeline2.mjs actBuild): never the builds@1 Queue. */
+const isP2 = (b) => !!b && b.flow === P2_FLOW;
+/** The builds standing under a stop, as stored now: id → a copy of the record (what keepStops() puts back). */
+export function stopsOf(builds) {
+  const m = new Map();
+  if (typeof BP.isStopped !== 'function') return m;
+  for (const b of builds ?? []) if (b && !isP2(b) && BP.isStopped(b)) m.set(b.id, JSON.parse(JSON.stringify(b)));
+  return m;
+}
+/**
+ * The gate every write of this CLI passes: `stops` = stopsOf() before the change, `next` = the store (or the
+ * orchestrator@1 state) about to be saved. A writer that does not speak for Brett never undoes a stop: status, the stop
+ * record and the cleared launch fields come back (keepStop), everything else it wrote is kept. When Brett himself moves
+ * a stopped build to another status (archive, a status set by hand), the stop is lifted with it, so no build is left
+ * stopped and queued at once. { store, kept: [why…] }.
+ */
+export function keepStops(stops, next, { by = '', owner = false } = {}) {
+  const kept = [];
+  if (!stops.size) return { store: next, kept };
+  const builds = next.builds.map((b) => {
+    const prev = stops.get(b?.id);
+    if (!prev) return b;
+    if (owner) {
+      if (b.status === prev.status || !b.pipeline) return b;
+      const { stop: _stop, ...pipeline } = b.pipeline;
+      return { ...b, pipeline: { ...pipeline, heldAt: '', heldBy: '', heldWhy: '' } };
+    }
+    const r = BP.keepStop(prev, b, { by });
+    if (r.kept) kept.push(r.why);
+    return r.build;
+  });
+  return { store: { ...next, builds }, kept };
+}
+
+const refusal = (msg) => Object.assign(new Error(msg), { code: 'refused' });
+const stopOf = (b) => (typeof BP.stopOf === 'function' ? BP.stopOf(b) : null);
+
+/**
+ * End what a cancelled build was running (build-pipeline@1 cancel → `kill`): its tmux sessions (the one on its record
+ * and every `axf-<build>` session) and its agent-slot entries (running ones released, waiting ones cancelled).
+ * Idempotent: a session or slot already gone is not an error. { sessions: [killed], slots: [freed], gone: bool }.
+ */
+export async function endSessions(id, kill = null, { env = process.env, steps = [] } = {}) {
+  const { spawnSync } = await import('node:child_process');
+  const sessions = []; const slots = [];
+  const cli = fileURLToPath(new URL('../../../../framework/cli/agent-slots.mjs', import.meta.url));
+  const st = spawnSync(process.execPath, [cli, 'status', '--json'], { encoding: 'utf8', env, timeout: 30_000 });
+  let state = null; try { state = JSON.parse(st.stdout || 'null'); } catch { /* no slots store here */ }
+  const mine = (e) => e && typeof e === 'object' && e.id && (e.build === id || (!!kill?.session && e.session === kill.session));
+  const running = (Array.isArray(state?.running) ? state.running : []).filter(mine);
+  const waiting = (Array.isArray(state?.queue) ? state.queue : []).filter(mine);
+  if (env.AXF_SLOTS_TMUX !== 'off') {
+    // deploy/claude-headless.sh names a session axf-<slug> (the name cut to 48), a step's axf-<slug>--<step>, and adds
+    // -HHMMSS when the name is taken; the slot entries name theirs
+    const slug = (n) => String(n).replace(/[^A-Za-z0-9._-]/g, '-').replace(/^-+|-+$/g, '');
+    const want = new Set([kill?.session, ...running.map((e) => e.session), `axf-${slug(id).slice(0, 48)}`,
+      ...steps.map((x) => `axf-${slug(id).slice(0, Math.max(1, 46 - String(x).length))}--${x}`)].filter(Boolean));
+    const ls = spawnSync('tmux', ['list-sessions', '-F', '#{session_name}'], { encoding: 'utf8' });
+    const names = ls.status === 0 ? ls.stdout.split('\n').map((x) => x.trim()).filter(Boolean) : [];
+    for (const n of names.filter((x) => want.has(x) || want.has(x.replace(/-\d{6}$/, '')))) if (spawnSync('tmux', ['kill-session', '-t', `=${n}`], { encoding: 'utf8' }).status === 0) sessions.push(n);
+  }
+  for (const e of running) if (spawnSync(process.execPath, [cli, 'release', String(e.id)], { encoding: 'utf8', env, timeout: 30_000 }).status === 0) slots.push(String(e.id));
+  for (const e of waiting) if (spawnSync(process.execPath, [cli, 'cancel', String(e.id)], { encoding: 'utf8', env, timeout: 30_000 }).status === 0) slots.push(String(e.id));
+  return { sessions, slots, gone: !sessions.length && !slots.length };
+}
+
+/**
+ * One of Brett's queue moves on one build or many (QUEUE_MOVES), each through its build-pipeline@1 transition under the
+ * store lock, so the record carries the stop every other writer respects:
+ *   queue     Pending → the Queue; refused while another build holds it (the holder is named); lifts a stop
+ *   hold      rests in Pending with the hold on its record, keeps its place in line
+ *   unqueue   Queue → Pending, and it stays there
+ *   cancel    rests in Pending, its step claims dropped; its sessions are ended and its slots freed (endSessions)
+ *   release   lifts a stop: back in line in Pending
+ * The next Pending build moves up at the dispatcher's next tick (promotion is its job). A Pipeline 2.0 build takes
+ * pipeline2.mjs actBuild instead (its own contract). Each id is checked on its own:
+ * { action, done: [{ id, status, tab, stop, why?, ended? }], refused: [{ id, error }] }.
+ */
+export async function queueMove(action, ids, { by = process.env.AXF_ACTOR || 'console', why = '' } = {}) {
+  if (!QUEUE_MOVES.includes(action)) throw refusal(`action is one of ${QUEUE_MOVES.join(', ')}`);
+  if (typeof BP[action] !== 'function') throw refusal(`build-pipeline@1 here has no ${action} transition (framework/core/build-pipeline.mjs is older than the single-Queued contract)`);
+  const list = [...new Set((Array.isArray(ids) ? ids : [ids]).map((x) => String(x ?? '').trim()).filter(Boolean))];
+  if (!list.length) throw refusal('no build id given');
+  const done = []; const refused = [];
+  for (const given of list) {
+    try {
+      const id = legacy() ? given : resolveId(loadStore(), given);
+      const cur = legacy() ? load().builds.find((b) => b.id === id) : loadStore().builds.find((b) => b.id === id);
+      if (!cur || cur.deleted) throw new Error(`no build "${given}"`);
+      if (isP2(cur)) {
+        if (action === 'unqueue') throw new Error(`${id} is a Pipeline 2.0 build: it has no Queue to leave (hold or cancel it instead)`);
+        const r = (await import('./pipeline2.mjs')).actBuild(id, action, { by, why });
+        const b = loadStore().builds.find((x) => x.id === id) ?? cur;
+        done.push({ id, status: b.status, tab: BP.tabOf(b), stop: null, ...(r?.say ? { say: r.say } : {}) });
+        continue;
+      }
+      let res = null;
+      const move = (builds) => {
+        res = BP[action](builds, id, { by, why, promote: false });
+        if (!res.ok) throw new Error(res.why || `${action} refused`);
+        const at = new Date().toISOString();
+        const text = res.build?.pipeline?.note || `${action} (${by})`;
+        return res.changes.length ? res.builds.map((b) => (b.id === id ? { ...b, notes: [...(b.notes ?? []), { text, at }] } : b)) : res.builds;
+      };
+      if (legacy()) { const s = load(); save({ ...s, builds: move(s.builds) }); }
+      else withStore((s) => ({ ...s, builds: move(s.builds) }), { by, action: `orchestrator:${action}`, note: id });
+      const b = res.build ?? cur;
+      const ended = action === 'cancel' ? await endSessions(id, res.kill, { steps: (cur.steps ?? []).map((x) => x.id).filter(Boolean) }) : null; // also when already cancelled: a session that outlived it is ended
+      done.push({ id, status: b.status, tab: BP.tabOf(b), stop: stopOf(b), ...(res.why ? { why: res.why } : {}), ...(res.kill ? { kill: res.kill } : {}), ...(ended ? { ended } : {}) });
+    } catch (e) { refused.push({ id: given, error: e.message }); }
+  }
+  return { action, done, refused };
+}
+
+/** pipeline-summary@1 (or one build's status row) for the CLI: the builds store's row calls, else the same from the store read. */
+export function summary(id = '') {
+  const row = (b) => (typeof store.summaryRow === 'function' ? store.summaryRow(b) : { id: b.id, title: b.title, status: b.status, priority: b.priority ?? '', pr: b.pr ?? '', branch: b.branch ?? '', updatedAt: b.updatedAt ?? '' });
+  if (id) {
+    const real = resolveId(loadStore(), id);
+    const b = typeof store.readBuild === 'function' ? store.readBuild(real) : loadStore().builds.find((x) => x.id === real);
+    if (!b || b.deleted) throw new Error(`no build "${id}"`);
+    const steps = b.steps ?? [];
+    return { $axf: 'pipeline-build@1', ...row(b), stop: stopOf(b), steps: { total: steps.length, done: steps.filter((x) => x.done).length } };
+  }
+  if (typeof store.pipelineSummary === 'function') return store.pipelineSummary();
+  const live = loadStore().builds.filter((b) => !b.deleted);
+  const counts = {}; for (const b of live) counts[b.status] = (counts[b.status] ?? 0) + 1;
+  const queued = live.filter((b) => b.status === 'queued').map(row);
+  return { $axf: 'pipeline-summary@1', total: live.length, counts, queued: queued[0] ?? null, queuedAll: queued, running: live.filter((b) => BP.isLive(b)).map(row) };
 }
 /** One change: applied to the profile's view of the store and taken back into it, under the store lock (versioned). */
 /** A build's id from its id or alias (build-id@1: a build made before ids were capped answers to a short alias too). */
@@ -94,9 +249,18 @@ export function act(change, by = process.env.AXF_ACTOR || 'orchestrator') {
   change = withApprover(change);
   if (!legacy() && change?.id && change.action !== 'add') change = { ...change, id: resolveId(loadStore(), change.id) };
   if (change.approver) by = `${change.approver.by} (${change.approver.via})`;
-  if (legacy()) { const r = core.apply(load(), change); save(r.state); return r; }
-  let r;
-  const w = withStore((s) => { const p = change?.action === 'add' ? profile() : profileFor(s, change?.id); r = core.apply(projectOrchestrator(s, p), change); return absorbOrchestrator(s, p, r.state, { by }); }, { by, action: `orchestrator:${change?.action}`, note: change?.id ?? '' });
+  const owner = speaksForBrett(by, change);
+  if (legacy()) { const before = load(); const stops = stopsOf(before.builds); const r = core.apply(before, change); const k = keepStops(stops, r.state, { by, owner }); r.state = k.store; r.log.push(...k.kept); save(r.state); return r; }
+  let r; let kept = [];
+  const w = withStore((s) => {
+    const p = change?.action === 'add' ? profile() : profileFor(s, change?.id);
+    const stops = stopsOf(s.builds);
+    r = core.apply(projectOrchestrator(s, p), change);
+    const k = keepStops(stops, absorbOrchestrator(s, p, r.state, { by }), { by, owner });
+    kept = k.kept;
+    return k.store;
+  }, { by, action: `orchestrator:${change?.action}`, note: change?.id ?? '' });
+  if (kept.length) { r.log.push(...kept); r.stopsKept = kept; }
   // pipeline-2@1: a change the status contract refuses is not kept at all for that build, so it is an error here, never a silent "done"
   const no = (w?.flowRefused ?? []).filter((x) => !change?.id || x.id === change.id);
   if (no.length) throw Object.assign(new Error(`refused, nothing was changed: ${[...new Set(no.map((x) => x.why))].join('; ')}`), { code: 'refused', refused: no });
@@ -165,6 +329,11 @@ async function main(argv) {
   const rest = !legacy() && ['next', 'brief', 'request-upgrade'].includes(cmd) && given[0] ? [resolveId(loadStore(), given[0]), ...given.slice(1)] : given;
   const s = load(['next', 'brief'].includes(cmd) ? rest[0] : '');
   if (cmd === 'where') return out({ ok: true, file: trackerFile() }, trackerFile());
+  if (cmd === 'summary') {
+    const v = summary(rest[0] && !rest[0].startsWith('--') ? rest[0] : '');
+    return out({ ok: true, ...v }, v.$axf === 'pipeline-build@1' ? `${v.id}: ${v.status}${v.stop ? ` · ${v.stop.kind}${v.stop.by ? ` by ${v.stop.by}` : ''}` : ''} · ${v.steps.done}/${v.steps.total} steps`
+      : `${v.total} builds · ${Object.entries(v.counts).map(([k, n]) => `${k || '(none)'} ${n}`).join(' · ')}\nqueued: ${v.queued ? v.queued.id : 'none'}\nrunning: ${v.running.map((x) => `${x.id}${x.slot ? ` (slot ${x.slot}${x.account ? `, ${x.account}` : ''})` : ''}`).join(', ') || 'none'}`);
+  }
   // done-means-merged@1: the same calls as REST GET attempts/<id>, POST retry/<id>, the MCP commands and voice
   if (cmd === 'attempts' || cmd === 'retry') {
     const id = rest[0]; if (!id) throw new Error(`${cmd} <build>${cmd === 'retry' ? ' [strategy] [--why "…"]' : ''}`);
@@ -201,6 +370,14 @@ async function main(argv) {
   }
   if (cmd === 'act') {
     let change;
+    if (QUEUE_MOVES.includes(rest[0])) {
+      const wi = rest.indexOf('--why'); const bi = rest.indexOf('--by');
+      const ids = rest.slice(1).filter((a, i) => !a.startsWith('--') && !['--why', '--by'].includes(rest[i]));
+      const r = await queueMove(rest[0], ids, { by: (bi >= 0 && rest[bi + 1]) || process.env.AXF_ACTOR || 'cli', why: wi >= 0 ? rest[wi + 1] || '' : '' });
+      if (!r.done.length) throw refusal(r.refused.map((x) => x.error).join('; ') || `${rest[0]}: nothing done`);
+      const one = r.done.length === 1 ? { id: r.done[0].id, status: r.done[0].status, ...(r.done[0].say ? { say: r.done[0].say } : {}) } : {};
+      return out({ ok: true, ...one, ...r }, [...r.done.map((d) => `${d.id} → ${d.status}${d.stop ? ` (${d.stop.kind})` : ''}${d.why || d.say ? `: ${d.why || d.say}` : ''}${d.ended ? ` · ended ${d.ended.sessions.length} session(s), freed ${d.ended.slots.length} slot(s)` : ''}`), ...r.refused.map((x) => `refused ${x.id}: ${x.error}`)].join('\n'));
+    }
     if (rest[0]?.startsWith('{')) change = JSON.parse(rest[0]);
     else {
       const [action, id, a, b] = rest;

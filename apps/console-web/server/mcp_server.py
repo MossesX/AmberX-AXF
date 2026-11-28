@@ -260,6 +260,29 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
                 "builds": {"profile": b.get("profile"), "total": b.get("total", 0), "active": b.get("active", []), "running": b.get("running", [])}}
 
     @mcp.tool(annotations=READ)
+    async def pipeline_status(build: str = "") -> dict[str, Any]:
+        """The build pipeline's status (pipeline-summary@1): how many builds are in each status, the one queued build
+        (next to start) and the builds running now with their slot and account. With `build`: that one build's status
+        row, a standing hold / cancel / unqueue and its step counts. Read from the builds store's rows in the database
+        (one summary query, or one row), never a status file; the same answer as the pipeline plugin's
+        pipeline-summary and pipeline-build commands."""
+        import data_store  # server/data_store.py: the summary query and one row, never the whole store or a status file
+
+        def read() -> dict[str, Any]:
+            if not build:
+                return data_store.pipeline_summary()
+            if not re.fullmatch(r"[a-z0-9][a-z0-9._-]{0,79}", build):
+                raise ToolError("build is a build id")
+            row = data_store.pipeline_build_status(build)
+            if row is None:
+                raise ToolError(f"no build {build}")
+            return row
+        try:
+            return await anyio.to_thread.run_sync(read)
+        except data_store.DataStoreError as e:
+            raise ToolError(f"the builds store can't be read: {e}") from e
+
+    @mcp.tool(annotations=READ)
     async def build_next() -> dict[str, Any]:
         """The next step to build: the first queued step whose dependencies are all built, with the model to use,
         its linked features, acceptance criteria and dependencies. Also lists steps flagged for rework."""
