@@ -1,0 +1,14 @@
+/* Build profiles cleanup helper. Theme tokens only, axp-build-profiles-cleanup prefix; controls are framework components (layout only here). */
+.axp-build-profiles-cleanup { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); width: 100%; min-width: min(calc(var(--fx-font-size) * 30), 86vw); max-height: 74vh; overflow-y: auto; color: var(--fx-text) }
+.axp-build-profiles-cleanup__summary { margin: 0 }
+.axp-build-profiles-cleanup__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.axp-build-profiles-cleanup__group { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.axp-build-profiles-cleanup__group-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--fx-dens-gap-md); margin: 0; font-size: var(--fx-type-scale-sm); font-weight: 600 }
+.axp-build-profiles-cleanup__hint { margin: 0 }
+.axp-build-profiles-cleanup__list { list-style: none; margin: 0; padding: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.axp-build-profiles-cleanup__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg) }
+.axp-build-profiles-cleanup__row + .axp-build-profiles-cleanup__row { border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-build-profiles-cleanup__what { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); flex: 1 1 calc(var(--fx-font-size) * 14); min-width: 0 }
+.axp-build-profiles-cleanup__title { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); font-weight: 600; overflow-wrap: anywhere }
+.axp-build-profiles-cleanup__line { margin: 0; overflow-wrap: anywhere }
+.axp-build-profiles-cleanup__notice { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }

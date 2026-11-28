@@ -12,12 +12,407 @@
   ],
   "provides": [
     "dialog:build-profiles",
+    "dialog:build-profiles-cleanup",
     "settings-tab:build-profiles"
   ],
   "optional": [],
   "scopes": [],
   "enabledByDefault": true,
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "id": "list",
+        "route": "GET /list",
+        "title": "List build profiles",
+        "description": "Every build profile with its counts, the saved pick (active) and the one in force (effective).",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        },
+        "output": "{ active, effective, profiles: [{ id, name, description, base, catalog, counts, files }] }"
+      },
+      {
+        "id": "get",
+        "route": "GET /get",
+        "title": "Get a build profile",
+        "description": "One build profile: its details, counts and files, and whether it is the active one.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "the profile"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ profile, listed, active, effective }"
+      },
+      {
+        "id": "create",
+        "route": "POST /create",
+        "title": "Create a build profile",
+        "description": "Create a build profile: empty, or a copy of another one (copyFrom).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "the profile's name",
+              "maxLength": 80
+            },
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "its id (default: made from the name)"
+            },
+            "description": {
+              "type": "string",
+              "description": "what it is for",
+              "maxLength": 600
+            },
+            "copyFrom": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "start as a copy of this profile"
+            },
+            "catalog": {
+              "type": "boolean",
+              "description": "plan rebuilds import the framework's seed and feature catalog"
+            },
+            "select": {
+              "type": "boolean",
+              "description": "make it the active profile"
+            },
+            "colour": {
+              "type": "string",
+              "description": "banner chip colour: an asset token name"
+            },
+            "icon": {
+              "type": "string",
+              "description": "banner chip icon: an icon asset name"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "name"
+          ]
+        }
+      },
+      {
+        "id": "update",
+        "route": "POST /update",
+        "title": "Edit a build profile",
+        "description": "Change a build profile's name, description, catalog switch, colour or icon.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "the profile"
+            },
+            "name": {
+              "type": "string",
+              "description": "new name",
+              "maxLength": 80
+            },
+            "description": {
+              "type": "string",
+              "description": "new description",
+              "maxLength": 600
+            },
+            "catalog": {
+              "type": "boolean",
+              "description": "plan rebuilds import the framework's seed and feature catalog"
+            },
+            "colour": {
+              "type": "string",
+              "description": "banner chip colour: an asset token name"
+            },
+            "icon": {
+              "type": "string",
+              "description": "banner chip icon: an icon asset name"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "select",
+        "route": "POST /select",
+        "title": "Switch build profile",
+        "description": "Make a build profile the active one, for every device and session.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "the profile to switch to"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "duplicate",
+        "route": "POST /duplicate",
+        "title": "Duplicate a build profile",
+        "description": "Copy a build profile and its work data into a new profile.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "the profile to copy"
+            },
+            "name": {
+              "type": "string",
+              "description": "the copy's name (default: Copy of ...)",
+              "maxLength": 80
+            },
+            "newId": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "the copy's id (default: made from the name)"
+            },
+            "description": {
+              "type": "string",
+              "description": "the copy's description",
+              "maxLength": 600
+            },
+            "select": {
+              "type": "boolean",
+              "description": "make the copy the active profile"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "merge",
+        "route": "POST /merge",
+        "title": "Merge build profiles",
+        "description": "Merge one build profile into another: its builds move to the target.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "the profile to merge from"
+            },
+            "into": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "the profile that receives its builds"
+            },
+            "removeSource": {
+              "type": "boolean",
+              "description": "take the emptied profile off the list afterwards (its data stays)"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "from",
+            "into"
+          ]
+        }
+      },
+      {
+        "id": "move-builds",
+        "route": "POST /move-builds",
+        "title": "Move builds to a profile",
+        "description": "Move builds to another build profile.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "builds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1,
+              "maxItems": 500,
+              "description": "build ids"
+            },
+            "to": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "the profile they move to"
+            },
+            "from": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "only move builds that are in this profile"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "builds",
+            "to"
+          ]
+        }
+      },
+      {
+        "id": "archive",
+        "route": "POST /archive",
+        "title": "Archive a build profile",
+        "description": "Archive a build profile (hidden from the pickers, nothing deleted); archived = false brings it back.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "the profile"
+            },
+            "archived": {
+              "type": "boolean",
+              "default": true,
+              "description": "false = unarchive"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "remove",
+        "route": "POST /unlist",
+        "title": "Remove a build profile",
+        "description": "Take a build profile off the list. Its data stays; restore brings it back. The base and the active profile can't go.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "the profile"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "restore",
+        "route": "POST /relist",
+        "title": "Restore a build profile",
+        "description": "Put a removed build profile back on the list with its data.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "the removed profile"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "purge",
+        "route": "POST /purge",
+        "title": "Delete a profile's data",
+        "description": "Delete a removed build profile's data for good. Owner only; can't be undone.",
+        "destructive": true,
+        "confirm": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "the removed profile"
+            },
+            "confirm": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "the profile id again"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "confirm"
+          ]
+        }
+      },
+      {
+        "id": "cleanup",
+        "route": "GET /cleanup",
+        "title": "Cleanup scan",
+        "description": "Scan for archived builds that are really complete, and builds in a profile that no longer exists. Changes nothing.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "only this profile"
+            }
+          },
+          "additionalProperties": false
+        },
+        "output": "{ findings: [{ kind, id, title, profiles, status, evidence, fixable, to, why }], counts, fixable }"
+      },
+      {
+        "id": "cleanup-fix",
+        "route": "POST /cleanup",
+        "title": "Cleanup fix",
+        "description": "Fix what the cleanup scan found: archived builds that are really finished get the status they earned (complete or landed); builds in a profile that no longer exists move to the base profile. Nothing is deleted.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "only this profile"
+            },
+            "builds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 500,
+              "description": "only these builds (default: everything the scan found)"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    ]
+  },
   "builtWith": {
     "model": "opus",
     "builtAt": "2026-10-27"
@@ -29,7 +424,9 @@
     "dataDir": ".axf-console/plugins/build-profiles",
     "env": [],
     "mentions": [
-      "CLAUDE.md", "_claude/memory/STATUS.md"
+      ".github/workflows/android.yml",
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md"
     ]
   },
   "opens": "main"
