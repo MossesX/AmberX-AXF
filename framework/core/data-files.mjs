@@ -19,6 +19,9 @@
  *             process per call). axf-data unreachable: reads fall back to the local read-only copy (logged), writes throw
  *   rollback  async reads from axf-data; writes refuse with `read_only`
  *
+ * Table-backed records (the builds store) are also reached row by row: itemSync / summarySync below read one build or
+ * the pipeline summary, and a status change is a data-patch@1 of that build's row. No status lives in a file.
+ *
  * axf-data: AXF_DATA_URL + AXF_DATA_TOKEN (the env files deploy/install-data.sh writes), or on the VPS host the
  * `conf/env/host.env` file it writes for processes outside the containers (remoteConfig). Tests pass `remote`.
  * Modes are per namespace with key-level overrides (data-store-mode@1 `keys`): the builds store and its journal moved
@@ -403,6 +406,19 @@ export function callSync(req) {
   if (!r.ok) throw new DataStoreError(r.code, r.message, { rev: r.rev, etag: r.etag });
   return r.result;
 }
+
+/**
+ * One row of a table-backed record, and the summary computed from its rows, synchronously (the builds store: one build
+ * by its id, the pipeline's counts). Neither reads the document, so a status read or write never moves the whole record.
+ *   itemSync(key, id)   data-item@1 { rev, head, item }, or null when the record has no such row
+ *   summarySync(key)    pipeline-summary@1 { counts, total, queued, queuedAll, running, rev, at }
+ * Both answer { ok, result }. `ok: false`: this axf-data is from before the row calls (it answers `invalid_key` for the
+ * action; the service is deployed on its own schedule), and the caller reads the record instead. Any other failure throws.
+ * The write of one row is `callSync({ op: 'patch', … })` (data-patch@1 with the row's ifRev).
+ */
+const rowSync = (req) => { try { return { ok: true, result: callSync(req) }; } catch (e) { if (e instanceof DataStoreError && e.code === 'invalid_key') return { ok: false, result: null }; throw e; } };
+export function itemSync(key, id, { list } = {}) { return rowSync({ op: 'item', key, id: String(id ?? ''), ...(list ? { list } : {}) }); }
+export function summarySync(key, { list } = {}) { return rowSync({ op: 'summary', key, ...(list ? { list } : {}) }); }
 
 /**
  * SQLite files kept as one blob (migration policy blob-sqlite: shipped-features/ledger.sqlite, chat-viewer/chats.db).

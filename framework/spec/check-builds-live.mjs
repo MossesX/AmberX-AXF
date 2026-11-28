@@ -278,7 +278,7 @@ async function main() {
   fetchA();
   check(mainStore().builds.find((b) => b.id === 'z')?.profiles.includes('hub-only'), 'the hub-only build itself reached main in the store');
   check(gitTry(A, 'cat-file', '-e', 'origin/main:_claude/builds/profiles/hub-only/orchestrator.json').status !== 0, 'no repo export on main for a profile the repo registry does not list');
-  check(existsSync(join(hub, 'framework/plan/profiles/hub-only/_claude/builds/orchestrator.json')), 'the hub-only export lives in the profile\'s shared-data folder');
+  check(!existsSync(join(hub, 'framework/plan/profiles/hub-only/_claude/builds/orchestrator.json')), 'no status file in the profile\'s shared-data folder either: status lives in the store only (Nov 25 2026)');
   check(!existsSync(leaked), 'a repo export of a hub-only profile from an older version is swept');
   check(!existsSync(join(ROOT, '_claude/builds/profiles/hub-only')), 'nothing was written into the real repo');
 

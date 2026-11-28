@@ -42,7 +42,7 @@ from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
 from journal import KEEP, KEEP_LARGE, LARGE, Journal
-from store import (ETAG, LIMITS, NAMESPACES, ZERO16, Caller, DataError, _frame, _matches, canonical, etag_of, journal_line,
+from store import (ETAG, LIMITS, NAMESPACES, ZERO16, Caller, DataError, _frame, _matches, canonical, etag_of, head_scalars, journal_line,
                    manifest_of, norm_if_match, now_iso, parse_namespace, sha)
 import tables as T
 
@@ -503,7 +503,8 @@ class PgStore:
         return cur, T.by_name(cur.get('table_name') or '')
 
     def item(self, ns: str, path: str, key: str, lkey: str = 'builds') -> dict:
-        """data-item@1: one row of a keyed list by its key (one build), read from its own rows, never the document."""
+        """data-item@1: one row of a keyed list by its key (one build), read from its own rows, never the document.
+        `head` = the record's scalar head fields (rev, updatedAt, storeVersion…), what a writer of that one row needs."""
         cur, t = self._doc_table(ns, path)
         try:
             T.row_query(t, lkey, key)
@@ -511,9 +512,12 @@ class PgStore:
             raise DataError('invalid_body', str(e), ns=ns, path=path) from e
         with self.tx() as tcur:
             item = T.list_row(tcur, t, lkey, key)
+            tcur.execute('SELECT head FROM store_heads WHERE ns=%s AND path=%s', (ns, path))
+            hrow = tcur.fetchone()
+            head = head_scalars(hrow['head'] if hrow else None)
         if item is None:
             raise DataError('not_found', f'{ns}/{path}: no {lkey} item "{key}"', ns=ns, path=path)
-        return {'$axf': 'data-item@1', 'ns': ns, 'path': path, 'list': lkey, 'key': key, 'rev': cur['rev'], 'item': item}
+        return {'$axf': 'data-item@1', 'ns': ns, 'path': path, 'list': lkey, 'key': key, 'rev': cur['rev'], 'head': head, 'item': item}
 
     def summary(self, ns: str, path: str, lkey: str = 'builds') -> dict:
         """pipeline-summary@1: counts by status, the queued build, the running builds with slot and account, in SQL."""

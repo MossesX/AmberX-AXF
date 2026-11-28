@@ -188,6 +188,12 @@ def _frame(r: dict) -> dict:
             'at': r['at'], 'by': r['by'], 'size': r['size'], 'contentType': r['content_type'], 'deleted': bool(r['deleted'])}
 
 
+def head_scalars(head: Any) -> dict:
+    """The head fields a writer of one row needs beside its row (rev, updatedAt, storeVersion, counters): the scalar
+    ones only, so the maps and lists of the head (meta, rules, drafts, the builds) never ride along with one build."""
+    return {k: v for k, v in (head.items() if isinstance(head, dict) else []) if isinstance(v, (str, int, float, bool)) or v is None}
+
+
 class Store:
     def __init__(self, data_dir: str | os.PathLike, now=now_iso):
         self.dir = Path(data_dir)
@@ -377,10 +383,11 @@ class Store:
             T.row_query(t, lkey, key)
         except ValueError as e:
             raise DataError('invalid_body', str(e), ns=ns, path=path) from e
-        item = T.list_row_doc(json.loads(self.body_of(cur) or b'{}'), t, lkey, key)
+        doc = json.loads(self.body_of(cur) or b'{}')
+        item = T.list_row_doc(doc, t, lkey, key)
         if item is None:
             raise DataError('not_found', f'{ns}/{path}: no {lkey} item "{key}"', ns=ns, path=path)
-        return {'$axf': 'data-item@1', 'ns': ns, 'path': path, 'list': lkey, 'key': key, 'rev': cur['rev'], 'item': item}
+        return {'$axf': 'data-item@1', 'ns': ns, 'path': path, 'list': lkey, 'key': key, 'rev': cur['rev'], 'head': head_scalars(doc), 'item': item}
 
     def summary(self, ns: str, path: str, lkey: str = 'builds') -> dict:
         """pipeline-summary@1 on the SQLite engine: the document twin of pg.PgStore.summary."""

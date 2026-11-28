@@ -4,7 +4,7 @@
  * reach axf-data in cutover mode). framework/core/data-files.mjs `callSync()` runs this with the request on stdin and
  * reads one JSON answer from stdout:
  *
- *   { op: 'get' | 'put' | 'patch' | 'append' | 'read' | 'list' | 'delete' | 'health', key | ns, data?, body?, ifMatch?, create?, entries?, idem?, since?, prefix? }
+ *   { op: 'get' | 'put' | 'patch' | 'item' | 'summary' | 'append' | 'read' | 'list' | 'delete' | 'health', key | ns, data?, body?, ifMatch?, create?, entries?, idem?, since?, prefix? }
  *   → { ok: true, result } | { ok: false, code, message, rev?, etag? }
  *
  * The client is framework/core/data-store.mjs over httpBackend (AXF_DATA_URL, AXF_DATA_TOKEN), with its retries.
@@ -27,6 +27,8 @@ try {
     case 'put': result = await s.put(req.key, req.data && req.data.$bytes !== undefined ? new Uint8Array(Buffer.from(req.data.$bytes, 'base64')) : req.data, { ifMatch: req.ifMatch, create: !!req.create, force: !!req.force, contentType: req.contentType }); break;
     case 'delete': result = await s.delete(req.key, { ifMatch: req.ifMatch, force: !!req.force }); break;
     case 'patch': result = await s.patch(req.key, req.body); break;
+    case 'item': result = await s.item(req.key, req.id, { list: req.list }); break;
+    case 'summary': result = await s.summary(req.key, { list: req.list }); break;
     case 'health': result = await s.health(); break;
     case 'append': result = await s.append(req.key, req.entries, { idempotencyKey: req.idem }); break;
     case 'read': result = await s.read(req.key, { since: req.since, limit: req.limit }); break;

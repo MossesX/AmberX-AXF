@@ -79,6 +79,7 @@ def test_pipeline_summary():
         # one build by id: its row with steps and notes
         it = c.get('/v1/builds/store.json:item?key=c', headers=H()).json()
         assert it['$axf'] == 'data-item@1' and it['key'] == 'c' and it['item'] == json.loads(canonical(doc['builds'][2]))
+        assert it['head'] == {'$axf': 'builds@1', 'rev': 1}, 'the scalar head fields ride along, never meta or the lists'
         assert code(c.get('/v1/builds/store.json:item?key=nope', headers=H())) == 'not_found'
         assert code(c.get('/v1/builds/store.json:item', headers=H())) == 'invalid_body'
         # single-row update by id (ifRev of that build only): the summary follows, the other rows are untouched
