@@ -349,8 +349,9 @@ const mergeQueueMeta = (a, b) => ({
  * from `urgent` without a stored priority, `priority: 'P0'` so urgency stays a per-build field. Order: `from` in the
  * given order, each profile's own order kept. A build id seen twice (never in one store, since ids are unique, but
  * possible when merging exports) keeps both: the later one gets `-<oldprofile>`. Returns { store, report }.
+ * `note(from, into)` words the note each moved build gets (the manager's merge of two profiles).
  */
-export function mergeProfiles(store, from, into, { now = nowIso() } = {}) {
+export function mergeProfiles(store, from, into, { now = nowIso(), note = null } = {}) {
   const s = clone(store);
   const report = { into, from: [], moved: 0, renamed: [], shared: [] };
   let next = nextOrder(s, into);
@@ -368,7 +369,7 @@ export function mergeProfiles(store, from, into, { now = nowIso() } = {}) {
       b.order[into] = next++;
       if (!b.fromProfile) b.fromProfile = p;
       if (p === 'urgent' && !normPriority(b.priority)) b.priority = 'P0';
-      b.notes = [...(b.notes ?? []), { text: `Merged from build profile "${p}" into "${into}" (one profile for everything).`, at: now }];
+      b.notes = [...(b.notes ?? []), { text: note ? note(p, into) : `Merged from build profile "${p}" into "${into}" (one profile for everything).`, at: now }];
       report.moved++;
     }
   }
@@ -389,6 +390,218 @@ function foldInto(map, from, into, join = null) {
   for (const k of from) if (m[k] !== undefined) { acc = acc === undefined ? m[k] : join ? join(acc, m[k]) : acc; delete m[k]; }
   if (acc !== undefined) m[into] = acc;
   return m;
+}
+
+// ------------------------------------------------------------------ profile manager (build-profiles@1)
+/*
+ * What the Build profiles manager does to the store, pure (framework/cli/profiles.mjs does the registry, the files and
+ * the write): numbers per profile, builds moved or shared between profiles, a profile's data removed for good, and the
+ * cleanup scan. A build belongs to profiles through its `profiles` field, so none of these copies a record.
+ */
+const usd2 = (v) => Math.round((Number(v) || 0) * 100) / 100;
+const latest = (...xs) => xs.map((x) => str(x, 40)).filter(Boolean).sort().pop() ?? '';
+/** Statuses with nothing left to do, for the manager's counts (FINISHED + archived). */
+const AT_REST = [...FINISHED, 'archived'];
+/** The last time anything happened to a build: its own stamps, its steps', its notes'. */
+export function buildActivity(b) {
+  return latest(b?.updatedAt, b?.statusAt, b?.builtAt, b?.mergedAt, b?.createdAt, ...(b?.steps ?? []).flatMap((s) => [s?.doneAt, s?.updatedAt, s?.statusAt]), ...(b?.notes ?? []).map((n) => n?.at));
+}
+
+/**
+ * One profile's numbers for the manager grid. `spend` = { byBuild: { id: usd } } (session meters and shipped manifests,
+ * gathered by the caller); `perBuildUsd` = the per-build cap in force (0 = none).
+ *   builds / byStatus      builds on record (not deleted), by status
+ *   running, pending, complete, archived, attention   the grid's four counts + builds that need someone
+ *   pendingItems, queueSteps   what the Pending list and the build queue show for the profile
+ *   steps { total, done, left }   over builds not archived
+ *   cost { spentUsd, leftUsd, basis, budgetLeftUsd }   leftUsd is an estimate: open steps × the average spend per done
+ *       step (this profile's when it has both, else `rate` = the caller's store-wide average); null when there is no basis
+ *   lastActivity, firstCreated
+ */
+export function profileStats(store, profile, { spend = {}, perBuildUsd = 0, rate = null } = {}) {
+  const all = buildsOf(store, profile, { withDeleted: true });
+  const list = all.filter((b) => !b.deleted);
+  const byStatus = {}; for (const b of list) byStatus[b.status] = (byStatus[b.status] ?? 0) + 1;
+  const count = (...ss) => ss.reduce((n, s) => n + (byStatus[s] ?? 0), 0);
+  const open = list.filter((b) => !AT_REST.includes(b.status));
+  let total = 0; let done = 0; let spent = 0; let spentOnDone = 0; let doneWithSpend = 0; let budgetLeft = 0;
+  for (const b of list) {
+    const cost = Math.max(0, Number(spend.byBuild?.[b.id]) || 0);
+    spent += cost;
+    if (b.status === 'archived') continue;
+    const p = buildProgress(b); total += p.total; done += p.done;
+    if (cost && p.done) { spentOnDone += cost; doneWithSpend += p.done; }
+    if (perBuildUsd > 0 && !AT_REST.includes(b.status)) budgetLeft += Math.max(0, perBuildUsd - cost);
+  }
+  const left = open.reduce((n, b) => { const p = buildProgress(b); return n + (p.total - p.done); }, 0);
+  const own = doneWithSpend ? spentOnDone / doneWithSpend : null;
+  const per = own ?? (Number.isFinite(rate) && rate > 0 ? rate : null);
+  const queue = projectQueue(store, profile);
+  return {
+    builds: list.length, deleted: all.length - list.length, byStatus,
+    running: list.filter((b) => b.status === 'running' || (!AT_REST.includes(b.status) && !['pending', 'queued', 'waiting', 'blocked', 'failed', 'escalated'].includes(b.status))).length,
+    pending: count('pending', 'queued', 'waiting'),
+    complete: count(...FINISHED),
+    archived: count('archived'),
+    attention: count('blocked', 'failed', 'escalated', 'fixing'),
+    pendingItems: list.filter(onPendingList).filter((b) => !AT_REST.includes(b.status)).length,
+    queueSteps: (queue?.order ?? []).length, // null = the profile never had a build queue
+    steps: { total, done, left },
+    cost: {
+      spentUsd: usd2(spent),
+      leftUsd: left === 0 ? 0 : per === null ? null : usd2(left * per),
+      basis: left === 0 ? 'nothing-left' : own !== null ? 'profile-average' : per !== null ? 'store-average' : 'none',
+      perStepUsd: per === null ? null : usd2(per),
+      budgetLeftUsd: perBuildUsd > 0 ? usd2(budgetLeft) : null,
+    },
+    lastActivity: latest(...list.map(buildActivity)),
+    firstCreated: list.map((b) => str(b.createdAt, 40)).filter(Boolean).sort()[0] ?? '',
+  };
+}
+/** The store-wide average spend per done step (the fallback rate of profileStats), or null. */
+export function spendRate(store, spend = {}) {
+  let cost = 0; let steps = 0;
+  for (const b of store?.builds ?? []) {
+    if (b.deleted) continue;
+    const c = Math.max(0, Number(spend.byBuild?.[b.id]) || 0); const d = buildProgress(b).done;
+    if (c && d) { cost += c; steps += d; }
+  }
+  return steps ? cost / steps : null;
+}
+
+/**
+ * Move builds `ids` to profile `to`. `from` set = they leave that profile only (a build shared with a third profile
+ * stays there too); `from` empty = they leave every profile they were in. Each keeps its id, status and steps, goes to
+ * the end of `to` and gets a note. → { store, report: { to, from, moved: [id], skipped: [{ id, why }] } }
+ */
+export function moveBuilds(store, ids, { from = '', to, now = nowIso(), by = '' } = {}) {
+  const s = clone(store);
+  const report = { to, from, moved: [], skipped: [] };
+  let next = nextOrder(s, to);
+  const left = new Set();
+  for (const id of [...new Set(ids ?? [])]) {
+    const b = findBuild(s, id);
+    if (!b || b.deleted) { report.skipped.push({ id, why: b ? 'deleted' : 'no such build' }); continue; }
+    if (from && !b.profiles.includes(from)) { report.skipped.push({ id: b.id, why: `not in ${from}` }); continue; }
+    const leaving = (from ? [from] : b.profiles).filter((p) => p !== to);
+    if (!leaving.length) { report.skipped.push({ id: b.id, why: `already in ${to}` }); continue; }
+    for (const p of leaving) { delete b.order[p]; left.add(p); }
+    b.profiles = [...new Set([...b.profiles.filter((p) => !leaving.includes(p)), to])];
+    if (!Number.isFinite(b.order[to])) b.order[to] = next++;
+    b.notes = [...(b.notes ?? []), { text: `Moved from build profile "${leaving.join('", "')}" to "${to}".`, at: now, ...(by ? { by } : {}) }];
+    b.updatedAt = now;
+    report.moved.push(b.id);
+  }
+  for (const p of [...left, to]) renumber(s, p);
+  return { store: s, report };
+}
+
+/**
+ * Show every build of `from` in `to` as well (Duplicate a profile): the same records, tagged with both, in the same
+ * order; rules and list meta copied when `to` has none. Nothing is copied, so a step ticked in one shows in the other.
+ * → { store, report: { from, to, shared } }
+ */
+export function shareBuilds(store, from, to) {
+  const s = clone(store);
+  let next = nextOrder(s, to); let shared = 0;
+  for (const b of buildsOf(s, from)) {
+    if (b.profiles.includes(to)) continue;
+    b.profiles.push(to); b.order[to] = next++; shared += 1;
+  }
+  if (s.rules[from] && !s.rules[to]) s.rules[to] = clone(s.rules[from]);
+  for (const k of ['queue', 'pending']) if (s.meta[k]?.[from] && !s.meta[k][to]) s.meta[k][to] = clone(s.meta[k][from]);
+  return { store: s, report: { from, to, shared } };
+}
+
+/**
+ * Take a profile's builds out of the store for good (owner-only "Delete data too"). A build that is also in another
+ * profile only leaves this one; a build that lived here alone is marked deleted (the journal keeps its history). The
+ * profile's rules, list meta and draft go. → { store, report: { profile, deleted: [id], untagged: [id] } }
+ */
+export function purgeProfile(store, profile, { now = nowIso(), by = '' } = {}) {
+  const s = clone(store);
+  const report = { profile, deleted: [], untagged: [] };
+  for (const b of buildsOf(s, profile, { withDeleted: true })) {
+    if (b.profiles.length > 1) { b.profiles = b.profiles.filter((p) => p !== profile); delete b.order[profile]; b.updatedAt = now; report.untagged.push(b.id); continue; }
+    if (b.deleted) continue;
+    b.deleted = true; b.deletedAt = now; b.updatedAt = now;
+    b.notes = [...(b.notes ?? []), { text: `Deleted with build profile "${profile}" (its data was deleted for good).`, at: now, ...(by ? { by } : {}) }];
+    report.deleted.push(b.id);
+  }
+  delete s.rules[profile]; delete s.drafts[profile];
+  for (const k of ['queue', 'pending']) if (s.meta[k]) delete s.meta[k][profile];
+  return { store: s, report };
+}
+
+/** Where a cleanup fix can take an archived build that is really finished, with the proof it has ('' = nowhere). */
+function finishedTarget(b) {
+  if (P2.isP2(b)) return P2.archivedFromOf(b) === 'landed' ? 'landed' : '';
+  for (const to of ['complete', 'landed']) if (guardStatus({ ...b, status: 'landing' }, to).ok) return to;
+  return '';
+}
+/**
+ * Cleanup scan (Brett, Nov 3 2026: "flag archived builds that are actually complete"). Reads only. Findings:
+ *   archived-complete   an archived build that finished: its PR merged, or every step done. `to` = the status the fix
+ *                       gives it (complete / landed, by the proof on record); `fixable: false` + `why` when
+ *                       done-means-merged@1 has no proof to accept (every step done but no merged PR on record)
+ *   orphan-profile      a build tagged with a profile that is neither on the list nor restorable; the fix moves it to
+ *                       the base profile
+ * `known` = every profile id on the list or restorable (omit to skip the orphan check); `profile` limits the scan.
+ * → { findings: [{ kind, id, title, profiles, status, fixable, to, why, evidence }], counts }
+ */
+export function cleanupScan(store, { profile = '', known = null } = {}) {
+  const findings = [];
+  const ok = known ? new Set(known) : null;
+  for (const b of store?.builds ?? []) {
+    if (b.deleted || (profile && !b.profiles.includes(profile))) continue;
+    const base = { id: b.id, title: b.title, profiles: [...b.profiles], status: b.status };
+    if (b.status === 'archived') {
+      const steps = b.steps.filter((x) => !x.skip);
+      const allDone = steps.length > 0 && steps.every((x) => x.done);
+      const merged = !!(str(b.mergedAt) || normLanded(b.landed)?.mergedAt || P2.archivedFromOf(b) === 'landed');
+      if (merged || allDone) {
+        const to = finishedTarget(b);
+        const g = to ? null : guardStatus({ ...b, status: 'landing' }, 'landed');
+        findings.push({ kind: 'archived-complete', ...base, evidence: merged ? 'merged' : 'steps-done', fixable: !!to, to, why: to ? '' : P2.isP2(b) ? 'archived before it landed: it returns only to the status it was archived from' : g.why });
+      }
+    }
+    if (ok) {
+      const lost = b.profiles.filter((p) => !ok.has(p));
+      if (lost.length) findings.push({ kind: 'orphan-profile', ...base, evidence: lost.join(', '), fixable: true, to: BASE_PROFILE, why: '' });
+    }
+  }
+  const counts = {}; for (const f of findings) counts[f.kind] = (counts[f.kind] ?? 0) + 1;
+  return { findings, counts, fixable: findings.filter((f) => f.fixable).length };
+}
+/**
+ * Apply the cleanup scan's fixes (`ids` limits them; `kinds` too). An archived build goes to the status its proof
+ * allows; an orphan's unknown profiles are replaced by the base profile. → { store, report: { fixed: [{ kind, id, to }], left } }
+ */
+export function cleanupFix(store, { ids = null, kinds = null, profile = '', known = null, now = nowIso(), by = 'cleanup' } = {}) {
+  const s = clone(store);
+  const want = ids ? new Set(ids) : null;
+  const scan = cleanupScan(s, { profile, known });
+  const fixed = []; const touched = new Set();
+  for (const f of scan.findings) {
+    if (!f.fixable || (want && !want.has(f.id)) || (kinds && !kinds.includes(f.kind))) continue;
+    const b = s.builds.find((x) => x.id === f.id);
+    if (f.kind === 'archived-complete') {
+      b.status = f.to; b.builtAt = b.builtAt || str(b.mergedAt, 40) || now;
+      b.notes = [...(b.notes ?? []), { text: `Cleanup: it was archived but it is finished (${f.evidence === 'merged' ? 'its PR merged' : 'every step done'}): archived → ${f.to}.`, at: now, by }];
+    } else if (f.kind === 'orphan-profile') {
+      const ok = new Set(known);
+      const lost = b.profiles.filter((p) => !ok.has(p));
+      for (const p of lost) delete b.order[p];
+      b.profiles = [...new Set([...b.profiles.filter((p) => ok.has(p)), BASE_PROFILE])];
+      if (!Number.isFinite(b.order[BASE_PROFILE])) { b.order[BASE_PROFILE] = nextOrder(s, BASE_PROFILE); touched.add(BASE_PROFILE); }
+      if (!b.fromProfile) b.fromProfile = lost[0];
+      b.notes = [...(b.notes ?? []), { text: `Cleanup: build profile "${lost.join('", "')}" no longer exists: moved to "${BASE_PROFILE}".`, at: now, by }];
+    }
+    b.updatedAt = now;
+    fixed.push({ kind: f.kind, id: f.id, to: f.to });
+  }
+  for (const p of touched) renumber(s, p);
+  return { store: s, report: { fixed, left: scan.findings.length - fixed.length } };
 }
 
 // ------------------------------------------------------------------ store self-check (builds@1)
